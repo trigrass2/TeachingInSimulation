@@ -1,5 +1,4 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.cas.sim</groupId>
 	<artifactId>TeachingInSimulation</artifactId>
@@ -11,6 +10,7 @@
 		<module>tis-client-teacher</module>
 		<module>tis-client-student</module>
 		<module>tis-client</module>
+		<module>tis-circuit</module>
 	</modules>
 	<name>仿真教学项目</name>
 	<properties>
@@ -31,6 +31,12 @@
 	</properties>
 	<dependencyManagement>
 		<dependencies>
+			<dependency>
+				<groupId>com.cas.sim</groupId>
+				<artifactId>cas-util</artifactId>
+				<version>1.0.1</version>
+			</dependency>
+
 			<!-- https://mvnrepository.com/artifact/junit/junit -->
 			<dependency>
 				<groupId>junit</groupId>

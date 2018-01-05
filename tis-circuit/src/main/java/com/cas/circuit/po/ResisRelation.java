@@ -6,7 +6,7 @@ public class ResisRelation {
 
 	private String term1Id;
 	private String term2Id;
-	private String value;
+	private Float value;
 
 	@XmlAttribute
 	public String getTerm1Id() {
@@ -27,11 +27,11 @@ public class ResisRelation {
 	}
 
 	@XmlAttribute
-	public String getValue() {
+	public Float getValue() {
 		return value;
 	}
 
-	public void setValue(String value) {
+	public void setValue(Float value) {
 		this.value = value;
 	}
 

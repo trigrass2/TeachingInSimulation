@@ -5,7 +5,9 @@ import java.util.List;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 
-public class Jack {
+import com.cas.circuit.xml.ID;
+
+public class Jack implements ID {
 	private String id;
 	/**
 	 * 当前插口对应线缆类型

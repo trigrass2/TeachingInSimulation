@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.junit.Assert;
 import org.springframework.stereotype.Component;
 
 import com.cas.sim.tis.consts.RoleConst;
@@ -50,6 +51,7 @@ public class LoginMessageHandler implements ServerHandler {
 //				服务器就当做没看到。
 				return;
 			}
+			Assert.assertNotNull(user);
 
 			List<HostedConnection> clients = CoreServer.getIns().getClients();
 //			进一步验证
