@@ -1,0 +1,24 @@
+mybatis:
+  config-location: classpath:mybatis/mybatis.cfg.xml  # MyBatis配置文件路径
+  type-aliases-package: com.cas.authority.vo          # 定义所有操作类的别名所在包
+  mapper-locations:
+  - classpath:mybatis/mapper/*.xml                 #所有的mapper映射
+mapper:
+  mappers:
+  - com.cas.sim.tis.mapper.TeacherMapper
+pagehelper:
+  dialect: com.github.pagehelper.dialect.helper.MySqlDialect
+spring: 
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource      # 配置当前要使用的数据源的操作类型
+    driver-class-name: com.mysql.jdbc.Driver          # 配置MySQL的驱动程序类
+    url: jdbc:mysql://localhost:3306/db_cas_electrical?useUnicode=true&characterEncoding=UTF-8&useSSL=false    # 数据库连接地址
+    username: root                                    # 数据库用户名
+    password:                               # 数据库连接密码
+    dbcp2:                                            # 数据库连接池的配置 
+      min-idle: 5                                     # 最小维持连接数
+      initial-size: 5                                 # 初始化提供的连接数
+      max-total: 5                                    # 最大连接数量
+      max-wait-millis: 200                            # 等待连接获取的最大超时时间
+  messages:
+    basename: i18n/messages                           # SpringBoot国际化处理

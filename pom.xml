@@ -1,0 +1,233 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.cas.sim</groupId>
+	<artifactId>TeachingInSimulation</artifactId>
+	<packaging>pom</packaging>
+	<version>${project.version}</version>
+	<modules>
+		<module>tis-base</module>
+		<module>tis-server</module>
+		<module>tis-client-teacher</module>
+		<module>tis-client-student</module>
+		<module>tis-client</module>
+	</modules>
+	<name>仿真教学项目</name>
+	<properties>
+		<!-- 主项目版本号 -->
+		<project.version>1.0.0-SNAPSHOT</project.version>
+		<!-- 引擎版本号 -->
+		<engine.version>3.2.0-beta2</engine.version>
+		<!-- SpringBoot版本 -->
+		<springboot.version>2.0.0.M6</springboot.version>
+		<!-- SpringBoot集成JavaFX插件版本 -->
+		<springboot-javafx.version>2.1.5</springboot-javafx.version>
+		<!-- 数据库连接驱动版本 -->
+		<mysql.version>5.1.44</mysql.version>
+		<!-- 系统日志版本 -->
+		<slf4j.version>1.7.21</slf4j.version>
+		<!-- FTP服务器版本 -->
+		<ftp.version>1.1.1</ftp.version>
+	</properties>
+	<dependencyManagement>
+		<dependencies>
+			<!-- https://mvnrepository.com/artifact/junit/junit -->
+			<dependency>
+				<groupId>junit</groupId>
+				<artifactId>junit</artifactId>
+				<version>4.12</version>
+				<scope>test</scope>
+			</dependency>
+
+			<dependency>
+				<groupId>com.cas.sim</groupId>
+				<artifactId>tis-base</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.cas.sim</groupId>
+				<artifactId>tis-client</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+
+			<!-- 软件加密狗 -->
+			<dependency>
+				<groupId>com.cas.sim</groupId>
+				<artifactId>locker</artifactId>
+				<version>1.1.1</version>
+			</dependency>
+			<dependency>
+				<groupId>com.cas</groupId>
+				<artifactId>authority-client</artifactId>
+				<version>1.0.0</version>
+			</dependency>
+			<!-- 系统日志 -->
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>slf4j-api</artifactId>
+				<version>${slf4j.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>slf4j-log4j12</artifactId>
+				<version>${slf4j.version}</version>
+			</dependency>
+
+			<!-- jMonkeyEngine3 -->
+			<!-- https://mvnrepository.com/artifact/org.jmonkeyengine/jme3-core -->
+			<dependency>
+				<groupId>org.jmonkeyengine</groupId>
+				<artifactId>jme3-core</artifactId>
+				<version>${engine.version}</version>
+			</dependency>
+			<!-- https://mvnrepository.com/artifact/org.jmonkeyengine/jme3-desktop -->
+			<dependency>
+				<groupId>org.jmonkeyengine</groupId>
+				<artifactId>jme3-desktop</artifactId>
+				<version>${engine.version}</version>
+			</dependency>
+			<!-- https://mvnrepository.com/artifact/org.jmonkeyengine/jme3-lwjgl3 -->
+			<dependency>
+				<groupId>org.jmonkeyengine</groupId>
+				<artifactId>jme3-lwjgl3</artifactId>
+				<version>${engine.version}</version>
+			</dependency>
+			<!-- https://mvnrepository.com/artifact/org.jmonkeyengine/jme3-networking -->
+			<dependency>
+				<groupId>org.jmonkeyengine</groupId>
+				<artifactId>jme3-networking</artifactId>
+				<version>${engine.version}</version>
+			</dependency>
+
+			<!-- https://mvnrepository.com/artifact/org.apache.ftpserver/ftpserver-core -->
+			<dependency>
+				<groupId>org.apache.ftpserver</groupId>
+				<artifactId>ftpserver-core</artifactId>
+				<version>${ftp.version}</version>
+			</dependency>
+			<!-- https://mvnrepository.com/artifact/commons-net/commons-net -->
+			<dependency>
+				<groupId>commons-net</groupId>
+				<artifactId>commons-net</artifactId>
+				<version>3.6</version>
+			</dependency>
+			<!-- https://mvnrepository.com/artifact/commons-logging/commons-logging -->
+			<dependency>
+				<groupId>commons-logging</groupId>
+				<artifactId>commons-logging</artifactId>
+				<version>1.2</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-starter</artifactId>
+				<version>${springboot.version}</version>
+				<exclusions>
+					<exclusion>
+						<groupId>org.springframework.boot</groupId>
+						<artifactId>spring-boot-starter-logging</artifactId>
+					</exclusion>
+				</exclusions>
+			</dependency>
+			<dependency>
+				<groupId>de.roskenet</groupId>
+				<artifactId>springboot-javafx-support</artifactId>
+				<version>${springboot-javafx.version}</version>
+				<exclusions>
+					<exclusion>
+						<groupId>org.slf4j</groupId>
+						<artifactId>slf4j-api</artifactId>
+					</exclusion>
+				</exclusions>
+			</dependency>
+			<dependency>
+				<groupId>mysql</groupId>
+				<artifactId>mysql-connector-java</artifactId>
+				<version>${mysql.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.alibaba</groupId>
+				<artifactId>druid</artifactId>
+				<version>1.1.3</version>
+			</dependency>
+			<dependency>
+				<groupId>org.mybatis.spring.boot</groupId>
+				<artifactId>mybatis-spring-boot-starter</artifactId>
+				<version>1.3.0</version>
+				<exclusions>
+					<exclusion>
+						<groupId>org.springframework.boot</groupId>
+						<artifactId>spring-boot-starter</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>org.springframework.boot</groupId>
+						<artifactId>spring-boot-autoconfigure</artifactId>
+					</exclusion>
+				</exclusions>
+			</dependency>
+			<dependency>
+				<groupId>tk.mybatis</groupId>
+				<artifactId>mapper-spring-boot-starter</artifactId>
+				<version>1.1.4</version>
+				<exclusions>
+					<exclusion>
+						<groupId>org.springframework.boot</groupId>
+						<artifactId>spring-boot-starter</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>org.springframework.boot</groupId>
+						<artifactId>spring-boot-autoconfigure</artifactId>
+					</exclusion>
+				</exclusions>
+			</dependency>
+			<!-- https://mvnrepository.com/artifact/com.github.pagehelper/pagehelper-spring-boot-starter -->
+			<dependency>
+				<groupId>com.github.pagehelper</groupId>
+				<artifactId>pagehelper-spring-boot-starter</artifactId>
+				<version>1.2.3</version>
+			</dependency>
+
+			<!-- https://mvnrepository.com/artifact/com.alibaba/fastjson -->
+			<dependency>
+				<groupId>com.alibaba</groupId>
+				<artifactId>fastjson</artifactId>
+				<version>1.2.39</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.7.0</version>
+				<configuration>
+					<source>1.8</source>
+					<target>1.8</target>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<version>3.0.1</version>
+			</plugin>
+		</plugins>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>com.zenjava</groupId>
+					<artifactId>javafx-maven-plugin</artifactId>
+					<version>8.8.3</version>
+					<!-- <configuration> -->
+					<!-- <vendor>无锡凯数科技有限公司</vendor> -->
+					<!-- <mainClass>com.cas.elevator.TeacherBootstrap</mainClass> -->
+					<!-- <appName>电梯仿真软件 教师端</appName> -->
+					<!-- <jfxAppOutputDir>E:\软件打包\资源\x64\电梯仿真软件\教师端</jfxAppOutputDir> -->
+					<!-- <nativeOutputDir>E:\软件打包\资源\x64\电梯仿真软件\教师端</nativeOutputDir> -->
+					<!-- </configuration> -->
+				</plugin>
+			</plugins>
+		</pluginManagement>
+	</build>
+</project>
