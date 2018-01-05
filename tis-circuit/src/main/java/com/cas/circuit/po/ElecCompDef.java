@@ -1,11 +1,16 @@
 package com.cas.circuit.po;
 
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 
+import com.cas.circuit.vo.ResisState;
 import com.cas.gas.po.BlockState;
+import com.cas.gas.po.GasPort;
 
 public class ElecCompDef {
 //	元气件名称
@@ -26,6 +31,24 @@ public class ElecCompDef {
 	private List<ResisState> resisStateList;
 	private List<BlockState> blockStateList;
 	private List<LightIO> lightIOList;
+
+//	Key:电缆插孔的名字
+//	Value:电缆插孔
+	private Map<String, Jack> jackMap;
+//	Key: id
+//	Value:Terminal
+//	存放所有的连接头
+	private Map<String, Terminal> terminalMap;
+//	Key: id
+//	Value:Terminal
+//	存放所有连接头及插孔中的针脚
+	private Map<String, Terminal> termAndStich;
+//  Key: id
+//	Value: GasPort
+//	存放所有的气口
+	private Map<String, GasPort> gasPortMap;
+	private Map<String, ResisState> resisStatesMap;
+	private Map<String, BlockState> blockStatesMap;
 
 	@XmlAttribute
 	public String getName() {
@@ -133,6 +156,30 @@ public class ElecCompDef {
 
 	public void setLightIOList(List<LightIO> lightIOList) {
 		this.lightIOList = lightIOList;
+	}
+
+	public void build() {
+		jackMap = jackList.stream().collect(Collectors.toMap(Jack::getId, data -> data));
+		terminalMap = terminalList.stream().collect(Collectors.toMap(Terminal::getId, data -> data));
+		resisStatesMap = resisStateList.stream().collect(Collectors.toMap(ResisState::getId, data -> data));
+		blockStatesMap = blockStateList.stream().collect(Collectors.toMap(BlockState::getId, data -> data));
+//		jackList.stream().forEach(Jack::getTerminalList);
+	}
+
+	public Map<String, Jack> getJackMap() {
+		return jackMap;
+	}
+
+	public Map<String, Terminal> getTerminalMap() {
+		return terminalMap;
+	}
+
+	public Map<String, Terminal> getTermAndStich() {
+		return termAndStich;
+	}
+
+	public Map<String, GasPort> getGasPortMap() {
+		return gasPortMap;
 	}
 
 }
