@@ -2,9 +2,7 @@ package com.cas.circuit.po;
 
 import javax.xml.bind.annotation.XmlAttribute;
 
-import com.cas.circuit.xml.ID;
-
-public class Terminal implements ID {
+public class Terminal {
 	private String id;
 	private String name;
 	private String mdlName;

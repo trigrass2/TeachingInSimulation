@@ -5,9 +5,7 @@ import java.util.List;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 
-import com.cas.circuit.xml.ID;
-
-public class ResisState implements ID {
+public class ResisState {
 
 	private String id;
 	private String isDef;

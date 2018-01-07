@@ -28,7 +28,6 @@ public class CompRoot {
 
 	public void build() {
 		eleCompMap = eleCompList.stream().collect(Collectors.toMap(ElecCompDef::getModel, data -> data));
-
 		eleCompList.stream().forEach(ElecCompDef::build);
 	}
 }

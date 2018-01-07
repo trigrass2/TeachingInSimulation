@@ -8,7 +8,6 @@ import java.util.Map;
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 
 import com.cas.circuit.po.Terminal;
-import com.cas.circuit.xml.ID;
 
 public class MapAdapter extends XmlAdapter<Terminal[], Map<String, Terminal>> {
 

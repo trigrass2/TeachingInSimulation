@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.cas.sim</groupId>
 	<artifactId>TeachingInSimulation</artifactId>
@@ -17,11 +18,15 @@
 		<!-- 主项目版本号 -->
 		<project.version>1.0.0-SNAPSHOT</project.version>
 		<!-- 引擎版本号 -->
-		<engine.version>3.2.0-beta2</engine.version>
+		<engine.version>3.2.0-stable</engine.version>
 		<!-- SpringBoot版本 -->
 		<springboot.version>2.0.0.M6</springboot.version>
+		<!-- SpringBoot版本 -->
+		<spring.version>5.0.1.RELEASE</spring.version>
 		<!-- SpringBoot集成JavaFX插件版本 -->
 		<springboot-javafx.version>2.1.5</springboot-javafx.version>
+		<!-- SpringBoot集成JavaFX插件版本 -->
+		<spring-pagehelper.version>1.2.3</spring-pagehelper.version>
 		<!-- 数据库连接驱动版本 -->
 		<mysql.version>5.1.44</mysql.version>
 		<!-- 系统日志版本 -->
@@ -29,6 +34,20 @@
 		<!-- FTP服务器版本 -->
 		<ftp.version>1.1.1</ftp.version>
 	</properties>
+
+	<repositories>
+		<repository>
+			<id>SpringMillestone</id>
+			<name>Spring Milestones Repository</name>
+			<url>http://repo.spring.io/milestone/</url>
+		</repository>
+		<repository>
+			<id>JMonkeyEngine</id>
+			<name>JMonkeyEngineRepository</name>
+			<url>https://dl.bintray.com/jmonkeyengine/org.jmonkeyengine/</url>
+		</repository>
+	</repositories>
+
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
@@ -136,6 +155,17 @@
 				</exclusions>
 			</dependency>
 			<dependency>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-starter-jdbc</artifactId>
+				<version>${springboot.version}</version>
+				<exclusions>
+					<exclusion>
+						<groupId>org.slf4j</groupId>
+						<artifactId>slf4j-api</artifactId>
+					</exclusion>
+				</exclusions>
+			</dependency>
+			<dependency>
 				<groupId>de.roskenet</groupId>
 				<artifactId>springboot-javafx-support</artifactId>
 				<version>${springboot-javafx.version}</version>
@@ -159,11 +189,15 @@
 			<dependency>
 				<groupId>org.mybatis.spring.boot</groupId>
 				<artifactId>mybatis-spring-boot-starter</artifactId>
-				<version>1.3.0</version>
+				<version>1.3.1</version>
 				<exclusions>
 					<exclusion>
 						<groupId>org.springframework.boot</groupId>
 						<artifactId>spring-boot-starter</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>org.springframework.boot</groupId>
+						<artifactId>spring-boot-starter-jdbc</artifactId>
 					</exclusion>
 					<exclusion>
 						<groupId>org.springframework.boot</groupId>
@@ -172,9 +206,14 @@
 				</exclusions>
 			</dependency>
 			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-jdbc</artifactId>
+				<version>${spring.version}</version>
+			</dependency>
+			<dependency>
 				<groupId>tk.mybatis</groupId>
 				<artifactId>mapper-spring-boot-starter</artifactId>
-				<version>1.1.4</version>
+				<version>1.1.7</version>
 				<exclusions>
 					<exclusion>
 						<groupId>org.springframework.boot</groupId>
@@ -183,6 +222,10 @@
 					<exclusion>
 						<groupId>org.springframework.boot</groupId>
 						<artifactId>spring-boot-autoconfigure</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>org.springframework</groupId>
+						<artifactId>spring-jdbc</artifactId>
 					</exclusion>
 				</exclusions>
 			</dependency>
@@ -190,7 +233,24 @@
 			<dependency>
 				<groupId>com.github.pagehelper</groupId>
 				<artifactId>pagehelper-spring-boot-starter</artifactId>
-				<version>1.2.3</version>
+				<version>${spring-pagehelper.version}</version>
+				<exclusions>
+					<exclusion>
+						<groupId>org.springframework.boot</groupId>
+						<artifactId>spring-boot-starter</artifactId>
+					</exclusion>
+				</exclusions>
+			</dependency>
+			<dependency>
+				<groupId>com.github.pagehelper</groupId>
+				<artifactId>pagehelper-spring-boot-autoconfigure</artifactId>
+				<version>${spring-pagehelper.version}</version>
+				<exclusions>
+					<exclusion>
+						<groupId>org.springframework.boot</groupId>
+						<artifactId>spring-boot-autoconfigure</artifactId>
+					</exclusion>
+				</exclusions>
 			</dependency>
 
 			<!-- https://mvnrepository.com/artifact/com.alibaba/fastjson -->

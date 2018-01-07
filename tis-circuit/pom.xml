@@ -11,10 +11,10 @@
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>com.cas.sim</groupId>
-			<artifactId>cas-util</artifactId>
-		</dependency>
+<!-- 		<dependency> -->
+<!-- 			<groupId>com.cas.sim</groupId> -->
+<!-- 			<artifactId>cas-util</artifactId> -->
+<!-- 		</dependency> -->
 		<dependency>
 			<groupId>org.jmonkeyengine</groupId>
 			<artifactId>jme3-core</artifactId>
