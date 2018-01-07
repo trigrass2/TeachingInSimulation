@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 
@@ -12,6 +14,7 @@ import com.cas.circuit.vo.ResisState;
 import com.cas.gas.po.BlockState;
 import com.cas.gas.po.GasPort;
 
+@XmlAccessorType(value = XmlAccessType.NONE)
 public class ElecCompDef {
 //	元气件名称
 	private String name;

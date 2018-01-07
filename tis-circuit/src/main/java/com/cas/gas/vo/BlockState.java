@@ -1,7 +1,11 @@
 package com.cas.gas.vo;
 
-import com.cas.gas.po.BlockStatePO;
-import com.cas.util.vo.BaseVO;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+
+import com.sun.tools.internal.xjc.runtime.ZeroOneBooleanAdapter;
 
 /**
  * 通阻关系信息封装对象
@@ -10,38 +14,26 @@ import com.cas.util.vo.BaseVO;
  * @创建日期 2016年5月18日
  * @修改人 CWJ
  */
-public class BlockState extends BaseVO<BlockStatePO> {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -3971869487577365723L;
-	private boolean isDef;
+@XmlAccessorType(XmlAccessType.NONE)
+public class BlockState  {
 
-	/**
-	 * 
-	 */
-	public BlockState() {
-	}
-
-	/**
-	 * @param po
-	 */
-	public BlockState(BlockStatePO po) {
-		super(po);
-	}
-
-	@Override
-	protected void toValueObject() {
-		super.toValueObject();
-		isDef = "1".equals(po.getIsDef());
-	}
-
+	@XmlAttribute
+	private String id;
+	@XmlAttribute
+	@XmlJavaTypeAdapter(ZeroOneBooleanAdapter.class)
+	private Boolean isDef;
 	public String getId() {
-		return po.getId();
+		return id;
 	}
-
+	public void setId(String id) {
+		this.id = id;
+	}
 	public boolean isDef() {
 		return isDef;
 	}
+	public void setDef(boolean isDef) {
+		this.isDef = isDef;
+	}
+
 }

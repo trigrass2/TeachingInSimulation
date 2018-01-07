@@ -1,4 +1,4 @@
-package com.cas.sim.tis.util.xml;
+package com.cas.sim.tis.xml.util;
 
 import java.io.StringReader;
 import java.io.StringWriter;

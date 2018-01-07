@@ -13,11 +13,7 @@ import com.cas.gas.vo.BlockState;
 import com.cas.util.Util;
 import com.cas.util.vo.BaseVO;
 
-public class SwitchCtrl<T>extends BaseVO<T> {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 7175236186204511820L;
+public class SwitchCtrl<T> {
 	protected ElecCompDef elecComp;
 	protected List<String> resisStateIds = new ArrayList<String>();
 	protected int switchIndex = 0;
@@ -27,10 +23,6 @@ public class SwitchCtrl<T>extends BaseVO<T> {
 	private boolean disable;
 
 	public SwitchCtrl() {
-	}
-
-	public SwitchCtrl(T po) {
-		super(po);
 	}
 
 	public void switchStart(Integer index) {
