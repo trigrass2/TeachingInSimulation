@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE Comps SYSTEM "http://com.cas.me/dtds/components.dtd">
+<!-- <!DOCTYPE Comps SYSTEM "http://com.cas.me/dtds/components.dtd"> -->
 <Comps>
 	<ElecCompDef name="转接器" model="FX-26BB" desc="转接中含有基本模块和扩展模块，对于扩展模块，分为除输入输出外还带有手摇脉冲发生器接口的扩展模块和只有输入输出的扩展模块。在连接CB 50芯线缆时，CB 50芯线缆的管脚定义，是通过PMC地址分配设定决定的。">
 		<Jack format="CB" mdlName="CB1" id="CB106" name="CB106" direction="y+" jackDirection="x">

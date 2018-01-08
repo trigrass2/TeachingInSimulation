@@ -1,5 +1,6 @@
 package com.cas.circuit.vo;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -8,9 +9,9 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
+import com.cas.sim.tis.xml.adapter.BooleanIntAdapter;
 import com.cas.sim.tis.xml.adapter.ColorRGBAAdapter;
 import com.jme3.math.ColorRGBA;
-import com.sun.tools.internal.xjc.runtime.ZeroOneBooleanAdapter;
 
 @XmlAccessorType(XmlAccessType.NONE)
 public class ResisState {
@@ -18,14 +19,14 @@ public class ResisState {
 	@XmlAttribute
 	private String id;
 	@XmlAttribute
-	@XmlJavaTypeAdapter(ZeroOneBooleanAdapter.class)
-	private Boolean isDef;
+	@XmlJavaTypeAdapter(BooleanIntAdapter.class)
+	private Boolean isDef = Boolean.FALSE;
 	@XmlAttribute
 	@XmlJavaTypeAdapter(ColorRGBAAdapter.class)
-	private ColorRGBA glowColor;
+	private ColorRGBA glowColor = ColorRGBA.Black;
 
 	@XmlElement(name = "ResisRelation")
-	private List<ResisRelation> resisRelationList;
+	private List<ResisRelation> resisRelationList = new ArrayList<>();
 
 	/**
 	 * 

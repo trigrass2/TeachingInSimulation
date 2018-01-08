@@ -1,8 +1,16 @@
 package com.cas.circuit.vo;
 
+import java.util.List;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+
+import com.cas.sim.tis.xml.adapter.Vector3fAdapter;
+import com.jme3.math.Vector3f;
+import com.sun.tools.internal.xjc.runtime.ZeroOneBooleanAdapter;
 
 /**
  * 元器件上的电缆插孔类.<br/>
@@ -36,13 +44,33 @@ public class Jack {
 	@XmlAttribute
 	private String direction;
 	@XmlAttribute
-	private String rotation;
+	@XmlJavaTypeAdapter(Vector3fAdapter.class)
+	private Vector3f rotation;
 	@XmlAttribute
-	private String isPositive;
+	@XmlJavaTypeAdapter(ZeroOneBooleanAdapter.class)
+	private Boolean isPositive;
 	@XmlAttribute
-	private String core;
+	private Integer core;
 	@XmlAttribute
 	private String belongElecComp;
+	@XmlElement(name = "Terminal")
+	private List<Terminal> terminalList;
+	
+	public String getId() {
+		return id;
+	}
+	public void setId(String id) {
+		this.id = id;
+	}
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
+	public List<Terminal> getTerminalList() {
+		return terminalList;
+	}
 	
 //	private Format format;
 ////	一个插孔中包含多个针脚(也可以说是连接头)
@@ -70,10 +98,10 @@ public class Jack {
 //
 //	private Map<String, String> properties;
 //
+	
 //	@Override
 //	protected void toValueObject() {
 //		super.toValueObject();
-//		positive = "1".equals(po.getIsPositive());
 ////		FIXME
 //		ParserFactory factory = ParserFactory.getFactory("Jack_Cable_Format");
 //		if (factory == null) {
@@ -86,16 +114,6 @@ public class Jack {
 //			Cable cable = factory.getParser(Cable.class, "com/cas/circuit/config/cable.xml").getDataMap().get(po.getCable());
 //			linkers.clear();
 //			linkers.add(cable);
-//		}
-//
-//		String value = po.getRotation();
-//		if (value != null) {
-//			List<String> arr = StringUtil.split(value, ',');
-//			if (arr.size() == 3) {
-//				rotation[0] = Float.parseFloat(arr.get(0)) * FastMath.DEG_TO_RAD;
-//				rotation[1] = Float.parseFloat(arr.get(1)) * FastMath.DEG_TO_RAD;
-//				rotation[2] = Float.parseFloat(arr.get(2)) * FastMath.DEG_TO_RAD;
-//			}
 //		}
 //	}
 //

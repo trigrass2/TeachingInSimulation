@@ -14,13 +14,13 @@ public class Magnetism  {
 	private String id;
 
 	@XmlElement(name="VoltageIO")
-	private List<VoltageIO> voltageIOs;
+	private List<VoltageIO> voltageIOs = new ArrayList<>();
 	@XmlElement(name="ControlIO")
-	private List<ControlIO> controlIOs;
+	private List<ControlIO> controlIOs = new ArrayList<>();
 	@XmlElement(name="LightIO")
-	private List<LightIO> lightIOs;
+	private List<LightIO> lightIOs = new ArrayList<>();
 	@XmlElement(name="SensorIO")
-	private List<SensorIO> sensorIOs;
+	private List<SensorIO> sensorIOs = new ArrayList<>();
 
 	private boolean effect; 
 	private List<VoltageIO> inputVoltageIOs = new ArrayList<VoltageIO>();
@@ -59,56 +59,34 @@ public class Magnetism  {
 //			lightIOs.add(lightIO);
 //		}
 //	}
-//
-//	/**
-//	 * 
-//	 */
-//	public Magnetism() {
-//		super();
-//	}
-//
-//	/**
-//	 * @param po
-//	 */
-//	public Magnetism(MagnetismPO po) {
-//		super(po);
-//	}
-//
-//	public boolean isEffect() {
-//		return effect;
-//	}
-//
-//	public void setEffect(boolean effect) {
-//		this.effect = effect;
-//	}
-//
-//	public List<VoltageIO> getVoltageIOs() {
-//		return voltageIOs;
-//	}
-//
-//	public List<ControlIO> getControlIOs() {
-//		return controlIOs;
-//	}
-//
-//	public List<LightIO> getLightIOs() {
-//		return lightIOs;
-//	}
-//
-//	public List<VoltageIO> getInputVoltageIOs() {
-//		return inputVoltageIOs;
-//	}
-//
-//	public List<VoltageIO> getOutputVoltageIOs() {
-//		return outputVoltageIOs;
-//	}
-//
-//	public List<ControlIO> getOutputControlIOs() {
-//		return outputControlIOs;
-//	}
-//
-//	public List<SensorIO> getSensorIOs() {
-//		return sensorIOs;
-//	}
+	
+	public List<ControlIO> getControlIOs() {
+		return controlIOs;
+	}
+
+	public String getId() {
+		return id;
+	}
+
+	public List<VoltageIO> getInputVoltageIOs() {
+		return inputVoltageIOs;
+	}
+
+	public List<LightIO> getLightIOs() {
+		return lightIOs;
+	}
+
+	public List<ControlIO> getOutputControlIOs() {
+		return outputControlIOs;
+	}
+
+	public List<VoltageIO> getOutputVoltageIOs() {
+		return outputVoltageIOs;
+	}
+
+	public List<SensorIO> getSensorIOs() {
+		return sensorIOs;
+	}
 //
 //	/*
 //	 * (non-Javadoc)
@@ -131,4 +109,20 @@ public class Magnetism  {
 ////		Key: 连接头ID , 与该连接头有关系的VoltageIOs
 ////		termVoltageIOGroupMap = new HashMap<String, List<VoltageIO>>();
 //	}
+
+	public List<VoltageIO> getVoltageIOs() {
+		return voltageIOs;
+	}
+
+	public boolean isEffect() {
+		return effect;
+	}
+
+	public void setEffect(boolean effect) {
+		this.effect = effect;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
 }

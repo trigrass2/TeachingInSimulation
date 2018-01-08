@@ -66,6 +66,22 @@ public class ResisRelation {
 		return activated;
 	}
 
+	public String getTerm1Id() {
+		return term1Id;
+	}
+
+	public void setTerm1Id(String term1Id) {
+		this.term1Id = term1Id;
+	}
+
+	public String getTerm2Id() {
+		return term2Id;
+	}
+
+	public void setTerm2Id(String term2Id) {
+		this.term2Id = term2Id;
+	}
+
 	public Float getValue() {
 		return value;
 	}
@@ -83,6 +99,22 @@ public class ResisRelation {
 			termIds = term1Id + "-" + term2Id;
 		}
 		return termIds;
+	}
+
+	public Terminal getTerm1() {
+		return term1;
+	}
+
+	public void setTerm1(Terminal term1) {
+		this.term1 = term1;
+	}
+
+	public Terminal getTerm2() {
+		return term2;
+	}
+
+	public void setTerm2(Terminal term2) {
+		this.term2 = term2;
 	}
 
 }

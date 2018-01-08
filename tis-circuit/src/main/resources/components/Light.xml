@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE Comps SYSTEM "http://com.cas.me/dtds/components.dtd">
+<!-- <!DOCTYPE Comps SYSTEM "http://com.cas.me/dtds/components.dtd"> -->
 <Comps>
 	<ElecCompDef name="三色灯" model="PTE LME-302W-RYG" desc="机床三色灯是用来表征机床运行状态的信号灯，一般为红、黄、绿三种颜色，红灯表示报警或机器故障，黄灯表示警告或加工异常，绿色表示正常运行或正在操作，在实际应用中，可通过三色灯的颜色来判断机床运行状态。">
 		<Terminal id="yellow" name="机床待机" mdlName="02" direction="y+" />

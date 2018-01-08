@@ -1,10 +1,14 @@
 package com.cas.gas.vo;
 
+import java.util.List;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
+import com.cas.gas.po.BlockRelation;
 import com.sun.tools.internal.xjc.runtime.ZeroOneBooleanAdapter;
 
 /**
@@ -23,6 +27,9 @@ public class BlockState  {
 	@XmlAttribute
 	@XmlJavaTypeAdapter(ZeroOneBooleanAdapter.class)
 	private Boolean isDef;
+	@XmlElement(name="BlockRelation")
+	private List<BlockRelation> blockRelationList;
+	
 	public String getId() {
 		return id;
 	}
@@ -34,6 +41,9 @@ public class BlockState  {
 	}
 	public void setDef(boolean isDef) {
 		this.isDef = isDef;
+	}
+	public List<BlockRelation> getBlockRelationList() {
+		return blockRelationList;
 	}
 
 }

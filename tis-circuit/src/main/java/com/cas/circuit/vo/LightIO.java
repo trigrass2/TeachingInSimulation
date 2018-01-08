@@ -41,4 +41,12 @@ public class LightIO {
 	public void setGlowColor(ColorRGBA glowColor) {
 		this.glowColor = glowColor;
 	}
+
+	public void openLight() {
+//		JmeUtil.setSpatialHighLight(model, glowColor);
+	}
+
+	public void closeLight() {
+//		JmeUtil.setSpatialHighLight(model, ColorRGBA.BlackNoAlpha);
+	}
 }

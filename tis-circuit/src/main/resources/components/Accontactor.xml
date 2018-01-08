@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE Comps SYSTEM "http://com.cas.me/dtds/components.dtd">
+<!-- <!DOCTYPE Comps SYSTEM "http://com.cas.me/dtds/components.dtd"> -->
 <Comps>
 	<ElecCompDef name="交流接触器" model="LC1-D09M7C" desc="LC1-D系列交流接触器主要用于交流50Hz或60Hz、交流电压至660V(690V)，在AC-3使用类别下工作电压为380V时，额定工作电流至170A的电路中，供远距离接通和分断电路，可与相应规格的热继电器组合成磁力起动器，以保护可能发生过负荷的电路，适宜于频繁起动和控制交流电动机。其主触头为常开触头，用于通断电路，辅助触头一般为两对具有常开和常闭功能的触头，用于执行控制指令。">
 		<Terminal id="1l1" name="1L1" mdlName="1L1" direction="y+" />

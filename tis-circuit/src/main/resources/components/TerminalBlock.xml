@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE Comps SYSTEM "http://com.cas.me/dtds/components.dtd">
+<!-- <!DOCTYPE Comps SYSTEM "http://com.cas.me/dtds/components.dtd"> -->
 <Comps>
 	<ElecCompDef name="端子排" model="端子排XT2" desc="端子排是承载多个或多组相互绝缘的端子组件并用于固定支持件的绝缘部件，起到信号传输的作用。有了端子排，使得接线美观，在远距离线之间的联接时牢靠，施工和维护方便。">
 		<Terminal id="1" name="1" mdlName="1" direction="y+" />

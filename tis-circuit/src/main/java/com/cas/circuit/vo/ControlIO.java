@@ -44,7 +44,13 @@ public class ControlIO {//extends SwitchCtrl<ControlIOPO> {
 	@XmlAttribute
 	@XmlJavaTypeAdapter(ZeroOneBooleanAdapter.class)
 	private Boolean smooth;
+	public String getInteract() {
+		return interact;
+	}
 
+	
+	
+	
 //	private String elementText;
 //	
 //	

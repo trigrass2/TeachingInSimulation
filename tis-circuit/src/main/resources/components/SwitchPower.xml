@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE Comps SYSTEM "http://com.cas.me/dtds/components.dtd">
+<!-- <!DOCTYPE Comps SYSTEM "http://com.cas.me/dtds/components.dtd"> -->
 <Comps>
 	<ElecCompDef name="开关电源" model="HDC-150-24" desc="开关电源是利用现代电力电子技术，控制开关开通和关断的时间比率，其体积小、重量轻、功耗小、效率高，是一种维持稳定直流电压输出的电源。">
 		<Terminal id="vp1" name="V+" mdlName="1" direction="x+" type="output" />

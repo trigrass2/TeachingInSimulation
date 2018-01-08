@@ -1,83 +1,62 @@
 package com.cas.circuit.vo;
 
+import java.util.List;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlList;
 
 @XmlAccessorType(XmlAccessType.NONE)
 public class VoltageIO{// extends SwitchCtrl<VoltageIOPO> {
+	public static final String INPUT = "input";
+	public static final String OUTPUT = "output";
+	public static final String BOTH = "both";
+	
 	@XmlAttribute
-	private String type;
+	private String type;//input|output|both
 	@XmlAttribute
 	private String term1Id;
 	@XmlAttribute
 	private String term2Id;
 	@XmlAttribute
-	private String value;
+	private Integer voltType; //Voltage.IS_DC/Voltage.IS_AC
+//	TODO @XmlAttribute
+	private Float value;
+	@XmlList
+	private List<String> switchIn;
 	@XmlAttribute
-	private String switchIn;
-	@XmlAttribute
-	private float deviation;
+	private Float deviation;
 	@XmlAttribute
 	private String group;
 	
-	
-//	private Terminal term1;
-//	private Terminal term2;
-//	private int voltType;
-//	private float requireVolt;
-//
-//	/**
-//	 * 
-//	 */
-//	public VoltageIO() {
-//		super();
-//		// TODO Auto-generated constructor stub
-//	}
-//
-//	/**
-//	 * @param po
-//	 */
-//	public VoltageIO(VoltageIOPO po) {
-//		super(po);
-//		// TODO Auto-generated constructor stub
-//	}
-//
-//	@Override
-//	protected void changeStateIndex(Integer index) {
-//
-//	}
-//
-//	@Override
-//	protected void toValueObject() {
-//		super.toValueObject();
-//		if (!Util.isEmpty(po.getSwitchIn())) {
-//			resisStateIds = StringUtil.split(po.getSwitchIn());
-//		}
-//		if (po.getValue().startsWith("+") || po.getValue().startsWith("-")) {
-//			String value = po.getValue().substring(1);
-//			if (Util.isNumeric(value)) {
-//				voltType = Voltage.IS_DC;
-//				requireVolt = Float.parseFloat(value);
-//			}
-//		} else if (Util.isNumeric(po.getValue())) {
-//			voltType = Voltage.IS_AC;
-//			requireVolt = Float.parseFloat(po.getValue());
-//		} else {
-//			System.err.println("配置文件voltageIO中的电压值不合法 error:" + po.getValue());
-//		}
-//		if (Util.isNumeric(po.getDeviation())) {
-//			deviation = Float.parseFloat(po.getDeviation());
-//		}
-//		if ("output".equalsIgnoreCase(po.getType())) {
-//			ioType = IOType.OUTPUT;
-//		} else if ("input".equalsIgnoreCase(po.getType())) {
-//			ioType = IOType.INPUT;
-//		} else {
-//			ioType = IOType.BOTH;
-//		}
-//	}
-//
+	public String getType() {
+		if(null == type) {
+			return BOTH;
+		}
+		return type;
+	}
+	public String getTerm1Id() {
+		return term1Id;
+	}
+	public String getTerm2Id() {
+		return term2Id;
+	}
+	public Float getValue() {
+		return value;
+	}
+	public Integer getVoltType() {
+		return voltType;
+	}
+	public Float getDeviation() {
+		return deviation;
+	}
+	public List<String> getSwitchIn() {
+		return switchIn;
+	}
+
+	private Terminal term1;
+	private Terminal term2;
 //	public boolean relateWith(List<VoltageIO> voltIos) {
 //		boolean contain = false;
 //		for (VoltageIO voltIO : voltIos) {
@@ -106,37 +85,19 @@ public class VoltageIO{// extends SwitchCtrl<VoltageIOPO> {
 //			return null;
 //		}
 //	}
-//
-//	public float getRequireVolt() {
-//		return requireVolt;
-//	}
-//
-//	public float getDeviation() {
-//		return deviation;
-//	}
-//
-//	public Terminal getTerm1() {
-//		return term1;
-//	}
-//
-//	public void setTerm1(Terminal term1) {
-//		this.term1 = term1;
-//	}
-//
-//	public Terminal getTerm2() {
-//		return term2;
-//	}
-//
-//	public void setTerm2(Terminal term2) {
-//		this.term2 = term2;
-//	}
-//
-//	public int getVoltType() {
-//		return voltType;
-//	}
-//
-//	@Override
-//	public String toString() {
-//		return po.getTerm1Id() + "--" + po.getTerm2Id();
-//	}
+	public Terminal getTerm1() {
+		return term1;
+	}
+
+	public void setTerm1(Terminal term1) {
+		this.term1 = term1;
+	}
+
+	public Terminal getTerm2() {
+		return term2;
+	}
+
+	public void setTerm2(Terminal term2) {
+		this.term2 = term2;
+	}
 }

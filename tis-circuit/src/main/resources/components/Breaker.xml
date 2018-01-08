@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE Comps SYSTEM "http://com.cas.me/dtds/components.dtd">
+<!-- <!DOCTYPE Comps SYSTEM "http://com.cas.me/dtds/components.dtd"> -->
 <Comps>
 	<ElecCompDef model="DZ47-63C16" name="自动空气断路器" desc="自动空气断路器集控制和多种保护功能于一身，一般由触头系统、灭弧系统、操作机构、脱扣器、外壳等构成，除了能完成接触和分断电路外，尚能对电路或电气设备发生的短路、严重过载及欠电压等进行保护，同时也可以用于不频繁地启动电动机。">
 		<Terminal id="r0" name="1L1" mdlName="1" direction="y+" team="in" />

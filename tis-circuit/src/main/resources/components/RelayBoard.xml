@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE Comps SYSTEM "http://com.cas.me/dtds/components.dtd">
+<!-- <!DOCTYPE Comps SYSTEM "http://com.cas.me/dtds/components.dtd"> -->
 <Comps>
 	<ElecCompDef name="继电器模块" model="FX-01/16G" desc="继电器模块集成了来自机床侧信号输入端子、继电器控制接线端子和CB 50芯线缆接线端，每个继电器下方有NO、C、NC三个端子，分别对应常开、公共端和常闭，通常应用于自动化控制电路中，起到自动调节、转换电路等作用。">
 		<Jack id="CB105" name="CB105" format="CB" mdlName="cb1" jackDirection="x" direction="y+">

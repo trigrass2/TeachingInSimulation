@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE Comps SYSTEM "http://com.cas.me/dtds/components.dtd">
+<!-- <!DOCTYPE Comps SYSTEM "http://com.cas.me/dtds/components.dtd"> -->
 <Comps>
 	<ElecCompDef name="电动机" model="80YS25GY38" desc="" appStateCls="ElectroMotor">
 		<Terminal id="U" name="U" mdlName="U1" direction="x-" team="power" />

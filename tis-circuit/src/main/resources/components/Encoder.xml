@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE Comps SYSTEM "http://com.cas.me/dtds/components.dtd">
+<!-- <!DOCTYPE Comps SYSTEM "http://com.cas.me/dtds/components.dtd"> -->
 <Comps>
 	<ElecCompDef name="旋转编码器" model="Encoder" desc="" appStateCls="Encoder" isCable="1">
 		<Jack id="Encoder" cable="Encoder" format="Encoder">

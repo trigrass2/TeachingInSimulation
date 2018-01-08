@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<roots>
+<Comps>
 	<!-- MagnetismSensor -->
 	<ElecCompDef name="磁性开关" model="D-C73" appStateCls="MagnetismSensorLogic" isCable="1">
 		<Jack id="D-C73" mdlName="D-C73" cable="Magnetism" format="Magnetism">
@@ -383,4 +383,4 @@
 		</Magnetism>
 	</ElecCompDef>
 
-</roots>
+</Comps>

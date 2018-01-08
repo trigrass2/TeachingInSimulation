@@ -28,7 +28,7 @@ public class TermTeam {
 	public TermTeam(String teamName, Terminal... teamMamber) {
 		for (Terminal terminal : teamMamber) {
 			this.teamMamber.add(terminal);
-			terminal.setTeam(this);
+			terminal.setTermTeam(this);
 		}
 	}
 
@@ -40,7 +40,7 @@ public class TermTeam {
 //		System.out.println("TermTeam.TermTeam()");
 		for (Terminal terminal : teamMamber) {
 			this.teamMamber.add(terminal);
-			terminal.setTeam(this);
+			terminal.setTermTeam(this);
 		}
 	}
 

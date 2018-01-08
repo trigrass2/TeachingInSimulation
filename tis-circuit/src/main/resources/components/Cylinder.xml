@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE Comps SYSTEM "http://com.cas.me/dtds/components.dtd">
+<!-- <!DOCTYPE Comps SYSTEM "http://com.cas.me/dtds/components.dtd"> -->
 <Comps>
 	<!-- <ElecCompDef name="双作用气缸" model="effect" desc="双作用气缸"> -->
 	<!-- <GasPort id="A" name="A" mdlName="01" direction="x+" /> -->

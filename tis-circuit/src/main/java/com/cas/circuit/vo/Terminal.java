@@ -1,8 +1,15 @@
 package com.cas.circuit.vo;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
+
+import com.cas.circuit.TermTeam;
 @XmlAccessorType(XmlAccessType.NONE)
 public class Terminal {//implements ILinkTarget {
 	@XmlAttribute
@@ -18,8 +25,8 @@ public class Terminal {//implements ILinkTarget {
 	private Integer index;
 	@XmlAttribute
 	private String mark;
-	@XmlAttribute
-	private String voltage;
+//	TODO @XmlAttribute
+	private Float voltage;
 	@XmlAttribute
 	private String switchIn;
 	@XmlAttribute
@@ -29,7 +36,33 @@ public class Terminal {//implements ILinkTarget {
 	@XmlAttribute
 	private Integer num;// 限制可连接导线的数量，要么是1，要么是2.
 	
-//	private List<VoltageIO> voltIOs = new ArrayList<VoltageIO>();
+	private List<VoltageIO> voltIOs = new ArrayList<VoltageIO>();
+//	与该连接头之间存在电阻的连接头
+	private Map<Terminal, ResisRelation> resisRelationMap = new HashMap<Terminal, ResisRelation>();
+	
+	private TermTeam termTeam;
+	
+	public String getId() {
+		return id;
+	}
+	public void setId(String id) {
+		this.id = id;
+	}
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
+	public String getTeam() {
+		return team;
+	}
+	public List<VoltageIO> getVoltIOs() {
+		return voltIOs;
+	}
+	
+	
+	
 //
 //	private Spatial model;
 //
@@ -41,8 +74,6 @@ public class Terminal {//implements ILinkTarget {
 //	private Terminal contacted;
 ////	该端子上的连接的导线
 //	private List<ILinker> wires = new ArrayList<ILinker>();
-////	与该连接头之间存在电阻的连接头
-//	private Map<Terminal, ResisRelation> resisRelationMap = new HashMap<Terminal, ResisRelation>();
 //
 ////	电势位Key:电源环境，Value：在该电源环境下，该连接头的电势位
 //	private Map<String, IP> isopotential = new HashMap<String, IP>();
@@ -61,6 +92,11 @@ public class Terminal {//implements ILinkTarget {
 //		super(po);
 //	}
 //
+	
+	
+	
+	
+	
 //	@Override
 //	protected void toValueObject() {
 //		super.toValueObject();
@@ -217,12 +253,12 @@ public class Terminal {//implements ILinkTarget {
 //		return false;
 //	}
 //
-//	/**
-//	 * @return the resisRelationMap
-//	 */
-//	public Map<Terminal, ResisRelation> getResisRelationMap() {
-//		return resisRelationMap;
-//	}
+	/**
+	 * @return the resisRelationMap
+	 */
+	public Map<Terminal, ResisRelation> getResisRelationMap() {
+		return resisRelationMap;
+	}
 //
 //	/**
 //	 * @return the isopotential
@@ -389,22 +425,22 @@ public class Terminal {//implements ILinkTarget {
 //		this.num = num;
 //	}
 //
-//	/**
-//	 * @return the team
-//	 */
-//	public TermTeam getTeam() {
-//		if (team == null) {
-//			team = new TermTeam(po.getTeam(), this);
-//		}
-//		return team;
-//	}
-//
-//	/**
-//	 * @param team the team to set
-//	 */
-//	public void setTeam(TermTeam team) {
-//		this.team = team;
-//	}
+	/**
+	 * @return the team
+	 */
+	public TermTeam getTermTeam() {
+		if (termTeam == null) {
+			termTeam = new TermTeam(team, this);
+		}
+		return termTeam;
+	}
+
+	/**
+	 * @param team the team to set
+	 */
+	public void setTermTeam(TermTeam termTeam) {
+		this.termTeam = termTeam;
+	}
 //
 //	/*
 //	 * (non-Javadoc)

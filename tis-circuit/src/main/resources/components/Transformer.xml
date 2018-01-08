@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE Comps SYSTEM "http://com.cas.me/dtds/components.dtd">
+<!-- <!DOCTYPE Comps SYSTEM "http://com.cas.me/dtds/components.dtd"> -->
 <Comps>
 	<ElecCompDef name="控制变压器" model="JBK3-630VA" desc="此型号机床控制变压器适用于交流50～60Hz,输入电压不超过660V，输出额定电压不超过380V，在额定负载下可连续长期工作，通常用于机床、机械设备中作为电器的控制照明及指示灯电源。">
 		<Terminal id="0" name="0" mdlName="0" direction="x-" team="group1" />
