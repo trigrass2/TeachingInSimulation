@@ -5,6 +5,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -13,6 +14,8 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
+import com.cas.circuit.po.Jack;
+import com.cas.circuit.po.Terminal;
 import com.cas.gas.vo.BlockState;
 import com.cas.gas.vo.GasPort;
 import com.sun.tools.internal.xjc.runtime.ZeroOneBooleanAdapter;
@@ -21,7 +24,6 @@ import com.sun.tools.internal.xjc.runtime.ZeroOneBooleanAdapter;
  * key : model【型号】
  */
 @XmlAccessorType(XmlAccessType.NONE)
-@XmlRootElement(name="ElecCompDef")
 public class ElecCompDef {
 
 	// 元气件名称
@@ -48,42 +50,37 @@ public class ElecCompDef {
 	@XmlElement(name = "Jack")
 	private List<Jack> jackList;
 	@XmlElement(name = "Magnetism")
-	private List<Magnetism> magnetismList;
+	private List<Magnetism> magnetisms;
 	@XmlElement(name = "ResisState")
-	private List<ResisState> resisStateList;
+	private List<ResisState> resisStates;
 	@XmlElement(name = "BlockState")
-	private List<BlockState> blockStateList;
+	private List<BlockState> blockStates;
 	@XmlElement(name = "LightIO")
-	private List<LightIO> lightIOList;
+	private List<LightIO> lightIOs;
+	@XmlElement(name = "LightIO")
 
 	// Key:电缆插孔的名字
 	// Value:电缆插孔
-	private Map<String, Jack> jackMap = new LinkedHashMap<String, Jack>();
-
+	private Map<String, Jack> jackMap;
+//	Key ResisState:id
+	private Map<String, ResisState> resisStatesMap;
+//	BlockState:id
+	private Map<String, BlockState> blockStatesMap;
 	// Key: id
 	// Value:Terminal
 	// 存放所有的连接头
-	private Map<String, Terminal> terminalMap = new LinkedHashMap<String, Terminal>();
-
+	private Map<String, Terminal> terminalMap;
 	// Key: id
 	// Value:Terminal
 	// 存放所有连接头及插孔中的针脚
-	private Map<String, Terminal> termAndStich = new LinkedHashMap<String, Terminal>();
+	private Map<String, Terminal> termAndStich;
+//	// Key: id
+//	// Value: GasPort
+//	// 存放所有的气口
+//	private Map<String, GasPort> gasPortMap;
 
-	// Key: id
-	// Value: GasPort
-	// 存放所有的气口
-	private Map<String, GasPort> gasPortMap = new LinkedHashMap<String, GasPort>();
-
-	private List<Magnetism> magnetisms = new ArrayList<Magnetism>();
-	private List<ResisState> resisStates = new ArrayList<ResisState>();
-	private List<BlockState> blockStates = new ArrayList<BlockState>();
-
-	private Map<String, ResisState> resisStatesMap = new LinkedHashMap<String, ResisState>();
-	private Map<String, BlockState> blockStatesMap = new LinkedHashMap<String, BlockState>();
 	// key: terminal ID
 	private Map<String, List<ResisRelation>> nowResisRelations = new LinkedHashMap<String, List<ResisRelation>>();
-	private List<LightIO> lightIOs = new ArrayList<LightIO>();
 
 	private Map<String, String> properties;
 
@@ -95,53 +92,23 @@ public class ElecCompDef {
 		// System.err.println("def:::" + this);
 	}
 
-//	@Override
-//	protected void toValueObject() {
-//		super.toValueObject();
-//		if ("1".equals(po.getIsCable())) {
-//			isCable = true;
-//		}
-//	}
-//
-//	@Override
-//	protected void addChild(BaseVO<?> child) {
-//		super.addChild(child);
-//		if (child instanceof Jack) {
-//			Jack jack = (Jack) child;
-//			jackMap.put(jack.getPO().getId(), jack);
-//		} else if (child instanceof Terminal) {
-//			Terminal terminal = (Terminal) child;
-//			terminal.setElecComp(this);
-//			terminalMap.put(terminal.getLocalKey(), terminal);
-//		} else if (child instanceof Magnetism) {
-//			magnetisms.add((Magnetism) child);
-//		} else if (child instanceof ResisState) {
-//			ResisState resisState = (ResisState) child;
-//			resisStates.add(resisState);
-//			resisStatesMap.put(resisState.getId(), resisState);
-//		} else if (child instanceof LightIO) {
-//			lightIOs.add((LightIO) child);
-//		} else if (child instanceof GasPort) {
-//			GasPort port = (GasPort) child;
-//			port.setElecComp(this);
-//			gasPortMap.put(port.getPO().getId(), port);
-//		} else if (child instanceof BlockState) {
-//			BlockState blockState = (BlockState) child;
-//			blockStates.add(blockState);
-//			blockStatesMap.put(blockState.getId(), blockState);
-//		}
-//	}
-//
-//	/*
-//	 * (non-Javadoc)
-//	 * 
-//	 * @see com.cas.cfg.vo.BaseVO#getLocalKey()
-//	 */
-//	@Override
-//	protected String getLocalKey() {
-//		return po.getModel();
-//	}
-//
+	public void build() {
+		jackMap = jackList.stream().collect(Collectors.toMap(Jack::getId, data -> data));
+		terminalMap = terminalList.stream().collect(Collectors.toMap(Terminal::getId, data -> data));
+		resisStatesMap = resisStates.stream().collect(Collectors.toMap(ResisState::getId, data -> data));
+		blockStatesMap = blockStates.stream().collect(Collectors.toMap(BlockState::getId, data -> data));
+//		
+		termAndStich.putAll(terminalMap);
+	}
+
+	public String getModel() {
+		return model;
+	}
+
+	public void setModel(String model) {
+		this.model = model;
+	}
+
 //	@Override
 //	protected void onAllChildAdded() {
 //		super.onAllChildAdded();

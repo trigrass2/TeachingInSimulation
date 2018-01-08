@@ -1,6 +1,5 @@
 package com.cas.circuit.po;
 
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -52,6 +51,14 @@ public class ElecCompDef {
 	private Map<String, GasPort> gasPortMap;
 	private Map<String, ResisState> resisStatesMap;
 	private Map<String, BlockState> blockStatesMap;
+
+	public void build() {
+		jackMap = jackList.stream().collect(Collectors.toMap(Jack::getId, data -> data));
+		terminalMap = terminalList.stream().collect(Collectors.toMap(Terminal::getId, data -> data));
+		resisStatesMap = resisStateList.stream().collect(Collectors.toMap(ResisState::getId, data -> data));
+		blockStatesMap = blockStateList.stream().collect(Collectors.toMap(BlockState::getId, data -> data));
+		// jackList.stream().forEach(Jack::getTerminalList);
+	}
 
 	@XmlAttribute
 	public String getName() {
@@ -161,14 +168,6 @@ public class ElecCompDef {
 		this.lightIOList = lightIOList;
 	}
 
-	public void build() {
-		jackMap = jackList.stream().collect(Collectors.toMap(Jack::getId, data -> data));
-		terminalMap = terminalList.stream().collect(Collectors.toMap(Terminal::getId, data -> data));
-		resisStatesMap = resisStateList.stream().collect(Collectors.toMap(ResisState::getId, data -> data));
-		blockStatesMap = blockStateList.stream().collect(Collectors.toMap(BlockState::getId, data -> data));
-//		jackList.stream().forEach(Jack::getTerminalList);
-	}
-
 	public Map<String, Jack> getJackMap() {
 		return jackMap;
 	}
@@ -185,4 +184,11 @@ public class ElecCompDef {
 		return gasPortMap;
 	}
 
+	public Map<String, ResisState> getResisStatesMap() {
+		return resisStatesMap;
+	}
+
+	public Map<String, BlockState> getBlockStatesMap() {
+		return blockStatesMap;
+	}
 }

@@ -3,15 +3,13 @@ package com.cas.circuit.vo;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import com.cas.circuit.po.SignalPO;
-import com.cas.util.Util;
-import com.cas.util.vo.BaseVO;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
 
-public class Signal extends BaseVO<SignalPO> {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 4892187159820488638L;
+
+@XmlAccessorType(XmlAccessType.NONE)
+public class Signal {
 
 	public static final Map<String, Signal> AMAP = new ConcurrentHashMap<String, Signal>();
 	public static final Map<String, Signal> GMAP = new ConcurrentHashMap<String, Signal>();
@@ -26,6 +24,25 @@ public class Signal extends BaseVO<SignalPO> {
 	public static final String STATE_DN = "down";
 	public static final String STATE_BT = "both";
 
+//	信号地址
+	@XmlAttribute
+	private String addr;
+//	信号注释
+	@XmlAttribute
+	private String anno;
+//	信号的符号
+	@XmlAttribute
+	private String symbol;
+//	信号功能描述
+	@XmlAttribute
+	private String func;
+//  信号使用范围
+	@XmlAttribute
+	private String limit;
+//  信号激活条件,上升沿,下降沿
+	@XmlAttribute
+	private String active;
+	
 	public static final Signal getSignal(String head, int no, int index) {
 		head = head.toUpperCase();
 		String addr = head + no + "." + index;
@@ -66,10 +83,13 @@ public class Signal extends BaseVO<SignalPO> {
 	}
 
 	public static String formatSignal(String addr, int bit) {
-		if (Util.isEmpty(addr)) {
+		if (addr == null) {
 			return null;
 		}
 		addr = addr.trim();
+		if ("".equals(addr)) {
+			return null;
+		}
 		addr = addr.replace(" ", "");
 		while (addr.charAt(0) == 65279) {
 			addr = addr.substring(1);
@@ -109,18 +129,10 @@ public class Signal extends BaseVO<SignalPO> {
 		return addr;
 	}
 
-//	默认为上升沿
-	private String state;
-
-	private String address;
 
 	@Override
 	protected void toValueObject() {
 		super.toValueObject();
-		String addr = po.getAddr();
-
-//		FIXME 
-		address = formatSignal(addr);
 
 		if (address.startsWith("G")) {
 			GMAP.put(address, this);
@@ -133,35 +145,25 @@ public class Signal extends BaseVO<SignalPO> {
 		} else if (address.startsWith("A")) {
 			AMAP.put(address, this);
 		}
-
-		String act = po.getActive();
-		if (Util.isEmpty(act) || "both".equals(act)) {
-			state = STATE_BT;
-		} else if ("down".equals(act) || "up".equals(act)) {
-			state = po.getActive();
-		} else {
-			System.err.println("Signal.toValueObject() 未定义的上升沿或下降沿状态 :[" + po.getActive() + "] up、down or both");
-		}
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see com.cas.cfg.vo.BaseVO#getLocalKey()
-	 */
-	@Override
-	protected Object getLocalKey() {
-		return po.getAddr();
 	}
 
 	/**
 	 * 如 X0000.0 或 X0000
 	 */
-	public String getAddress() {
-		return address;
-	}
 
 	public String getState() {
-		return state;
+		if(active == null) {
+			return STATE_BT;
+		}
+		return active;
+	}
+
+	public String getAddr() {
+		return addr;
+	}
+
+	public void setAddr(String addr) {
+		this.addr = addr;
 	}
 
 }

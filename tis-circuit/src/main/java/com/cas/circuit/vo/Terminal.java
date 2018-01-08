@@ -15,7 +15,7 @@ public class Terminal {//implements ILinkTarget {
 	private String direction;
 //	如果该端子是某个插孔上拓展出来的,则在对应插孔中哪一个针脚(编号)
 	@XmlAttribute
-	private int index;
+	private Integer index;
 	@XmlAttribute
 	private String mark;
 	@XmlAttribute
@@ -27,7 +27,7 @@ public class Terminal {//implements ILinkTarget {
 	@XmlAttribute
 	private String team;
 	@XmlAttribute
-	private int num;// 限制可连接导线的数量，要么是1，要么是2.
+	private Integer num;// 限制可连接导线的数量，要么是1，要么是2.
 	
 //	private List<VoltageIO> voltIOs = new ArrayList<VoltageIO>();
 //

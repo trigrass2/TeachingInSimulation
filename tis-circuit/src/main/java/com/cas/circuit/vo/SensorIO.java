@@ -1,22 +1,19 @@
 package com.cas.circuit.vo;
 
-import com.cas.circuit.po.SensorIOPO;
-import com.cas.util.StringUtil;
-import com.cas.util.Util;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
 
-public class SensorIO extends SwitchCtrl<SensorIOPO> {
+@XmlAccessorType(XmlAccessType.NONE)
+public class SensorIO {// extends SwitchCtrl<SensorIOPO> {
+	@XmlAttribute private String switchIn;
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1553882865544756325L;
-
-	@Override
-	protected void toValueObject() {
-		super.toValueObject();
-		if (!Util.isEmpty(po.getSwitchIn())) {
-			resisStateIds = StringUtil.split(po.getSwitchIn());
-		}
-	}
+//	@Override
+//	protected void toValueObject() {
+//		super.toValueObject();
+//		if (!Util.isEmpty(po.getSwitchIn())) {
+//			resisStateIds = StringUtil.split(po.getSwitchIn());
+//		}
+//	}
 
 }

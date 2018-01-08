@@ -1,6 +1,8 @@
 
 package com.cas.circuit.vo;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
@@ -9,6 +11,7 @@ import com.sun.tools.internal.xjc.runtime.ZeroOneBooleanAdapter;
 /**
  * 包括:按钮(button) 和 旋钮(switch)
  */
+@XmlAccessorType(XmlAccessType.NONE)
 public class ControlIO {//extends SwitchCtrl<ControlIOPO> {
 
 	public static final String INTERACT_UNIDIR = "unidir";

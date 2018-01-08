@@ -34,5 +34,12 @@
 				<groupId>com.sun</groupId>
 				<artifactId>tools</artifactId>
 			</dependency>
+			<!-- https://mvnrepository.com/artifact/com.github.treeleafj/xDoc-core -->
+<dependency>
+    <groupId>com.github.treeleafj</groupId>
+    <artifactId>xDoc-core</artifactId>
+    <version>0.0.9</version>
+</dependency>
+			
 	</dependencies>
 </project>
