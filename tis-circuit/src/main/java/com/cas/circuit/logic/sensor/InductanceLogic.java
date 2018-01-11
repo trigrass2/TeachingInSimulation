@@ -30,9 +30,10 @@ public class InductanceLogic extends SensorLogic {
 	@Override
 	public void initialize(Node elecCompMdl) {
 		super.initialize(elecCompMdl);
+//		FIXME 有问题
 		Jack jack = elecComp.getDef().getJackMap().get(elecComp.getDef().getPO().getModel());
-		terminal1 = jack.getStitch().get("1");
-		terminal2 = jack.getStitch().get("2");
+		terminal1 = jack.getStitch("1");
+		terminal2 = jack.getStitch("2");
 
 		if (terminal1 == null) {
 			throw new RuntimeException(elecComp + "中没能找到连接头 1");

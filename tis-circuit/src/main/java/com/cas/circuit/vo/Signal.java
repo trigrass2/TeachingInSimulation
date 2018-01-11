@@ -130,22 +130,22 @@ public class Signal {
 	}
 
 
-	@Override
-	protected void toValueObject() {
-		super.toValueObject();
-
-		if (address.startsWith("G")) {
-			GMAP.put(address, this);
-		} else if (address.startsWith("F")) {
-			FMAP.put(address, this);
-		} else if (address.startsWith("X")) {
-			XMAP.put(address, this);
-		} else if (address.startsWith("Y")) {
-			YMAP.put(address, this);
-		} else if (address.startsWith("A")) {
-			AMAP.put(address, this);
-		}
-	}
+//	@Override
+//	protected void toValueObject() {
+//		super.toValueObject();
+//
+//		if (address.startsWith("G")) {
+//			GMAP.put(address, this);
+//		} else if (address.startsWith("F")) {
+//			FMAP.put(address, this);
+//		} else if (address.startsWith("X")) {
+//			XMAP.put(address, this);
+//		} else if (address.startsWith("Y")) {
+//			YMAP.put(address, this);
+//		} else if (address.startsWith("A")) {
+//			AMAP.put(address, this);
+//		}
+//	}
 
 	/**
 	 * 如 X0000.0 或 X0000

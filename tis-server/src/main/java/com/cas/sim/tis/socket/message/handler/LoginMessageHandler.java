@@ -4,10 +4,10 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
-import org.junit.Assert;
 import org.springframework.stereotype.Component;
 
 import com.cas.sim.tis.consts.RoleConst;
+import com.cas.sim.tis.consts.Session;
 import com.cas.sim.tis.entity.User;
 import com.cas.sim.tis.services.UserService;
 import com.cas.sim.tis.socket.CoreServer;
@@ -39,7 +39,7 @@ public class LoginMessageHandler implements ServerHandler {
 		LoginMessage respMsg = (LoginMessage) m;
 
 		try {
-			User user = null;
+			final User user;
 			if (userType == RoleConst.STUDENT) {
 //				检查学生的登录信息
 				user = studentService.login(code, passwd);
@@ -51,8 +51,6 @@ public class LoginMessageHandler implements ServerHandler {
 //				服务器就当做没看到。
 				return;
 			}
-			Assert.assertNotNull(user);
-
 			List<HostedConnection> clients = CoreServer.getIns().getClients();
 //			进一步验证
 			if (clients.size() >= CoreServer.getIns().getMaxClientNum()) {
@@ -62,13 +60,14 @@ public class LoginMessageHandler implements ServerHandler {
 				source.send(respMsg);
 			} else {
 //				检查用户是否已经登录了
-				boolean exist = clients.stream().filter(c -> code.equals(c.getAttribute("user_code"))).findAny().isPresent();
+				boolean exist = clients.stream().filter(c -> user.getId() == c.getAttribute(Session.KEY_LOGIN_USER_ID)).findAny().isPresent();
 				if (exist) {
 //					用户已经登录了
 					respMsg.setReason(LoginMessage.RESULT_DUPLICATE);
 					source.send(respMsg);
 				} else {
-					source.setAttribute("user_code", code);
+					source.setAttribute(Session.KEY_LOGIN_USER_ID, user.getId());
+					source.setAttribute(Session.KEY_LOGIN_USER, user);
 					clients.add(source);
 					LOG.info("客户端登录成功，当前客户端数量{}", clients.size());
 //					用户成功连接

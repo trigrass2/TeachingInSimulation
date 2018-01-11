@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cas.sim.tis.mapper.LessonResourceMapper">
+	<resultMap id="BaseResultMap" type="com.cas.sim.tis.entity.LessonResource">
+		<id column="ID" jdbcType="INTEGER" property="id" />
+		<result column="TID" jdbcType="VARCHAR" property="tid" />
+		<result column="LESSON_ID" jdbcType="INTEGER" property="lessonId" />
+		<result column="RESOURCE_ID" jdbcType="INTEGER" property="resourceId" />
+		<result column="SORT" jdbcType="INTEGER" property="sort" />
+		<result column="CREATE_DATE" jdbcType="VARCHAR" property="createDate" />
+		<result column="DEL" jdbcType="INTEGER" property="del" />
+	</resultMap>
+</mapper>

@@ -92,6 +92,8 @@ public class ElecCompDef {
 	//
 	private ElecComp ref;
 
+	private BaseElectricCompLogic compLogic;
+
 	public ElecCompDef() {
 		// System.err.println("def:::" + this);
 	}
@@ -103,12 +105,12 @@ public class ElecCompDef {
 		blockStatesMap = blockStates.stream().collect(Collectors.toMap(BlockState::getId, data -> data));
 //
 		termAndStich.putAll(terminalMap);
-		jackList.stream().forEach(jack->{
+		jackList.stream().forEach(jack -> {
 			termAndStich.putAll(jack.getTerminalList().stream().collect(Collectors.toMap(Terminal::getId, Function.identity(), (key1, key2) -> key2, HashMap::new)));
 		});
-		
-		magnetisms.stream().forEach(mag->{
-			mag.getVoltageIOs().forEach(io->{
+
+		magnetisms.stream().forEach(mag -> {
+			mag.getVoltageIOs().forEach(io -> {
 				Terminal term1 = getTerminal(io.getTerm1Id());
 				Terminal term2 = getTerminal(io.getTerm2Id());
 				if (term1 == null) {
@@ -125,12 +127,12 @@ public class ElecCompDef {
 				}
 			});
 		});
-		
-		resisStates.stream().forEach(state->{
-			state.getResisRelationList().forEach(resis->{
+
+		resisStates.stream().forEach(state -> {
+			state.getResisRelationList().forEach(resis -> {
 				resis.setTerm1(getTerminal(resis.getTerm1Id()));
 				resis.setTerm2(getTerminal(resis.getTerm2Id()));
-				if(state.getIsDef() == null) {
+				if (state.getIsDef() == null) {
 					System.out.println("ElecCompDef.build()" + state.getIsDef());
 				}
 				if (state.getIsDef()) {
@@ -147,13 +149,27 @@ public class ElecCompDef {
 //				}
 //			});
 //		});
-		
+
 //		将所有连接头进行分类
 //		Key：分类的名称， List<Terminal>一组的连接头
-		Map<String, List<Terminal>> groupTerminals = termAndStich.values().stream().filter(t->t.getTeam() != null).collect(Collectors.groupingBy(Terminal::getTeam));
-		groupTerminals.entrySet().forEach(e->{
+		Map<String, List<Terminal>> groupTerminals = termAndStich.values().stream().filter(t -> t.getTeam() != null).collect(Collectors.groupingBy(Terminal::getTeam));
+		groupTerminals.entrySet().forEach(e -> {
 			new TermTeam(e.getKey(), e.getValue());
 		});
+
+//		FIXME
+//		if (appStateCls == null || "".equals(appStateCls)) {
+//			compLogic = new BaseElectricCompLogic();
+//		} else {
+//			try {
+//				Class<?> clazz = Class.forName(appStateCls);
+//				if (clazz.isAssignableFrom(BaseElectricCompLogic.class)) {
+//					compLogic = (BaseElectricCompLogic) clazz.newInstance();
+//				}
+//			} catch (Exception e) {
+//				e.printStackTrace();
+//			}
+//		}
 	}
 
 	public Terminal getTerminal(String key) {
@@ -161,6 +177,38 @@ public class ElecCompDef {
 			return termAndStich.get(key);
 		}
 		return null;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public List<Magnetism> getMagnetisms() {
+		return magnetisms;
+	}
+
+	public List<LightIO> getLightIOs() {
+		return lightIOs;
+	}
+
+//	public Map<String, ResisState> getResisStatesMap() {
+//		return resisStatesMap;
+//	}
+
+	public ResisState getResisState(String resisStateId) {
+		return resisStatesMap.get(resisStateId);
+	}
+
+//	public Map<String, Jack> getJackMap() {
+//		return jackMap;
+//	}
+
+	public Jack getJack(String jackId) {
+		return jackMap.get(jackId);
+	}
+
+	public Map<String, Terminal> getTerminalMap() {
+		return terminalMap;
 	}
 
 //	public GasPort getGasPort(String key) {
@@ -183,24 +231,16 @@ public class ElecCompDef {
 		if (magnetisms.size() == 0) {
 			return;
 		}
-		// System.out.println(ref.getPO().getTagName());
-		// if ("VC1".equals(ref.getPO().getTagName())) {
-		// System.out.println(this + "@" + hashCode() + ref.getPO().getTagName() + "
-		// createdEnv=" + createdEnv);
-		// }
-		String env_prefix = "";// ref.getCompState().getEquipmentState().getEquipment().getNumber() +
-								// ref.getPO().getTagName() + ref.hashCode();
+		String env_prefix = "";
 		for (Magnetism magnetism : magnetisms) {
 			float bili = 0;
 			VoltageIO effectVoltageIO = null;
 			for (VoltageIO voltageIO : magnetism.getInputVoltageIOs()) {
-				// String termIds = voltageIO.getPO().getTerm1Id() + "-" +
-				// voltageIO.getPO().getTerm2Id();
-				// 需求电压值和类型
+//				String termIds = voltageIO.getPO().getTerm1Id() + "-" + voltageIO.getPO().getTerm2Id();
+//				需求电压值和类型
 				float requireVolt = voltageIO.getValue();
 				int requireType = voltageIO.getVoltType();
-				MesureResult realVolt = R.matchRequiredVolt(requireType, voltageIO.getTerm1(), voltageIO.getTerm2(),
-						requireVolt, voltageIO.getDeviation(), ElecCompCPU.Power_Evn_Filter);
+				MesureResult realVolt = R.matchRequiredVolt(requireType, voltageIO.getTerm1(), voltageIO.getTerm2(), requireVolt, voltageIO.getDeviation(), ElecCompCPU.Power_Evn_Filter);
 				// 电生磁成功-- 不是自己创建的点才符合接入条件
 				if (realVolt != null && (createdEnv == null || !createdEnv.contains(realVolt.getEvn()))) {
 					bili = realVolt.getVolt() / requireVolt;
@@ -218,9 +258,7 @@ public class ElecCompDef {
 				outputVoltIOs.addAll(magnetism.getOutputVoltageIOs());
 				outputVoltIOs.remove(effectVoltageIO);
 				for (VoltageIO outputVoltIO : outputVoltIOs) {
-					MesureResult checkVolt = R.matchRequiredVolt(outputVoltIO.getVoltType(), outputVoltIO.getTerm1(),
-							outputVoltIO.getTerm2(), outputVoltIO.getValue() * bili, outputVoltIO.getDeviation(),
-							ElecCompCPU.Power_Evn_Filter);
+					MesureResult checkVolt = R.matchRequiredVolt(outputVoltIO.getVoltType(), outputVoltIO.getTerm1(), outputVoltIO.getTerm2(), outputVoltIO.getValue() * bili, outputVoltIO.getDeviation(), ElecCompCPU.Power_Evn_Filter);
 					if (checkVolt == null) {
 						String env = env_prefix + outputVoltIO.getTerm1Id() + "-" + outputVoltIO.getTerm2Id();
 						addCreatedEnv(env);
@@ -299,9 +337,7 @@ public class ElecCompDef {
 
 	/**
 	 * 元器件内部电阻状态改变
-	 * 
-	 * @param resisState
-	 *            发生变化的电阻状态
+	 * @param resisState 发生变化的电阻状态
 	 */
 	public void resisRelationAdded(ResisRelation relation) {
 		relation.setActivated(true);
@@ -397,7 +433,7 @@ public class ElecCompDef {
 		// System.err.println(this + "ElecCompDef.removeCreatedEvn()" + createdEnv);
 		// }
 	}
-	
+
 	/**
 	 * @param endTerminal
 	 * @param startTerminal
@@ -405,16 +441,5 @@ public class ElecCompDef {
 	public void powerShorted(Terminal startTerminal, Terminal endTerminal) {
 		// 将对应的短路现象转发给对应的state处理
 		// ref.getCompState().powerShorted(startTerminal, endTerminal);
-	}
-
-	/**
-	 * @return
-	 */
-	public BaseElectricCompLogic buildCompLogic() {
-		if (appStateCls == null || "".equals(appStateCls)) {
-			return new BaseElectricCompLogic();
-		} else {
-			return ClsMap.getInstance(appStateCls);
-		}
 	}
 }

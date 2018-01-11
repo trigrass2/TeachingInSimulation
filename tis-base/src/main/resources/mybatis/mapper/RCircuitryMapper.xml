@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cas.sim.tis.mapper.RCircuitryMapper">
+	<resultMap id="BaseResultMap" type="com.cas.sim.tis.entity.RCircuitry">
+		<id column="ID" jdbcType="INTEGER" property="id" />
+		<result column="NAME" jdbcType="VARCHAR" property="name" />
+		<result column="PATH" jdbcType="VARCHAR" property="path" />
+		<result column="COMMENT" jdbcType="VARCHAR" property="desc" />
+		<result column="DRAW_ID" jdbcType="INTEGER" property="drawId" />
+		<result column="CREATOR_ROLE" jdbcType="INTEGER" property="creatorRole" />
+		<result column="CREATOR_ID" jdbcType="INTEGER" property="creatorId" />
+		<result column="CREATE_DATE" jdbcType="VARCHAR" property="createDate" />
+		<result column="UPDATE_DATE" jdbcType="VARCHAR" property="updateDate" />
+		<result column="DEL" jdbcType="INTEGER" property="del" />
+	</resultMap>
+</mapper>

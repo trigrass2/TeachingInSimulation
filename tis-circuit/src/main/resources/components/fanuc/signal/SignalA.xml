@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+	<signal addr="A0000.0" />
+	<signal addr="A0000.1" />
+	<signal addr="A0000.2" />
+	<signal addr="A0000.3" />
+	<signal addr="A0000.4" />
+	<signal addr="A0000.5" />
+	<signal addr="A0000.6" symbol="HS1CO" anno="" limit="T" />
+	<signal addr="A0000.7" symbol="HS1CO" anno="" limit="T" />
+	<signal addr="A0001.0" />
+	<signal addr="A0001.1" symbol="HS1CO" anno="" limit="T" />
+	<signal addr="A0001.2" />
+	<signal addr="A0001.3" />
+	<signal addr="A0001.4" />
+	<signal addr="A0001.5" />
+	<signal addr="A0001.6" />
+	<signal addr="A0001.7" symbol="HS1CO" anno="" limit="T" />
+	<signal addr="A0002.0" />
+	<signal addr="A0002.1" />
+	<signal addr="A0002.2" />
+	<signal addr="A0002.3" />
+	<signal addr="A0002.4" />
+	<signal addr="A0002.5" />
+	<signal addr="A0002.6" />
+	<signal addr="A0002.7" />
+	<signal addr="A0003.0" />
+	<signal addr="A0003.1" />
+	<signal addr="A0003.2" symbol="HS1CO" anno="" limit="T" />
+	<signal addr="A0003.3" />
+	<signal addr="A0003.5" />
+	<signal addr="A0004.0" />
+	<signal addr="A0004.7" />
+	<signal addr="A0008.0" />
+</root>

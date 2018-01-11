@@ -5,7 +5,6 @@ import com.cas.circuit.logic.Motor;
 import com.cas.circuit.util.MesureResult;
 import com.cas.circuit.util.R;
 import com.cas.circuit.vo.Terminal;
-import com.cas.util.MathUtil;
 import com.jme3.scene.Node;
 
 /**
@@ -25,10 +24,10 @@ public class DCMotor extends Motor {
 	public void initialize(Node elecCompMdl) {
 		super.initialize(elecCompMdl);
 
-		_24v = elecComp.getDef().getTerminal("24V");
-		_0v = elecComp.getDef().getTerminal("0V");
+		_24v = elecComp.getTerminal("24V");
+		_0v = elecComp.getTerminal("0V");
 
-		ratedVolt = MathUtil.parseFloat(elecComp.getProperty("ratedVolt"), ratedVolt);
+		ratedVolt = Float.parseFloat(elecComp.getProperty("ratedVolt"), ratedVolt);
 	}
 
 	@Override

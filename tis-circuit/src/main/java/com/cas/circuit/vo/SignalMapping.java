@@ -1,20 +1,31 @@
 package com.cas.circuit.vo;
 
-import com.cas.circuit.po.SignalMappingPO;
-import com.cas.util.vo.BaseVO;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
 
-public class SignalMapping extends BaseVO<SignalMappingPO> {
+@XmlAccessorType(XmlAccessType.NONE)
+public class SignalMapping {
+	@XmlAttribute
+	private String stitch;
+	@XmlAttribute
+	private String address;
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -996399561874181126L;
+	private Jack jack;
 
 	public SignalMapping() {
 	}
 
+	public void setJack(Jack jack) {
+		this.jack = jack;
+	}
+
 	public String getStitchName() {
-		return ((Jack) parent).getPO().getName() + "-" + po.getStitch();
+		return jack.getName() + "-" + stitch;
+	}
+
+	public String getAddress() {
+		return address;
 	}
 
 }

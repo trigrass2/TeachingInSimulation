@@ -19,16 +19,22 @@ import com.jme3.scene.Spatial;
  * @author sco_pra
  */
 @XmlAccessorType(XmlAccessType.NONE)
-public class Cable {// extends BaseVO<CablePO> implements ILinker {
-	@XmlAttribute private String id;
-	@XmlAttribute private String name;
-	@XmlAttribute private String format;
-	@XmlAttribute private Float width;
-	@XmlAttribute private String desc;
-	@XmlAttribute private String mdlRef;
-	@XmlAttribute private String core;
+public class Cable {
+	@XmlAttribute
+	private String id;
+	@XmlAttribute
+	private String name;
+	@XmlAttribute
+	private String format;
+	@XmlAttribute
+	private Float width;
+	@XmlAttribute
+	private String desc;
+	@XmlAttribute
+	private String mdlRef;
+	@XmlAttribute
+	private Integer core;
 
-	
 	private Map<String, Wire> mark_wire = new LinkedHashMap<String, Wire>();
 
 	private List<Wire> bindWires = new ArrayList<Wire>();
@@ -61,29 +67,29 @@ public class Cable {// extends BaseVO<CablePO> implements ILinker {
 	 */
 	private String wireNum;
 
-//	public void switchPlugOrTrem() {
-//		// 如果是CP类型的
-//		if (plug2 == null) {
-//			List<Wire> mark_wires = new ArrayList<Wire>(mark_wire.values());
-//			if (toConntectPlugOrTerm == plug1) {
-//				toConntectPlugOrTerm = mark_wires.get(0);
-//			} else {
-//				int lastIndex = mark_wires.indexOf(toConntectPlugOrTerm);
-//				if (lastIndex == mark_wires.size() - 1) {// 到最后了
-//					toConntectPlugOrTerm = plug1;
-//				} else {
-//					toConntectPlugOrTerm = mark_wires.get(lastIndex + 1);
-//				}
-//			}
-//		} else {
-//			if (toConntectPlugOrTerm == plug1) {
-//				toConntectPlugOrTerm = plug2;
-//			} else {
-//				toConntectPlugOrTerm = plug1;
-//			}
-//		}
-//	}
-//
+	public void switchPlugOrTerm() {
+		// 如果是CP类型的
+		if (plug2 == null) {
+			List<Wire> mark_wires = new ArrayList<Wire>(mark_wire.values());
+			if (toConntectPlugOrTerm == plug1) {
+				toConntectPlugOrTerm = mark_wires.get(0);
+			} else {
+				int lastIndex = mark_wires.indexOf(toConntectPlugOrTerm);
+				if (lastIndex == mark_wires.size() - 1) {// 到最后了
+					toConntectPlugOrTerm = plug1;
+				} else {
+					toConntectPlugOrTerm = mark_wires.get(lastIndex + 1);
+				}
+			}
+		} else {
+			if (toConntectPlugOrTerm == plug1) {
+				toConntectPlugOrTerm = plug2;
+			} else {
+				toConntectPlugOrTerm = plug1;
+			}
+		}
+	}
+
 //	@Override
 //	protected void toValueObject() {
 //		super.toValueObject();
@@ -115,9 +121,6 @@ public class Cable {// extends BaseVO<CablePO> implements ILinker {
 //		} else {
 //			throw new RuntimeException("电缆没有制式");
 //		}
-////		if (Util.isNumeric(po.getWidth())) {
-////			width = Float.parseFloat(po.getWidth());
-////		}
 //	}
 //
 //	@Override

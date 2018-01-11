@@ -49,7 +49,7 @@ public class MultiPower {
 			Iterator<String> it = envs.iterator();
 			while (it.hasNext()) {
 				String env = it.next();
-				if (env.indexOf(startTerminal.getPO().getMark()) == -1 || env.indexOf(endTerminal.getPO().getMark()) == -1) {
+				if (env.indexOf(startTerminal.getMark()) == -1 || env.indexOf(endTerminal.getMark()) == -1) {
 					it.remove();
 				}
 			}

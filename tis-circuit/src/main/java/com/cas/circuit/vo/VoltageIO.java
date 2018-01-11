@@ -7,12 +7,10 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlList;
 
+import com.cas.circuit.consts.IOType;
+
 @XmlAccessorType(XmlAccessType.NONE)
 public class VoltageIO{// extends SwitchCtrl<VoltageIOPO> {
-	public static final String INPUT = "input";
-	public static final String OUTPUT = "output";
-	public static final String BOTH = "both";
-	
 	@XmlAttribute
 	private String type;//input|output|both
 	@XmlAttribute
@@ -21,7 +19,7 @@ public class VoltageIO{// extends SwitchCtrl<VoltageIOPO> {
 	private String term2Id;
 	@XmlAttribute
 	private Integer voltType; //Voltage.IS_DC/Voltage.IS_AC
-//	TODO @XmlAttribute
+	@XmlAttribute
 	private Float value;
 	@XmlList
 	private List<String> switchIn;
@@ -32,7 +30,7 @@ public class VoltageIO{// extends SwitchCtrl<VoltageIOPO> {
 	
 	public String getType() {
 		if(null == type) {
-			return BOTH;
+			return IOType.BOTH;
 		}
 		return type;
 	}
@@ -57,34 +55,36 @@ public class VoltageIO{// extends SwitchCtrl<VoltageIOPO> {
 
 	private Terminal term1;
 	private Terminal term2;
-//	public boolean relateWith(List<VoltageIO> voltIos) {
-//		boolean contain = false;
-//		for (VoltageIO voltIO : voltIos) {
-//			if (voltIO.getPO().getTerm1Id().equals(getPO().getTerm1Id()) || voltIO.getPO().getTerm1Id().equals(getPO().getTerm2Id()) || voltIO.getPO().getTerm2Id().equals(getPO().getTerm1Id()) || voltIO.getPO().getTerm2Id().equals(getPO().getTerm2Id())) {
-//				contain = true;
-//			}
-//		}
-//		return contain;
-//	}
-//
-//	public boolean contains(Terminal term) {
+	public boolean relateWith(List<VoltageIO> voltIos) {
+		boolean contain = false;
+		for (VoltageIO voltIO : voltIos) {
+			if (voltIO.getTerm1Id().equals(getTerm1Id()) || voltIO.getTerm1Id().equals(getTerm2Id()) || voltIO.getTerm2Id().equals(getTerm1Id()) || voltIO.getTerm2Id().equals(getTerm2Id())) {
+				contain = true;
+			}
+		}
+		return contain;
+	}
+
+	public boolean contains(Terminal term) {
+//		FIXME contains(Terminal term)
 //		ElecCompDef elecComp = (ElecCompDef) parent.getParent();
 //		if (!elecComp.getChildren().contains(term)) {
-//			return false;
+			return false;
 //		}
 //		return po.getTerm1Id().equals(term.getPO().getId()) || po.getTerm2Id().equals(term.getPO().getId());
-//	}
+	}
 //
-//	public Terminal getAnotherTerm(Terminal term) {
+	public Terminal getAnotherTerm(Terminal term) {
+//		FIXME getAnotherTerm(Terminal term)
 //		ElecCompDef elecComp = (ElecCompDef) parent.getParent();
 //		if (po.getTerm1Id().equals(term.getPO().getId())) {
 //			return elecComp.getTerminal(po.getTerm2Id());
 //		} else if (po.getTerm2Id().equals(term.getPO().getId())) {
 //			return elecComp.getTerminal(po.getTerm1Id());
 //		} else {
-//			return null;
+			return null;
 //		}
-//	}
+	}
 	public Terminal getTerm1() {
 		return term1;
 	}

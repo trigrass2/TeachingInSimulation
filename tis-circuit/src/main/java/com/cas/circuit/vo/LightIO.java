@@ -7,6 +7,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import com.cas.sim.tis.xml.adapter.ColorRGBAAdapter;
 import com.jme3.math.ColorRGBA;
+import com.jme3.scene.Spatial;
 
 @XmlAccessorType(XmlAccessType.NONE)
 public class LightIO {
@@ -18,28 +19,22 @@ public class LightIO {
 	@XmlJavaTypeAdapter(ColorRGBAAdapter.class)
 	private ColorRGBA glowColor;
 
+	private Spatial model;
+
 	public String getName() {
 		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
 	}
 
 	public String getMdlName() {
 		return mdlName;
 	}
 
-	public void setMdlName(String mdlName) {
-		this.mdlName = mdlName;
-	}
-
 	public ColorRGBA getGlowColor() {
 		return glowColor;
 	}
 
-	public void setGlowColor(ColorRGBA glowColor) {
-		this.glowColor = glowColor;
+	public void setModel(Spatial model) {
+		this.model = model;
 	}
 
 	public void openLight() {

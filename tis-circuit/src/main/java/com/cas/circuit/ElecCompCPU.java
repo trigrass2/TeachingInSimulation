@@ -6,7 +6,7 @@ import java.util.Map;
 
 import com.cas.circuit.util.MultiPower;
 import com.cas.circuit.util.R;
-import com.cas.circuit.vo.ElecComp;
+import com.cas.circuit.vo.ElecCompDef;
 import com.cas.circuit.vo.Jack;
 import com.cas.circuit.vo.LightIO;
 import com.cas.circuit.vo.Terminal;
@@ -43,24 +43,24 @@ public abstract class ElecCompCPU extends BaseElectricCompLogic {
 	 * @see com.cas.me.appState.electric.BaseElectricCompState#setElecComp(com.cas.me.data.layout.ElecComp)
 	 */
 	@Override
-	public void setElecComp(ElecComp elecComp) {
+	public void setElecComp(ElecCompDef elecComp) {
 		super.setElecComp(elecComp);
-		Map<String, Jack> jackMap = elecComp.getDef().getJackMap();
+		Map<String, Jack> jackMap = elecComp.getJackMap();
 		for (Jack jack : jackMap.values()) {
-			if ("JF".equals(jack.getPO().getFormat())) {
-				jf_evn_names.add(EVN_NAME_PRE + jack.getPO().getName());
+			if ("JF".equals(jack.getFormat())) {
+				jf_evn_names.add(EVN_NAME_PRE + jack.getName());
 				jf_jacks.add(jack);
-			} else if ("CB".equals(jack.getPO().getFormat())) {
-				cb_evn_names.add(EVN_NAME_PRE + jack.getPO().getName());
+			} else if ("CB".equals(jack.getFormat())) {
+				cb_evn_names.add(EVN_NAME_PRE + jack.getName());
 				cbx_jacks.add(jack);
-			} else if ("COP".equals(jack.getPO().getFormat())) {
-				cop_evn_names.add(EVN_NAME_PRE + jack.getPO().getName());
+			} else if ("COP".equals(jack.getFormat())) {
+				cop_evn_names.add(EVN_NAME_PRE + jack.getName());
 				cop_jacks.add(jack);
-			} else if (jack.getPO().getFormat().indexOf("JFR") != -1) {
-				jfr_evn_names.add(EVN_NAME_PRE + jack.getPO().getName());
+			} else if (jack.getFormat().indexOf("JFR") != -1) {
+				jfr_evn_names.add(EVN_NAME_PRE + jack.getName());
 				jfr_jacks.add(jack);
 			} else {
-				log.info(jack.getPO().getFormat() + "这个插孔不能产生信号电,关于'产生信号电'不理解的,可以问振宇");
+				log.info(jack.getFormat() + "这个插孔不能产生信号电,关于'产生信号电'不理解的,可以问振宇");
 			}
 		}
 	}
@@ -69,13 +69,14 @@ public abstract class ElecCompCPU extends BaseElectricCompLogic {
 	 * @param terminal
 	 */
 	public final void onPulse(Terminal terminal) {
-		if (terminal.getParent() instanceof Jack) {
-			Jack jack = (Jack) terminal.getParent();
-			if (CfgConst.BROKEN_STATE_BREAK.equals(jack.getBrokenState())) {
-				return;
-			}
-		}
-		TermTeam team = terminal.getTeam();
+//		FIXME
+//		if (terminal.getParent() instanceof Jack) {
+//			Jack jack = (Jack) terminal.getParent();
+//			if (CfgConst.BROKEN_STATE_BREAK.equals(jack.getBrokenState())) {
+//				return;
+//			}
+//		}
+		TermTeam team = terminal.getTermTeam();
 		team.signIn(terminal);
 		if (!team.resetIfReady()) {
 			return;
@@ -90,20 +91,16 @@ public abstract class ElecCompCPU extends BaseElectricCompLogic {
 
 	}
 
-	public Map<String, Jack> getJackMap() {
-		return getElecComp().getDef().getJackMap();
-	}
-
 	/**
 	 * @param jackNm 信号发生的插孔名称
 	 * @param index 具体的针脚号
 	 */
 	public Terminal getStitch(String jackName, String index) {
-		Jack jack = getJackMap().get(jackName);
+		Jack jack = elecComp.getJackMap().get(jackName);
 		if (jack == null) {
 			System.err.println("没有找到名称为: " + jackName + "的插孔");
 		}
-		Terminal stitch = jack.getStitch().get(index);
+		Terminal stitch = jack.getStitch(index);
 		if (stitch == null) {
 			System.err.println(jackName + "插孔中没有找到第: " + index + "跟针脚");
 		}
@@ -119,11 +116,12 @@ public abstract class ElecCompCPU extends BaseElectricCompLogic {
 	public void sendSignal(String jackNm, String startIndex, String endIndex, CommandSignal sign) {
 		synchronized (this) {
 			// 判断当前插口是否允许发送指令
-			Jack jack = getJackMap().get(jackNm);
-			if (jack.isStopSend()) {
-				log.warn("无法发送信号!![" + jackNm + "]");
-				return;
-			}
+			Jack jack = elecComp.getJackMap().get(jackNm);
+//			FIXME
+//			if (jack.isStopSend()) {
+//				log.warn("无法发送信号!![" + jackNm + "]");
+//				return;
+//			}
 			Terminal startTerminal = getStitch(jackNm, startIndex);
 			Terminal endTerminal = getStitch(jackNm, endIndex);
 			String env = EVN_NAME_PRE + jackNm;
@@ -144,9 +142,9 @@ public abstract class ElecCompCPU extends BaseElectricCompLogic {
 	 * 产生信号电<br>
 	 */
 	protected void elecCompStart() {
-		log.info("开始启动" + elecComp.getPO().getTagName());
+//		log.info("开始启动" + elecComp.getTagName());
 //		System.err.println(this.getClass().getCanonicalName() + ".elecCompStart(start...)");
-		for (LightIO lightIO : getElecComp().getDef().getLightIOs()) {
+		for (LightIO lightIO : elecComp.getLightIOs()) {
 			lightIO.openLight();
 		}
 //		信号电压起源
@@ -158,10 +156,10 @@ public abstract class ElecCompCPU extends BaseElectricCompLogic {
 			for (int i = 0; i < cb_evn_names.size(); i++) {
 				r = R.getR(cb_evn_names.get(i));
 				if (r == null) {
-					ipLower = cbx_jacks.get(i).getStitch().get("1");
-					ipHigher = cbx_jacks.get(i).getStitch().get("2");
+					ipLower = cbx_jacks.get(i).getStitch("1");
+					ipHigher = cbx_jacks.get(i).getStitch("2");
 					if (ipHigher == null || ipLower == null) {
-//						System.err.println(getClass() + cbx_jacks.get(i).getPO().getId() + "中找不到1 或 2号针脚");
+//						System.err.println(getClass() + cbx_jacks.get(i).getId() + "中找不到1 或 2号针脚");
 						continue;
 					}
 					r = R.createSignal(cb_evn_names.get(i), ipHigher, ipLower, CB_SIGNAL_VOLT);
@@ -174,10 +172,10 @@ public abstract class ElecCompCPU extends BaseElectricCompLogic {
 			for (int i = 0; i < jf_evn_names.size(); i++) {
 				r = R.getR(jf_evn_names.get(i));
 				if (r == null) {
-					ipHigher = jf_jacks.get(i).getStitch().get("3");
-					ipLower = jf_jacks.get(i).getStitch().get("13");
+					ipHigher = jf_jacks.get(i).getStitch("3");
+					ipLower = jf_jacks.get(i).getStitch("13");
 					if (ipHigher == null || ipLower == null) {
-//						System.err.println(getClass() + jf_jacks.get(i).getPO().getId() + "中找不到3 或 13号针脚");
+//						System.err.println(getClass() + jf_jacks.get(i).getId() + "中找不到3 或 13号针脚");
 						continue;
 					}
 					r = R.createSignal(jf_evn_names.get(i), ipHigher, ipLower, JF_SIGNAL_VOLT);
@@ -190,10 +188,10 @@ public abstract class ElecCompCPU extends BaseElectricCompLogic {
 			for (int i = 0; i < cop_evn_names.size(); i++) {
 				r = R.getR(cop_evn_names.get(i));
 				if (r == null) {
-					ipHigher = cop_jacks.get(i).getStitch().get("1");
-					ipLower = cop_jacks.get(i).getStitch().get("3");
+					ipHigher = cop_jacks.get(i).getStitch("1");
+					ipLower = cop_jacks.get(i).getStitch("3");
 					if (ipHigher == null || ipLower == null) {
-						System.err.println(getClass() + cop_jacks.get(i).getPO().getId() + "中找不到1 或 3号针脚");
+						System.err.println(getClass() + cop_jacks.get(i).getId() + "中找不到1 或 3号针脚");
 						continue;
 					}
 					r = R.createSignal(cop_evn_names.get(i), ipHigher, ipLower, COP_SIGNAL_VOLT);
@@ -209,10 +207,10 @@ public abstract class ElecCompCPU extends BaseElectricCompLogic {
 					env = jfr_evn_names.get(i) + jfrEnvEnds[j][0] + "_" + jfrEnvEnds[j][1];
 					r = R.getR(env);
 					if (r == null) {
-						ipHigher = jfr_jacks.get(i).getStitch().get(jfrEnvEnds[j][0]);
-						ipLower = jfr_jacks.get(i).getStitch().get(jfrEnvEnds[j][1]);
+						ipHigher = jfr_jacks.get(i).getStitch(jfrEnvEnds[j][0]);
+						ipLower = jfr_jacks.get(i).getStitch(jfrEnvEnds[j][1]);
 						if (ipHigher == null || ipLower == null) {
-//							System.err.println(getClass() + jfr_jacks.get(i).getPO().getId() + "中找不到" + jfrEnvEnds[j][0] + " 或 " + jfrEnvEnds[j][1] + "号针脚");
+//							System.err.println(getClass() + jfr_jacks.get(i).getId() + "中找不到" + jfrEnvEnds[j][0] + " 或 " + jfrEnvEnds[j][1] + "号针脚");
 							continue;
 						}
 						r = R.createSignal(env, ipHigher, ipLower, COP_SIGNAL_VOLT);
@@ -222,7 +220,7 @@ public abstract class ElecCompCPU extends BaseElectricCompLogic {
 			}
 		}
 //		System.err.println(this.getClass().getCanonicalName() + ".elecCompStart(end...)");
-		log.info(elecComp.getPO().getTagName() + "启动完成!");
+//		log.info(elecComp.getTagName() + "启动完成!");
 	}
 
 	/**
@@ -230,9 +228,9 @@ public abstract class ElecCompCPU extends BaseElectricCompLogic {
 	 * 关闭信号电<br>
 	 */
 	protected void elecCompEnd() {
-		log.info("shutdown " + elecComp.getPO().getTagName());
+//		log.info("shutdown " + elecComp.getTagName());
 //		System.out.println(this.getClass().getCanonicalName() + ".elecCompEnd(start...)");
-		for (LightIO lightIO : getElecComp().getDef().getLightIOs()) {
+		for (LightIO lightIO : elecComp.getLightIOs()) {
 			lightIO.closeLight();
 		}
 
@@ -273,7 +271,7 @@ public abstract class ElecCompCPU extends BaseElectricCompLogic {
 				}
 			}
 		}
-		log.info("shutdown done " + elecComp.getPO().getTagName());
+//		log.info("shutdown done " + elecComp.getTagName());
 //		System.out.println(this.getClass().getCanonicalName() + ".elecCompEnd(end...)");
 	}
 }

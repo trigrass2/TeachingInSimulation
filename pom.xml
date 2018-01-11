@@ -11,7 +11,7 @@
 		<module>tis-client-teacher</module>
 		<module>tis-client-student</module>
 		<module>tis-client</module>
-		<module>tis-circuit</module>
+<!-- 		<module>tis-circuit</module> -->
 	</modules>
 	<name>仿真教学项目</name>
 	<properties>
@@ -172,6 +172,13 @@
 					</exclusion>
 				</exclusions>
 			</dependency>
+			
+			<dependency>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-starter-test</artifactId>
+				<version>${springboot.version}</version>
+			</dependency>
+			
 			<dependency>
 				<groupId>de.roskenet</groupId>
 				<artifactId>springboot-javafx-support</artifactId>

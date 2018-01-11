@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cas.sim.tis.mapper.QJudgmentMapper">
+	<resultMap id="BaseResultMap" type="com.cas.sim.tis.entity.QJudgment">
+		<id column="ID" jdbcType="INTEGER" property="id" />
+		<result column="TITLE" jdbcType="VARCHAR" property="title" />
+		<result column="Q_TYPE" jdbcType="INTEGER" property="type" />
+		<result column="LIBARAY_ID" jdbcType="INTEGER" property="libraryId" />
+		<result column="REFERENCE" jdbcType="VARCHAR" property="reference" />
+		<result column="ANALYSIS" jdbcType="VARCHAR" property="analysis" />
+		<result column="CREATOR_ID" jdbcType="INTEGER" property="creatorId" />
+		<result column="CREATE_DATE" jdbcType="VARCHAR" property="createDate" />
+		<result column="DEL" jdbcType="INTEGER" property="del" />
+	</resultMap>
+</mapper>

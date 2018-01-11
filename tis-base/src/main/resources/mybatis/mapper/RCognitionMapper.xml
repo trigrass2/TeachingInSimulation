@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cas.sim.tis.mapper.RCognitionMapper">
+	<resultMap id="BaseResultMap" type="com.cas.sim.tis.entity.RCognition">
+		<id column="ID" jdbcType="INTEGER" property="id" />
+		<result column="CODE" jdbcType="VARCHAR" property="code" />
+		<result column="NAME" jdbcType="VARCHAR" property="name" />
+		<result column="TID" jdbcType="VARCHAR" property="tid" />
+		<!-- <result column="CREATOR" jdbcType="INTEGER" property="creator" /> -->
+		<result column="CREATE_DATE" jdbcType="VARCHAR" property="createDate" />
+		<!-- <result column="UPDATER" jdbcType="INTEGER" property="updater" /> -->
+		<!-- <result column="UPDATE_DATE" jdbcType="VARCHAR" property="updateDate" /> -->
+		<result column="DEL" jdbcType="INTEGER" property="del" />
+	</resultMap>
+</mapper>

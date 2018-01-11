@@ -13,6 +13,7 @@ import java.util.Properties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.cas.sim.tis.consts.Session;
 import com.cas.sim.tis.consts.SystemInfo;
 import com.cas.sim.tis.socket.message.handler.ServerHandler;
 import com.jme3.network.ConnectionListener;
@@ -59,7 +60,7 @@ public final class CoreServer implements IServer {
 				public void connectionRemoved(Server server, HostedConnection conn) {
 					boolean success = clients.remove(conn);
 					if (success) {
-						String userCode = conn.getAttribute("user_code");
+						String userCode = conn.getAttribute(Session.KEY_LOGIN_USER_ID);
 						LOG.info("用户{}已断开连接, 当前客户端数量{}", userCode, clients.size());
 					}
 				}
@@ -73,12 +74,12 @@ public final class CoreServer implements IServer {
 					if (handler != null) {
 						try {
 							handler.execute(client, m);
-							LOG.warn("服务器已经成功处理了消息");
+							LOG.warn("服务器已经成功处理了消息:{}", m);
 						} catch (Exception e) {
-							LOG.warn("服务器在处理消息时出现了异常{}", e.getMessage());
+							LOG.warn("服务器在处理消息时出现了异常:{}", e.getMessage());
 						}
 					} else {
-						LOG.error("服务器无法处理消息{}", m.getClass());
+						LOG.error("服务器无法处理消息:{}, 原因是缺少相应的 implements ServerHandler类", m.getClass());
 					}
 				}
 			});

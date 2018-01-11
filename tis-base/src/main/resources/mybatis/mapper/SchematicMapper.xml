@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cas.sim.tis.mapper.SchematicMapper">
+	<resultMap id="BaseResultMap" type="com.cas.sim.tis.entity.Schematic">
+		<id column="ID" jdbcType="INTEGER" property="id" />
+		<result column="PATH" jdbcType="VARCHAR" property="path" />
+		<result column="SUM" jdbcType="INTEGER" property="sum" />
+		<result column="CREATOR_ID" jdbcType="VARCHAR" property="creatorId" />
+		<result column="CREATOR_ROLE" jdbcType="VARCHAR" property="creatorRole" />
+		<result column="CREATE_DATE" jdbcType="VARCHAR" property="createDate" />
+		<result column="UPDATE_DATE" jdbcType="VARCHAR" property="updateDate" />
+		<result column="DEL" jdbcType="INTEGER" property="del" />
+	</resultMap>
+</mapper>

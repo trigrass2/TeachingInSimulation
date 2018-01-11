@@ -1,11 +1,35 @@
 package com.cas.sim.tis.entity;
 
-public class User {
-	protected String name;
-	protected String code;
+import java.util.Date;
 
+import javax.persistence.Id;
+
+import org.springframework.format.annotation.DateTimeFormat;
+
+public class User {
+	@Id
+	private Integer id;
+//	姓名（用于显示）
+	protected String name;
+//	账号（用户登录）
+	protected String code;
 	protected String password;
-	protected Integer del;
+//	
+	@DateTimeFormat(pattern = "yyyy/MM/dd")
+	protected Date createDate;
+
+	@DateTimeFormat(pattern = "yyyy-MM-dd hh:mm:ss")
+	protected Date updateDate;
+
+	protected Integer del = 0;
+
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
 
 	public String getPassword() {
 		return password;
@@ -37,6 +61,22 @@ public class User {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public Date getCreateDate() {
+		return createDate;
+	}
+
+	public void setCreateDate(Date createDate) {
+		this.createDate = createDate;
+	}
+
+	public Date getUpdateDate() {
+		return updateDate;
+	}
+
+	public void setUpdateDate(Date updateDate) {
+		this.updateDate = updateDate;
 	}
 
 }

@@ -1,18 +1,24 @@
 
 package com.cas.circuit.vo;
 
+import java.util.List;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlList;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
+import com.cas.circuit.consts.IOType;
+import com.cas.sim.tis.xml.adapter.FloatArrayAdapter;
+import com.jme3.scene.Spatial;
 import com.sun.tools.internal.xjc.runtime.ZeroOneBooleanAdapter;
 
 /**
  * 包括:按钮(button) 和 旋钮(switch)
  */
 @XmlAccessorType(XmlAccessType.NONE)
-public class ControlIO {//extends SwitchCtrl<ControlIOPO> {
+public class ControlIO {// extends SwitchCtrl<ControlIOPO> {
 
 	public static final String INTERACT_UNIDIR = "unidir";
 	public static final String INTERACT_CLICK = "click";
@@ -30,13 +36,14 @@ public class ControlIO {//extends SwitchCtrl<ControlIOPO> {
 	@XmlAttribute
 	private String interact;
 	@XmlAttribute
-	private String defSwitch;
-	@XmlAttribute
-	private String switchIn;
+	private Integer defSwitch;
+	@XmlList
+	private List<String> switchIn;
 	@XmlAttribute
 	private String motion;
 	@XmlAttribute
-	private String motionParams;
+	@XmlJavaTypeAdapter(FloatArrayAdapter.class)
+	private float[] motionParams;
 	@XmlAttribute
 	private String axis;
 	@XmlAttribute
@@ -44,20 +51,26 @@ public class ControlIO {//extends SwitchCtrl<ControlIOPO> {
 	@XmlAttribute
 	@XmlJavaTypeAdapter(ZeroOneBooleanAdapter.class)
 	private Boolean smooth;
+
 	public String getInteract() {
 		return interact;
 	}
 
-	
-	
-	
+	public String getType() {
+		if (type == null) {
+			return IOType.BOTH;
+		}
+		return type;
+	}
+
 //	private String elementText;
 //	
 //	
 ////	ReadOnly
 //	private List<Float> motionParams = new ArrayList<Float>();
-//
-//	private Spatial model;
+
+	private Spatial model;
+
 //
 //	private Vector3f zeroIndexLocation;
 //
@@ -65,48 +78,27 @@ public class ControlIO {//extends SwitchCtrl<ControlIOPO> {
 //
 //	private Map<String, String> properties;
 //
-//	public ControlIO() {
-//		super();
-////		if (Dispatcher.getIns().getMainState() != null) {
-////			Dispatcher.getIns().getMainState().getNowMachShell().controlIOs.add(this);
-////		}
-//	}
-//
-//	/**
-//	 * @param po
-//	 */
-//	public ControlIO(ControlIOPO po) {
-//		super(po);
-//	}
-//
+	public String getName() {
+		return name;
+	}
+
+	public String getMdlName() {
+		return mdlName;
+	}
+
+	public float getSpeed() {
+		return speed;
+	}
+
 //	@Override
 //	protected void toValueObject() {
 //		super.toValueObject();
 //		this.properties = getStringMap(po.getElementText());
-//		if (!Util.isEmpty(po.getSwitchIn())) {
-//			resisStateIds = StringUtil.split(po.getSwitchIn());
-//		}
-//		if (!Util.isEmpty(po.getMotionParams())) {
-//			List<String> rotateAngleStrs = StringUtil.split(po.getMotionParams());
-//			for (String string : rotateAngleStrs) {
-//				if (Util.isNumeric(string)) {
-//					motionParams.add(Float.parseFloat(string));
-//				}
-//			}
-//		}
 //		if (Util.isInteger(po.getDefSwitch())) {
 //			int defIndex = Integer.parseInt(po.getDefSwitch());
 //			switchIndex = defIndex;
 //			motionIndex = defIndex;
 //		}
-//		if (resisStateIds.size() > 0 && motionParams.size() != resisStateIds.size()) {
-//			System.err.println("名字为" + po.getName() + "模型名为" + po.getMdlName() + "的按钮的运动点个数为：" + motionParams.size() + "个运动点，但电阻状态点个数为：" + resisStateIds.size());
-//		}
-//		if (!Util.isEmpty(po.getSpeed()) && Util.isNumeric(po.getSpeed())) {
-//			speed = Float.parseFloat(po.getSpeed());
-//		}
-//		ioType = IOType.parseIOType(po.getType());
-//		smooth = "1".equals(po.getSmooth());
 //	}
 //
 //	@Override
@@ -123,29 +115,10 @@ public class ControlIO {//extends SwitchCtrl<ControlIOPO> {
 //	 * 对ROTATE类型：index 0：向上滚， 1：向下滚. 对非ROTATE类型：index 为null
 //	 */
 //	public void switchStateChanged(final Integer wheel, final MouseEvent e) {
-////		if (INTERACT_CLICK.equals(po.getInteract())) {
-////			switchStart(1 - switchIndex);
-////		} else if (INTERACT_PRESS.equals(po.getInteract())) {
-////			if (switchIndex == 0 || (switchIndex == 1 && !((Magnetism) parent).isEffect())) {
-////				switchStart(1 - switchIndex);
-////			}
-//////		} else if (INTERACT_UNIDIR.equals(po.getInteract())) {
-//////			if (switchIndex == 1) {
-//////				switchStart(0);
-//////				// 磁生力
-//////				for (ControlIO otherButton : ((Magnetism) parent).getControlIOs()) {
-//////					if (otherButton != ControlIO.this && otherButton.getPO().getType().contains(CfgConst.SWITCH_CTRL_OUTPUT)) {
-//////						otherButton.doSwitch(1);
-//////					}
-//////				}
-//////			}
-////		}
-//////		}
-////		
 //		switchStart(1 - switchIndex);
 //	}
 //
-////	FIXME
+//	//FIXME
 //	/**
 //	 * 对ROTATE类型：index 0：向上滚， 1：向下滚. 对非ROTATE类型：index 0：弹起， 1：按下
 //	 */
@@ -186,14 +159,14 @@ public class ControlIO {//extends SwitchCtrl<ControlIOPO> {
 //		}
 //		motionIndex = 1 - motionIndex;
 //	}
-//
-//	public void setModel(Spatial model) {
-//		if (model == null) {
+
+	public void setModel(Spatial model) {
+		if (model == null) {
 //			log.error("没有找到按钮名为" + po.getName() + "的模型");
-//		}
-//		this.model = model;
-//	}
-//
+		}
+		this.model = model;
+	}
+
 //	/*
 //	 * (non-Javadoc)
 //	 * @see com.cas.cfg.vo.BaseVO#cleanUp()

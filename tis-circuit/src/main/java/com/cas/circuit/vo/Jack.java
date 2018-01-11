@@ -1,6 +1,8 @@
 package com.cas.circuit.vo;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -10,6 +12,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import com.cas.sim.tis.xml.adapter.Vector3fAdapter;
 import com.jme3.math.Vector3f;
+import com.jme3.scene.Spatial;
 import com.sun.tools.internal.xjc.runtime.ZeroOneBooleanAdapter;
 
 /**
@@ -55,23 +58,48 @@ public class Jack {
 	private String belongElecComp;
 	@XmlElement(name = "Terminal")
 	private List<Terminal> terminalList;
-	
+
+//	一个插孔中包含多个针脚(也可以说是连接头)
+//	Key:针脚的编号
+//	Value:针脚
+	private Map<String, Terminal> stitchMap;
+
+	public void build() {
+		stitchMap = terminalList.stream().collect(Collectors.toMap(Terminal::getId, data -> data));
+	}
+
 	public String getId() {
 		return id;
 	}
-	public void setId(String id) {
-		this.id = id;
-	}
+
 	public String getName() {
 		return name;
 	}
-	public void setName(String name) {
-		this.name = name;
+
+	public String getMdlName() {
+		return mdlName;
 	}
+
+	public Integer getCore() {
+		return core;
+	}
+
+	public String getFormat() {
+		return format;
+	}
+
 	public List<Terminal> getTerminalList() {
 		return terminalList;
 	}
-	
+
+	public Terminal getStitch(String index) {
+		return stitchMap.get(index);
+	}
+
+	public boolean hasStitch(Terminal terminal) {
+		return stitchMap.values().contains(terminal);
+	}
+
 //	private Format format;
 ////	一个插孔中包含多个针脚(也可以说是连接头)
 ////	Key:针脚的编号
@@ -90,15 +118,19 @@ public class Jack {
 //
 ////	private float flyHeight;
 ////	private float flyDistance;
-//
-//	private Spatial model;
+
+	private Spatial model;
 //
 //	// G信号控制是否停止发送
 //	private boolean stopSend;
 //
 //	private Map<String, String> properties;
 //
-	
+
+	public void setModel(Spatial model) {
+		this.model = model;
+	}
+
 //	@Override
 //	protected void toValueObject() {
 //		super.toValueObject();
