@@ -6,5 +6,13 @@ import com.cas.sim.tis.entity.User;
 import com.cas.sim.tis.services.impl.ServiceException;
 
 public interface UserService {
+	/**
+	 * 用户登录
+	 * @param usercode 用户账号
+	 * @param password 用户密码（明文）
+	 * @return 
+	 * @throws ServiceException
+	 * @throws TooManyResultsException
+	 */
 	User login(String usercode, String password) throws ServiceException, TooManyResultsException;
 }

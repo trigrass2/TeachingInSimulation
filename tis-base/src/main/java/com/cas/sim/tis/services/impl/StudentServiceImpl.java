@@ -1,5 +1,6 @@
 package com.cas.sim.tis.services.impl;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.ibatis.exceptions.TooManyResultsException;
@@ -23,7 +24,6 @@ public class StudentServiceImpl extends AbstractService<Student> implements Stud
 		Criteria criteria = condition.createCriteria();
 		criteria.andEqualTo("code", usercode);
 		criteria.andEqualTo("password", password);
-//		criteria.andEqualTo("role", 3);
 		List<Student> students = studentMapper.selectByCondition(condition);
 		if (students.size() == 1) {
 			return students.get(0);
@@ -32,6 +32,24 @@ public class StudentServiceImpl extends AbstractService<Student> implements Stud
 		} else {
 			throw new TooManyResultsException();
 		}
+	}
+
+	@Override
+	public List<Student> findByClass(Integer classId) {
+		StudentMapper studentMapper = (StudentMapper) mapper;
+
+		Condition condition = new Condition(Student.class);
+		Criteria criteria = condition.createCriteria();
+		criteria.andEqualTo("clsId", classId);
+		List<Student> students = null;
+		try {
+			students = studentMapper.selectByCondition(condition);
+			LOG.debug("查询到班级ID[{}]内学生人数：{}", classId, students.size());
+		} catch (Exception e) {
+			LOG.error("查询班级学生失败！班级ID[{}]", classId);
+			students = Collections.emptyList();
+		}
+		return students;
 	}
 
 }

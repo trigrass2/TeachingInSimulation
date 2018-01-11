@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.ibatis.exceptions.TooManyResultsException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.cas.sim.tis.mapper.IMapper;
@@ -17,6 +19,7 @@ import tk.mybatis.mapper.entity.Condition;
  * 基于通用MyBatis Mapper插件的Service接口的实现
  */
 public abstract class AbstractService<T> implements BaseService<T> {
+	protected Logger LOG = LoggerFactory.getLogger(getClass());
 
 	@Autowired
 	protected IMapper<T> mapper;

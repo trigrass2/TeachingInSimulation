@@ -11,6 +11,7 @@ import javax.swing.UIManager;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import com.cas.authority.Consts;
 import com.cas.authority.validate.ValidateThread;
@@ -28,6 +29,9 @@ import cas.lock.ILockResult;
 import cas.lock.LockThread;
 
 @SpringBootApplication
+@EnableTransactionManagement
+// 在类中用注解@Mapper明确标出
+// @MapperScan("com.cas.sim.tis.mapper") 
 public class Application implements CommandLineRunner {
 
 	public static void main(String[] args) {

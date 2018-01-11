@@ -91,9 +91,9 @@ public class DBTest {
 	@Test
 	public void testInsertTeacher() {
 		List<Teacher> teacherList = new ArrayList<>();
-		for (int i = 0; i < 5; i++) {
+		for (int i = 1; i < 2; i++) {
 			Teacher teacher = new Teacher();
-			teacher.setCode("00" + i);
+			teacher.setCode("1113");
 			teacher.setName("老师-" + i);
 			teacher.setCreateDate(new Date());
 			teacher.setPassword("123456");

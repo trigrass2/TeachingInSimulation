@@ -104,4 +104,9 @@ public class Section {
 		this.del = del;
 	}
 
+	@Override
+	public String toString() {
+		return "Section [id=" + id + ", name=" + name + ", lvl=" + lvl + ", upperId=" + upperId + ", creatorId=" + creatorId + ", sort=" + sort + ", createDate=" + createDate + ", updateDate=" + updateDate + ", del=" + del + "]";
+	}
+	
 }
