@@ -13,10 +13,9 @@ import com.cas.sim.tis.services.UserService;
 import com.cas.sim.tis.socket.CoreServer;
 import com.cas.sim.tis.socket.message.LoginMessage;
 import com.jme3.network.HostedConnection;
-import com.jme3.network.Message;
 
 @Component
-public class LoginMessageHandler implements ServerHandler {
+public class LoginMessageHandler implements ServerHandler<LoginMessage> {
 
 	@Resource(name = "studentService")
 	private UserService studentService;
@@ -24,13 +23,11 @@ public class LoginMessageHandler implements ServerHandler {
 	private UserService teacherService;
 
 	@Override
-	public void execute(HostedConnection source, Message m) throws Exception {
-//		1、验证登录信息
-		LoginMessage reqMsg = (LoginMessage) m;
+	public void execute(HostedConnection source, LoginMessage m) throws Exception {
 //		接收客户端的请求信息
-		int userType = reqMsg.getUserType();
-		String code = reqMsg.getUserCode();
-		String passwd = reqMsg.getUserPwd();
+		int userType = m.getUserType();
+		String code = m.getUserCode();
+		String passwd = m.getUserPwd();
 		if (code == null || passwd == null) {
 			return;
 		}
@@ -56,14 +53,14 @@ public class LoginMessageHandler implements ServerHandler {
 			if (clients.size() >= CoreServer.getIns().getMaxClientNum()) {
 				LOG.warn("客户端数量已经达到上限{}", clients.size());
 //				告诉这个用户，当前用户已满，
-				respMsg.setReason(LoginMessage.RESULT_MAX_SIZE);
+				respMsg.setResult(LoginMessage.RESULT_MAX_SIZE);
 				source.send(respMsg);
 			} else {
 //				检查用户是否已经登录了
 				boolean exist = clients.stream().filter(c -> user.getId() == c.getAttribute(Session.KEY_LOGIN_USER_ID)).findAny().isPresent();
 				if (exist) {
 //					用户已经登录了
-					respMsg.setReason(LoginMessage.RESULT_DUPLICATE);
+					respMsg.setResult(LoginMessage.RESULT_DUPLICATE);
 					source.send(respMsg);
 				} else {
 					source.setAttribute(Session.KEY_LOGIN_USER_ID, user.getId());
@@ -71,14 +68,14 @@ public class LoginMessageHandler implements ServerHandler {
 					clients.add(source);
 					LOG.info("客户端登录成功，当前客户端数量{}", clients.size());
 //					用户成功连接
-					respMsg.setReason(LoginMessage.RESULT_SUCCESS);
+					respMsg.setResult(LoginMessage.RESULT_SUCCESS);
 					source.send(respMsg);
 				}
 			}
 		} catch (Exception e) {
 			LOG.warn("用户登录失败：{}", e.getMessage());
 //			登录失败：原因是登录信息错误
-			respMsg.setReason(LoginMessage.RESULT_FAILURE);
+			respMsg.setResult(LoginMessage.RESULT_FAILURE);
 			source.send(respMsg);
 
 			throw new RuntimeException("用户登录失败", e);

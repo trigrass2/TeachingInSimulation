@@ -110,7 +110,12 @@
 				<artifactId>slf4j-log4j12</artifactId>
 				<version>${slf4j.version}</version>
 			</dependency>
-
+			<!-- https://mvnrepository.com/artifact/org.slf4j/jul-to-slf4j -->
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>jul-to-slf4j</artifactId>
+				<version>1.7.25</version>
+			</dependency>
 			<!-- jMonkeyEngine3 -->
 			<!-- https://mvnrepository.com/artifact/org.jmonkeyengine/jme3-core -->
 			<dependency>

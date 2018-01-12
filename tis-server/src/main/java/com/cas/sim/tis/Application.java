@@ -2,12 +2,13 @@ package com.cas.sim.tis;
 
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
 
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 
+import org.slf4j.LoggerFactory;
+import org.slf4j.bridge.SLF4JBridgeHandler;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -16,23 +17,30 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import com.cas.authority.Consts;
 import com.cas.authority.validate.ValidateThread;
 import com.cas.sim.tis.consts.SystemInfo;
+import com.cas.sim.tis.entity.Resource;
 import com.cas.sim.tis.socket.CoreServer;
 import com.cas.sim.tis.socket.FileServer;
 import com.cas.sim.tis.socket.message.LoginMessage;
+import com.cas.sim.tis.socket.message.ResourcesMessage;
 import com.cas.sim.tis.socket.message.handler.LoginMessageHandler;
+import com.cas.sim.tis.socket.message.handler.ResourcesMessageHandler;
 import com.cas.sim.tis.util.SpringUtil;
+import com.jme3.network.serializing.Serializer;
 import com.softkey.SoftKey;
 
 import cas.lock.ILockResult;
 import cas.lock.LockThread;
 
 @SpringBootApplication
+//开始事物
 @EnableTransactionManagement
 // 在类中用注解@Mapper明确标出
 //@MapperScan("com.cas.sim.tis.mapper")
 public class Application implements CommandLineRunner {
-
 	public static void main(String[] args) {
+//		将JUL（Java-Util-Logging）的日志转接给slf4j
+		jul2slf4j();
+
 		try {
 //			UIManager.setLookAndFeel(com.sun.java.swing.plaf.windows.WindowsLookAndFeel.class.getName());
 			UIManager.setLookAndFeel(javax.swing.plaf.nimbus.NimbusLookAndFeel.class.getName());
@@ -55,6 +63,7 @@ public class Application implements CommandLineRunner {
 				// 加密锁验证通过
 				FutureTask<Integer> task = new FutureTask<>(validation);
 				new Thread(task).start();
+
 				try {
 					Integer result = task.get();
 //					证书没问题
@@ -83,15 +92,22 @@ public class Application implements CommandLineRunner {
 						showErrorMsg("错误代码：" + result);
 						System.exit(0);
 					}
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				} catch (ExecutionException e) {
-					e.printStackTrace();
+				} catch (Exception e) {
+					LoggerFactory.getLogger(Application.class).error("加密锁验证过程出现错误。{}", e.getMessage());
 				}
 			}
 		}, SoftKey.KEY_FOR_SALER);
 //		启动加密锁验证线程
 		lt.start();
+	}
+
+	private static void jul2slf4j() {
+		java.util.logging.LogManager.getLogManager().reset();
+		SLF4JBridgeHandler.removeHandlersForRootLogger();
+//		设置JUL的日志级别
+		java.util.logging.Logger.getLogger("").setLevel(java.util.logging.Level.FINEST);
+//		设置日志转换（桥接）
+		SLF4JBridgeHandler.install();
 	}
 
 	protected static void stop() {
@@ -117,15 +133,16 @@ public class Application implements CommandLineRunner {
 ////			alert.setContentText("请联系我们");
 //			alert.showAndWait();
 //		});
-
+		LoggerFactory.getLogger(Application.class).warn("程序启动失败,{}", msg);
 		JOptionPane.showMessageDialog(null, msg, "程序启动失败", JOptionPane.ERROR_MESSAGE);
 	}
 
 	@Override
 	public void run(String... args) throws Exception {
-//		注册消息
-
+		Serializer.registerClass(Resource.class);
 //		登录消息
 		CoreServer.getIns().registerMessageHandler(LoginMessage.class, SpringUtil.getBean(LoginMessageHandler.class));
+//		请求资源消息
+		CoreServer.getIns().registerMessageHandler(ResourcesMessage.class, SpringUtil.getBean(ResourcesMessageHandler.class));
 	}
 }

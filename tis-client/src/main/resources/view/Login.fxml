@@ -70,6 +70,6 @@
     </HBox>
   </children>
   <stylesheets>
-    <URL value="@../css/Login.css" />
+    <URL value="@../static/css/Login.css" />
   </stylesheets>
 </AnchorPane>

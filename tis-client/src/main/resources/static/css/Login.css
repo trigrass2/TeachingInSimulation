@@ -30,7 +30,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 .background {
-    -fx-background-image: url('../css/CoarseGrid.png');
+    -fx-background-image: url('../images/CoarseGrid.png');
     -fx-background-repeat: repeat;
     -fx-background-color:
         linear-gradient(#38424b 0%, #1f2429 20%, #191d22 100%),

@@ -5,7 +5,10 @@ import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Id;
 
+import com.jme3.network.serializing.Serializable;
+
 //资源
+@Serializable
 public class Resource {
 	public static final int RES_WORD = 0;
 	public static final int RES_PPT = 1;
@@ -37,7 +40,12 @@ public class Resource {
 //	创建人（教师/管理员）
 	protected Integer creatorId;
 	protected Date createDate;
-	protected Integer del = 0;
+
+//	默认资源是公开的
+	@Column(name = "PUBLIC")
+	protected Boolean open = true;
+//	默认资源没有被删除
+	protected Boolean del = false;
 
 	public Integer getId() {
 		return id;
@@ -103,11 +111,19 @@ public class Resource {
 		this.createDate = createDate;
 	}
 
-	public Integer getDel() {
+	public Boolean getOpen() {
+		return open;
+	}
+
+	public void setOpen(Boolean open) {
+		this.open = open;
+	}
+
+	public Boolean getDel() {
 		return del;
 	}
 
-	public void setDel(Integer del) {
+	public void setDel(Boolean del) {
 		this.del = del;
 	}
 

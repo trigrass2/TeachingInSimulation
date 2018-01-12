@@ -6,8 +6,8 @@ import org.slf4j.LoggerFactory;
 import com.jme3.network.HostedConnection;
 import com.jme3.network.Message;
 
-public interface ServerHandler {
+public interface ServerHandler<M extends Message> {
 	Logger LOG = LoggerFactory.getLogger(ServerHandler.class);
 
-	void execute(HostedConnection source, Message m) throws Exception;
+	void execute(HostedConnection source, M m) throws Exception;
 }

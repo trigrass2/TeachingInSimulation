@@ -6,8 +6,8 @@ import org.slf4j.LoggerFactory;
 import com.jme3.network.Client;
 import com.jme3.network.Message;
 
-public interface ClientHandler {
+public interface ClientHandler<M extends Message> {
 	Logger LOG = LoggerFactory.getLogger(ClientHandler.class);
 
-	void execute(Client client, Message m) throws Exception;
+	void execute(Client client, M m) throws Exception;
 }

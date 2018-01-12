@@ -115,7 +115,7 @@ public class DBTest {
 			resource.setPath("资源路径-" + i);
 			resource.setType(i);
 			resource.setCreateDate(new Date());
-			resource.setDel(0);
+			resource.setDel(false);
 			resourceList.add(resource);
 		}
 		resourceMapper.insertList(resourceList);

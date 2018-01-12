@@ -1,5 +1,10 @@
 package com.cas.sim.tis;
 
+import java.util.logging.Level;
+import java.util.logging.LogManager;
+import java.util.logging.Logger;
+
+import org.slf4j.bridge.SLF4JBridgeHandler;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -18,6 +23,12 @@ import de.felixroske.jfxsupport.AbstractJavaFxApplicationSupport;
 public class Application extends AbstractJavaFxApplicationSupport implements ApplicationRunner {
 
 	public static void main(String[] args) {
+		LogManager.getLogManager().reset();
+		SLF4JBridgeHandler.removeHandlersForRootLogger();
+		Logger.getLogger("").setLevel(Level.FINEST);
+		SLF4JBridgeHandler.install();
+		
+		
 		ClientT.getIns().connect();
 
 //		明确登录用的身份
