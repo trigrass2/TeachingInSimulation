@@ -21,7 +21,7 @@ public class Application extends AbstractJavaFxApplicationSupport implements App
 		ClientT.getIns().connect();
 
 //		明确登录用的身份
-		LoginController.USER_ROLE = RoleConst.STUDENT;
+		LoginController.USER_ROLE = RoleConst.ADMIN;
 
 		launch(Application.class, LoginView.class, args);
 	}

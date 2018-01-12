@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 
 import com.cas.sim.tis.consts.Session;
 import com.cas.sim.tis.consts.SystemInfo;
+import com.cas.sim.tis.entity.User;
 import com.cas.sim.tis.socket.message.handler.ServerHandler;
 import com.jme3.network.ConnectionListener;
 import com.jme3.network.HostedConnection;
@@ -48,8 +49,8 @@ public final class CoreServer implements IServer {
 
 		try {
 			server = Network.createServer(SystemInfo.APP_NAME, SystemInfo.APP_VERSION, port, port);
-			LOG.warn("主服务器地址：{}", InetAddress.getLocalHost());
-			LOG.warn("主服务器监听在{}端口上", port);
+			LOG.info("主服务器地址：{}", InetAddress.getLocalHost());
+			LOG.info("主服务器监听在{}端口上", port);
 
 			server.addConnectionListener(new ConnectionListener() {
 				@Override
@@ -60,8 +61,8 @@ public final class CoreServer implements IServer {
 				public void connectionRemoved(Server server, HostedConnection conn) {
 					boolean success = clients.remove(conn);
 					if (success) {
-						String userCode = conn.getAttribute(Session.KEY_LOGIN_USER_ID);
-						LOG.info("用户{}已断开连接, 当前客户端数量{}", userCode, clients.size());
+						User user = conn.getAttribute(Session.KEY_LOGIN_USER);
+						LOG.info("用户{}已断开连接, 当前客户端数量{}", user.getCode(), clients.size());
 					}
 				}
 			});

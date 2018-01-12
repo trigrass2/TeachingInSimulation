@@ -11,6 +11,7 @@
 		<module>tis-client-student</module>
 		<module>tis-client</module>
 		<!-- <module>tis-circuit</module> -->
+		<module>tis-client-admin</module>
 	</modules>
 	<name>仿真教学项目</name>
 	<properties>
@@ -198,6 +199,11 @@
 						<artifactId>slf4j-api</artifactId>
 					</exclusion>
 				</exclusions>
+			</dependency>
+			<dependency>
+				<groupId>javax.persistence</groupId>
+				<artifactId>persistence-api</artifactId>
+				<version>1.0</version>
 			</dependency>
 			<dependency>
 				<groupId>mysql</groupId>

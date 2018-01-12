@@ -48,8 +48,8 @@ public class LoginMessageHandler implements ServerHandler {
 //				检查老师或管理员的登录信息
 				user = teacherService.login(code, passwd);
 			} else {
-//				服务器就当做没看到。
-				return;
+//				服务器就当做没看到，转手甩个异常出去
+				throw new RuntimeException("这不是一个有效的用户");
 			}
 			List<HostedConnection> clients = CoreServer.getIns().getClients();
 //			进一步验证
@@ -76,10 +76,12 @@ public class LoginMessageHandler implements ServerHandler {
 				}
 			}
 		} catch (Exception e) {
-			LOG.warn("用户登录失败{}", e.getMessage());
+			LOG.warn("用户登录失败：{}", e.getMessage());
 //			登录失败：原因是登录信息错误
 			respMsg.setReason(LoginMessage.RESULT_FAILURE);
 			source.send(respMsg);
+
+			throw new RuntimeException("用户登录失败", e);
 		}
 	}
 

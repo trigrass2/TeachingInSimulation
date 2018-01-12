@@ -19,9 +19,7 @@ import com.cas.sim.tis.consts.SystemInfo;
 import com.cas.sim.tis.socket.CoreServer;
 import com.cas.sim.tis.socket.FileServer;
 import com.cas.sim.tis.socket.message.LoginMessage;
-import com.cas.sim.tis.socket.message.ResourcesMessage;
 import com.cas.sim.tis.socket.message.handler.LoginMessageHandler;
-import com.cas.sim.tis.socket.message.handler.ResourcesMessageHandler;
 import com.cas.sim.tis.util.SpringUtil;
 import com.softkey.SoftKey;
 
@@ -31,7 +29,7 @@ import cas.lock.LockThread;
 @SpringBootApplication
 @EnableTransactionManagement
 // 在类中用注解@Mapper明确标出
-// @MapperScan("com.cas.sim.tis.mapper") 
+//@MapperScan("com.cas.sim.tis.mapper")
 public class Application implements CommandLineRunner {
 
 	public static void main(String[] args) {
@@ -129,7 +127,5 @@ public class Application implements CommandLineRunner {
 
 //		登录消息
 		CoreServer.getIns().registerMessageHandler(LoginMessage.class, SpringUtil.getBean(LoginMessageHandler.class));
-//		资源消息
-		CoreServer.getIns().registerMessageHandler(ResourcesMessage.class, SpringUtil.getBean(ResourcesMessageHandler.class));
 	}
 }
