@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.cas.sim.tis.entity.Student;
 import com.cas.sim.tis.entity.User;
 import com.cas.sim.tis.mapper.StudentMapper;
+import com.cas.sim.tis.services.ServiceException;
 import com.cas.sim.tis.services.StudentService;
 import com.cas.sim.tis.services.UserService;
 

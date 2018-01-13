@@ -17,15 +17,11 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import com.cas.authority.Consts;
 import com.cas.authority.validate.ValidateThread;
 import com.cas.sim.tis.consts.SystemInfo;
-import com.cas.sim.tis.entity.Resource;
 import com.cas.sim.tis.socket.CoreServer;
 import com.cas.sim.tis.socket.FileServer;
 import com.cas.sim.tis.socket.message.LoginMessage;
-import com.cas.sim.tis.socket.message.ResourcesMessage;
 import com.cas.sim.tis.socket.message.handler.LoginMessageHandler;
-import com.cas.sim.tis.socket.message.handler.ResourcesMessageHandler;
 import com.cas.sim.tis.util.SpringUtil;
-import com.jme3.network.serializing.Serializer;
 import com.softkey.SoftKey;
 
 import cas.lock.ILockResult;
@@ -139,10 +135,7 @@ public class Application implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-		Serializer.registerClass(Resource.class);
 //		登录消息
 		CoreServer.getIns().registerMessageHandler(LoginMessage.class, SpringUtil.getBean(LoginMessageHandler.class));
-//		请求资源消息
-		CoreServer.getIns().registerMessageHandler(ResourcesMessage.class, SpringUtil.getBean(ResourcesMessageHandler.class));
 	}
 }

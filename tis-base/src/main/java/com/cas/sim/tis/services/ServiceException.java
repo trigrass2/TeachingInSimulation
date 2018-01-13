@@ -1,4 +1,4 @@
-package com.cas.sim.tis.services.impl;
+package com.cas.sim.tis.services;
 
 /**
  * 服务（业务）异常如“ 账号或密码错误 ”，该异常只做INFO级别的日志记录

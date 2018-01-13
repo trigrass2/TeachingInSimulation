@@ -27,8 +27,7 @@ public class Application extends AbstractJavaFxApplicationSupport implements App
 		SLF4JBridgeHandler.removeHandlersForRootLogger();
 		Logger.getLogger("").setLevel(Level.FINEST);
 		SLF4JBridgeHandler.install();
-		
-		
+
 		ClientT.getIns().connect();
 
 //		明确登录用的身份

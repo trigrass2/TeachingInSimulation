@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.cas.sim.tis.mapper.IMapper;
 import com.cas.sim.tis.services.BaseService;
+import com.cas.sim.tis.services.ServiceException;
 
 import tk.mybatis.mapper.entity.Condition;
 

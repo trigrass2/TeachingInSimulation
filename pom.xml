@@ -27,6 +27,8 @@
 		<springboot-javafx.version>2.1.5</springboot-javafx.version>
 		<!-- Spring分页插件版本 -->
 		<spring-pagehelper.version>1.2.3</spring-pagehelper.version>
+
+		<pagehelper.version>5.1.2</pagehelper.version>
 		<!-- 数据库连接驱动版本 -->
 		<mysql.version>5.1.44</mysql.version>
 		<!-- 数据库连接池、数据监控 -->
@@ -286,6 +288,11 @@
 						<artifactId>spring-boot-autoconfigure</artifactId>
 					</exclusion>
 				</exclusions>
+			</dependency>
+			<dependency>
+				<groupId>com.github.pagehelper</groupId>
+				<artifactId>pagehelper</artifactId>
+				<version>${pagehelper.version}</version>
 			</dependency>
 			<!-- https://mvnrepository.com/artifact/com.alibaba/fastjson -->
 			<dependency>

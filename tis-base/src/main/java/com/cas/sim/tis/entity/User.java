@@ -1,12 +1,18 @@
 package com.cas.sim.tis.entity;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.Id;
+import javax.persistence.Transient;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
-public class User {
+public class User implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4521912822438530684L;
 	@Id
 	private Integer id;
 //	姓名（用于显示）
@@ -20,6 +26,9 @@ public class User {
 
 	@DateTimeFormat(pattern = "yyyy-MM-dd hh:mm:ss")
 	protected Date updateDate;
+
+	@Transient
+	protected Integer role;
 
 	protected Integer del = 0;
 
@@ -77,6 +86,14 @@ public class User {
 
 	public void setUpdateDate(Date updateDate) {
 		this.updateDate = updateDate;
+	}
+
+	public Integer getRole() {
+		return role;
+	}
+
+	public void setRole(Integer role) {
+		this.role = role;
 	}
 
 }

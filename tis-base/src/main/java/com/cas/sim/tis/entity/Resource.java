@@ -1,15 +1,18 @@
 package com.cas.sim.tis.entity;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Id;
 
-import com.jme3.network.serializing.Serializable;
-
 //资源
-@Serializable
-public class Resource {
+public class Resource implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 5682087546758059830L;
+
 	public static final int RES_WORD = 0;
 	public static final int RES_PPT = 1;
 	public static final int RES_EXCEL = 2;
