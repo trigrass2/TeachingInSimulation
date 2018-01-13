@@ -7,8 +7,10 @@ package com.cas.sim.tis.view.controller;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-import com.cas.sim.tis.socket.ClientT;
+import javax.annotation.Resource;
+
 import com.cas.sim.tis.socket.message.LoginMessage;
+import com.jme3.network.Client;
 
 import de.felixroske.jfxsupport.FXMLController;
 import javafx.event.ActionEvent;
@@ -26,6 +28,9 @@ import javafx.scene.layout.AnchorPane;
 @FXMLController
 public class LoginController extends AnchorPane implements Initializable {
 	public static int USER_ROLE = -1;
+	
+	@Resource
+	private Client client;
 	
 	@FXML
 	TextField userId;
@@ -48,7 +53,7 @@ public class LoginController extends AnchorPane implements Initializable {
 		msg.setUserType(USER_ROLE);
 		msg.setUserCode(userId.getText());
 		msg.setUserPwd(password.getText());
-		ClientT.getIns().send(msg);
+		client.send(msg);
 	}
 
 	public void setErrorMsg(String msg) {

@@ -6,16 +6,19 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Component;
 
+import com.cas.sim.tis.config.ServerConfig;
 import com.cas.sim.tis.consts.RoleConst;
 import com.cas.sim.tis.consts.Session;
 import com.cas.sim.tis.entity.User;
 import com.cas.sim.tis.services.UserService;
-import com.cas.sim.tis.socket.CoreServer;
 import com.cas.sim.tis.socket.message.LoginMessage;
 import com.jme3.network.HostedConnection;
 
 @Component
 public class LoginMessageHandler implements ServerHandler<LoginMessage> {
+
+	@Resource
+	private ServerConfig serverConfig;
 
 	@Resource(name = "studentService")
 	private UserService studentService;
@@ -48,9 +51,9 @@ public class LoginMessageHandler implements ServerHandler<LoginMessage> {
 //				服务器就当做没看到，转手甩个异常出去
 				throw new RuntimeException("这不是一个有效的用户");
 			}
-			List<HostedConnection> clients = CoreServer.getIns().getClients();
+			List<HostedConnection> clients = serverConfig.getClients();
 //			进一步验证
-			if (clients.size() >= CoreServer.getIns().getMaxClientNum()) {
+			if (clients.size() >= serverConfig.getMaxLogin()) {
 				LOG.warn("客户端数量已经达到上限{}", clients.size());
 //				告诉这个用户，当前用户已满，
 				respMsg.setResult(LoginMessage.RESULT_MAX_SIZE);

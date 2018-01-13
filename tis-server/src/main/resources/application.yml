@@ -22,6 +22,12 @@ mapper:
   - com.cas.sim.tis.mapper.TeacherMapper
 pagehelper:
   dialect: com.github.pagehelper.dialect.helper.MySqlDialect
+server: 
+  max-login: 50                                       #服务器允许同时在线的人数
+  port: 9000                                          #服务器默认端口号
+  rmi:
+    registry: 1099                                    #系统默认的RMI访问端口
+    service: 1098                                     #系统默认的RMI数据传输访问端口，不指定则系统随机分配
 spring: 
   datasource:
     type: com.alibaba.druid.pool.DruidDataSource      # 配置当前要使用的数据源的操作类型

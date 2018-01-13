@@ -25,7 +25,7 @@ import com.jme3.network.Network;
 import com.jme3.network.Server;
 import com.jme3.network.serializing.Serializer;
 
-public final class CoreServer implements IServer {
+public  class CoreServer implements IServer {
 	private static final Logger LOG = LoggerFactory.getLogger(CoreServer.class);
 
 	private static final CoreServer ins = new CoreServer();
@@ -36,58 +36,6 @@ public final class CoreServer implements IServer {
 	private Server server;
 
 	private Map<Class<? extends Message>, ServerHandler> messageHandlerClass = new HashMap<>();
-
-	private CoreServer() {
-		Properties prop = new Properties();
-		int port = 9999;
-		try {
-			prop.load(Files.newInputStream(Paths.get("server.properties")));
-			port = Integer.parseInt(prop.getProperty("server.port"));
-		} catch (Exception e) {
-			LOG.warn("解析文件server.properties失败！错误原因{}", e.getMessage());
-		}
-
-		try {
-			server = Network.createServer(SystemInfo.APP_NAME, SystemInfo.APP_VERSION, port, port);
-			LOG.info("主服务器地址：{}", InetAddress.getLocalHost());
-			LOG.info("主服务器监听在{}端口上", port);
-
-			server.addConnectionListener(new ConnectionListener() {
-				@Override
-				public void connectionAdded(Server server, HostedConnection conn) {
-				}
-
-				@Override
-				public void connectionRemoved(Server server, HostedConnection conn) {
-					boolean success = clients.remove(conn);
-					if (success) {
-						User user = conn.getAttribute(Session.KEY_LOGIN_USER);
-						LOG.info("用户{}已断开连接, 当前客户端数量{}", user.getCode(), clients.size());
-					}
-				}
-			});
-
-			server.addMessageListener(new MessageListener<HostedConnection>() {
-				@Override
-				public void messageReceived(HostedConnection client, Message m) {
-					LOG.info("收到客户端{}的消息{}", client.getAddress(), m.getClass().getName());
-					ServerHandler handler = messageHandlerClass.get(m.getClass());
-					if (handler != null) {
-						try {
-							handler.execute(client, m);
-							LOG.warn("服务器已经成功处理了消息:{}", m);
-						} catch (Exception e) {
-							LOG.warn("服务器在处理消息时出现了异常:{}", e.getMessage());
-						}
-					} else {
-						LOG.error("服务器无法处理消息:{}, 原因是缺少相应的 implements ServerHandler类", m.getClass());
-					}
-				}
-			});
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
 
 	public static CoreServer getIns() {
 		return ins;

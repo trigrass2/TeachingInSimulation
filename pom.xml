@@ -3,7 +3,7 @@
 	<groupId>com.cas.sim</groupId>
 	<artifactId>TeachingInSimulation</artifactId>
 	<packaging>pom</packaging>
-	<version>${project.version}</version>
+	<version>1.0.0-SNAPSHOT</version>
 	<modules>
 		<module>tis-base</module>
 		<module>tis-server</module>
@@ -338,6 +338,18 @@
 					<!-- <jfxAppOutputDir>E:\软件打包\资源\x64\电梯仿真软件\教师端</jfxAppOutputDir> -->
 					<!-- <nativeOutputDir>E:\软件打包\资源\x64\电梯仿真软件\教师端</nativeOutputDir> -->
 					<!-- </configuration> -->
+				</plugin>
+				<plugin>
+					<groupId>org.springframework.boot</groupId>
+					<artifactId>spring-boot-maven-plugin</artifactId>
+					<version>${springboot.version}</version>
+					<executions>
+						<execution>
+							<goals>
+								<goal>repackage</goal>
+							</goals>
+						</execution>
+					</executions>
 				</plugin>
 			</plugins>
 		</pluginManagement>
