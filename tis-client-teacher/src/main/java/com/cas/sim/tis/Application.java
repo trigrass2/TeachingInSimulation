@@ -13,8 +13,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import com.cas.sim.tis.config.ClientConfig;
 import com.cas.sim.tis.consts.RoleConst;
-import com.cas.sim.tis.socket.message.LoginMessage;
-import com.cas.sim.tis.socket.message.handler.LoginMessageHandler;
+import com.cas.sim.tis.message.LoginMessage;
+import com.cas.sim.tis.message.handler.LoginMessageHandler;
 import com.cas.sim.tis.util.SpringUtil;
 import com.cas.sim.tis.view.LoginView;
 import com.cas.sim.tis.view.controller.LoginController;

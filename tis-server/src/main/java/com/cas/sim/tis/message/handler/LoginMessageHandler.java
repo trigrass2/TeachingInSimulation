@@ -1,4 +1,4 @@
-package com.cas.sim.tis.socket.message.handler;
+package com.cas.sim.tis.message.handler;
 
 import java.util.List;
 
@@ -10,8 +10,8 @@ import com.cas.sim.tis.config.ServerConfig;
 import com.cas.sim.tis.consts.RoleConst;
 import com.cas.sim.tis.consts.Session;
 import com.cas.sim.tis.entity.User;
+import com.cas.sim.tis.message.LoginMessage;
 import com.cas.sim.tis.services.UserService;
-import com.cas.sim.tis.socket.message.LoginMessage;
 import com.jme3.network.HostedConnection;
 
 @Component

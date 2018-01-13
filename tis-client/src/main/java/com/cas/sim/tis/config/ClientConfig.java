@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import com.cas.sim.tis.consts.SystemInfo;
-import com.cas.sim.tis.socket.message.handler.ClientHandler;
+import com.cas.sim.tis.message.handler.ClientHandler;
 import com.jme3.network.Client;
 import com.jme3.network.Message;
 import com.jme3.network.MessageListener;

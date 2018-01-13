@@ -9,7 +9,7 @@ import java.util.ResourceBundle;
 
 import javax.annotation.Resource;
 
-import com.cas.sim.tis.socket.message.LoginMessage;
+import com.cas.sim.tis.message.LoginMessage;
 import com.jme3.network.Client;
 
 import de.felixroske.jfxsupport.FXMLController;

@@ -11,8 +11,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import com.cas.sim.tis.config.ServerConfig;
-import com.cas.sim.tis.socket.message.LoginMessage;
-import com.cas.sim.tis.socket.message.handler.LoginMessageHandler;
+import com.cas.sim.tis.message.LoginMessage;
+import com.cas.sim.tis.message.handler.LoginMessageHandler;
 import com.cas.sim.tis.util.SpringUtil;
 import com.jme3.network.Server;
 

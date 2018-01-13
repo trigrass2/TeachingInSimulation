@@ -1,4 +1,4 @@
-package com.cas.sim.tis.socket.message;
+package com.cas.sim.tis.message;
 
 import com.jme3.network.AbstractMessage;
 import com.jme3.network.serializing.Serializable;

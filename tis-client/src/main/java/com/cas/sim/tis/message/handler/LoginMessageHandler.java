@@ -1,4 +1,4 @@
-package com.cas.sim.tis.socket.message.handler;
+package com.cas.sim.tis.message.handler;
 
 import java.util.Locale;
 
@@ -7,7 +7,7 @@ import javax.annotation.Resource;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Component;
 
-import com.cas.sim.tis.socket.message.LoginMessage;
+import com.cas.sim.tis.message.LoginMessage;
 import com.cas.sim.tis.util.SpringUtil;
 import com.cas.sim.tis.view.controller.LoginController;
 import com.jme3.network.Client;

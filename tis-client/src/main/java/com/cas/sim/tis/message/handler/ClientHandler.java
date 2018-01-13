@@ -1,4 +1,4 @@
-package com.cas.sim.tis.socket.message.handler;
+package com.cas.sim.tis.message.handler;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

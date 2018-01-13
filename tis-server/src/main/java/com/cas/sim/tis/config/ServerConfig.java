@@ -22,7 +22,7 @@ import org.springframework.context.annotation.Configuration;
 import com.cas.sim.tis.consts.Session;
 import com.cas.sim.tis.consts.SystemInfo;
 import com.cas.sim.tis.entity.User;
-import com.cas.sim.tis.socket.message.handler.ServerHandler;
+import com.cas.sim.tis.message.handler.ServerHandler;
 import com.jme3.network.ConnectionListener;
 import com.jme3.network.HostedConnection;
 import com.jme3.network.Message;
