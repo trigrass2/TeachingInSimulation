@@ -54,10 +54,10 @@ public class LoginMessageHandler implements ServerHandler<LoginMessage> {
 			List<HostedConnection> clients = serverConfig.getClients();
 //			进一步验证
 			if (clients.size() >= serverConfig.getMaxLogin()) {
-				LOG.warn("客户端数量已经达到上限{}", clients.size());
 //				告诉这个用户，当前用户已满，
 				respMsg.setResult(LoginMessage.RESULT_MAX_SIZE);
 				source.send(respMsg);
+				throw new RuntimeException("客户端数量已经达到上限");
 			} else {
 //				检查用户是否已经登录了
 				boolean exist = clients.stream().filter(c -> user.getId() == c.getAttribute(Session.KEY_LOGIN_USER_ID)).findAny().isPresent();
@@ -76,7 +76,6 @@ public class LoginMessageHandler implements ServerHandler<LoginMessage> {
 				}
 			}
 		} catch (Exception e) {
-			LOG.warn("用户登录失败：{}", e.getMessage());
 //			登录失败：原因是登录信息错误
 			respMsg.setResult(LoginMessage.RESULT_FAILURE);
 			source.send(respMsg);

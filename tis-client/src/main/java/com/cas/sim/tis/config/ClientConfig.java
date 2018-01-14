@@ -43,17 +43,17 @@ public class ClientConfig {
 		client.addMessageListener(new MessageListener<Client>() {
 			@Override
 			public void messageReceived(Client client, Message m) {
-				LOG.info("收到服务器的消息{}", m.getClass().getName());
+				LOG.info("收到消息{}", m.getClass().getName());
 				ClientHandler<Message> handler = messageHandlerClass.get(m.getClass());
 				if (handler != null) {
 					try {
 						handler.execute(client, m);
-						LOG.warn("已经成功处理了消息");
+						LOG.info("消息处理成功");
 					} catch (Exception e) {
-						LOG.warn("在处理消息时出现了异常{}", e.getMessage());
+						LOG.warn("消息处理失败", e);
 					}
 				} else {
-					LOG.error("无法处理消息{}", m.getClass());
+					LOG.error("无法处理消息{}，缺少相应的处理类，Eg:public class {} implements ClientHandler\\{\\}", m.getClass(), m.getClass().getSimpleName());
 				}
 			}
 		});

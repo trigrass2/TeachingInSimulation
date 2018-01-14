@@ -45,8 +45,6 @@ public class ServerConfig {
 	private Integer port;
 	@Value(value = "${server.ftp.port}")
 	private Integer ftpPort;
-	
-	
 
 	@Bean
 	public FtpServer createFtpServer() {
@@ -102,12 +100,12 @@ public class ServerConfig {
 				if (handler != null) {
 					try {
 						handler.execute(client, m);
-						LOG.warn("服务器已经成功处理了消息:{}", m);
+						LOG.debug("消息处理成功");
 					} catch (Exception e) {
-						LOG.warn("服务器在处理消息时出现了异常:{}", e.getMessage());
+						LOG.warn("消息处理失败", e);
 					}
 				} else {
-					LOG.error("服务器无法处理消息:{}, 原因是缺少相应的 implements ServerHandler类", m.getClass());
+					LOG.error("无法处理消息{}，缺少相应的处理类，Eg:public class {} implements ServerHandler\\{\\}", m.getClass(), m.getClass().getSimpleName());
 				}
 			}
 		});
