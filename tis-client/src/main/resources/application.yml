@@ -2,7 +2,7 @@ spring:
   messages:
     basename: i18n/messages                           # SpringBoot国际化处理
 server:
-  address: 192.168.1.23
+  address: 192.168.0.103
   port: 9000
   rmi:
     registry: 1099                                    #系统默认的RMI访问端口

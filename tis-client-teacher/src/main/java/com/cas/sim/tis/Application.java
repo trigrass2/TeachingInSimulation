@@ -31,15 +31,19 @@ public class Application extends AbstractJavaFxApplicationSupport implements App
 	private Client client;
 
 	public static void main(String[] args) {
-		LogManager.getLogManager().reset();
-		SLF4JBridgeHandler.removeHandlersForRootLogger();
-		Logger.getLogger("").setLevel(Level.FINEST);
-		SLF4JBridgeHandler.install();
+		jul2slf4j();
 
 //		明确登录用的身份
 		LoginController.USER_ROLE = RoleConst.TEACHER;
 
 		launch(Application.class, LoginView.class, args);
+	}
+
+	private static void jul2slf4j() {
+		LogManager.getLogManager().reset();
+		SLF4JBridgeHandler.removeHandlersForRootLogger();
+		Logger.getLogger("").setLevel(Level.FINEST);
+		SLF4JBridgeHandler.install();
 	}
 
 	@Override

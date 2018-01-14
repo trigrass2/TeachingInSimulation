@@ -30,10 +30,15 @@ public class ClientConfig {
 	private Integer port;
 
 	@Bean(name = "jmeClient")
-	public Client buildClient() throws IOException {
+	public Client buildClient() {
 		Client client = null;
-		client = Network.connectToServer(SystemInfo.APP_NAME, SystemInfo.APP_VERSION, address, port);
-		LOG.warn("成功连接至服务器{}:{}", address, port);
+		try {
+			client = Network.connectToServer(SystemInfo.APP_NAME, SystemInfo.APP_VERSION, address, port);
+			LOG.info("成功连接至服务器{}:{}", address, port);
+		} catch (IOException e) {
+			LOG.error("连接服务器失败！信息[地址：{},端口：{}]", address, port);
+			throw new RuntimeException(e.getMessage());
+		}
 
 		client.addMessageListener(new MessageListener<Client>() {
 			@Override
@@ -52,13 +57,12 @@ public class ClientConfig {
 				}
 			}
 		});
-		LOG.warn("连接服务器失败！信息[地址：{},端口：{}]", address, port);
 		return client;
 	}
 
 	@SuppressWarnings("unchecked")
 	public void registerMessageHandler(Class<? extends Message> msgClass, ClientHandler<? extends Message> handler) {
-//		注册jme消息
+		// 注册jme消息
 		Serializer.registerClass(msgClass);
 		messageHandlerClass.put(msgClass, (ClientHandler<Message>) handler);
 	}

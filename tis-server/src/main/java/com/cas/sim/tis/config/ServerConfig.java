@@ -43,6 +43,10 @@ public class ServerConfig {
 	private Integer maxLogin;
 	@Value(value = "${server.port}")
 	private Integer port;
+	@Value(value = "${server.ftp.port}")
+	private Integer ftpPort;
+	
+	
 
 	@Bean
 	public FtpServer createFtpServer() {
@@ -61,7 +65,7 @@ public class ServerConfig {
 
 //      配置FTP端口
 		ListenerFactory listenerFactory = new ListenerFactory();
-		listenerFactory.setPort(21); // 默认21， 可以按需配置
+		listenerFactory.setPort(ftpPort); // 默认21， 可以按需配置
 
 		serverFactory.addListener("default", listenerFactory.createListener());
 
