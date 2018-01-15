@@ -39,9 +39,9 @@ public class ServerConfig {
 
 	private Map<Class<? extends Message>, ServerHandler<Message>> messageHandlerClass = new HashMap<>();
 
-	@Value(value = "${server.max-login}")
+	@Value(value = "${server.base.max-login}")
 	private Integer maxLogin;
-	@Value(value = "${server.port}")
+	@Value(value = "${server.base.port}")
 	private Integer port;
 	@Value(value = "${server.ftp.port}")
 	private Integer ftpPort;

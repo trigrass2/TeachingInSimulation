@@ -1,6 +1,5 @@
 package com.cas.sim.tis.services;
 
-import java.rmi.RemoteException;
 import java.util.List;
 
 import com.cas.sim.tis.entity.Resource;
@@ -16,7 +15,7 @@ public interface ResourceService extends BaseService<Resource> {
 	 * @return
 	 * @throws RemoteException
 	 */
-	PageInfo<Resource> findResources(User user, int pagination, int pageSize, List<Integer> resourceTypes) throws RemoteException;
+	PageInfo<Resource> findResources(User user, int pagination, int pageSize, List<Integer> resourceTypes);
 
 	/**
 	 * @param user 当前用户
@@ -27,5 +26,5 @@ public interface ResourceService extends BaseService<Resource> {
 	 * @return
 	 * @throws RemoteException
 	 */
-	PageInfo<Resource> findResources(User user, int pagination, int pageSize, List<Integer> resourceTypes, String keyWord) throws RemoteException;
+	PageInfo<Resource> findResources(User user, int pagination, int pageSize, List<Integer> resourceTypes, String keyWord);
 }
