@@ -11,7 +11,7 @@ import com.cas.sim.tis.services.StudentService;
 
 @Configuration
 public class ClientRMIConfig {
-	@Value("${server.address}")
+	@Value("${server.base.address}")
 	private String server;
 
 	@Value("${server.rmi.registry}")

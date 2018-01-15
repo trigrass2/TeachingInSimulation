@@ -23,10 +23,10 @@ public class ClientConfig {
 	private final static Logger LOG = LoggerFactory.getLogger(ClientConfig.class);
 	private Map<Class<? extends Message>, ClientHandler<Message>> messageHandlerClass = new HashMap<>();
 
-	@Value(value = "${server.address}")
+	@Value(value = "${server.base.address}")
 	private String address;
 
-	@Value(value = "${server.port}")
+	@Value(value = "${server.base.port}")
 	private Integer port;
 
 	@Bean(name = "jmeClient")
@@ -36,7 +36,7 @@ public class ClientConfig {
 			client = Network.connectToServer(SystemInfo.APP_NAME, SystemInfo.APP_VERSION, address, port);
 			LOG.info("成功连接至服务器{}:{}", address, port);
 		} catch (IOException e) {
-			LOG.error("连接服务器失败！信息[地址：{},端口：{}]", address, port);
+			LOG.error("连接服务器失败！服务器信息[地址：{},端口：{}]", address, port);
 			throw new RuntimeException(e.getMessage());
 		}
 
