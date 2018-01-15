@@ -1,6 +1,5 @@
 package com.cas.sim.tis.services.impl;
 
-import java.rmi.RemoteException;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -25,12 +24,12 @@ public class ResourceServiceImpl extends AbstractService<Resource> implements Re
 	private ClassService classService;
 
 	@Override
-	public PageInfo<Resource> findResources(User user, int pagination, int pageSize, List<Integer> resourceTypes) throws RemoteException {
+	public PageInfo<Resource> findResources(User user, int pagination, int pageSize, List<Integer> resourceTypes) {
 		return findResources(user, pagination, pageSize, resourceTypes, null);
 	}
 
 	@Override
-	public PageInfo<Resource> findResources(User user, int pagination, int pageSize, List<Integer> resourceTypes, String keyWord) throws RemoteException {
+	public PageInfo<Resource> findResources(User user, int pagination, int pageSize, List<Integer> resourceTypes, String keyWord) {
 //		获取当前登陆者身份信息
 		if (user == null) {
 			return null;
