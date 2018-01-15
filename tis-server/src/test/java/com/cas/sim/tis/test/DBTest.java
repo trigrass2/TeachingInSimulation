@@ -11,10 +11,18 @@ import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.serializer.SimplePropertyPreFilter;
 import com.cas.sim.tis.Application;
+import com.cas.sim.tis.entity.Examination;
+import com.cas.sim.tis.entity.ExaminationAnswer;
 import com.cas.sim.tis.entity.Section;
 import com.cas.sim.tis.entity.Teacher;
+import com.cas.sim.tis.entity.json.QuestionIds;
 import com.cas.sim.tis.mapper.ClassMapper;
+import com.cas.sim.tis.mapper.ExaminationAnswerMapper;
+import com.cas.sim.tis.mapper.ExaminationMapper;
 import com.cas.sim.tis.mapper.IMapper;
 import com.cas.sim.tis.mapper.LessonMapper;
 import com.cas.sim.tis.mapper.LessonResourceMapper;
@@ -36,6 +44,10 @@ import com.cas.sim.tis.mapper.TeacherMapper;
 public class DBTest {
 	@Resource
 	private ClassMapper classMapper;
+	@Resource
+	private ExaminationMapper examinationMapper;
+	@Resource
+	private ExaminationAnswerMapper examinationAnswerMapper;
 	@Resource
 	private LessonMapper lessonMapper;
 	@Resource
@@ -69,6 +81,8 @@ public class DBTest {
 	public void testShow() {
 		List<IMapper<?>> mappers = new ArrayList<>();
 		mappers.add(classMapper);
+		mappers.add(examinationMapper);
+		mappers.add(examinationAnswerMapper);
 		mappers.add(lessonMapper);
 		mappers.add(lessonResourceMapper);
 		mappers.add(libraryMapper);
@@ -77,8 +91,8 @@ public class DBTest {
 		mappers.add(judgmentMapper);
 		mappers.add(questionMapper);
 
-		mappers.add(circuitryMapper);
-		mappers.add(cognitionMapper);
+//		mappers.add(circuitryMapper);
+//		mappers.add(cognitionMapper);
 
 		mappers.add(resourceMapper);
 		mappers.add(schematicMapper);
@@ -182,6 +196,47 @@ public class DBTest {
 			sectionList.add(teacher);
 		}
 		sectionMapper.insertList(sectionList);
+	}
+
+	@Test
+	public void testExamination() throws Exception {
+		Examination examination = new Examination();
+		examination.setName("测试试题-1");
+		examination.setCreateDate(new Date());
+		examination.setCreatorId(7);
+		List<QuestionIds> questionIds = new ArrayList<>();
+		questionIds.add(new QuestionIds(1, 1));
+		questionIds.add(new QuestionIds(1, 3));
+		questionIds.add(new QuestionIds(1, 5));
+		questionIds.add(new QuestionIds(2, 6));
+
+		SimplePropertyPreFilter filter = new SimplePropertyPreFilter(QuestionIds.class, "i", "t");
+		examination.setQuestionIds(JSONObject.toJSONString(questionIds, filter));
+
+		examinationMapper.insert(examination);
+
+		List<Examination> examinations = examinationMapper.selectAll();
+		examinations.forEach(System.out::println);
+	}
+
+	@Test
+	public void testExaminationAnswer() throws Exception {
+		ExaminationAnswer examination = new ExaminationAnswer();
+		examination.setSubmitTime(new Date());
+		examination.setExamId(4);
+		examination.setCreatorId(7);
+		List<QuestionIds> questionIds = new ArrayList<>();
+		questionIds.add(new QuestionIds(1, 1, "A"));
+		questionIds.add(new QuestionIds(1, 3, "1"));
+		questionIds.add(new QuestionIds(1, 5, "B"));
+		questionIds.add(new QuestionIds(2, 6, "你"));
+		
+		examination.setAnswers(JSON.toJSONString(questionIds));
+
+		examinationAnswerMapper.insert(examination);
+
+		List<ExaminationAnswer> examinations = examinationAnswerMapper.selectAll();
+		examinations.forEach(System.out::println);
 	}
 
 }

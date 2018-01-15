@@ -1,25 +1,8 @@
 mybatis:
   config-location: classpath:mybatis/mybatis.cfg.xml  # MyBatis配置文件路径
-  type-aliases-package: com.cas.authority.vo          # 定义所有操作类的别名所在包
+#  type-aliases-package: com.cas.sim.tis.entity        # 定义所有操作类的别名所在包
   mapper-locations:
   - classpath:mybatis/mapper/*.xml                    #所有的mapper映射
-mapper:
-  mappers:
-  - com.cas.sim.tis.mapper.ClassMapper
-  - com.cas.sim.tis.mapper.LessonMapper
-  - com.cas.sim.tis.mapper.LessonResourceMapper
-  - com.cas.sim.tis.mapper.LibraryMapper
-  - com.cas.sim.tis.mapper.QuestionMapper
-  - com.cas.sim.tis.mapper.QChoiceMapper
-  - com.cas.sim.tis.mapper.QCompletionMapper
-  - com.cas.sim.tis.mapper.QJudgmentMapper
-  - com.cas.sim.tis.mapper.RCircuitryMapper
-  - com.cas.sim.tis.mapper.RCognitionMapper
-  - com.cas.sim.tis.mapper.SchematicMapper
-  - com.cas.sim.tis.mapper.SectionMapper
-  - com.cas.sim.tis.mapper.ResourceMapper
-  - com.cas.sim.tis.mapper.StudentMapper
-  - com.cas.sim.tis.mapper.TeacherMapper
 pagehelper:
   dialect: com.github.pagehelper.dialect.helper.MySqlDialect
 server:
