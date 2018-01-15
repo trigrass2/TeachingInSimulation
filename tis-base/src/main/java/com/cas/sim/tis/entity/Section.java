@@ -24,6 +24,9 @@ public class Section {
 //	创建者ID
 	private Integer creatorId;
 
+//	学时
+	private Integer period = 0;
+
 	private Integer sort = 0;
 
 	private Date createDate;
@@ -72,6 +75,14 @@ public class Section {
 		this.creatorId = creatorId;
 	}
 
+	public Integer getPeriod() {
+		return period;
+	}
+
+	public void setPeriod(Integer period) {
+		this.period = period;
+	}
+
 	public Integer getSort() {
 		return sort;
 	}
@@ -108,5 +119,5 @@ public class Section {
 	public String toString() {
 		return "Section [id=" + id + ", name=" + name + ", lvl=" + lvl + ", upperId=" + upperId + ", creatorId=" + creatorId + ", sort=" + sort + ", createDate=" + createDate + ", updateDate=" + updateDate + ", del=" + del + "]";
 	}
-	
+
 }
