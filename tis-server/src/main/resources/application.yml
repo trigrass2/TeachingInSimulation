@@ -34,7 +34,7 @@ spring:
   datasource:
     type: com.alibaba.druid.pool.DruidDataSource      # 配置当前要使用的数据源的操作类型
     driver-class-name: com.mysql.jdbc.Driver          # 配置MySQL的驱动程序类
-    url: jdbc:mysql://localhost:3306/db_cas_electrical?useUnicode=true&characterEncoding=UTF-8&useSSL=false    # 数据库连接地址
+    url: jdbc:mysql://192.168.1.19:3306/db_cas_electrical?useUnicode=true&characterEncoding=UTF-8&useSSL=false    # 数据库连接地址
     username: root                                    # 数据库用户名
     password: mysqladmin                              # 数据库连接密码
     dbcp2:                                            # 数据库连接池的配置 
