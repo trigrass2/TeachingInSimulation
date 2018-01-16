@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.VBox?>
+<?import com.cas.sim.tis.view.control.imp.Title?>
+
+
+<fx:root spacing="30.0" stylesheets="@../static/css/basic.css" type="VBox" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
+	<children>
+		<Title title="学习目标" />
+		<VBox spacing="10.0">
+			<children>
+				<Label styleClass="font14" text="职业素质目标（A）" />
+				<CheckBox mnemonicParsing="false" selected="true" styleClass="font14" text="学会型腔铣、等高铣等多种加工方法在凸模零件中的..." />
+				<Label styleClass="font14" text="知识目标（K）" />
+				<CheckBox mnemonicParsing="false" selected="true" styleClass="font14" text="学会型腔铣、等高铣等多种加工方法在凸模零件中的..." />
+				<Label styleClass="font14" text="技能目标（S）" />
+				<CheckBox mnemonicParsing="false" styleClass="font14" text="学会合理设置加工参数" />
+			</children>
+			<padding>
+				<Insets left="25.0" />
+			</padding>
+		</VBox>
+	</children>
+</fx:root>

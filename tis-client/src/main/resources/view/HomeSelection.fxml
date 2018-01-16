@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.String?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Text?>
+
+
+<fx:root alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="210.0" prefWidth="305.0" spacing="20.0" styleClass="home_selection" type="HBox" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <VBox prefHeight="200.0" prefWidth="100.0" spacing="30.0" HBox.hgrow="ALWAYS">
+         <children>
+            <Label fx:id="name" textFill="WHITE">
+               <styleClass>
+                  <String fx:value="label" />
+                  <String fx:value="font18" />
+               </styleClass>
+            </Label>
+            <Text fx:id="desc" fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="150.0" />
+         </children>
+      </VBox>
+      <ImageView fx:id="icon" fitHeight="95.0" fitWidth="95.0" pickOnBounds="true" preserveRatio="true" />
+   </children>
+   <padding>
+      <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+   </padding>
+</fx:root>

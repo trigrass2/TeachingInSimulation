@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
+
+<fx:root alignment="TOP_RIGHT" type="HBox" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
+	<children>
+		<Button mnemonicParsing="false" onAction="#min" styleClass="decoration">
+			<graphic>
+				<ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
+					<image>
+						<Image url="@../static/images/basic/min.png" />
+					</image>
+				</ImageView>
+			</graphic>
+		</Button>
+		<Button mnemonicParsing="false" onAction="#max" styleClass="decoration">
+			<graphic>
+				<ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
+					<image>
+						<Image url="@../static/images/basic/max.png" />
+					</image>
+				</ImageView>
+			</graphic>
+		</Button>
+		<Button mnemonicParsing="false" onAction="#close" styleClass="decoration">
+			<graphic>
+				<ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
+					<image>
+						<Image url="@../static/images/basic/close.png" />
+					</image>
+				</ImageView>
+			</graphic>
+		</Button>
+	</children>
+</fx:root>

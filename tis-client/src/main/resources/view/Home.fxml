@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.String?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.StackPane?>
+<?import com.cas.sim.tis.view.control.imp.Decoration?>
+<?import com.cas.sim.tis.view.control.imp.HomeMenu?>
+<?import com.cas.sim.tis.view.control.imp.HomeSelection?>
+
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="768.0" prefWidth="1366.0" style="-fx-background-image: url(/static/images/basic/bg.png);" stylesheets="@../static/css/basic.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
+	<children>
+		<VBox styleClass="cover">
+			<children>
+				<HBox alignment="CENTER_LEFT">
+					<children>
+						<HBox HBox.hgrow="ALWAYS">
+							<children>
+								<ImageView fitHeight="30.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true">
+									<image>
+										<Image url="@../static/images/basic/logo.png" />
+									</image>
+								</ImageView>
+							</children>
+							<padding>
+								<Insets left="15" top="10" />
+							</padding>
+						</HBox>
+						<Decoration />
+					</children>
+				</HBox>
+				<HBox>
+					<children>
+						<HBox HBox.hgrow="ALWAYS">
+							<children>
+								<HomeMenu menuName="我的班级" menuIcon="static/images/menu/class.png" />
+								<HomeMenu menuName="我的备课" menuIcon="static/images/menu/preparation.png" />
+								<HomeMenu menuName="成绩统计" menuIcon="static/images/menu/statistics.png" />
+								<HomeMenu menuName="考试题库" menuIcon="static/images/menu/library.png" />
+							</children>
+						</HBox>
+						<HBox alignment="CENTER_RIGHT" spacing="10">
+							<children>
+								<Label text="个人中心" textFill="WHITE">
+									<styleClass>
+										<String fx:value="label" />
+										<String fx:value="font18" />
+									</styleClass>
+								</Label>
+								<Button mnemonicParsing="false" styleClass="img_btn">
+									<graphic>
+										<ImageView fitHeight="75.0" fitWidth="75.0" pickOnBounds="true" preserveRatio="true">
+											<image>
+												<Image url="@../static/images/basic/avatar.png" />
+											</image>
+										</ImageView>
+									</graphic>
+								</Button>
+							</children>
+						</HBox>
+					</children>
+					<padding>
+						<Insets left="30" top="20" bottom="20" right="50" />
+					</padding>
+				</HBox>
+			</children>
+		</VBox>
+		<StackPane VBox.vgrow="ALWAYS">
+			<HBox alignment="CENTER" spacing="35">
+				<children>
+					<HomeSelection selectionName="认知" selectionIcon="static/images/selection/cognition.png" selectionDesc="让初学者对元器件、仪器仪表、常用工具有进本的了解，让学生了解元器件的内部的组成结构、拆装的顺序、元器件符号、元器件型号的含义等等。" />
+					<HomeSelection selectionName="典型案例" selectionIcon="static/images/selection/typical.png" selectionDesc="本软件中内置一些常用的典型案例，让学生掌握其电路原理、元器件的选择、电路布局及线路连接等。" />
+					<HomeSelection selectionName="自由接线" selectionIcon="static/images/selection/free.png" selectionDesc="用户可以在这个模块中根据电路图练习元器件实物的连接练习。" />
+					<HomeSelection selectionName="故障案例" selectionIcon="static/images/selection/repair.png" selectionDesc="用户可以在这个模块中根据电路图练习元器件实物的连接练习。" />
+				</children>
+			</HBox>
+		</StackPane>
+	</children>
+</VBox>

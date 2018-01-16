@@ -1,0 +1,252 @@
+.root{
+	-fx-text-background-color:#333333;
+}
+.label{
+	-fx-font-family: "微软雅黑";
+}
+.text{
+	-fx-font-family: "微软雅黑";
+}
+.en-label {
+	-fx-font-family:'Arial';
+}
+.en-label {
+	-fx-font-family:'Arial';
+}
+.font14{
+	-fx-font-size:14.0px;
+}
+.font16{
+	-fx-font-size:16.0px;
+}
+.font18{
+	-fx-font-size:18.0px;
+}
+/*******************************************************************************
+ *                                                                             *
+ * 滚动条样式                                                                  *
+ *                                                                             *
+ ******************************************************************************/
+.scroll-pane {
+    -fx-background-color: transparent;
+    -fx-background-insets: 0.0;
+}
+.scroll-pane > * {
+    -fx-background-color: transparent;
+}
+
+.scroll-pane:focused {
+    -fx-background-color: transparent;
+    -fx-background-insets: 0.0;
+}
+.scroll-bar> .thumb {
+    -fx-background-radius:0.0;
+}
+/*******************************************************************************
+ *                                                                             *
+ * 按钮样式                                                          *
+ *                                                                             *
+ ******************************************************************************/
+.button {
+	-fx-font-size:14.0px;
+	-fx-font-weight: bolder;
+	-fx-font-family: "微软雅黑";
+	-fx-cursor: hand;
+}
+.img_btn{
+	-fx-background-color: transparent;
+}
+.img_btn:hover{
+	-fx-effect:dropshadow(three-pass-box , #ffffbe, 5.0, 0.0 , 0.0, 0.0);
+}
+.decoration{
+	-fx-background-color: #224f7a;
+	-fx-background-radius: 0.0;
+	-fx-max-height: 30.0px;
+	-fx-max-width: 30.0px;
+	-fx-min-height: 30.0px;
+	-fx-min-width: 30.0px;
+}
+.decoration:hover {
+	-fx-background-color: #136989; 
+}
+.home_menu{
+	-fx-background-color: transparent;
+	-fx-background-radius: 10.0px;
+}
+.home_menu:hover{
+	-fx-background-color: #1cb8df22;
+	-fx-effect: dropshadow(three-pass-box , #136989, 5.0, 0.0 , 0.0, 0.0); 
+}
+.home_menu:pressed{
+	-fx-background-color: #1cb8df66;
+	-fx-effect: dropshadow(three-pass-box , #136989, 5.0, 0.0 , 0.0, 0.0); 
+}
+.home_selection{
+	-fx-background-color: #2c5381aa;
+	-fx-background-radius: 5.0px;
+	-fx-border-color: #97ccff;
+	-fx-border-radius: 5.0px;
+	-fx-border-width: 3.0px;
+	-fx-cursor: hand;
+}
+.home_selection:hover{
+	-fx-border-color: #ffb400;
+}
+/*******************************************************************************
+ *                                                                             *
+ * 左侧菜单栏显隐                                                          *
+ *                                                                             *
+ ******************************************************************************/
+.left_menu_btn{
+	-fx-background-color: #36a8a7;
+	-fx-background-radius: 0.0px;
+	-fx-max-width: 18.0px;
+	-fx-max-height: 30.0px;
+	-fx-min-width: 18.0px;
+	-fx-min-height: 30.0px;
+}
+.left_menu_btn:hover>.hide{
+	-fx-background-color: #267473aa;
+	-fx-effect:dropshadow(three-pass-box , #ffffbe, 5.0, 0.0 , 0.0, 0.0);
+}
+.left_menu_btn:hover>.show{
+	-fx-background-color: #267473aa;
+	-fx-effect:dropshadow(three-pass-box , #ffffbe, 5.0, 0.0 , 0.0, 0.0);
+}
+.left_menu_btn>.hide{
+	-fx-background-color: #267473;
+    -fx-padding: 0.375em 0.291em 0.375em 0.291em;
+    -fx-shape: "M 0 0 L -13 7 L 0 13 z";
+    -fx-scale-shape: true;
+}
+.left_menu_btn>.show{
+	-fx-background-color: #267473;
+    -fx-padding: 0.375em 0.291em 0.375em 0.291em;
+    -fx-shape: "M 0 0 L 13 7 L 0 13 z";
+    -fx-scale-shape: true;
+}
+/*******************************************************************************
+ *                                                                             *
+ * 遮罩样式                                                          *
+ *                                                                             *
+ ******************************************************************************/
+.cover{
+	-fx-background-color: #2c5381aa;
+}
+.left-cover{
+	-fx-background-color: #2c76a9aa;
+	-fx-border-color: #37a9a8;
+	-fx-border-width: 0.0 2.0 0.0 0.0;
+	-fx-max-width: 230.0px;
+	-fx-min-width: 230.0px;
+	-fx-spacing: 25.0px;
+}
+.top-cover{
+	-fx-background-color: #2b76a5aa;
+}
+.right-cover{
+	-fx-background-color:#fbfbfb;
+}
+/*******************************************************************************
+ *                                                                             *
+ * 树样式                                                          *
+ *                                                                             *
+ ******************************************************************************/
+ .leaf{
+ 	-fx-padding: 5.0px;
+ 	-fx-spacing: 5.0px;
+ 	-fx-border-width: 0.0px;
+ 	-fx-font-size:12.0px;
+ }
+ .leaf>.label{
+ 	-fx-text-fill:#ffffff;
+ }
+ .leaf>*>.label{
+ 	-fx-text-fill:#ffffff;
+ }
+ .leaf:hover{
+ 	/*-fx-effect:dropshadow(three-pass-box , #ffffbe, 5.0, 0.0 , 0.0, 0.0);*/
+ 	-fx-cursor: hand;
+ }
+ .leaf:hover>.label{
+ 	-fx-text-fill:#ff9e2c;
+ }
+ .leaf:hover>*>.label{
+ 	-fx-text-fill:#ff9e2c;
+ }
+ .lv1>*>.leaf{
+ 	-fx-background-color: #22678f;
+ 	-fx-font-size: 14.0px;
+ }
+ .lv4>*>.leaf{
+ 	-fx-border-color:#ffffff;
+ 	-fx-border-width: 0.0 0.0 1.0 0.0;
+ 	-fx-border-style:dashed;
+ }
+ .lv4:hover>*>.leaf{
+ 	-fx-border-color:#ff9e2c;
+ 	-fx-border-width: 0.0 0.0 1.0 0.0;
+ 	-fx-border-style:dashed;
+ }
+/*******************************************************************************
+ *                                                                             *
+ * 左侧菜单样式                                                          *
+ *                                                                             *
+ ******************************************************************************/
+ .left-menu{
+ 	-fx-background-color:transparent;
+ 	-fx-background-radius:0.0;
+ 	-fx-pref-height: 45.0px;
+ 	-fx-pref-width: 210.0px;
+ 	-fx-padding: 0.0 35.0px;
+ 	-fx-alignment: CENTER-LEFT;
+ }
+ .left-menu:hover{
+ 	-fx-background-color:#22678f;
+ }
+/*******************************************************************************
+ *                                                                             *
+ * 标题样式                                                          *
+ *                                                                             *
+ ******************************************************************************/
+ .title{
+ 	-fx-background-color: #ff9e2c;
+ 	-fx-background-radius: 0.0 20.0 20.0 0.0;
+ 	-fx-pref-height: 35.0px;
+ 	-fx-pref-width: 150.0px;
+ 	-fx-alignment: CENTER-LEFT;
+ }
+ .title>.icon{
+ 	-fx-pref-height: 5.0px;
+ 	-fx-pref-width: 5.0px;
+ 	-fx-max-height: 5.0px;
+ 	-fx-max-width: 5.0px;
+ 	-fx-padding: 0.375em 0.291em 0.375em 0.291em;
+ 	-fx-background-color: #ffffff;
+    -fx-shape: "M 0 0 L -13 7 L 0 13 z";
+    -fx-scale-shape: true;
+ }
+ /*******************************************************************************
+ *                                                                             *
+ * ASK多选框样式                                                          *
+ *                                                                             *
+ ******************************************************************************/
+.check-box{
+    -fx-background-color: #f6f6f6;
+    -fx-pref-height:40.0px;
+    -fx-pref-width: 390.0px;
+    -fx-padding: 10px;
+}
+.check-box > .box {
+	-fx-background-color: transparent;
+    -fx-padding: 0.25em; /* 3 -- padding from the outside edge to the mark */
+}
+.check-box > .box > .mark {
+    -fx-background-color: transparent;
+    -fx-background-insets: 1.0 0.0 -1.0 0.0, 0.0;
+    -fx-shape: "M0,4H2L3,6L6,0H8L4,8H2Z";
+}
+.check-box:selected > .box > .mark {
+    -fx-background-color: #2fcbd9;
+}
