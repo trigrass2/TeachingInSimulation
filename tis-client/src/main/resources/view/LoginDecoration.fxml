@@ -4,10 +4,20 @@
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.HBox?>
+<?import java.lang.String?>
 
 <fx:root alignment="TOP_RIGHT" type="HBox" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
 	<children>
-		<Button mnemonicParsing="false" onAction="#min" styleClass="decoration">
+		<Button mnemonicParsing="false" onAction="#more" styleClass="login-decoration">
+			<graphic>
+				<ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
+					<image>
+						<Image url="@../static/images/basic/more.png" />
+					</image>
+				</ImageView>
+			</graphic>
+		</Button>
+		<Button mnemonicParsing="false" onAction="#min" styleClass="login-decoration">
 			<graphic>
 				<ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
 					<image>
@@ -16,16 +26,7 @@
 				</ImageView>
 			</graphic>
 		</Button>
-		<Button fx:id="max" mnemonicParsing="false" onAction="#max" styleClass="decoration">
-			<graphic>
-				<ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
-					<image>
-						<Image url="@../static/images/basic/max.png" />
-					</image>
-				</ImageView>
-			</graphic>
-		</Button>
-		<Button mnemonicParsing="false" onAction="#close" styleClass="decoration">
+		<Button mnemonicParsing="false" onAction="#close" styleClass="login-decoration">
 			<graphic>
 				<ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
 					<image>

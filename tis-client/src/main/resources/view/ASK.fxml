@@ -13,11 +13,11 @@
 		<VBox spacing="10.0">
 			<children>
 				<Label styleClass="font14" text="职业素质目标（A）" />
-				<CheckBox mnemonicParsing="false" selected="true" styleClass="font14" text="学会型腔铣、等高铣等多种加工方法在凸模零件中的..." />
+				<CheckBox mnemonicParsing="false" selected="true" styleClass="ask-check-box" text="学会型腔铣、等高铣等多种加工方法在凸模零件中的..." />
 				<Label styleClass="font14" text="知识目标（K）" />
-				<CheckBox mnemonicParsing="false" selected="true" styleClass="font14" text="学会型腔铣、等高铣等多种加工方法在凸模零件中的..." />
+				<CheckBox mnemonicParsing="false" selected="true" styleClass="ask-check-box" text="学会型腔铣、等高铣等多种加工方法在凸模零件中的..." />
 				<Label styleClass="font14" text="技能目标（S）" />
-				<CheckBox mnemonicParsing="false" styleClass="font14" text="学会合理设置加工参数" />
+				<CheckBox mnemonicParsing="false" styleClass="ask-check-box" text="学会合理设置加工参数" />
 			</children>
 			<padding>
 				<Insets left="25.0" />

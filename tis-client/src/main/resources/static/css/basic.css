@@ -22,6 +22,9 @@
 .font18{
 	-fx-font-size:18.0px;
 }
+.error{
+	-fx-text-fill:#ff5656;
+}
 /*******************************************************************************
  *                                                                             *
  * 滚动条样式                                                                  *
@@ -53,11 +56,19 @@
 	-fx-font-family: "微软雅黑";
 	-fx-cursor: hand;
 }
-.img_btn{
+.img-btn{
 	-fx-background-color: transparent;
 }
-.img_btn:hover{
+.img-btn:hover{
 	-fx-effect:dropshadow(three-pass-box , #ffffbe, 5.0, 0.0 , 0.0, 0.0);
+}
+.blue-btn{
+	-fx-background-color: #19b0c6;
+	-fx-background-radius: 0.0px;
+	-fx-text-fill: #ffffff;
+}
+.blue-btn:hover{
+	-fx-background-color: #51bfcf;
 }
 .decoration{
 	-fx-background-color: #224f7a;
@@ -70,19 +81,53 @@
 .decoration:hover {
 	-fx-background-color: #136989; 
 }
-.home_menu{
+/*******************************************************************************
+ *                                                                             *
+ * 登录样式                                                          *
+ *                                                                             *
+ ******************************************************************************/
+ .login{
+ 	-fx-background-image: url(/static/images/basic/login-bg.png);
+ 	-fx-effect: dropshadow(three-pass-box , #373634, 5.0, 0.0 , 0.0, 0.0);
+ }
+ .login-decoration{
+	-fx-background-color: transparent;
+	-fx-background-radius: 0.0;
+	-fx-max-height: 30.0px;
+	-fx-max-width: 30.0px;
+	-fx-min-height: 30.0px;
+	-fx-min-width: 30.0px;
+}
+.login-decoration:hover {
+	-fx-background-color: #136989; 
+}
+/*******************************************************************************
+ *                                                                             *
+ * 服务器设置样式                                                          *
+ *                                                                             *
+ ******************************************************************************/
+ .network{
+ 	-fx-background-image: url(/static/images/basic/login-bg.png);
+ 	-fx-effect: dropshadow(three-pass-box , #373634, 5.0, 0.0 , 0.0, 0.0);
+ }
+/*******************************************************************************
+ *                                                                             *
+ * 主页样式                                                          *
+ *                                                                             *
+ ******************************************************************************/
+.home-menu{
 	-fx-background-color: transparent;
 	-fx-background-radius: 10.0px;
 }
-.home_menu:hover{
+.home-menu:hover{
 	-fx-background-color: #1cb8df22;
 	-fx-effect: dropshadow(three-pass-box , #136989, 5.0, 0.0 , 0.0, 0.0); 
 }
-.home_menu:pressed{
+.home-menu:pressed{
 	-fx-background-color: #1cb8df66;
 	-fx-effect: dropshadow(three-pass-box , #136989, 5.0, 0.0 , 0.0, 0.0); 
 }
-.home_selection{
+.home-selection{
 	-fx-background-color: #2c5381aa;
 	-fx-background-radius: 5.0px;
 	-fx-border-color: #97ccff;
@@ -90,7 +135,7 @@
 	-fx-border-width: 3.0px;
 	-fx-cursor: hand;
 }
-.home_selection:hover{
+.home-selection:hover{
 	-fx-border-color: #ffb400;
 }
 /*******************************************************************************
@@ -98,7 +143,7 @@
  * 左侧菜单栏显隐                                                          *
  *                                                                             *
  ******************************************************************************/
-.left_menu_btn{
+.left-menu-btn{
 	-fx-background-color: #36a8a7;
 	-fx-background-radius: 0.0px;
 	-fx-max-width: 18.0px;
@@ -106,21 +151,21 @@
 	-fx-min-width: 18.0px;
 	-fx-min-height: 30.0px;
 }
-.left_menu_btn:hover>.hide{
+.left-menu-btn:hover>.hide{
 	-fx-background-color: #267473aa;
 	-fx-effect:dropshadow(three-pass-box , #ffffbe, 5.0, 0.0 , 0.0, 0.0);
 }
-.left_menu_btn:hover>.show{
+.left-menu-btn:hover>.show{
 	-fx-background-color: #267473aa;
 	-fx-effect:dropshadow(three-pass-box , #ffffbe, 5.0, 0.0 , 0.0, 0.0);
 }
-.left_menu_btn>.hide{
+.left-menu-btn>.hide{
 	-fx-background-color: #267473;
     -fx-padding: 0.375em 0.291em 0.375em 0.291em;
     -fx-shape: "M 0 0 L -13 7 L 0 13 z";
     -fx-scale-shape: true;
 }
-.left_menu_btn>.show{
+.left-menu-btn>.show{
 	-fx-background-color: #267473;
     -fx-padding: 0.375em 0.291em 0.375em 0.291em;
     -fx-shape: "M 0 0 L 13 7 L 0 13 z";
@@ -224,7 +269,7 @@
  	-fx-max-width: 5.0px;
  	-fx-padding: 0.375em 0.291em 0.375em 0.291em;
  	-fx-background-color: #ffffff;
-    -fx-shape: "M 0 0 L -13 7 L 0 13 z";
+    -fx-shape: "M 0 0 L 13 7 L 0 13 z";
     -fx-scale-shape: true;
  }
  /*******************************************************************************
@@ -232,21 +277,22 @@
  * ASK多选框样式                                                          *
  *                                                                             *
  ******************************************************************************/
-.check-box{
+.ask-check-box{
     -fx-background-color: #f6f6f6;
     -fx-pref-height:40.0px;
     -fx-pref-width: 390.0px;
-    -fx-padding: 10px;
+    -fx-padding: 10.0px;
+    -fx-font-size: 14.0px;
 }
-.check-box > .box {
+.ask-check-box > .box {
 	-fx-background-color: transparent;
     -fx-padding: 0.25em; /* 3 -- padding from the outside edge to the mark */
 }
-.check-box > .box > .mark {
+.ask-check-box > .box > .mark {
     -fx-background-color: transparent;
     -fx-background-insets: 1.0 0.0 -1.0 0.0, 0.0;
     -fx-shape: "M0,4H2L3,6L6,0H8L4,8H2Z";
 }
-.check-box:selected > .box > .mark {
+.ask-check-box:selected > .box > .mark {
     -fx-background-color: #2fcbd9;
 }

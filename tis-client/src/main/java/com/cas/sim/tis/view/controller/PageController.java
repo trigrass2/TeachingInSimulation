@@ -39,8 +39,8 @@ public class PageController implements Initializable {
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-//		loadLeftMenu(new Tree());
-		loadLeftMenu(new PersonalMenu());
+		loadLeftMenu(new Tree());
+//		loadLeftMenu(new PersonalMenu());
 		loadContent(new Preparation());
 	}
 

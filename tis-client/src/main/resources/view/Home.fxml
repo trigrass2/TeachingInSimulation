@@ -15,7 +15,7 @@
 <?import com.cas.sim.tis.view.control.imp.HomeMenu?>
 <?import com.cas.sim.tis.view.control.imp.HomeSelection?>
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="768.0" prefWidth="1366.0" style="-fx-background-image: url(/static/images/basic/bg.png);" stylesheets="@../static/css/basic.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="768.0" prefWidth="1366.0" style="-fx-background-image: url(/static/images/basic/bg.png);-fx-background-size:stretch;" stylesheets="@../static/css/basic.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
 	<children>
 		<VBox styleClass="cover">
 			<children>
@@ -54,7 +54,7 @@
 										<String fx:value="font18" />
 									</styleClass>
 								</Label>
-								<Button mnemonicParsing="false" styleClass="img_btn">
+								<Button mnemonicParsing="false" styleClass="img-btn">
 									<graphic>
 										<ImageView fitHeight="75.0" fitWidth="75.0" pickOnBounds="true" preserveRatio="true">
 											<image>

@@ -10,6 +10,7 @@ import org.slf4j.bridge.SLF4JBridgeHandler;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ConfigurableApplicationContext;
 
 import com.cas.sim.tis.config.ClientConfig;
 import com.cas.sim.tis.consts.RoleConst;
@@ -21,6 +22,11 @@ import com.cas.sim.tis.view.controller.LoginController;
 import com.jme3.network.Client;
 
 import de.felixroske.jfxsupport.AbstractJavaFxApplicationSupport;
+import de.felixroske.jfxsupport.GUIState;
+import javafx.scene.Scene;
+import javafx.scene.layout.Region;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 @SpringBootApplication
 public class Application extends AbstractJavaFxApplicationSupport implements ApplicationRunner {
@@ -44,6 +50,15 @@ public class Application extends AbstractJavaFxApplicationSupport implements App
 		SLF4JBridgeHandler.removeHandlersForRootLogger();
 		Logger.getLogger("").setLevel(Level.FINEST);
 		SLF4JBridgeHandler.install();
+	}
+	
+	
+	@Override
+	public void beforeInitialView(Stage stage, ConfigurableApplicationContext ctx) {
+		GUIState.setScene(new Scene(new Region()));
+		GUIState.getScene().setFill(null);
+		stage.initStyle(StageStyle.TRANSPARENT);
+		super.beforeInitialView(stage, ctx);
 	}
 
 	@Override
