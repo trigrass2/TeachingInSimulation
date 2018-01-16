@@ -6,19 +6,30 @@ package com.cas.sim.tis.view.controller;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 import java.util.ResourceBundle;
 
 import javax.annotation.Resource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.support.BeanDefinitionBuilder;
+import org.springframework.beans.factory.support.DefaultListableBeanFactory;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.remoting.rmi.RmiProxyFactoryBean;
 import org.springframework.util.StringUtils;
 
 import com.cas.sim.tis.message.LoginMessage;
+import com.cas.sim.tis.services.ResourceService;
+import com.cas.sim.tis.services.StudentService;
+import com.cas.sim.tis.services.TeacherService;
 import com.jme3.network.NetworkClient;
 
 import de.felixroske.jfxsupport.FXMLController;
@@ -35,7 +46,7 @@ import javafx.scene.layout.AnchorPane;
  */
 @FXMLController
 @PropertySource(value = { "file:cfg.properties" })
-public class LoginController extends AnchorPane implements Initializable {
+public class LoginController extends AnchorPane implements Initializable, ApplicationContextAware {
 	private final static Logger LOG = LoggerFactory.getLogger(LoginController.class);
 
 	public static int USER_ROLE = -1;
@@ -43,11 +54,14 @@ public class LoginController extends AnchorPane implements Initializable {
 	@Resource
 	private NetworkClient client;
 
-	@Value(value = "${server.base.address}")
+	@Value("${server.base.address}")
 	private String address;
 
-	@Value(value = "${server.base.port}")
+	@Value("${server.base.port}")
 	private Integer port;
+
+	@Value("${server.rmi.registry}")
+	private Integer rmiPort;
 
 	@Resource
 	private MessageSource messageSource; // 自动注入对象
@@ -60,6 +74,8 @@ public class LoginController extends AnchorPane implements Initializable {
 	Button login;
 	@FXML
 	Label errorMessage;
+
+	private ApplicationContext applicationContext;
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
@@ -88,6 +104,23 @@ public class LoginController extends AnchorPane implements Initializable {
 			}
 //			2、启动客户端
 			client.start();
+
+//			注册远程服务
+			Map<String, Class<?>> map = new HashMap<>();
+			map.put("resourceServiceFactory", ResourceService.class);
+			map.put("studentServiceFactory", StudentService.class);
+			map.put("teacherServiceFactory", TeacherService.class);
+			DefaultListableBeanFactory defaultListableBeanFactory = (DefaultListableBeanFactory) applicationContext.getAutowireCapableBeanFactory();
+			map.entrySet().forEach(e -> {
+//				注册的对象通过SpringUtil.getBean获取
+				BeanDefinitionBuilder beanDefinitionBuilder = BeanDefinitionBuilder.genericBeanDefinition(RmiProxyFactoryBean.class);
+				String serviceUrl = "rmi://" + address + ":" + rmiPort + "/" + StringUtils.uncapitalize(e.getValue().getSimpleName());
+				LoggerFactory.getLogger(getClass()).info("远程访问路径：{}", serviceUrl);
+				beanDefinitionBuilder.addPropertyValue("serviceUrl", serviceUrl);
+				beanDefinitionBuilder.addPropertyValue("serviceInterface", e.getValue());
+//				动态注册bean.  
+				defaultListableBeanFactory.registerBeanDefinition(e.getKey(), beanDefinitionBuilder.getBeanDefinition());
+			});
 		}
 
 //		3、项服务器发送登录消息
@@ -100,6 +133,11 @@ public class LoginController extends AnchorPane implements Initializable {
 
 	public void setErrorMsg(String msg) {
 		errorMessage.setText(msg);
+	}
+
+	@Override
+	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+		this.applicationContext = applicationContext;
 	}
 
 }

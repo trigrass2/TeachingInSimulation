@@ -7,11 +7,11 @@
 	<modules>
 		<module>tis-base</module>
 		<module>tis-server</module>
-		<module>tis-client-teacher</module>
-		<module>tis-client-student</module>
+		
+		
 		<module>tis-client</module>
 		<!-- <module>tis-circuit</module> -->
-		<module>tis-client-admin</module>
+		
 	</modules>
 	<name>仿真教学项目</name>
 	<properties>
