@@ -13,7 +13,6 @@ import com.cas.sim.tis.message.LoginMessage;
 import com.jme3.network.Client;
 
 import de.felixroske.jfxsupport.FXMLController;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -43,12 +42,10 @@ public class LoginController extends AnchorPane implements Initializable {
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		errorMessage.setText("");
-		userId.setPromptText("请输入您的账号");
-		password.setPromptText("请输入您的密码");
 	}
 
-	public void processLogin(ActionEvent event) {
+	@FXML
+	public void processLogin() {
 		LoginMessage msg = new LoginMessage();
 		msg.setUserType(USER_ROLE);
 		msg.setUserCode(userId.getText());
