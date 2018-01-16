@@ -4,13 +4,22 @@
 
 package com.cas.sim.tis.view.controller;
 
+import java.io.IOException;
 import java.net.URL;
+import java.util.Locale;
 import java.util.ResourceBundle;
 
 import javax.annotation.Resource;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.MessageSource;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.util.StringUtils;
+
 import com.cas.sim.tis.message.LoginMessage;
-import com.jme3.network.Client;
+import com.jme3.network.NetworkClient;
 
 import de.felixroske.jfxsupport.FXMLController;
 import javafx.fxml.FXML;
@@ -25,12 +34,24 @@ import javafx.scene.layout.AnchorPane;
  * Login Controller.
  */
 @FXMLController
+@PropertySource(value = { "file:cfg.properties" })
 public class LoginController extends AnchorPane implements Initializable {
+	private final static Logger LOG = LoggerFactory.getLogger(LoginController.class);
+
 	public static int USER_ROLE = -1;
-	
+
 	@Resource
-	private Client client;
-	
+	private NetworkClient client;
+
+	@Value(value = "${server.base.address}")
+	private String address;
+
+	@Value(value = "${server.base.port}")
+	private Integer port;
+
+	@Resource
+	private MessageSource messageSource; // 自动注入对象
+
 	@FXML
 	TextField userId;
 	@FXML
@@ -46,6 +67,30 @@ public class LoginController extends AnchorPane implements Initializable {
 
 	@FXML
 	public void processLogin() {
+//		0、验证登录信息的完整性
+		if (StringUtils.isEmpty(userId.getText())) {
+			setErrorMsg(messageSource.getMessage("login.account.notnull", null, Locale.getDefault()));
+			return;
+		}
+		if (StringUtils.isEmpty(password.getText())) {
+			setErrorMsg(messageSource.getMessage("login.password.notnull", null, Locale.getDefault()));
+			return;
+		}
+
+		if (!client.isStarted()) {
+//			1、尝试与服务器连接
+			try {
+				client.connectToServer(address, port, port);
+			} catch (IOException e) {
+				LOG.error("连接服务器失败IP：{}，端口：{}", address, port);
+				setErrorMsg(messageSource.getMessage("server.connect.failure", null, Locale.getDefault()));
+				return;
+			}
+//			2、启动客户端
+			client.start();
+		}
+
+//		3、项服务器发送登录消息
 		LoginMessage msg = new LoginMessage();
 		msg.setUserType(USER_ROLE);
 		msg.setUserCode(userId.getText());

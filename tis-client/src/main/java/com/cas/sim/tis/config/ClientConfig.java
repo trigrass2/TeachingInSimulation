@@ -1,6 +1,5 @@
 package com.cas.sim.tis.config;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -9,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 
 import com.cas.sim.tis.consts.SystemInfo;
 import com.cas.sim.tis.message.handler.ClientHandler;
@@ -16,9 +16,11 @@ import com.jme3.network.Client;
 import com.jme3.network.Message;
 import com.jme3.network.MessageListener;
 import com.jme3.network.Network;
+import com.jme3.network.NetworkClient;
 import com.jme3.network.serializing.Serializer;
 
 @Configuration
+@PropertySource(value = { "classpath:interface.properties" })
 public class ClientConfig {
 	private final static Logger LOG = LoggerFactory.getLogger(ClientConfig.class);
 	private Map<Class<? extends Message>, ClientHandler<Message>> messageHandlerClass = new HashMap<>();
@@ -30,15 +32,15 @@ public class ClientConfig {
 	private Integer port;
 
 	@Bean(name = "jmeClient")
-	public Client buildClient() {
-		Client client = null;
-		try {
-			client = Network.connectToServer(SystemInfo.APP_NAME, SystemInfo.APP_VERSION, address, port);
-			LOG.info("成功连接至服务器{}:{}", address, port);
-		} catch (IOException e) {
-			LOG.error("连接服务器失败！服务器信息[地址：{},端口：{}]", address, port);
-			throw new RuntimeException(e.getMessage());
-		}
+	public NetworkClient buildClient() {
+		NetworkClient client = null;
+//		try {
+			client = Network.createClient(SystemInfo.APP_NAME, SystemInfo.APP_VERSION);
+//			LOG.info("成功连接至服务器{}:{}", address, port);
+//		} catch (IOException e) {
+//			LOG.error("连接服务器失败！服务器信息[地址：{},端口：{}]", address, port);
+//			throw new RuntimeException(e.getMessage());
+//		}
 
 		client.addMessageListener(new MessageListener<Client>() {
 			@Override
