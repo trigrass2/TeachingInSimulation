@@ -4,8 +4,8 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 import com.cas.sim.tis.view.control.IContent;
-import com.cas.sim.tis.view.control.ILeftMenu;
-import com.cas.sim.tis.view.control.imp.PersonalMenu;
+import com.cas.sim.tis.view.control.ILeftContent;
+import com.cas.sim.tis.view.control.imp.LeftMenu;
 import com.cas.sim.tis.view.control.imp.Preparation;
 import com.cas.sim.tis.view.control.imp.Tree;
 
@@ -39,9 +39,9 @@ public class PageController implements Initializable {
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		loadLeftMenu(new Tree());
-//		loadLeftMenu(new PersonalMenu());
-		loadContent(new Preparation());
+//		loadLeftMenu(new Tree());
+////		loadLeftMenu(new PersonalMenu());
+//		loadContent(new Preparation());
 	}
 
 	@FXML
@@ -58,7 +58,7 @@ public class PageController implements Initializable {
 		}
 	}
 
-	public void loadLeftMenu(ILeftMenu leftMenu) {
+	public void loadLeftMenu(ILeftContent leftMenu) {
 		this.leftContent.getChildren().add(leftMenu.getLeftContent());
 	}
 

@@ -49,11 +49,17 @@ import javafx.scene.layout.AnchorPane;
 public class LoginController extends AnchorPane implements Initializable, ApplicationContextAware {
 	private final static Logger LOG = LoggerFactory.getLogger(LoginController.class);
 
+	protected double xOffset;
+	protected double yOffset;
+	
 	public static int USER_ROLE = -1;
 
 	@Resource
 	private NetworkClient client;
 
+	@Value("${login.account}")
+	private String account;
+	
 	@Value("${server.base.address}")
 	private String address;
 
@@ -67,18 +73,19 @@ public class LoginController extends AnchorPane implements Initializable, Applic
 	private MessageSource messageSource; // 自动注入对象
 
 	@FXML
-	TextField userId;
+	private TextField userId;
 	@FXML
-	PasswordField password;
+	private PasswordField password;
 	@FXML
-	Button login;
+	private Button login;
 	@FXML
-	Label errorMessage;
+	private Label errorMessage;
 
 	private ApplicationContext applicationContext;
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
+		userId.setText(account);
 	}
 
 	@FXML

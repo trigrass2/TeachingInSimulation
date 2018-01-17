@@ -15,7 +15,7 @@
 <?import com.cas.sim.tis.view.control.imp.HomeMenu?>
 <?import com.cas.sim.tis.view.control.imp.HomeSelection?>
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="768.0" prefWidth="1366.0" style="-fx-background-image: url(/static/images/basic/bg.png);-fx-background-size:stretch;" stylesheets="@../static/css/basic.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
+<VBox prefHeight="768.0" prefWidth="1366.0" style="-fx-background-image: url(/static/images/basic/bg.png);-fx-background-size:stretch;" stylesheets="@../static/css/basic.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.cas.sim.tis.view.controller.HomeController">
 	<children>
 		<VBox styleClass="cover">
 			<children>
@@ -38,13 +38,14 @@
 				</HBox>
 				<HBox>
 					<children>
-						<HBox HBox.hgrow="ALWAYS">
-							<children>
-								<HomeMenu menuName="我的班级" menuIcon="static/images/menu/class.png" />
-								<HomeMenu menuName="我的备课" menuIcon="static/images/menu/preparation.png" />
-								<HomeMenu menuName="成绩统计" menuIcon="static/images/menu/statistics.png" />
-								<HomeMenu menuName="考试题库" menuIcon="static/images/menu/library.png" />
-							</children>
+						<HBox fx:id="menu" HBox.hgrow="ALWAYS">
+<!-- 							<children> -->
+<!-- 								<HomeMenu menuName="我的班级" menuIcon="static/images/menu/class.png" /> -->
+<!-- 								<HomeMenu menuName="我的备课" menuIcon="static/images/menu/preparation.png" /> -->
+<!-- 								<HomeMenu menuName="成绩统计" menuIcon="static/images/menu/statistics.png" /> -->
+<!-- 								<HomeMenu menuName="考试题库" menuIcon="static/images/menu/library.png" /> -->
+<!-- 								<HomeMenu menuName="资源库" menuIcon="static/images/menu/resource.png" /> -->
+<!-- 							</children> -->
 						</HBox>
 						<HBox alignment="CENTER_RIGHT" spacing="10">
 							<children>

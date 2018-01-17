@@ -2,6 +2,9 @@ package com.cas.sim.tis.view.control.imp;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.ResourceBundle;
+
+import javax.annotation.Resource;
 
 import com.cas.sim.tis.Application;
 import com.cas.sim.tis.view.NetworkView;
@@ -15,7 +18,7 @@ import javafx.util.Duration;
 
 /**
  * 放大、缩小、关闭按钮条
- * @功能 TopBtns.java
+ * @功能 LoginDecoration.java
  * @作者 caowj
  * @创建日期 2017年12月29日
  * @修改人 caowj
@@ -28,6 +31,7 @@ public class LoginDecoration extends HBox {
 		loader.setLocation(fxmlUrl);
 		loader.setController(this);
 		loader.setRoot(this);
+		loader.setResources(ResourceBundle.getBundle("i18n/messages"));
 		try {
 			loader.load();
 		} catch (IOException e) {
@@ -35,9 +39,11 @@ public class LoginDecoration extends HBox {
 		}
 	}
 
+	/**
+	 * 最小化
+	 */
 	@FXML
 	private void min() {
-		// TODO 最小化
 		Application.getStage().setIconified(true);
 	}
 

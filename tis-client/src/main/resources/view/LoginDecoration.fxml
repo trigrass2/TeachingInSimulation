@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Tooltip?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.HBox?>
@@ -16,6 +17,9 @@
 					</image>
 				</ImageView>
 			</graphic>
+			<tooltip>
+				<Tooltip text="%button.setting" />
+			</tooltip>
 		</Button>
 		<Button mnemonicParsing="false" onAction="#min" styleClass="login-decoration">
 			<graphic>
@@ -25,6 +29,9 @@
 					</image>
 				</ImageView>
 			</graphic>
+			<tooltip>
+				<Tooltip text="%button.minimize" />
+			</tooltip>
 		</Button>
 		<Button mnemonicParsing="false" onAction="#close" styleClass="login-decoration">
 			<graphic>
@@ -34,6 +41,9 @@
 					</image>
 				</ImageView>
 			</graphic>
+			<tooltip>
+				<Tooltip text="%button.close" />
+			</tooltip>
 		</Button>
 	</children>
 </fx:root>

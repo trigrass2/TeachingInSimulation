@@ -47,6 +47,15 @@
 }
 /*******************************************************************************
  *                                                                             *
+ *  输入框样式                                                          *
+ *                                                                             *
+ ******************************************************************************/
+.text-field{
+	-fx-border-radius: 0.0px;
+	-fx-background-radius: 0.0px;
+}
+/*******************************************************************************
+ *                                                                             *
  * 按钮样式                                                          *
  *                                                                             *
  ******************************************************************************/
@@ -173,6 +182,29 @@
 }
 /*******************************************************************************
  *                                                                             *
+ * 表格样式                                                                  *
+ *                                                                             *
+ ******************************************************************************/
+ .table>.header>.cell {
+ 	-fx-font-weight:bold;
+ }
+ .tab-row {
+ 	-fx-background-color: #f4f4f4;
+ }
+ .tab-row-hover {
+ 	-fx-background-color: #e1e1e1;
+ }
+ .tab-row-selected {
+ 	-fx-background-color: #333333;
+ }
+ .tab-row-selected>.cell {
+ 	-fx-text-fill:#ffffff;
+ }
+ .table-row-hover {
+ 	-fx-background-color:#f9f9f9;
+ }
+/*******************************************************************************
+ *                                                                             *
  * 遮罩样式                                                          *
  *                                                                             *
  ******************************************************************************/
@@ -246,6 +278,7 @@
  	-fx-pref-width: 210.0px;
  	-fx-padding: 0.0 35.0px;
  	-fx-alignment: CENTER-LEFT;
+ 	-fx-text-fill:#ffffff;
  }
  .left-menu:hover{
  	-fx-background-color:#22678f;
@@ -272,11 +305,50 @@
     -fx-shape: "M 0 0 L 13 7 L 0 13 z";
     -fx-scale-shape: true;
  }
- /*******************************************************************************
+/*******************************************************************************
+ *                                                                             *
+ * 搜索框样式                                                          *
+ *                                                                             *
+ ******************************************************************************/
+.search-box .text-field {
+    -fx-background-color: white;
+    -fx-background-insets: 1.0;
+    -fx-background-radius: 15.0;
+    -fx-padding: -9.0 5.0 -11.0 0.0;
+    -fx-border-image-source: url("static/images/basic/search.png");
+    -fx-border-image-slice: 12.0 12.0 12.0 22.0 fill;
+    -fx-border-image-width: 12.0 12.0 12.0 22.0;
+    -fx-border-image-repeat: stretch;
+    -fx-font-size: 13.0px;
+    -fx-prompt-text-fill: grey;
+}
+
+.search-box .text-field:focused {
+    -fx-background-color: -fx-focus-color, white;
+    -fx-background-insets: -1.4, 1.0;
+    -fx-background-radius: 14.4;
+}
+
+.search-box .button {
+    -fx-background-color: null;
+    -fx-background-image: url("static/images/basic/search-clear.png");
+}
+
+.search-box .button:hover {
+    -fx-background-image: url("static/images/basic/search-clear-over.png");
+}
+/*******************************************************************************
  *                                                                             *
  * ASK多选框样式                                                          *
  *                                                                             *
  ******************************************************************************/
+.check-box > .box > .mark {
+    -fx-background-insets: 1.0 0.0 -1.0 0.0, 0.0;
+    -fx-shape: "M0,4H2L3,6L6,0H8L4,8H2Z";
+}
+.check-box:selected > .box > .mark {
+    -fx-background-color: #2fcbd9;
+}
 .ask-check-box{
     -fx-background-color: #f6f6f6;
     -fx-pref-height:40.0px;
@@ -290,9 +362,14 @@
 }
 .ask-check-box > .box > .mark {
     -fx-background-color: transparent;
-    -fx-background-insets: 1.0 0.0 -1.0 0.0, 0.0;
-    -fx-shape: "M0,4H2L3,6L6,0H8L4,8H2Z";
 }
-.ask-check-box:selected > .box > .mark {
-    -fx-background-color: #2fcbd9;
-}
+/*******************************************************************************
+ *                                                                             *
+ * 图标多选框样式                                                          *
+ *                                                                             *
+ ******************************************************************************/
+ .img-check-box>.box{
+ 	-fx-background-color: transparent;
+ 	-fx-translate-x: 15.0;
+ 	-fx-translate-y: 15.0;
+ }

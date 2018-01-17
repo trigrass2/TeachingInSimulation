@@ -36,7 +36,7 @@
 								</HBox>
 							</children>
 						</HBox>
-						<StackPane fx:id="content"/>
+						<StackPane fx:id="content" VBox.vgrow="ALWAYS"/>
 					</children>
 				</VBox>
 			</children>

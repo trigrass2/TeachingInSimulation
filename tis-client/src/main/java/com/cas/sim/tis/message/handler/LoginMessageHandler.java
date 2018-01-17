@@ -1,6 +1,9 @@
 package com.cas.sim.tis.message.handler;
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.util.Locale;
+import java.util.Properties;
 
 import javax.annotation.Resource;
 
@@ -25,15 +28,26 @@ public class LoginMessageHandler implements ClientHandler<LoginMessage> {
 	@Resource
 	private MessageSource messageSource; // 自动注入对象
 
+	private Properties properties = new Properties();
+	
 	@Override
 	public void execute(Client client, LoginMessage m) throws Exception {
 		if (LoginMessage.RESULT_SUCCESS == m.getResult()) {
 //			登录成功
-//			TODO 登陆后页面跳转
+			// 记录Session
+			
+			// 记录当前登录用户
+			properties.load(new FileInputStream("cfg.properties"));
+			properties.setProperty("login.account", m.getUserCode());
+			FileOutputStream fos = new FileOutputStream("cfg.properties"); 
+			properties.store(fos, null);  
+			fos.close();  
+//			登陆后页面跳转
 			Platform.runLater(() -> {
 				GUIState.setScene(new Scene(new Region()));
 				GUIState.getScene().setFill(null);
 				Application.showView(HomeView.class);
+				Application.getScene().getWindow().centerOnScreen();
 			});
 		} else {
 			Platform.runLater(() -> {

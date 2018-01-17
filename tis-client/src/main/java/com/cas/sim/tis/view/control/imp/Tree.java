@@ -1,14 +1,14 @@
 package com.cas.sim.tis.view.control.imp;
 
 
-import com.cas.sim.tis.view.control.ILeftMenu;
+import com.cas.sim.tis.view.control.ILeftContent;
 import com.cas.sim.tis.view.control.imp.TreeLeaf.Level;
 
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 
-public class Tree extends ScrollPane implements ILeftMenu {
+public class Tree extends ScrollPane implements ILeftContent {
 
 	private VBox parent = new VBox(5);
 
