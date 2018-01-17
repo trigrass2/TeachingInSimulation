@@ -7,11 +7,11 @@
 	<modules>
 		<module>tis-base</module>
 		<module>tis-server</module>
-		
-		
+
+
 		<module>tis-client</module>
 		<!-- <module>tis-circuit</module> -->
-		
+
 	</modules>
 	<name>仿真教学项目</name>
 	<properties>
@@ -19,6 +19,8 @@
 		<project.version>1.0.0-SNAPSHOT</project.version>
 		<!-- 引擎版本号 -->
 		<engine.version>3.2.0-stable</engine.version>
+		<!-- 引擎与javafx集成版本号 -->
+		<jme3-jfx.version>1.7.1</jme3-jfx.version>
 		<!-- SpringBoot版本 -->
 		<springboot.version>2.0.0.M6</springboot.version>
 		<!-- Spring版本 -->
@@ -48,6 +50,10 @@
 			<id>SpringMillestone</id>
 			<name>Spring Milestones Repository</name>
 			<url>http://repo.spring.io/milestone/</url>
+		</repository>
+		<repository>
+			<id>jitpack.io</id>
+			<url>https://jitpack.io</url>
 		</repository>
 		<repository>
 			<id>JMonkeyEngine</id>
@@ -142,6 +148,22 @@
 				<groupId>org.jmonkeyengine</groupId>
 				<artifactId>jme3-networking</artifactId>
 				<version>${engine.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>com.github.JavaSaBr</groupId>
+				<artifactId>JME3-JFX</artifactId>
+				<version>${jme3-jfx.version}</version>
+				<exclusions>
+					<exclusion>
+						<groupId>com.github.JavaSaBr.jmonkeyengine</groupId>
+						<artifactId>jme3-core</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>com.github.JavaSaBr.jmonkeyengine</groupId>
+						<artifactId>jme3-lwjgl3</artifactId>
+					</exclusion>
+				</exclusions>
 			</dependency>
 
 			<!-- https://mvnrepository.com/artifact/org.apache.ftpserver/ftpserver-core -->
@@ -331,13 +353,6 @@
 					<groupId>com.zenjava</groupId>
 					<artifactId>javafx-maven-plugin</artifactId>
 					<version>8.8.3</version>
-					<!-- <configuration> -->
-					<!-- <vendor>无锡凯数科技有限公司</vendor> -->
-					<!-- <mainClass>com.cas.elevator.TeacherBootstrap</mainClass> -->
-					<!-- <appName>电梯仿真软件 教师端</appName> -->
-					<!-- <jfxAppOutputDir>E:\软件打包\资源\x64\电梯仿真软件\教师端</jfxAppOutputDir> -->
-					<!-- <nativeOutputDir>E:\软件打包\资源\x64\电梯仿真软件\教师端</nativeOutputDir> -->
-					<!-- </configuration> -->
 				</plugin>
 				<plugin>
 					<groupId>org.springframework.boot</groupId>

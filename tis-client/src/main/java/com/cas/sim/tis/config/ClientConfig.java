@@ -31,7 +31,7 @@ public class ClientConfig {
 	@Value(value = "${server.base.port}")
 	private Integer port;
 
-	@Bean(name = "jmeClient")
+	@Bean
 	public NetworkClient buildClient() {
 		NetworkClient client = null;
 //		try {

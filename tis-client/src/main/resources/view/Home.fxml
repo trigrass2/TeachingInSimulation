@@ -76,7 +76,7 @@
 		<StackPane VBox.vgrow="ALWAYS">
 			<HBox alignment="CENTER" spacing="35">
 				<children>
-					<HomeSelection selectionName="认知" selectionIcon="static/images/selection/cognition.png" selectionDesc="让初学者对元器件、仪器仪表、常用工具有进本的了解，让学生了解元器件的内部的组成结构、拆装的顺序、元器件符号、元器件型号的含义等等。" />
+					<HomeSelection selectionName="认知" selectionIcon="static/images/selection/cognition.png" selectionDesc="让初学者对元器件、仪器仪表、常用工具有进本的了解，让学生了解元器件的内部的组成结构、拆装的顺序、元器件符号、元器件型号的含义等等。" onMouseClicked="#recongize" />
 					<HomeSelection selectionName="典型案例" selectionIcon="static/images/selection/typical.png" selectionDesc="本软件中内置一些常用的典型案例，让学生掌握其电路原理、元器件的选择、电路布局及线路连接等。" />
 					<HomeSelection selectionName="自由接线" selectionIcon="static/images/selection/free.png" selectionDesc="用户可以在这个模块中根据电路图练习元器件实物的连接练习。" />
 					<HomeSelection selectionName="故障案例" selectionIcon="static/images/selection/repair.png" selectionDesc="用户可以在这个模块中根据电路图练习元器件实物的连接练习。" />

@@ -28,6 +28,10 @@
 			<artifactId>jme3-networking</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>com.github.JavaSaBr</groupId>
+			<artifactId>JME3-JFX</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>de.roskenet</groupId>
 			<artifactId>springboot-javafx-support</artifactId>
 		</dependency>
@@ -36,4 +40,19 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 		</dependency>
 	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>com.zenjava</groupId>
+				<artifactId>javafx-maven-plugin</artifactId>
+				<configuration>
+					<vendor>无锡凯数科技有限公司</vendor>
+					<mainClass>com.cas.sim.tis.Application</mainClass>
+					<appName>TIS-Client</appName>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
 </project>

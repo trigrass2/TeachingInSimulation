@@ -11,6 +11,10 @@ public class MsgUtil implements MessageSourceAware {
 	private static MessageSource messageSource; // 自动注入对象
 
 	public static String getMessage(String key, String... args) {
+		return getMessage(key, args, Locale.getDefault());
+	}
+
+	public static String getMessage(String key, String[] args, Locale locale) {
 		return messageSource.getMessage(key, args, Locale.getDefault());
 	}
 

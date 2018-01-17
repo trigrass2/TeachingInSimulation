@@ -49,8 +49,7 @@ public abstract class BaseState extends AbstractAppState {
 	 */
 	protected void addMapping(String mappingName, Trigger... triggers) {
 		if (triggers == null) {
-			LOG.warn("必须给映射名称配上触发器");
-			return;
+			throw new RuntimeException("必须给映射名称配上触发器");
 		}
 		inputManager.addMapping(mappingName, triggers);
 		List<Trigger> triggerList = inputMappings.get(mappingName);
@@ -64,8 +63,7 @@ public abstract class BaseState extends AbstractAppState {
 
 	protected void addListener(InputListener listener, String... mappingNames) {
 		if (mappingNames == null) {
-			LOG.warn("必须给监听对象配上映射名称");
-			return;
+			throw new RuntimeException("必须给监听对象配上映射名称");
 		}
 		inputManager.addListener(listener, mappingNames);
 		inputListeners.add(listener);
@@ -73,7 +71,7 @@ public abstract class BaseState extends AbstractAppState {
 
 	@Override
 	public void stateAttached(AppStateManager stateManager) {
-		LOG.info(getClass() + ".stateAttached()");
+		LOG.debug(getClass() + ".stateAttached()");
 		super.stateAttached(stateManager);
 	}
 
@@ -99,17 +97,17 @@ public abstract class BaseState extends AbstractAppState {
 
 	@Override
 	public void stateDetached(AppStateManager stateManager) {
-		LOG.info(getClass() + ".stateDetached()");
+		LOG.debug(getClass() + ".stateDetached()");
 		super.stateDetached(stateManager);
 	}
 
 	@Override
 	public void cleanup() {
-		LOG.info(getClass() + ".cleanup(清除本类中添加的事件映射)");
+		LOG.debug(getClass() + ".cleanup(清除本类中添加的事件映射)");
 		inputMappings.entrySet().stream().forEach(e -> e.getValue().forEach(t -> inputManager.deleteTrigger(e.getKey(), t)));// 删除
 		inputMappings.clear();
 
-		LOG.info(getClass() + ".cleanup(清除本类中添加的事件监听)");
+		LOG.debug(getClass() + ".cleanup(清除本类中添加的事件监听)");
 		inputListeners.stream().forEach(inputManager::removeListener);
 		inputListeners.clear();
 		super.cleanup();
