@@ -106,11 +106,6 @@ public class Application implements CommandLineRunner {
 //		lt.start();
 	}
 
-	protected void stop() {
-//		停止SpringBoot服务
-		SpringApplication.exit(SpringUtil.getApplicationContext());
-	}
-
 //	private static void showErrorMsg(String msg) {
 //		LoggerFactory.getLogger(Application.class).warn("程序启动失败,{}", msg);
 //		JOptionPane.showMessageDialog(null, msg, "程序启动失败", JOptionPane.ERROR_MESSAGE);

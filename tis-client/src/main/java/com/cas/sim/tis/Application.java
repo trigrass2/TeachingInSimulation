@@ -19,7 +19,6 @@ import com.cas.sim.tis.message.handler.LoginMessageHandler;
 import com.cas.sim.tis.util.SpringUtil;
 import com.cas.sim.tis.view.LoginView;
 import com.cas.sim.tis.view.controller.LoginController;
-import com.jme3.network.Client;
 
 import de.felixroske.jfxsupport.AbstractJavaFxApplicationSupport;
 import de.felixroske.jfxsupport.GUIState;
@@ -33,11 +32,21 @@ public class Application extends AbstractJavaFxApplicationSupport implements App
 
 	@Resource
 	private ClientConfig clientConfig;
-	@Resource(name = "jmeClient")
-	private Client client;
+	private double xOffset;
+	private double yOffset;
 
 	public static void main(String[] args) {
 		jul2slf4j();
+
+//		文件同步
+        // JavaFX
+//        System.setProperty("prism.lcdtext", "false");
+//        System.setProperty("prism.text", "t2k");
+//        System.setProperty("javafx.animation.fullspeed", "false");
+
+//        if(System.getProperty("jfx.background.render") == null) {
+//            System.setProperty("jfx.background.render", "LWJGL-OpenGL3");
+//        }
 
 //		明确登录用的身份
 		LoginController.USER_ROLE = RoleConst.TEACHER;
@@ -51,12 +60,21 @@ public class Application extends AbstractJavaFxApplicationSupport implements App
 		Logger.getLogger("").setLevel(Level.FINEST);
 		SLF4JBridgeHandler.install();
 	}
-	
-	
+
 	@Override
 	public void beforeInitialView(Stage stage, ConfigurableApplicationContext ctx) {
 		GUIState.setScene(new Scene(new Region()));
 		GUIState.getScene().setFill(null);
+		
+		GUIState.getScene().setOnMouseDragged(e->{
+			stage.setX(e.getScreenX() + xOffset);
+            stage.setY(e.getScreenY() + yOffset);
+		});
+		GUIState.getScene().setOnMousePressed(e->{
+			//按下鼠标后，记录当前鼠标的坐标
+            xOffset = stage.getX() - e.getScreenX();
+            yOffset = stage.getY() - e.getScreenY();
+		});
 		stage.initStyle(StageStyle.TRANSPARENT);
 		super.beforeInitialView(stage, ctx);
 	}

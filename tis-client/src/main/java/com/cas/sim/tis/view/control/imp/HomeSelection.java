@@ -48,7 +48,6 @@ public class HomeSelection extends HBox implements Initializable {
 	}
 
 	public String getSelectionIcon() {
-		System.out.println("HomeMenu.getMenuIcon()");
 		throw new RuntimeException("请不要调用这个方法，这个方法存在意义仅限于在加载界面时候不报错");
 	}
 
