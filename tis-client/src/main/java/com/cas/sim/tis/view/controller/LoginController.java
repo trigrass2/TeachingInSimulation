@@ -51,7 +51,7 @@ public class LoginController extends AnchorPane implements Initializable, Applic
 
 	protected double xOffset;
 	protected double yOffset;
-	
+
 	public static int USER_ROLE = -1;
 
 	@Resource
@@ -59,7 +59,7 @@ public class LoginController extends AnchorPane implements Initializable, Applic
 
 	@Value("${login.account}")
 	private String account;
-	
+
 	@Value("${server.base.address}")
 	private String address;
 
@@ -113,21 +113,24 @@ public class LoginController extends AnchorPane implements Initializable, Applic
 			client.start();
 
 //			注册远程服务
-			Map<String, Class<?>> map = new HashMap<>();
-			map.put("resourceServiceFactory", ResourceService.class);
-			map.put("studentServiceFactory", StudentService.class);
-			map.put("teacherServiceFactory", TeacherService.class);
-			DefaultListableBeanFactory defaultListableBeanFactory = (DefaultListableBeanFactory) applicationContext.getAutowireCapableBeanFactory();
-			map.entrySet().forEach(e -> {
-//				注册的对象通过SpringUtil.getBean获取
-				BeanDefinitionBuilder beanDefinitionBuilder = BeanDefinitionBuilder.genericBeanDefinition(RmiProxyFactoryBean.class);
-				String serviceUrl = "rmi://" + address + ":" + rmiPort + "/" + StringUtils.uncapitalize(e.getValue().getSimpleName());
-				LoggerFactory.getLogger(getClass()).info("远程访问路径：{}", serviceUrl);
-				beanDefinitionBuilder.addPropertyValue("serviceUrl", serviceUrl);
-				beanDefinitionBuilder.addPropertyValue("serviceInterface", e.getValue());
-//				动态注册bean.  
-				defaultListableBeanFactory.registerBeanDefinition(e.getKey(), beanDefinitionBuilder.getBeanDefinition());
-			});
+			new Thread(() -> {
+				Map<String, Class<?>> map = new HashMap<>();
+				map.put("resourceServiceFactory", ResourceService.class);
+				map.put("studentServiceFactory", StudentService.class);
+				map.put("teacherServiceFactory", TeacherService.class);
+//				TODO 注册更多的远程服务
+				DefaultListableBeanFactory defaultListableBeanFactory = (DefaultListableBeanFactory) applicationContext.getAutowireCapableBeanFactory();
+				map.entrySet().forEach(e -> {
+//					注册的对象通过SpringUtil.getBean获取
+					BeanDefinitionBuilder beanDefinitionBuilder = BeanDefinitionBuilder.genericBeanDefinition(RmiProxyFactoryBean.class);
+					String serviceUrl = "rmi://" + address + ":" + rmiPort + "/" + StringUtils.uncapitalize(e.getValue().getSimpleName());
+					LoggerFactory.getLogger(getClass()).info("远程访问路径：{}", serviceUrl);
+					beanDefinitionBuilder.addPropertyValue("serviceUrl", serviceUrl);
+					beanDefinitionBuilder.addPropertyValue("serviceInterface", e.getValue());
+//					动态注册bean.  
+					defaultListableBeanFactory.registerBeanDefinition(e.getKey(), beanDefinitionBuilder.getBeanDefinition());
+				});
+			}).start();
 		}
 
 //		3、项服务器发送登录消息

@@ -32,11 +32,20 @@ public class LoginMessage extends AbstractMessage {
 	public static final int CLIENT_LOGOUT = 11;
 
 //	默认是学生类型
+	private int userid;
 	private int userType;
 	private String userCode;
 	private String userPwd;
 
 	private int result;
+	
+	public int getUserid() {
+		return userid;
+	}
+
+	public void setUserid(int userid) {
+		this.userid = userid;
+	}
 
 	public String getUserCode() {
 		return userCode;

@@ -8,13 +8,19 @@ import java.util.ResourceBundle;
 import javax.annotation.Resource;
 
 import com.cas.sim.tis.Application;
+import com.cas.sim.tis.app.JmeApplication;
 import com.cas.sim.tis.consts.RoleConst;
 import com.cas.sim.tis.util.SpringUtil;
 import com.cas.sim.tis.view.PageView;
+import com.cas.sim.tis.view.control.IContent;
 import com.cas.sim.tis.view.control.imp.HomeMenu;
 import com.cas.sim.tis.view.control.imp.LeftMenu;
+import com.cas.sim.tis.view.control.imp.jme.Recongnize3D;
+import com.cas.sim.tis.view.control.imp.jme.RecongnizeMenu;
 import com.cas.sim.tis.view.control.imp.resource.ResourceList;
 import com.cas.sim.tis.view.control.imp.resource.ResourceMenu;
+import com.jme3.system.AppSettings;
+import com.jme3x.jfx.injfx.JmeToJFXIntegrator;
 
 import de.felixroske.jfxsupport.FXMLController;
 import javafx.fxml.FXML;
@@ -26,6 +32,9 @@ public class HomeController implements Initializable {
 	@FXML
 	private HBox menu;
 
+	@Resource
+	private JmeApplication jmeApp;
+	
 	private List<HomeMenu> homeMenus = new ArrayList<HomeMenu>();
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
@@ -55,4 +64,19 @@ public class HomeController implements Initializable {
 		homeMenus.add(resource);
 	}
 
+	public void recongize() {
+		// 跳转到认知页面
+		Application.showView(PageView.class);
+		PageController controller = SpringUtil.getBean(PageController.class);
+		controller.loadLeftMenu(new RecongnizeMenu());
+		
+		Recongnize3D content = new Recongnize3D();
+		controller.loadContent(content);
+		
+		final AppSettings settings = JmeToJFXIntegrator.prepareSettings(new AppSettings(true), 60);
+		jmeApp.setSettings(settings);
+		jmeApp.setShowSettings(false);
+		JmeToJFXIntegrator.startAndBindMainViewPort(jmeApp, content.getCanvas(), Thread::new);
+	}
+	
 }
