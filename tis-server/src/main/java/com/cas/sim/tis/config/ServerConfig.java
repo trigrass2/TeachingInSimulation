@@ -86,7 +86,7 @@ public class ServerConfig {
 			public void connectionRemoved(Server server, HostedConnection conn) {
 				boolean success = clients.remove(conn);
 				if (success) {
-					User user = conn.getAttribute(Session.KEY_LOGIN_USER);
+					User user = conn.getAttribute(Session.KEY_LOGIN_USER.name());
 					LOG.info("用户{}已断开连接, 当前客户端数量{}", user.getCode(), clients.size());
 				}
 			}

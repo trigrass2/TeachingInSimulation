@@ -14,7 +14,9 @@ public class Library {
 //	试题库类型：0-模拟题;1-真题;2-教师个人题库
 	private Integer type;
 //	所属教师
-	private Integer creator;
+	private Integer creatorId;
+//	题目数量（脏数据，为了提高查询效率）
+	private Integer num;
 //	创建时间
 	@DateTimeFormat(pattern = "yyyy-MM-dd hh:mm:ss")
 	private Date createDate;
@@ -45,12 +47,20 @@ public class Library {
 		this.type = type;
 	}
 
-	public Integer getCreator() {
-		return creator;
+	public Integer getCreatorId() {
+		return creatorId;
 	}
 
-	public void setCreator(Integer creator) {
-		this.creator = creator;
+	public void setCreatorId(Integer creatorId) {
+		this.creatorId = creatorId;
+	}
+
+	public Integer getNum() {
+		return num;
+	}
+
+	public void setNum(Integer num) {
+		this.num = num;
 	}
 
 	public Date getCreateDate() {

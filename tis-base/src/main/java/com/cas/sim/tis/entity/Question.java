@@ -24,6 +24,10 @@ public class Question {
 	protected Integer libraryId;
 //	问题描述
 	protected String title;
+//	选项（选择题）
+	protected String options;
+//	参考答案（非问答题）
+	protected String refrence;
 //	题目解析
 	protected String analysis;
 //	替他信息
