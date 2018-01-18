@@ -7,24 +7,13 @@ import com.cas.sim.tis.entity.User;
 import com.github.pagehelper.PageInfo;
 
 public interface ResourceService extends BaseService<Resource> {
-	/**
-	 * @param user 当前用户
-	 * @param pagination 当前页码
-	 * @param pageSize 每一页显示的条数
-	 * @param resourceTypes 资源类型
-	 * @return
-	 * @throws RemoteException
-	 */
-	PageInfo<Resource> findResources(User user, int pagination, int pageSize, List<Integer> resourceTypes);
+	PageInfo<Resource> findAdminResources(int pagination, int pageSize, List<Integer> resourceTypes, String keyword, String orderByClause);
 
-	/**
-	 * @param user 当前用户
-	 * @param pagination 当前页码
-	 * @param pageSize 每一页显示的条数
-	 * @param resourceTypes 资源类型
-	 * @param keyWord 关键字查询
-	 * @return
-	 * @throws RemoteException
-	 */
-	PageInfo<Resource> findResources(User user, int pagination, int pageSize, List<Integer> resourceTypes, String keyWord);
+	PageInfo<Resource> findTeacherResources(int UserId, int pagination, int pageSize, List<Integer> resourceTypes, String keyword, String orderByClause);
+
+	PageInfo<Resource> findStudentResources(int UserId, int pagination, int pageSize, List<Integer> resourceTypes, String keyword, String orderByClause);
+
+	int countAdminResourceByType(int type, List<Integer> resourceTypes, String keyword);
+	int countTeacherResourceByType(int UserId,int type, List<Integer> resourceTypes, String keyword);
+	int countStudentResourceByType(int userId,int type, List<Integer> resourceTypes, String keyword);
 }

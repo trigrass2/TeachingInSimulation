@@ -5,9 +5,6 @@ import java.util.ResourceBundle;
 
 import com.cas.sim.tis.view.control.IContent;
 import com.cas.sim.tis.view.control.ILeftContent;
-import com.cas.sim.tis.view.control.imp.LeftMenu;
-import com.cas.sim.tis.view.control.imp.Preparation;
-import com.cas.sim.tis.view.control.imp.Tree;
 
 import de.felixroske.jfxsupport.FXMLController;
 import javafx.fxml.FXML;
@@ -39,9 +36,6 @@ public class PageController implements Initializable {
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-//		loadLeftMenu(new Tree());
-////		loadLeftMenu(new PersonalMenu());
-//		loadContent(new Preparation());
 	}
 
 	@FXML

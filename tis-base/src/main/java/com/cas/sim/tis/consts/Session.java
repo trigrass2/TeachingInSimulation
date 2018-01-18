@@ -16,6 +16,10 @@ public enum Session {
 
 	private final static Map<Session, Object> DATAS = new HashMap<>();
 
+	public static <T> void set(Session key, T value) {
+		DATAS.put(key, value);
+	}
+	
 	public static <T> T get(Session key) {
 		return get(key, null);
 	}

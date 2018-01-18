@@ -4,19 +4,21 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import com.cas.sim.tis.consts.ResourceConsts;
 import com.cas.sim.tis.consts.RoleConst;
 import com.cas.sim.tis.view.control.IContent;
 import com.cas.sim.tis.view.control.imp.table.BtnsCell;
-import com.cas.sim.tis.view.control.imp.table.Cell;
 import com.cas.sim.tis.view.control.imp.table.Column;
+import com.cas.sim.tis.view.control.imp.table.IconCell;
 import com.cas.sim.tis.view.control.imp.table.Table;
-import com.cas.sim.tis.view.control.imp.table.TextFieldCell;
 import com.cas.sim.tis.view.controller.LoginController;
 
+import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
+import javafx.util.StringConverter;
 
 /**
  * 资源列表界面
@@ -27,6 +29,9 @@ import javafx.scene.layout.Region;
  */
 public class ResourceList extends HBox implements IContent {
 
+	@FXML
+	private Table table;
+	
 	public ResourceList() {
 		FXMLLoader loader = new FXMLLoader();
 		URL fxmlUrl = this.getClass().getResource("/view/resource/List.fxml");
@@ -39,6 +44,7 @@ public class ResourceList extends HBox implements IContent {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		initTable();
 	}
 
 	/**
@@ -48,7 +54,7 @@ public class ResourceList extends HBox implements IContent {
 		if (RoleConst.ADMIN == LoginController.USER_ROLE) {
 
 		} else if (RoleConst.TEACHER == LoginController.USER_ROLE) {
-
+			
 		} else if (RoleConst.STUDENT == LoginController.USER_ROLE) {
 
 		}
@@ -61,11 +67,46 @@ public class ResourceList extends HBox implements IContent {
 		id.setPrimary(true);
 		id.setVisible(false);
 		id.setKey("id");
+		// 资源图标
+		Column<Integer> icon = new Column<>();
+		icon.setAlignment(Pos.CENTER_RIGHT);
+		icon.setKey("type");
+		icon.setText("");
+		icon.setMaxWidth(25);
+		icon.getStyleClass().add("gray-label");
+		icon.setCellFactory(IconCell.forTableColumn(new StringConverter<Integer>() {
+			@Override
+			public String toString(Integer type) {
+				switch (type) {
+				case 0:
+					return ResourceConsts.PIC_ICON;
+				case 1:
+					return ResourceConsts.SWF_ICON;
+				case 2:
+					return ResourceConsts.VIDEO_ICON;
+				case 3:
+					return ResourceConsts.TXT_ICON;
+				case 4:
+					return ResourceConsts.WORD_ICON;
+				case 5:
+					return ResourceConsts.PPT_ICON;
+				case 6:
+					return ResourceConsts.EXCEL_ICON;
+				case 7:
+					return ResourceConsts.PDF_ICON;
+				default:
+					return null;
+				}
+			}
+
+			@Override
+			public Integer fromString(String string) {
+				return null;
+			}
+		}));
 		// 资源名称
 		Column<String> name = new Column<>();
-		name.setAlignment(Pos.CENTER);
-		name.setEditable(true);
-		name.setCellFactory(TextFieldCell.forTableColumn());
+		name.setAlignment(Pos.CENTER_LEFT);
 		name.setKey("name");
 		name.setText("资源名称");//FIXME
 		name.setMaxWidth(110);
@@ -73,8 +114,6 @@ public class ResourceList extends HBox implements IContent {
 		// 上传日期
 		Column<String> updateDate = new Column<>();
 		updateDate.setAlignment(Pos.CENTER);
-		updateDate.setEditable(true);
-		updateDate.setCellFactory(TextFieldCell.forTableColumn());
 		updateDate.setKey("update_date");
 		updateDate.setText("上传日期");
 		updateDate.setMaxWidth(160);
@@ -84,7 +123,7 @@ public class ResourceList extends HBox implements IContent {
 		btns.setCellFactory(BtnsCell.forTableColumn());
 		btns.setAlignment(Pos.CENTER_RIGHT);
 		btns.setPrefWidth(145);
-		table.getColumns().addAll(id, name, updateDate, btns);
+		table.getColumns().addAll(id, icon, name, updateDate, btns);
 	}
 
 	@Override

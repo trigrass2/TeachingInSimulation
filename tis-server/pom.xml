@@ -10,6 +10,10 @@
 	<dependencies>
 		<dependency>
 			<groupId>com.cas.sim</groupId>
+			<artifactId>cas-util</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.cas.sim</groupId>
 			<artifactId>tis-base</artifactId>
 		</dependency>
 <!-- 		<dependency> -->

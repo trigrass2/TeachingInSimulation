@@ -56,6 +56,46 @@
 }
 /*******************************************************************************
  *                                                                             *
+ * 分页控件                                                           *
+ *                                                                             *
+ ******************************************************************************/
+.pagination .toggle-button {
+	-fx-text-fill: #403f3b;
+	-fx-font-family: "微软雅黑";
+	-fx-background-color:linear-gradient(#ffffff 0.0%, #fcfcfc 25.0%, #f8f8f8 50.0%, #f5f5f5 75.0%, #f2f2f2 100.0%);
+    -fx-background-radius:0.0px;
+	-fx-background-insets: 5.0;
+    -fx-border-color:#999999;
+    -fx-border-insets: 5.0;
+    -fx-border-radius:0.0px;
+    -fx-min-width:40.0px;
+    -fx-min-height:40.0px;
+}
+.pagination .toggle-button:hover {
+	-fx-background-color:#fcfcfc;
+}
+.pagination .toggle-button:selected {
+	-fx-text-fill: #f2f2f2;
+	-fx-background-color:linear-gradient(#42413d 0.0%, #3d3b38 25.0%, #3b3836 50.0%, #363231 75.0%, #332f2e 100.0%);
+}
+.pagination .button{
+	-fx-font-family: "微软雅黑";
+    -fx-background-color:linear-gradient(#ffffff 0.0%, #fcfcfc 25.0%, #f8f8f8 50.0%, #f5f5f5 75.0%, #f2f2f2 100.0%);
+    -fx-background-radius:0.0px;
+	-fx-background-insets: 5.0;
+	-fx-border-color:#999999;
+    -fx-border-radius:0.0px;
+    -fx-border-insets: 5.0;
+    -fx-min-width:40.0px;
+    -fx-min-height:40.0px;
+}
+.pagination .label {
+	-fx-font-weight: bolder;
+    -fx-font-family: "微软雅黑";
+    -fx-text-fill: #403f3b;
+}
+/*******************************************************************************
+ *                                                                             *
  * 按钮样式                                                          *
  *                                                                             *
  ******************************************************************************/

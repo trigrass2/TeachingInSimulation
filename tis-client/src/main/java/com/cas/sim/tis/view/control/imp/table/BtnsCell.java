@@ -25,7 +25,7 @@ public class BtnsCell<T>extends Cell<T> {
 		return column -> new BtnsCell<T>();
 	}
 
-	private static final ResourceBundle resources = ResourceBundle.getBundle("setting");
+	private static final ResourceBundle resources = ResourceBundle.getBundle("i18n/messages");
 	private Row row;
 
 	private ButtonBar bar = new ButtonBar();

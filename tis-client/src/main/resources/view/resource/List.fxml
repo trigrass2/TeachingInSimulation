@@ -6,6 +6,8 @@
 <?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.Tooltip?>
+<?import javafx.scene.control.Pagination?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.ColumnConstraints?>
@@ -14,8 +16,9 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 <?import com.cas.sim.tis.view.control.imp.Title?>
+<?import com.cas.sim.tis.view.control.imp.table.Table?>
 
-<fx:root style="-fx-background-color: #ffffff;" stylesheets="@../../static/css/basic.css" type="HBox" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
+<fx:root style="-fx-background-color: #ffffff;" type="HBox" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
 	<children>
 		<VBox HBox.hgrow="ALWAYS">
 			<children>
@@ -32,6 +35,9 @@
 									</image>
 								</ImageView>
 							</graphic>
+							<tooltip>
+								<Tooltip text="%resource.pic" />
+							</tooltip>
 						</CheckBox>
 						<CheckBox mnemonicParsing="false" nodeOrientation="RIGHT_TO_LEFT" selected="true" styleClass="img-check-box">
 							<graphic>
@@ -41,6 +47,9 @@
 									</image>
 								</ImageView>
 							</graphic>
+							<tooltip>
+								<Tooltip text="%resource.swf" />
+							</tooltip>
 						</CheckBox>
 						<CheckBox mnemonicParsing="false" nodeOrientation="RIGHT_TO_LEFT" selected="true" styleClass="img-check-box">
 							<graphic>
@@ -50,6 +59,9 @@
 									</image>
 								</ImageView>
 							</graphic>
+							<tooltip>
+								<Tooltip text="%resource.video" />
+							</tooltip>
 						</CheckBox>
 						<CheckBox mnemonicParsing="false" nodeOrientation="RIGHT_TO_LEFT" selected="true" styleClass="img-check-box">
 							<graphic>
@@ -59,6 +71,9 @@
 									</image>
 								</ImageView>
 							</graphic>
+							<tooltip>
+								<Tooltip text="%resource.txt" />
+							</tooltip>
 						</CheckBox>
 						<CheckBox mnemonicParsing="false" nodeOrientation="RIGHT_TO_LEFT" selected="true" styleClass="img-check-box">
 							<graphic>
@@ -68,6 +83,9 @@
 									</image>
 								</ImageView>
 							</graphic>
+							<tooltip>
+								<Tooltip text="%resource.word" />
+							</tooltip>
 						</CheckBox>
 						<CheckBox mnemonicParsing="false" nodeOrientation="RIGHT_TO_LEFT" selected="true" styleClass="img-check-box">
 							<graphic>
@@ -77,6 +95,9 @@
 									</image>
 								</ImageView>
 							</graphic>
+							<tooltip>
+								<Tooltip text="%resource.ppt" />
+							</tooltip>
 						</CheckBox>
 						<CheckBox mnemonicParsing="false" nodeOrientation="RIGHT_TO_LEFT" selected="true" styleClass="img-check-box">
 							<graphic>
@@ -86,6 +107,9 @@
 									</image>
 								</ImageView>
 							</graphic>
+							<tooltip>
+								<Tooltip text="%resource.excel" />
+							</tooltip>
 						</CheckBox>
 						<CheckBox mnemonicParsing="false" nodeOrientation="RIGHT_TO_LEFT" selected="true" styleClass="img-check-box">
 							<graphic>
@@ -95,11 +119,14 @@
 									</image>
 								</ImageView>
 							</graphic>
+							<tooltip>
+								<Tooltip text="%resource.pdf" />
+							</tooltip>
 						</CheckBox>
 						<HBox spacing="10.0" HBox.hgrow="ALWAYS" alignment="CENTER_RIGHT">
 							<children>
-								<Button mnemonicParsing="false" text="%button.lasted.up" />
-								<Button mnemonicParsing="false" text="%button.browse.up" />
+								<Button styleClass="blue-btn" mnemonicParsing="false" text="%button.lasted.up" />
+								<Button styleClass="blue-btn" mnemonicParsing="false" text="%button.browse.up" />
 							</children>
 						</HBox>
 					</children>
@@ -107,7 +134,9 @@
 						<Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
 					</padding>
 				</HBox>
-				<VBox fx:id="list">
+				<VBox spacing="10.0" VBox.vgrow="ALWAYS">
+					<Table  fx:id="table" VBox.vgrow="ALWAYS" />
+					<Pagination fx:id="pagination" maxPageIndicatorCount="5" />
 					<padding>
 						<Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
 					</padding>
