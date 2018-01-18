@@ -2,7 +2,6 @@ package com.cas.sim.tis.entity;
 
 import java.util.Date;
 
-import javax.persistence.Column;
 import javax.persistence.Id;
 
 import org.springframework.format.annotation.DateTimeFormat;
@@ -16,24 +15,27 @@ import org.springframework.format.annotation.DateTimeFormat;
 //问答题：只有问题描述与题目解析
 public class Question {
 	@Id
-	protected Integer id;
+	private Integer id;
 //	试题库类型：0-模拟题;1-真题;2-教师个人题库
-	@Column(name = "Q_TYPE")
-	protected Integer type;
+	private Integer type;
 //	所属题库
-	protected Integer libraryId;
+	private Integer libraryId;
 //	问题描述
-	protected String title;
+	private String title;
+//	选项（选择题）
+	private String options;
+//	参考答案（非问答题）
+	private String refrence;
 //	题目解析
-	protected String analysis;
+	private String analysis;
 //	替他信息
 //	所属教师
-	protected Integer creatorId;
+	private Integer creatorId;
 //	创建时间
 	@DateTimeFormat(pattern = "yyyy-MM-dd hh:mm:ss")
-	protected Date createDate;
+	private Date createDate;
 //	删除状态标记
-	protected Integer del = 0;
+	private Boolean del = Boolean.FALSE;
 
 	public Integer getId() {
 		return id;
@@ -83,11 +85,27 @@ public class Question {
 		this.createDate = createDate;
 	}
 
-	public Integer getDel() {
+	public String getOptions() {
+		return options;
+	}
+
+	public void setOptions(String options) {
+		this.options = options;
+	}
+
+	public String getRefrence() {
+		return refrence;
+	}
+
+	public void setRefrence(String refrence) {
+		this.refrence = refrence;
+	}
+
+	public Boolean getDel() {
 		return del;
 	}
 
-	public void setDel(Integer del) {
+	public void setDel(Boolean del) {
 		this.del = del;
 	}
 

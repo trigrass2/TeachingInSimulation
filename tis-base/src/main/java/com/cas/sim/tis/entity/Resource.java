@@ -3,7 +3,6 @@ package com.cas.sim.tis.entity;
 import java.io.Serializable;
 import java.util.Date;
 
-import javax.persistence.Column;
 import javax.persistence.Id;
 
 //资源
@@ -31,24 +30,20 @@ public class Resource implements Serializable {
 //	4-SWF
 //	5-PNG/JPG/GIF
 //	6-MP4/WMV/RMVB/FLV/AVI
-	@Column(name = "R_TYPE")
 	protected Integer type;
 //	资源路径（在服务器中的文件路径，服务器提供给客户端的是FTP://server_ip:port/path）
 	protected String path;
-//	关键词（“|”分割）
+//	关键词（“,”分割）
 	private String keyword;
 //	资源描述
-	@Column(name = "COMMENT")
 	private String desc;
 //	创建人（教师/管理员）
 	protected Integer creatorId;
+//	默认资源是私有的
+	protected Boolean share = Boolean.FALSE;
 	protected Date createDate;
-
-//	默认资源是公开的
-	@Column(name = "PUBLIC")
-	protected Boolean open = true;
 //	默认资源没有被删除
-	protected Boolean del = false;
+	protected Boolean del = Boolean.FALSE;
 
 	public Integer getId() {
 		return id;
@@ -114,12 +109,12 @@ public class Resource implements Serializable {
 		this.createDate = createDate;
 	}
 
-	public Boolean getOpen() {
-		return open;
+	public Boolean getShare() {
+		return share;
 	}
 
-	public void setOpen(Boolean open) {
-		this.open = open;
+	public void setShare(Boolean share) {
+		this.share = share;
 	}
 
 	public Boolean getDel() {
