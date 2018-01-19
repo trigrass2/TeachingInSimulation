@@ -96,6 +96,26 @@
 }
 /*******************************************************************************
  *                                                                             *
+ * toggle按钮样式                                                          *
+ *                                                                             *
+ ******************************************************************************/
+ .toggle-button {
+	-fx-background-color: #19b0c6;
+	-fx-background-radius:0.0;
+	-fx-border-color:transparent;
+	-fx-border-radius: 0.0;
+	-fx-cursor: hand;
+	-fx-text-fill: #ffffff;
+}
+.toggle-button:hover {
+	-fx-background-color:#51bfcf;
+}
+.toggle-button:selected {
+	-fx-background-color: #51bfcf;
+	-fx-border-color: none;
+}
+/*******************************************************************************
+ *                                                                             *
  * 按钮样式                                                          *
  *                                                                             *
  ******************************************************************************/

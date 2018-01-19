@@ -12,13 +12,12 @@ import com.cas.sim.tis.app.JmeApplication;
 import com.cas.sim.tis.consts.RoleConst;
 import com.cas.sim.tis.util.SpringUtil;
 import com.cas.sim.tis.view.PageView;
-import com.cas.sim.tis.view.control.IContent;
 import com.cas.sim.tis.view.control.imp.HomeMenu;
-import com.cas.sim.tis.view.control.imp.LeftMenu;
 import com.cas.sim.tis.view.control.imp.jme.Recongnize3D;
 import com.cas.sim.tis.view.control.imp.jme.RecongnizeMenu;
-import com.cas.sim.tis.view.control.imp.resource.ResourceList;
+import com.cas.sim.tis.view.control.imp.resource.AdminResourceList;
 import com.cas.sim.tis.view.control.imp.resource.ResourceMenu;
+import com.cas.sim.tis.view.control.imp.resource.StudentResourceList;
 import com.jme3.system.AppSettings;
 import com.jme3x.jfx.injfx.JmeToJFXIntegrator;
 
@@ -34,17 +33,18 @@ public class HomeController implements Initializable {
 
 	@Resource
 	private JmeApplication jmeApp;
-	
+
 	private List<HomeMenu> homeMenus = new ArrayList<HomeMenu>();
+
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		// 判断当前登录人角色，加载对应菜单
 		if (RoleConst.ADMIN == LoginController.USER_ROLE) {
 			resourceMenuItem();
-		}else if (RoleConst.TEACHER == LoginController.USER_ROLE) {
+		} else if (RoleConst.TEACHER == LoginController.USER_ROLE) {
 			resourceMenuItem();
-		}else if (RoleConst.STUDENT == LoginController.USER_ROLE) {
-			
+		} else if (RoleConst.STUDENT == LoginController.USER_ROLE) {
+
 		}
 		menu.getChildren().addAll(homeMenus);
 	}
@@ -59,7 +59,13 @@ public class HomeController implements Initializable {
 			PageController controller = SpringUtil.getBean(PageController.class);
 			ResourceMenu menu = new ResourceMenu();
 			controller.loadLeftMenu(menu);
-			controller.loadContent(new ResourceList());
+			if (RoleConst.ADMIN == LoginController.USER_ROLE) {
+				controller.loadContent(new AdminResourceList(true));
+			} else if (RoleConst.TEACHER == LoginController.USER_ROLE) {
+				controller.loadContent(new AdminResourceList(false));
+			} else if (RoleConst.STUDENT == LoginController.USER_ROLE) {
+				controller.loadContent(new StudentResourceList());
+			}
 		});
 		homeMenus.add(resource);
 	}
@@ -69,14 +75,14 @@ public class HomeController implements Initializable {
 		Application.showView(PageView.class);
 		PageController controller = SpringUtil.getBean(PageController.class);
 		controller.loadLeftMenu(new RecongnizeMenu());
-		
+
 		Recongnize3D content = new Recongnize3D();
 		controller.loadContent(content);
-		
+
 		final AppSettings settings = JmeToJFXIntegrator.prepareSettings(new AppSettings(true), 60);
 		jmeApp.setSettings(settings);
 		jmeApp.setShowSettings(false);
 		JmeToJFXIntegrator.startAndBindMainViewPort(jmeApp, content.getCanvas(), Thread::new);
 	}
-	
+
 }

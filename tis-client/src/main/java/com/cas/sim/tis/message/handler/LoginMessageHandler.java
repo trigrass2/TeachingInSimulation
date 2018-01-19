@@ -11,6 +11,7 @@ import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Component;
 
 import com.cas.sim.tis.Application;
+import com.cas.sim.tis.consts.Session;
 import com.cas.sim.tis.message.LoginMessage;
 import com.cas.sim.tis.util.SpringUtil;
 import com.cas.sim.tis.view.HomeView;
@@ -35,7 +36,7 @@ public class LoginMessageHandler implements ClientHandler<LoginMessage> {
 		if (LoginMessage.RESULT_SUCCESS == m.getResult()) {
 //			登录成功
 			// 记录Session
-			
+			Session.set(Session.KEY_LOGIN_USER_ID, m.getUserId());
 			// 记录当前登录用户
 			properties.load(new FileInputStream("cfg.properties"));
 			properties.setProperty("login.account", m.getUserCode());
