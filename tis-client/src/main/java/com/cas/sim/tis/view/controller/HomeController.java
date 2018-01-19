@@ -10,14 +10,13 @@ import javax.annotation.Resource;
 import com.cas.sim.tis.Application;
 import com.cas.sim.tis.app.JmeApplication;
 import com.cas.sim.tis.consts.RoleConst;
+import com.cas.sim.tis.consts.Session;
 import com.cas.sim.tis.util.SpringUtil;
 import com.cas.sim.tis.view.PageView;
 import com.cas.sim.tis.view.control.imp.HomeMenu;
 import com.cas.sim.tis.view.control.imp.jme.Recongnize3D;
 import com.cas.sim.tis.view.control.imp.jme.RecongnizeMenu;
-import com.cas.sim.tis.view.control.imp.resource.AdminResourceList;
 import com.cas.sim.tis.view.control.imp.resource.ResourceMenu;
-import com.cas.sim.tis.view.control.imp.resource.StudentResourceList;
 import com.jme3.system.AppSettings;
 import com.jme3x.jfx.injfx.JmeToJFXIntegrator;
 
@@ -39,11 +38,12 @@ public class HomeController implements Initializable {
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		// 判断当前登录人角色，加载对应菜单
-		if (RoleConst.ADMIN == LoginController.USER_ROLE) {
+		int role = Session.get(Session.KEY_LOGIN_ROLE);
+		if (RoleConst.ADMIN == role) {
 			resourceMenuItem();
-		} else if (RoleConst.TEACHER == LoginController.USER_ROLE) {
+		} else if (RoleConst.TEACHER == role) {
 			resourceMenuItem();
-		} else if (RoleConst.STUDENT == LoginController.USER_ROLE) {
+		} else if (RoleConst.STUDENT == role) {
 
 		}
 		menu.getChildren().addAll(homeMenus);
@@ -59,13 +59,6 @@ public class HomeController implements Initializable {
 			PageController controller = SpringUtil.getBean(PageController.class);
 			ResourceMenu menu = new ResourceMenu();
 			controller.loadLeftMenu(menu);
-			if (RoleConst.ADMIN == LoginController.USER_ROLE) {
-				controller.loadContent(new AdminResourceList(true));
-			} else if (RoleConst.TEACHER == LoginController.USER_ROLE) {
-				controller.loadContent(new AdminResourceList(false));
-			} else if (RoleConst.STUDENT == LoginController.USER_ROLE) {
-				controller.loadContent(new StudentResourceList());
-			}
 		});
 		homeMenus.add(resource);
 	}

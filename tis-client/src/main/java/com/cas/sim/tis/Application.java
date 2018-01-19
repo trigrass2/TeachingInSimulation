@@ -14,11 +14,11 @@ import org.springframework.context.ConfigurableApplicationContext;
 
 import com.cas.sim.tis.config.ClientConfig;
 import com.cas.sim.tis.consts.RoleConst;
+import com.cas.sim.tis.consts.Session;
 import com.cas.sim.tis.message.LoginMessage;
 import com.cas.sim.tis.message.handler.LoginMessageHandler;
 import com.cas.sim.tis.util.SpringUtil;
 import com.cas.sim.tis.view.LoginView;
-import com.cas.sim.tis.view.controller.LoginController;
 
 import de.felixroske.jfxsupport.AbstractJavaFxApplicationSupport;
 import de.felixroske.jfxsupport.GUIState;
@@ -49,7 +49,7 @@ public class Application extends AbstractJavaFxApplicationSupport implements App
 //        }
 
 //		明确登录用的身份
-		LoginController.USER_ROLE = RoleConst.TEACHER;
+		Session.set(Session.KEY_LOGIN_ROLE, RoleConst.TEACHER);
 
 		launch(Application.class, LoginView.class, args);
 	}

@@ -7,7 +7,6 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Component;
 
 import com.cas.sim.tis.config.ServerConfig;
-import com.cas.sim.tis.consts.RoleConst;
 import com.cas.sim.tis.consts.Session;
 import com.cas.sim.tis.entity.User;
 import com.cas.sim.tis.message.LoginMessage;
@@ -20,15 +19,12 @@ public class LoginMessageHandler implements ServerHandler<LoginMessage> {
 	@Resource
 	private ServerConfig serverConfig;
 
-	@Resource(name = "studentService")
-	private UserService studentService;
-	@Resource(name = "teacherService")
-	private UserService teacherService;
+	@Resource(name = "userService")
+	private UserService userService;
 
 	@Override
 	public void execute(HostedConnection source, LoginMessage m) throws Exception {
 //		接收客户端的请求信息
-		int userType = m.getUserType();
 		String code = m.getUserCode();
 		String passwd = m.getUserPwd();
 		if (code == null || passwd == null) {
@@ -39,18 +35,7 @@ public class LoginMessageHandler implements ServerHandler<LoginMessage> {
 		LoginMessage respMsg = (LoginMessage) m;
 
 		try {
-			final User user;
-			if (userType == RoleConst.STUDENT) {
-//				检查学生的登录信息
-				user = studentService.login(code, passwd);
-//				登录成功
-			} else if (userType == RoleConst.TEACHER || userType == RoleConst.ADMIN) {
-//				检查老师或管理员的登录信息
-				user = teacherService.login(code, passwd);
-			} else {
-//				服务器就当做没看到，转手甩个异常出去
-				throw new RuntimeException("这不是一个有效的用户");
-			}
+			final User user = userService.login(code, passwd);
 			List<HostedConnection> clients = serverConfig.getClients();
 //			进一步验证
 			if (clients.size() >= serverConfig.getMaxLogin()) {
@@ -72,7 +57,8 @@ public class LoginMessageHandler implements ServerHandler<LoginMessage> {
 					LOG.info("客户端登录成功，当前客户端数量{}", clients.size());
 //					用户成功连接
 					respMsg.setResult(LoginMessage.RESULT_SUCCESS);
-					respMsg.setUserid(user.getId());
+					respMsg.setUserId(user.getId());
+					respMsg.setUserType(user.getRole());
 					source.send(respMsg);
 				}
 			}

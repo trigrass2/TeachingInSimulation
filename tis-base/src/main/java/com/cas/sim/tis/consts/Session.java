@@ -12,7 +12,11 @@ public enum Session {
 	/**
 	 * 用户ID
 	 */
-	KEY_LOGIN_USER_ID;
+	KEY_LOGIN_USER_ID,
+	/**
+	 * 用户角色
+	 */
+	KEY_LOGIN_ROLE;
 
 	private final static Map<Session, Object> DATAS = new HashMap<>();
 

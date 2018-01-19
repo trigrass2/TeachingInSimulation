@@ -12,7 +12,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 
@@ -32,6 +31,7 @@ public abstract class LeftMenu extends VBox implements ILeftContent {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		initMenu();
 	}
 
 	protected abstract void initMenu();

@@ -30,6 +30,8 @@ import com.cas.sim.tis.message.LoginMessage;
 import com.cas.sim.tis.services.ResourceService;
 import com.cas.sim.tis.services.StudentService;
 import com.cas.sim.tis.services.TeacherService;
+import com.cas.sim.tis.services.UserService;
+import com.cas.sim.tis.util.SpringUtil;
 import com.jme3.network.NetworkClient;
 
 import de.felixroske.jfxsupport.FXMLController;
@@ -115,6 +117,7 @@ public class LoginController extends AnchorPane implements Initializable, Applic
 //			注册远程服务
 			new Thread(() -> {
 				Map<String, Class<?>> map = new HashMap<>();
+				map.put("userServiceFactory", UserService.class);
 				map.put("resourceServiceFactory", ResourceService.class);
 				map.put("studentServiceFactory", StudentService.class);
 				map.put("teacherServiceFactory", TeacherService.class);
@@ -130,12 +133,18 @@ public class LoginController extends AnchorPane implements Initializable, Applic
 //					动态注册bean.  
 					defaultListableBeanFactory.registerBeanDefinition(e.getKey(), beanDefinitionBuilder.getBeanDefinition());
 				});
+				
+				
+				
+				RmiProxyFactoryBean factoryBean = (RmiProxyFactoryBean) SpringUtil.getBean("resourceServiceFactory");
+				ResourceService service = (ResourceService) factoryBean.getObject();
+
+				
 			}).start();
 		}
 
 //		3、项服务器发送登录消息
 		LoginMessage msg = new LoginMessage();
-		msg.setUserType(USER_ROLE);
 		msg.setUserCode(userId.getText());
 		msg.setUserPwd(password.getText());
 		client.send(msg);

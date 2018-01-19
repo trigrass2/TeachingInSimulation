@@ -4,7 +4,7 @@ import org.apache.ibatis.exceptions.TooManyResultsException;
 
 import com.cas.sim.tis.entity.User;
 
-public interface UserService {
+public interface UserService extends BaseService<User> {
 	/**
 	 * 用户登录
 	 * @param usercode 用户账号

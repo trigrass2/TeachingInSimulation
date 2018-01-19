@@ -1,25 +1,28 @@
 package com.cas.sim.tis.view.control.imp.resource;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
-import java.rmi.Naming;
-import java.rmi.NotBoundException;
-import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
+import org.json.JSONArray;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.cas.sim.tis.consts.ResourceConsts;
-import com.cas.sim.tis.services.ResourceService;
+import com.cas.sim.tis.entity.Resource;
+import com.cas.sim.tis.util.MsgUtil;
+import com.cas.sim.tis.util.SpringUtil;
+import com.cas.sim.tis.view.action.ResourceAction;
 import com.cas.sim.tis.view.control.IContent;
+import com.cas.sim.tis.view.control.imp.table.BtnsCell;
 import com.cas.sim.tis.view.control.imp.table.Column;
 import com.cas.sim.tis.view.control.imp.table.IconCell;
 import com.cas.sim.tis.view.control.imp.table.Table;
+import com.github.pagehelper.PageInfo;
 
+import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -40,22 +43,16 @@ import javafx.util.StringConverter;
  * @创建日期 2018年1月17日
  * @修改人 Caowj
  */
-@PropertySource(value = { "file:cfg.properties" })
-public abstract class ResourceList extends HBox implements IContent {
-	@Value("${server.base.address}")
-	private String address;
-
-	@Value("${server.rmi.registry}")
-	private Integer rmiPort;
-
+public class ResourceList extends HBox implements IContent {
+	private static final Logger LOG = LoggerFactory.getLogger(ResourceAction.class);
 	@FXML
-	protected Table table;
+	private Table table;
 	@FXML
-	protected Pagination pagination;
+	private Pagination pagination;
 	@FXML
-	protected ToggleGroup order;
+	private ToggleGroup order;
 	@FXML
-	protected PieChart chart;
+	private PieChart chart;
 	@FXML
 	private CheckBox picCheck;
 	@FXML
@@ -72,29 +69,42 @@ public abstract class ResourceList extends HBox implements IContent {
 	private CheckBox excelCheck;
 	@FXML
 	private CheckBox pdfCheck;
-	
+
 	@FXML
 	private Label pic;
-	@FXML   
+	@FXML
 	private Label swf;
-	@FXML   
+	@FXML
 	private Label video;
-	@FXML   
+	@FXML
 	private Label txt;
-	@FXML   
+	@FXML
 	private Label word;
-	@FXML   
+	@FXML
 	private Label ppt;
-	@FXML   
+	@FXML
 	private Label excel;
-	@FXML   
+	@FXML
 	private Label pdf;
 
-	protected List<Integer> resourceTypes = new ArrayList<>();
+	private List<Integer> resourceTypes = new ArrayList<>();
+	private List<Integer> creators = new ArrayList<>();
 
-	protected ResourceService service;
+	private boolean editable;
 
-	public ResourceList() {
+	private ResourceAction action;
+
+	public ResourceList(boolean editable, int... creators) {
+		action = SpringUtil.getBean(ResourceAction.class);
+
+		if (creators == null) {
+			LOG.warn("此处传入creator不可能为空！");
+		} else {
+			for (int creator : creators) {
+				this.creators.add(creator);
+			}
+		}
+
 		FXMLLoader loader = new FXMLLoader();
 		URL fxmlUrl = this.getClass().getResource("/view/resource/List.fxml");
 		loader.setLocation(fxmlUrl);
@@ -113,16 +123,6 @@ public abstract class ResourceList extends HBox implements IContent {
 	 * 界面初始化
 	 */
 	public void initialize() {
-		try {
-			String serviceUrl = "rmi://" + address + ":" + rmiPort + "/" + "resourceService";
-			service = (ResourceService) Naming.lookup(serviceUrl);
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-		} catch (RemoteException e) {
-			e.printStackTrace();
-		} catch (NotBoundException e) {
-			e.printStackTrace();
-		}
 		createTable();
 		order.selectedToggleProperty().addListener((observe, oldVal, newVal) -> {
 			if (newVal == null) {
@@ -191,6 +191,14 @@ public abstract class ResourceList extends HBox implements IContent {
 		updateDate.setMaxWidth(160);
 		updateDate.getStyleClass().add("gray-label");
 		table.getColumns().addAll(id, icon, name, updateDate);
+		if (editable) {
+			// 编辑按钮
+			Column<String> btns = new Column<String>();
+			btns.setCellFactory(BtnsCell.forTableColumn());
+			btns.setAlignment(Pos.CENTER_RIGHT);
+			btns.setPrefWidth(145);
+			table.getColumns().add(btns);
+		}
 	}
 
 	private void reload() {
@@ -222,12 +230,39 @@ public abstract class ResourceList extends HBox implements IContent {
 	/**
 	 * 加载资源
 	 */
-	protected abstract void loadResources(); 
+	protected void loadResources() {
+		int curr = pagination.getCurrentPageIndex();
+		int pageSize = pagination.getPageCount();
+
+		// FIXME
+		String keyword = null;
+
+		String orderByClause = order.getSelectedToggle().getUserData().toString();
+
+		PageInfo<Resource> page = null;
+		page = action.findResourcesByCreator(curr, pageSize, resourceTypes, keyword, orderByClause, creators);
+		pagination.setMaxPageIndicatorCount((int) page.getTotal());
+		table.setItems(new JSONArray(page.getList()));
+		table.build();
+	}
 
 	/**
 	 * 加载饼图数据
 	 */
-	protected abstract void loadPieChart(); 
+	protected void loadPieChart() {
+		// FIXME
+		String keyword = null;
+		int picNum = action.countResourceByType(1, 0, resourceTypes, keyword);
+		int swfNum = action.countResourceByType(1, 1, resourceTypes, keyword);
+		int videoNum = action.countResourceByType(1, 2, resourceTypes, keyword);
+		int txtNum = action.countResourceByType(1, 3, resourceTypes, keyword);
+		int wordNum = action.countResourceByType(1, 4, resourceTypes, keyword);
+		int pptNum = action.countResourceByType(1, 5, resourceTypes, keyword);
+		int excelNum = action.countResourceByType(1, 6, resourceTypes, keyword);
+		int pdfNum = action.countResourceByType(1, 7, resourceTypes, keyword);
+
+		chart.setData(FXCollections.observableArrayList(new PieChart.Data(MsgUtil.getMessage("resource.pic"), picNum), new PieChart.Data(MsgUtil.getMessage("resource.swf"), swfNum), new PieChart.Data(MsgUtil.getMessage("resource.video"), videoNum), new PieChart.Data(MsgUtil.getMessage("resource.txt"), txtNum), new PieChart.Data(MsgUtil.getMessage("resource.word"), wordNum), new PieChart.Data(MsgUtil.getMessage("resource.ppt"), pptNum), new PieChart.Data(MsgUtil.getMessage("resource.excel"), excelNum), new PieChart.Data(MsgUtil.getMessage("resource.pdf"), pdfNum)));
+	}
 
 	@FXML
 	private void typeFilter(ActionEvent event) {

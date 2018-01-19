@@ -4,8 +4,8 @@
 	<resultMap id="BaseResultMap" type="com.cas.sim.tis.entity.Library">
 		<id column="ID" jdbcType="INTEGER" property="id" />
 		<result column="NAME" jdbcType="VARCHAR" property="name" />
-		<result column="TYPE" jdbcType="Integer" property="type" />
-		<result column="NUM" jdbcType="Integer" property="num" />
+		<result column="TYPE" jdbcType="INTEGER" property="type" />
+		<result column="NUM" jdbcType="INTEGER" property="num" />
 		<result column="CREATOR_ID" jdbcType="VARCHAR" property="creatorId" />
 		<result column="CREATE_DATE" jdbcType="VARCHAR" property="createDate" />
 		<result column="DEL" jdbcType="INTEGER" property="del" />

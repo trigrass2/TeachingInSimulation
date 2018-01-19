@@ -5,14 +5,12 @@ import java.io.FileOutputStream;
 import java.util.Locale;
 import java.util.Properties;
 
-import javax.annotation.Resource;
-
-import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Component;
 
 import com.cas.sim.tis.Application;
 import com.cas.sim.tis.consts.Session;
 import com.cas.sim.tis.message.LoginMessage;
+import com.cas.sim.tis.util.MsgUtil;
 import com.cas.sim.tis.util.SpringUtil;
 import com.cas.sim.tis.view.HomeView;
 import com.cas.sim.tis.view.controller.LoginController;
@@ -26,9 +24,6 @@ import javafx.scene.layout.Region;
 @Component
 public class LoginMessageHandler implements ClientHandler<LoginMessage> {
 
-	@Resource
-	private MessageSource messageSource; // 自动注入对象
-
 	private Properties properties = new Properties();
 	
 	@Override
@@ -37,6 +32,7 @@ public class LoginMessageHandler implements ClientHandler<LoginMessage> {
 //			登录成功
 			// 记录Session
 			Session.set(Session.KEY_LOGIN_USER_ID, m.getUserId());
+			Session.set(Session.KEY_LOGIN_ROLE, m.getUserType());
 			// 记录当前登录用户
 			properties.load(new FileInputStream("cfg.properties"));
 			properties.setProperty("login.account", m.getUserCode());
@@ -55,13 +51,13 @@ public class LoginMessageHandler implements ClientHandler<LoginMessage> {
 				LoginController loginController = SpringUtil.getBean(LoginController.class);
 				if (LoginMessage.RESULT_FAILURE == m.getResult()) {
 //					用户名或密码错误
-					loginController.setErrorMsg(messageSource.getMessage("login.failure", null, Locale.getDefault()));
+					loginController.setErrorMsg(MsgUtil.getMessage("login.failure", null, Locale.getDefault()));
 				} else if (LoginMessage.RESULT_MAX_SIZE == m.getResult()) {
 //					客户端连接数量已满
-					loginController.setErrorMsg(messageSource.getMessage("login.failure.max_size", null, Locale.getDefault()));
+					loginController.setErrorMsg(MsgUtil.getMessage("login.failure.max_size", null, Locale.getDefault()));
 				} else if (LoginMessage.RESULT_DUPLICATE == m.getResult()) {
 //					用户已登录
-					loginController.setErrorMsg(messageSource.getMessage("login.failure.duplicate", null, Locale.getDefault()));
+					loginController.setErrorMsg(MsgUtil.getMessage("login.failure.duplicate", null, Locale.getDefault()));
 				}
 			});
 		}

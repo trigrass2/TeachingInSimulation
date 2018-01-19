@@ -10,6 +10,7 @@ import org.springframework.remoting.rmi.RmiServiceExporter;
 import com.cas.sim.tis.services.ResourceService;
 import com.cas.sim.tis.services.StudentService;
 import com.cas.sim.tis.services.TeacherService;
+import com.cas.sim.tis.services.UserService;
 
 /**
  * 远程方法调用（RMI：Remote Method invoke）相关配置<br>
@@ -17,6 +18,8 @@ import com.cas.sim.tis.services.TeacherService;
  */
 @Configuration
 public class RMIConfig {
+	@Resource
+	private UserService userService;
 	@Resource
 	private ResourceService resourceService;
 	@Resource
@@ -29,6 +32,23 @@ public class RMIConfig {
 	@Value("${server.rmi.service}")
 	private Integer servicePort;
 
+	@Bean
+	public RmiServiceExporter userServiceExporter() {
+		RmiServiceExporter exporter = new RmiServiceExporter();
+		exporter.setServiceInterface(UserService.class);
+		exporter.setServiceName("userService");
+		exporter.setService(userService);
+		
+		if (servicePort != null) {
+			exporter.setServicePort(servicePort);
+		}
+//		RegistryPort端口默认为1099，用户客户端访问时用的，rmi://host:RegistryPort/serviceName
+		if (registPort != null) {
+			exporter.setRegistryPort(registPort);
+		}
+		return exporter;
+	}
+	
 	@Bean
 	public RmiServiceExporter resourceServiceExporter() {
 		RmiServiceExporter exporter = new RmiServiceExporter();
