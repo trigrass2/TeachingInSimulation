@@ -1,20 +1,14 @@
 package com.cas.sim.tis.test;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.remoting.rmi.RmiProxyFactoryBean;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.util.StopWatch;
 
 import com.cas.sim.tis.Application;
-import com.cas.sim.tis.entity.Teacher;
-import com.cas.sim.tis.entity.User;
 import com.cas.sim.tis.services.ResourceService;
 import com.cas.sim.tis.util.SpringUtil;
 import com.github.pagehelper.PageHelper;

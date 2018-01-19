@@ -5,11 +5,15 @@
 package com.cas.sim.tis.view.controller;
 
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Properties;
 import java.util.ResourceBundle;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 
@@ -22,8 +26,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Point3D;
 import javafx.scene.control.TextField;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 
 /**
@@ -36,12 +38,10 @@ import javafx.util.Duration;
 @FXMLController
 @PropertySource(value = { "file:cfg.properties" })
 public class NetworkController implements Initializable {
+	
+	
+	private static final Logger LOG = LoggerFactory.getLogger(NetworkController.class);
 
-	protected double xOffset;
-	protected double yOffset;
-
-	@FXML
-	private VBox drag;
 	@FXML
 	private TextField ip;
 	@FXML
@@ -53,28 +53,10 @@ public class NetworkController implements Initializable {
 	@Value("${server.base.port}")
 	private Integer num;
 
-	private static Properties properties = new Properties();
+	private Properties properties = new Properties();
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		// 绑定窗口拖拽事件
-		drag.setOnMousePressed((MouseEvent event) -> {
-			event.consume();
-			xOffset = event.getSceneX();
-			yOffset = event.getSceneY();
-		});
-
-		drag.setOnMouseDragged((MouseEvent event) -> {
-			event.consume();
-			Application.getStage().setX(event.getScreenX() - xOffset);
-
-			// 根据自己的需求，做不同的判断
-			if (event.getScreenY() - yOffset < 0) {
-				Application.getStage().setY(0);
-			} else {
-				Application.getStage().setY(event.getScreenY() - yOffset);
-			}
-		});
 		// 读取服务器信息配置
 		try {
 			properties.load(new FileInputStream("cfg.properties"));
@@ -85,12 +67,15 @@ public class NetworkController implements Initializable {
 		}
 	}
 	
-	
 	@FXML
-	public void ok() {
+	public void ok() throws FileNotFoundException, IOException {
 		// 记录服务器信息
 		properties.setProperty("server.base.address", ip.getText());
-		properties.setProperty("server.base.address", port.getText());
+		properties.setProperty("server.base.port", port.getText());
+		
+		LOG.info("修改与服务器的连接配置，修改后的服务器地址:{}, 端口:{}", ip.getText(), port.getText());
+//		服务器信息保存
+		properties.store(new FileOutputStream("cfg.properties"), "");
 		back();
 	}
 

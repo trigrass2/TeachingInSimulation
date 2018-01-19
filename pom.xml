@@ -7,14 +7,17 @@
 	<modules>
 		<module>tis-base</module>
 		<module>tis-server</module>
-
-
 		<module>tis-client</module>
 		<!-- <module>tis-circuit</module> -->
 
 	</modules>
 	<name>仿真教学项目</name>
 	<properties>
+		<!-- 文件拷贝时的编码 -->
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+		<!-- 编译时的编码 -->
+		<maven.compiler.encoding>UTF-8</maven.compiler.encoding>  
 		<!-- 主项目版本号 -->
 		<project.version>1.0.0-SNAPSHOT</project.version>
 		<!-- 引擎版本号 -->
@@ -245,25 +248,25 @@
 				<version>${druid.version}</version>
 			</dependency>
 
-			<dependency>
-				<groupId>org.mybatis.spring.boot</groupId>
-				<artifactId>mybatis-spring-boot-starter</artifactId>
-				<version>${mybatis.version}</version>
-				<exclusions>
-					<exclusion>
-						<groupId>org.springframework.boot</groupId>
-						<artifactId>spring-boot-starter</artifactId>
-					</exclusion>
-					<exclusion>
-						<groupId>org.springframework.boot</groupId>
-						<artifactId>spring-boot-starter-jdbc</artifactId>
-					</exclusion>
-					<exclusion>
-						<groupId>org.springframework.boot</groupId>
-						<artifactId>spring-boot-autoconfigure</artifactId>
-					</exclusion>
-				</exclusions>
-			</dependency>
+<!-- 			<dependency> -->
+<!-- 				<groupId>org.mybatis.spring.boot</groupId> -->
+<!-- 				<artifactId>mybatis-spring-boot-starter</artifactId> -->
+<!-- 				<version>${mybatis.version}</version> -->
+<!-- 				<exclusions> -->
+<!-- 					<exclusion> -->
+<!-- 						<groupId>org.springframework.boot</groupId> -->
+<!-- 						<artifactId>spring-boot-starter</artifactId> -->
+<!-- 					</exclusion> -->
+<!-- 					<exclusion> -->
+<!-- 						<groupId>org.springframework.boot</groupId> -->
+<!-- 						<artifactId>spring-boot-starter-jdbc</artifactId> -->
+<!-- 					</exclusion> -->
+<!-- 					<exclusion> -->
+<!-- 						<groupId>org.springframework.boot</groupId> -->
+<!-- 						<artifactId>spring-boot-autoconfigure</artifactId> -->
+<!-- 					</exclusion> -->
+<!-- 				</exclusions> -->
+<!-- 			</dependency> -->
 			<dependency>
 				<groupId>org.springframework</groupId>
 				<artifactId>spring-jdbc</artifactId>
@@ -297,6 +300,10 @@
 					<exclusion>
 						<groupId>org.springframework.boot</groupId>
 						<artifactId>spring-boot-starter</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>org.springframework.boot</groupId>
+						<artifactId>mybatis-spring-boot-starter</artifactId>
 					</exclusion>
 				</exclusions>
 			</dependency>

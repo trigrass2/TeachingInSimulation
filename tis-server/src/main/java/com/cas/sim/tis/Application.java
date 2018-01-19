@@ -8,7 +8,6 @@ import org.slf4j.bridge.SLF4JBridgeHandler;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import com.cas.sim.tis.config.ServerConfig;
 import com.cas.sim.tis.message.LoginMessage;
@@ -18,7 +17,7 @@ import com.jme3.network.Server;
 
 @SpringBootApplication
 //开始事物
-@EnableTransactionManagement
+//@EnableTransactionManagement
 // 在类中用注解@Mapper明确标出
 //@MapperScan("com.cas.sim.tis.mapper")
 public class Application implements CommandLineRunner {

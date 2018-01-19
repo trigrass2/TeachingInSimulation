@@ -38,7 +38,7 @@ public class LoginMessage extends AbstractMessage {
 	private String userPwd;
 
 	private int result;
-	
+
 	public int getUserId() {
 		return userId;
 	}

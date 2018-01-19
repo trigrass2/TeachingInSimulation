@@ -4,8 +4,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-import javax.annotation.Resource;
-
 import com.cas.sim.tis.Application;
 import com.cas.sim.tis.view.NetworkView;
 

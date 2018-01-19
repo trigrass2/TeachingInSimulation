@@ -31,7 +31,6 @@ import com.cas.sim.tis.services.ResourceService;
 import com.cas.sim.tis.services.StudentService;
 import com.cas.sim.tis.services.TeacherService;
 import com.cas.sim.tis.services.UserService;
-import com.cas.sim.tis.util.SpringUtil;
 import com.jme3.network.NetworkClient;
 
 import de.felixroske.jfxsupport.FXMLController;
@@ -102,7 +101,7 @@ public class LoginController extends AnchorPane implements Initializable, Applic
 			return;
 		}
 
-		if (!client.isStarted()) {
+		if (!client.isConnected()) {
 //			1、尝试与服务器连接
 			try {
 				client.connectToServer(address, port, port);
@@ -133,13 +132,6 @@ public class LoginController extends AnchorPane implements Initializable, Applic
 //					动态注册bean.  
 					defaultListableBeanFactory.registerBeanDefinition(e.getKey(), beanDefinitionBuilder.getBeanDefinition());
 				});
-				
-				
-				
-				RmiProxyFactoryBean factoryBean = (RmiProxyFactoryBean) SpringUtil.getBean("resourceServiceFactory");
-				ResourceService service = (ResourceService) factoryBean.getObject();
-
-				
 			}).start();
 		}
 

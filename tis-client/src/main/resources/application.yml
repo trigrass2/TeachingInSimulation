@@ -1,12 +1,12 @@
 spring: 
   messages:
     basename: i18n/messages                           # SpringBoot国际化处理
-server:
-  base: 
-    address: 192.168.1.19
-    port: 9000
-  rmi:
-    registry: 1101                                    #系统默认的RMI访问端口
-    service: 1102                                     #系统默认的RMI数据传输访问端口，不指定则系统随机分配
-  ftp:
-    port: 21
+#server:
+#  base: 
+#    address: 192.168.1.19
+#    port: 9000
+#  rmi:
+#    registry: 1101                                    #系统默认的RMI访问端口
+#    service: 1102                                     #系统默认的RMI数据传输访问端口，不指定则系统随机分配
+#  ftp:
+#    port: 21

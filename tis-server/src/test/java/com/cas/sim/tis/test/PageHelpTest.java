@@ -36,7 +36,7 @@ public class PageHelpTest {
 //		属于自己的资源
 //		criteria.andEqualTo("creatorId", 2);
 //		或者是公开的资源
-		criteria.orEqualTo("open", true);
+		criteria.orEqualTo("share", true);
 
 		PageHelper.startPage(0, 2);
 		List<com.cas.sim.tis.entity.Resource> resources = resourceService.findByCondition(condition);

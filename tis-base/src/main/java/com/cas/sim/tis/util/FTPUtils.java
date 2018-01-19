@@ -6,6 +6,9 @@ import java.io.InputStream;
 import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPReply;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.stereotype.Component;
 
 /**
  * @功能 FTP服务器工具类
@@ -13,14 +16,18 @@ import org.apache.commons.net.ftp.FTPReply;
  * @创建日期 2016年1月26日
  * @修改人 ScOrPiO
  */
+@Component
+@PropertySource(value = { "file:cfg.properties" })
 public class FTPUtils {
-	private static FTPUtils ftpUtils = new FTPUtils();;
-
 	private FTPClient ftpClient;
 
-	private String port; // 服务器端口
-	private String username; // 用户登录名
-	private String password; // 用户登录密码
+	@Value("${server.ftp.port}")
+	private Integer port; // FTP服务器端口
+	@Value("${server.ftp.address}")
+	private String host; // 服务器地址
+	
+	private String username = "anonymous"; // 用户登录名
+	private String password = ""; // 用户登录密码
 
 //	文件下载输入流
 	private InputStream downloading;
@@ -28,16 +35,8 @@ public class FTPUtils {
 	/**
 	 * 私有构造方法
 	 */
-	private FTPUtils() {
+	public FTPUtils() {
 		ftpClient = new FTPClient();
-	}
-
-	/**
-	 * 获取FTPUtils对象实例
-	 * @return FTPUtils对象实例
-	 */
-	public synchronized static FTPUtils getInstance() {
-		return ftpUtils;
 	}
 
 	/**
@@ -47,12 +46,12 @@ public class FTPUtils {
 	 * @return <b>true</b>：连接成功 <br/>
 	 *         <b>false</b>：连接失败
 	 */
-	public boolean connect(String serverName, String remotePath) {
+	public boolean connect(String remotePath) {
 		// 定义返回值
 		boolean result = false;
 		try {
 			// 连接至服务器，端口默认为21时，可直接通过URL连接
-			ftpClient.connect(serverName, Integer.parseInt(port));
+			ftpClient.connect(host, port);
 			// 登录服务器
 			ftpClient.login(username, password);
 			// 判断返回码是否合法
@@ -86,14 +85,14 @@ public class FTPUtils {
 	 * @return <b>true</b>：上传成功 <br/>
 	 *         <b>false</b>：上传失败
 	 */
-	public boolean uploadFile(String serverName, String storePath, String fileName, InputStream is) {
+	public boolean uploadFile(String storePath, String fileName, InputStream is) {
 		boolean result = false;
 		try {
 			if (is.available() == 0) {
 				return result;
 			}
 			// 连接至服务器
-			result = connect(serverName, storePath);
+			result = connect(storePath);
 			// 判断服务器是否连接成功
 			if (result) {
 				// 上传文件
@@ -114,7 +113,7 @@ public class FTPUtils {
 				}
 			}
 			// 登出服务器并断开连接
-			ftpUtils.logout();
+			logout();
 		}
 		return result;
 	}
@@ -131,7 +130,7 @@ public class FTPUtils {
 		try {
 			boolean result = false;
 			// 连接至服务器
-			result = connect(serverName, remotePath);
+			result = connect(remotePath);
 			// 判断服务器是否连接成功
 			if (result) {
 				// 获取文件输入流
@@ -154,7 +153,7 @@ public class FTPUtils {
 	public boolean deleteFile(String serverName, String remotePath, String fileName) {
 		boolean result = false;
 		// 连接至服务器
-		result = connect(serverName, remotePath);
+		result = connect(remotePath);
 		// 判断服务器是否连接成功
 		if (result) {
 			try {
@@ -164,7 +163,7 @@ public class FTPUtils {
 				e.printStackTrace();
 			} finally {
 				// 登出服务器并断开连接
-				ftpUtils.logout();
+				logout();
 			}
 		}
 		return result;
@@ -182,7 +181,7 @@ public class FTPUtils {
 		boolean result = false;
 		try {
 			// 连接至服务器
-			result = connect(serverName, remotePath);
+			result = connect(remotePath);
 			// 判断服务器是否连接成功
 			if (result) {
 				// 默认文件不存在
@@ -204,7 +203,7 @@ public class FTPUtils {
 			e.printStackTrace();
 		} finally {
 			// 登出服务器并断开连接
-			ftpUtils.logout();
+			logout();
 		}
 		return result;
 	}
@@ -245,29 +244,4 @@ public class FTPUtils {
 		}
 		return result;
 	}
-
-//	public static void main(String[] args) throws IOException {
-//		boolean result = FTPUtils.getInstance().connect("192.168.1.23", "F:/Ftp_Upload");
-////		File file = new File("F:/client_Setup.exe");
-////
-////		System.out.println("FTPUtils.main()" + result);
-////		try {
-////			result = FTPUtils.getInstance().uploadFile("192.168.1.23", "F:/Ftp_Upload", file.getName(), new FileInputStream(file));
-////		} catch (FileNotFoundException e) {
-////			e.printStackTrace();
-////		}
-////		System.out.println("uploadFile()" + result);
-//		InputStream inputStream = FTPUtils.getInstance().downloadFile("192.168.1.23", "F:/Ftp_Upload", "directx_11_redist.1418199517.zip");
-//
-//		File downloadDir = new File("F:/Ftp_Download");
-//		downloadDir.mkdirs();
-//
-//		FileChannel channel = new FileOutputStream(new File(downloadDir, "directx_11_redist.1418199517.zip")).getChannel();
-//		byte[] b = new byte[1024];
-//		while ((inputStream.read(b)) != -1) {
-//			channel.write(ByteBuffer.wrap(b));
-//		}
-//		channel.close();
-////		System.out.println("checkFile()" + result);
-//	}
 }
