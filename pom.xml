@@ -21,7 +21,7 @@
 		<!-- 主项目版本号 -->
 		<project.version>1.0.0-SNAPSHOT</project.version>
 		<!-- 引擎版本号 -->
-		<engine.version>3.2.0-stable</engine.version>
+		<engine.version>3.2.1-stable</engine.version>
 		<!-- 引擎与javafx集成版本号 -->
 		<jme3-jfx.version>1.7.1</jme3-jfx.version>
 		<!-- SpringBoot版本 -->
@@ -86,6 +86,13 @@
 				<artifactId>junit</artifactId>
 				<version>4.12</version>
 				<scope>test</scope>
+			</dependency>
+			
+			<!-- https://mvnrepository.com/artifact/com.google.code.findbugs/jsr305 -->
+			<dependency>
+			    <groupId>com.google.code.findbugs</groupId>
+			    <artifactId>jsr305</artifactId>
+			    <version>3.0.2</version>
 			</dependency>
 
 			<dependency>

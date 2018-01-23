@@ -7,10 +7,12 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Component;
 
 import com.cas.sim.tis.config.ServerConfig;
+import com.cas.sim.tis.consts.LoginResult;
 import com.cas.sim.tis.consts.Session;
 import com.cas.sim.tis.entity.User;
 import com.cas.sim.tis.message.LoginMessage;
 import com.cas.sim.tis.services.UserService;
+import com.cas.sim.tis.services.exception.ServiceException;
 import com.jme3.network.HostedConnection;
 
 @Component
@@ -33,14 +35,13 @@ public class LoginMessageHandler implements ServerHandler<LoginMessage> {
 //		验证用户信息
 //		准备一个消息用作服务器的响应消息
 		LoginMessage respMsg = (LoginMessage) m;
-
 		try {
 			final User user = userService.login(code, passwd);
 			List<HostedConnection> clients = serverConfig.getClients();
 //			进一步验证
 			if (clients.size() >= serverConfig.getMaxLogin()) {
 //				告诉这个用户，当前用户已满，
-				respMsg.setResult(LoginMessage.RESULT_MAX_SIZE);
+				respMsg.setResult(LoginResult.MAX_SIZE);
 				source.send(respMsg);
 				throw new RuntimeException("客户端数量已经达到上限");
 			} else {
@@ -48,7 +49,7 @@ public class LoginMessageHandler implements ServerHandler<LoginMessage> {
 				boolean exist = clients.stream().filter(c -> user.getId().equals(c.getAttribute(Session.KEY_LOGIN_USER_ID.name()))).findAny().isPresent();
 				if (exist) {
 //					用户已经登录了
-					respMsg.setResult(LoginMessage.RESULT_DUPLICATE);
+					respMsg.setResult(LoginResult.DUPLICATE);
 					source.send(respMsg);
 				} else {
 					source.setAttribute(Session.KEY_LOGIN_USER_ID.name(), user.getId());
@@ -56,18 +57,22 @@ public class LoginMessageHandler implements ServerHandler<LoginMessage> {
 					clients.add(source);
 					LOG.info("客户端登录成功，当前客户端数量{}", clients.size());
 //					用户成功连接
-					respMsg.setResult(LoginMessage.RESULT_SUCCESS);
+					respMsg.setResult(LoginResult.SUCCESS);
 					respMsg.setUserId(user.getId());
 					respMsg.setUserType(user.getRole());
 					source.send(respMsg);
 				}
 			}
-		} catch (Exception e) {
+		} catch (ServiceException e) {
 //			登录失败：原因是登录信息错误
-			respMsg.setResult(LoginMessage.RESULT_FAILURE);
+			respMsg.setResult(LoginResult.FAILURE);
 			source.send(respMsg);
-
-			throw new RuntimeException("用户登录失败", e);
+			throw e;
+		} catch (Exception e) {
+//			登录失败：服务器出现异常
+			respMsg.setResult(LoginResult.SERVER_EXCE);
+			source.send(respMsg);
+			throw e;
 		}
 	}
 

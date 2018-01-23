@@ -3,6 +3,7 @@ package com.cas.sim.tis.services;
 import org.apache.ibatis.exceptions.TooManyResultsException;
 
 import com.cas.sim.tis.entity.User;
+import com.cas.sim.tis.services.exception.ServiceException;
 
 public interface UserService extends BaseService<User> {
 	/**
