@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import com.cas.sim.tis.view.control.imp.LoginDecoration?>
 
-<VBox fx:id="loginView" alignment="TOP_CENTER" prefWidth="430.0" style="-fx-background-color:transparent;" stylesheets="@../static/css/basic.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.cas.sim.tis.view.controller.LoginController">
+<VBox fx:id="loginView" alignment="TOP_CENTER" prefWidth="430.0" style="-fx-background-color:transparent;" stylesheets="static/css/basic.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.cas.sim.tis.view.controller.LoginController">
 	<children>
 		<VBox alignment="TOP_CENTER" spacing="25.0" styleClass="login">
 			<children>
