@@ -129,7 +129,7 @@
 								<Tooltip text="%resource.pdf" />
 							</tooltip>
 						</CheckBox>
-						<ToggleButton mnemonicParsing="false" selected="true" text="%button.lasted.up" onAction="#orderBy">
+						<ToggleButton mnemonicParsing="false" text="%button.lasted.up" onAction="#orderBy">
 							<userData>
 								<String fx:value="CREATE_DATE DESC" />
 							</userData>
@@ -168,7 +168,7 @@
 							<children>
 								<StackPane prefHeight="200.0">
 									<children>
-										<PieChart fx:id="chart" prefHeight="200.0" prefWidth="200.0" labelsVisible="false" startAngle="90"/>
+										<PieChart fx:id="chart" prefHeight="200.0" prefWidth="200.0" labelsVisible="false" startAngle="90" />
 										<AnchorPane mouseTransparent="true">
 											<children>
 												<Label fx:id="tip" styleClass="tip" visible="false" />

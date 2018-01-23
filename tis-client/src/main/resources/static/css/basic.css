@@ -90,14 +90,11 @@
  *                                                                             *
  ******************************************************************************/
 .pagination .toggle-button {
-	-fx-text-fill: #403f3b;
-	-fx-font-family: "微软雅黑";
+	-fx-font-size:12.0px;
+	-fx-text-fill: #ffffff;
 	-fx-background-color:#19b0c6;
     -fx-background-radius:0.0px;
 	-fx-background-insets: 5.0;
-    -fx-border-color:#999999;
-    -fx-border-insets: 5.0;
-    -fx-border-radius:0.0px;
     -fx-min-width:40.0px;
     -fx-min-height:40.0px;
 }
@@ -106,23 +103,35 @@
 }
 .pagination .toggle-button:selected {
 	-fx-text-fill: #ffffff;
-	-fx-background-color:#61d9ea;
+	-fx-font-weight: bolder;
+	-fx-background-color:#22678f;
 }
 .pagination .button{
-	-fx-font-family: "微软雅黑";
+	-fx-font-size:12.0px;
     -fx-background-color:#19b0c6;
     -fx-background-radius:0.0px;
 	-fx-background-insets: 5.0;
-	-fx-border-color:#999999;
-    -fx-border-radius:0.0px;
-    -fx-border-insets: 5.0;
     -fx-min-width:40.0px;
     -fx-min-height:40.0px;
 }
 .pagination .label {
 	-fx-font-weight: bolder;
-    -fx-font-family: "微软雅黑";
-    -fx-text-fill: #403f3b;
+    -fx-text-fill: #333333;
+}
+
+.pagination > .pagination-control > .control-box > .left-arrow-button:disabled,
+.pagination > .pagination-control > .control-box > .right-arrow-button:disabled {
+    -fx-background-color: #98b2b6;
+}
+
+.pagination > .pagination-control .left-arrow {
+    -fx-background-color: #ffffff;
+    -fx-translate-x: -3.5;
+}
+
+.pagination > .pagination-control .right-arrow {
+    -fx-background-color: #ffffff;
+    -fx-translate-x: 3.5;
 }
 /*******************************************************************************
  *                                                                             *
@@ -141,7 +150,8 @@
 	-fx-background-color:#51bfcf;
 }
 .toggle-button:selected {
-	-fx-background-color: #61d9ea;
+	-fx-background-color: #22678f;
+	-fx-background-insets: 0 0 -2.0 0;
 	-fx-border-color: none;
 }
 /*******************************************************************************

@@ -119,6 +119,9 @@ public class ResourceList extends HBox implements IContent {
 	private List<Integer> resourceTypes = new ArrayList<>();
 	private List<Integer> creators = new ArrayList<>();
 
+	/**
+	 * 资源列表是否可操作
+	 */
 	private boolean editable;
 
 	private ResourceAction action;
@@ -433,13 +436,13 @@ public class ResourceList extends HBox implements IContent {
 	}
 
 	private void reload() {
-		clear();
 		// loadResources();
 		loadPieChart();
 	}
 
 	@Override
 	public Region getContent() {
+		clear();
 		reload();
 		return this;
 	}
