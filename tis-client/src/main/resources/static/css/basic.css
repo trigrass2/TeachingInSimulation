@@ -27,6 +27,36 @@
 }
 /*******************************************************************************
  *                                                                             *
+ * 饼图样式                                                                  *
+ *                                                                             *
+ ******************************************************************************/
+.default-color0.chart-pie { -fx-pie-color: #dd3a2e; }
+.default-color1.chart-pie { -fx-pie-color: #ff9e2c; }
+.default-color2.chart-pie { -fx-pie-color: #ffdd40; }
+.default-color3.chart-pie { -fx-pie-color: #c5f72b; }
+.default-color4.chart-pie { -fx-pie-color: #2bc9f7; }
+.default-color5.chart-pie { -fx-pie-color: #1cabbb; }
+.default-color6.chart-pie { -fx-pie-color: #2b73f7; }     
+.default-color7.chart-pie { -fx-pie-color: #9760f1; }           
+/*******************************************************************************
+ *                                                                             *
+ * 提示样式                                                                  *
+ *                                                                             *
+ ******************************************************************************/
+ .tip{
+ 	-fx-background: rgba(30.0,30.0,30.0);
+    -fx-background-color: rgba(30.0,30.0,30.0,0.8);
+    -fx-background-radius: 6.0px;
+    -fx-background-insets: 0.0;
+    -fx-padding: 0.667em 0.75em 0.667em 0.75em; /* 10px */
+    -fx-effect: dropshadow( three-pass-box , rgba(0.0,0.0,0.0,0.5) , 10.0, 0.0 , 0.0 , 3.0 );
+ 	-fx-max-width:100.0px;
+ 	-fx-max-height:60.0px;
+ 	-fx-text-alignment:center;
+ 	-fx-text-fill: #ffffff;
+ }
+/*******************************************************************************
+ *                                                                             *
  * 滚动条样式                                                                  *
  *                                                                             *
  ******************************************************************************/
@@ -62,7 +92,7 @@
 .pagination .toggle-button {
 	-fx-text-fill: #403f3b;
 	-fx-font-family: "微软雅黑";
-	-fx-background-color:linear-gradient(#ffffff 0.0%, #fcfcfc 25.0%, #f8f8f8 50.0%, #f5f5f5 75.0%, #f2f2f2 100.0%);
+	-fx-background-color:#19b0c6;
     -fx-background-radius:0.0px;
 	-fx-background-insets: 5.0;
     -fx-border-color:#999999;
@@ -72,15 +102,15 @@
     -fx-min-height:40.0px;
 }
 .pagination .toggle-button:hover {
-	-fx-background-color:#fcfcfc;
+	-fx-background-color:#51bfcf;
 }
 .pagination .toggle-button:selected {
-	-fx-text-fill: #f2f2f2;
-	-fx-background-color:linear-gradient(#42413d 0.0%, #3d3b38 25.0%, #3b3836 50.0%, #363231 75.0%, #332f2e 100.0%);
+	-fx-text-fill: #ffffff;
+	-fx-background-color:#61d9ea;
 }
 .pagination .button{
 	-fx-font-family: "微软雅黑";
-    -fx-background-color:linear-gradient(#ffffff 0.0%, #fcfcfc 25.0%, #f8f8f8 50.0%, #f5f5f5 75.0%, #f2f2f2 100.0%);
+    -fx-background-color:#19b0c6;
     -fx-background-radius:0.0px;
 	-fx-background-insets: 5.0;
 	-fx-border-color:#999999;
@@ -111,7 +141,7 @@
 	-fx-background-color:#51bfcf;
 }
 .toggle-button:selected {
-	-fx-background-color: #51bfcf;
+	-fx-background-color: #61d9ea;
 	-fx-border-color: none;
 }
 /*******************************************************************************

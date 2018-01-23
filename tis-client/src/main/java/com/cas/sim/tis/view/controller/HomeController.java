@@ -59,6 +59,7 @@ public class HomeController implements Initializable {
 			PageController controller = SpringUtil.getBean(PageController.class);
 			ResourceMenu menu = new ResourceMenu();
 			controller.loadLeftMenu(menu);
+			controller.loadContent(null);
 		});
 		homeMenus.add(resource);
 	}

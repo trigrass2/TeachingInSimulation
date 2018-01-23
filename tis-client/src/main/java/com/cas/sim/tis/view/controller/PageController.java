@@ -53,13 +53,19 @@ public class PageController implements Initializable {
 	}
 
 	public void loadLeftMenu(ILeftContent leftMenu) {
-		this.leftContent.getChildren().add(leftMenu.getLeftContent());
+		this.leftContent.getChildren().clear();
+		if (leftMenu != null) {
+			this.leftContent.getChildren().add(leftMenu.getLeftContent());
+		}
 	}
 
 	public void loadContent(IContent content) {
-		this.content.getChildren().add(content.getContent());
+		this.content.getChildren().clear();
+		if (content != null) {
+			this.content.getChildren().add(content.getContent());
+		}
 	}
-	
+
 	private void hide() {
 		// 隐藏左侧菜单
 		leftMenu.setTranslateX(-230);

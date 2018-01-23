@@ -1,5 +1,6 @@
 package com.cas.sim.tis.view.action;
 
+import java.util.Date;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -7,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.remoting.rmi.RmiProxyFactoryBean;
 import org.springframework.stereotype.Component;
 
+import com.cas.sim.tis.consts.Session;
 import com.cas.sim.tis.entity.Resource;
 import com.cas.sim.tis.services.ResourceService;
 import com.cas.sim.tis.util.SpringUtil;
@@ -19,6 +21,16 @@ import tk.mybatis.mapper.entity.Example.Criteria;
 @Component
 public class ResourceAction {
 	private static final Logger LOG = LoggerFactory.getLogger(ResourceAction.class);
+	
+	public void addResource(Resource resource) {
+		RmiProxyFactoryBean factoryBean = (RmiProxyFactoryBean) SpringUtil.getBean("resourceServiceFactory");
+		ResourceService service = (ResourceService) factoryBean.getObject();
+		
+		resource.setCreatorId(Session.get(Session.KEY_LOGIN_USER_ID));
+		resource.setCreateDate(new Date());
+		
+		service.save(resource);
+	}
 
 	public PageInfo<Resource> findResourcesByCreator(int pagination, int pageSize, List<Integer> resourceTypes, String keyword, String orderByClause,Iterable<Integer> creators) {
 		RmiProxyFactoryBean factoryBean = (RmiProxyFactoryBean) SpringUtil.getBean("resourceServiceFactory");

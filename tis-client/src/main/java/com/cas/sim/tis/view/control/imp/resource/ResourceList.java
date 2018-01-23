@@ -1,10 +1,14 @@
 package com.cas.sim.tis.view.control.imp.resource;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
+
+import javax.swing.filechooser.FileSystemView;
 
 import org.json.JSONArray;
 import org.slf4j.Logger;
@@ -20,20 +24,30 @@ import com.cas.sim.tis.view.control.imp.table.BtnsCell;
 import com.cas.sim.tis.view.control.imp.table.Column;
 import com.cas.sim.tis.view.control.imp.table.IconCell;
 import com.cas.sim.tis.view.control.imp.table.Table;
+import com.cas.util.FileUtil;
+import com.cas.util.StringUtil;
 import com.github.pagehelper.PageInfo;
 
+import de.felixroske.jfxsupport.GUIState;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.chart.PieChart;
+import javafx.scene.chart.PieChart.Data;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Pagination;
+import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
+import javafx.stage.FileChooser;
 import javafx.util.StringConverter;
 
 /**
@@ -45,6 +59,7 @@ import javafx.util.StringConverter;
  */
 public class ResourceList extends HBox implements IContent {
 	private static final Logger LOG = LoggerFactory.getLogger(ResourceAction.class);
+	// 我的资源列表
 	@FXML
 	private Table table;
 	@FXML
@@ -70,6 +85,7 @@ public class ResourceList extends HBox implements IContent {
 	@FXML
 	private CheckBox pdfCheck;
 
+	// 我的资源统计
 	@FXML
 	private Label pic;
 	@FXML
@@ -86,6 +102,19 @@ public class ResourceList extends HBox implements IContent {
 	private Label excel;
 	@FXML
 	private Label pdf;
+	@FXML
+	private Label tip;
+
+	// 上传资源
+	@FXML
+	private TextField filePath;
+	@FXML
+	private TextField keywords;
+	@FXML
+	private Label size;
+	@FXML
+	private Label show;
+	private File uploadFile;
 
 	private List<Integer> resourceTypes = new ArrayList<>();
 	private List<Integer> creators = new ArrayList<>();
@@ -130,9 +159,14 @@ public class ResourceList extends HBox implements IContent {
 			}
 		});
 		chart.setLegendVisible(false);
+		keywords.setOnKeyReleased(event -> {
+			String text = keywords.getText();
+			List<String> words = StringUtil.split(text);
+			show.setText(StringUtil.combine(words, ' '));
+		});
 	}
 
-	protected void createTable() {
+	private void createTable() {
 		Table table = new Table();
 		// 数据库唯一表示
 		Column<Integer> id = new Column<>();
@@ -201,36 +235,10 @@ public class ResourceList extends HBox implements IContent {
 		}
 	}
 
-	private void reload() {
-		clear();
-		loadResources();
-	}
-
-	private void clear() {
-		picCheck.setSelected(true);
-		swfCheck.setSelected(true);
-		videoCheck.setSelected(true);
-		txtCheck.setSelected(true);
-		wordCheck.setSelected(true);
-		pptCheck.setSelected(true);
-		excelCheck.setSelected(true);
-		pdfCheck.setSelected(true);
-		resourceTypes.add(0);
-		resourceTypes.add(1);
-		resourceTypes.add(2);
-		resourceTypes.add(3);
-		resourceTypes.add(4);
-		resourceTypes.add(5);
-		resourceTypes.add(6);
-		resourceTypes.add(7);
-
-		order.getToggles().get(0).setSelected(true);
-	}
-
 	/**
 	 * 加载资源
 	 */
-	protected void loadResources() {
+	private void loadResources() {
 		int curr = pagination.getCurrentPageIndex();
 		int pageSize = pagination.getPageCount();
 
@@ -249,19 +257,53 @@ public class ResourceList extends HBox implements IContent {
 	/**
 	 * 加载饼图数据
 	 */
-	protected void loadPieChart() {
+	private void loadPieChart() {
 		// FIXME
 		String keyword = null;
-		int picNum = action.countResourceByType(1, 0, resourceTypes, keyword);
-		int swfNum = action.countResourceByType(1, 1, resourceTypes, keyword);
-		int videoNum = action.countResourceByType(1, 2, resourceTypes, keyword);
-		int txtNum = action.countResourceByType(1, 3, resourceTypes, keyword);
-		int wordNum = action.countResourceByType(1, 4, resourceTypes, keyword);
-		int pptNum = action.countResourceByType(1, 5, resourceTypes, keyword);
-		int excelNum = action.countResourceByType(1, 6, resourceTypes, keyword);
-		int pdfNum = action.countResourceByType(1, 7, resourceTypes, keyword);
+//		int picNum = action.countResourceByType(1, 0, resourceTypes, keyword);
+//		int swfNum = action.countResourceByType(1, 1, resourceTypes, keyword);
+//		int videoNum = action.countResourceByType(1, 2, resourceTypes, keyword);
+//		int txtNum = action.countResourceByType(1, 3, resourceTypes, keyword);
+//		int wordNum = action.countResourceByType(1, 4, resourceTypes, keyword);
+//		int pptNum = action.countResourceByType(1, 5, resourceTypes, keyword);
+//		int excelNum = action.countResourceByType(1, 6, resourceTypes, keyword);
+//		int pdfNum = action.countResourceByType(1, 7, resourceTypes, keyword);
+		int picNum = 17;
+		int swfNum = 12;
+		int videoNum = 20;
+		int txtNum = 10;
+		int wordNum = 13;
+		int pptNum = 24;
+		int excelNum = 21;
+		int pdfNum = 15;
 
-		chart.setData(FXCollections.observableArrayList(new PieChart.Data(MsgUtil.getMessage("resource.pic"), picNum), new PieChart.Data(MsgUtil.getMessage("resource.swf"), swfNum), new PieChart.Data(MsgUtil.getMessage("resource.video"), videoNum), new PieChart.Data(MsgUtil.getMessage("resource.txt"), txtNum), new PieChart.Data(MsgUtil.getMessage("resource.word"), wordNum), new PieChart.Data(MsgUtil.getMessage("resource.ppt"), pptNum), new PieChart.Data(MsgUtil.getMessage("resource.excel"), excelNum), new PieChart.Data(MsgUtil.getMessage("resource.pdf"), pdfNum)));
+		ObservableList<Data> datas = FXCollections.observableArrayList(new PieChart.Data(MsgUtil.getMessage("resource.pic"), picNum), new PieChart.Data(MsgUtil.getMessage("resource.swf"), swfNum), new PieChart.Data(MsgUtil.getMessage("resource.video"), videoNum), new PieChart.Data(MsgUtil.getMessage("resource.txt"), txtNum), new PieChart.Data(MsgUtil.getMessage("resource.word"), wordNum), new PieChart.Data(MsgUtil.getMessage("resource.ppt"), pptNum), new PieChart.Data(MsgUtil.getMessage("resource.excel"), excelNum), new PieChart.Data(MsgUtil.getMessage("resource.pdf"), pdfNum));
+		chart.setData(datas);
+
+		chart.setOnMouseMoved(e -> {
+			tip.setTranslateX(e.getX());
+			tip.setTranslateY(e.getY());
+		});
+		for (final PieChart.Data data : chart.getData()) {
+			Node node = data.getNode();
+			node.setOnMouseEntered(e -> {
+				tip.setText(data.getName() + ":" + (int) data.getPieValue());
+				tip.setVisible(true);
+			});
+			node.setOnMouseExited(e -> {
+				tip.setVisible(false);
+
+			});
+		}
+
+		pic.setText(MsgUtil.getMessage("resource.pic") + ":" + picNum);
+		swf.setText(MsgUtil.getMessage("resource.swf") + ":" + swfNum);
+		video.setText(MsgUtil.getMessage("resource.video") + ":" + videoNum);
+		txt.setText(MsgUtil.getMessage("resource.txt") + ":" + txtNum);
+		word.setText(MsgUtil.getMessage("resource.word") + ":" + wordNum);
+		ppt.setText(MsgUtil.getMessage("resource.ppt") + ":" + pptNum);
+		excel.setText(MsgUtil.getMessage("resource.excel") + ":" + excelNum);
+		pdf.setText(MsgUtil.getMessage("resource.pdf") + ":" + pdfNum);
 	}
 
 	@FXML
@@ -295,8 +337,105 @@ public class ResourceList extends HBox implements IContent {
 	}
 
 	@FXML
-	public void orderBy() {
+	private void browse() {
+		// 打开文件管理器
+		FileChooser chooser = new FileChooser();
+		chooser.setInitialDirectory(FileSystemView.getFileSystemView().getHomeDirectory());
+		chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter(MsgUtil.getMessage("resource.all"), "*.doc", "*.docx", "*.xls", "*.xlsx", "*.ppt", "*.pptx", "*.pdf", "*.png", "*.jpg", "*.swf", "*.mp4", "*.flv", "*.wmv", "*.rmvb", "*.avi", "*.txt"));
+		chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter(MsgUtil.getMessage("resource.word"), "*.doc", "*.docx"));
+		chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter(MsgUtil.getMessage("resource.excel"), "*.xls", "*.xlsx"));
+		chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter(MsgUtil.getMessage("resource.ppt"), "*.ppt", "*.pptx"));
+		chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter(MsgUtil.getMessage("resource.pdf"), "*.pdf"));
+		chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter(MsgUtil.getMessage("resource.pic"), "*.png", "*.jpg"));
+		chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter(MsgUtil.getMessage("resource.swf"), "*.swf"));
+		chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter(MsgUtil.getMessage("resource.video"), "*.mp4", "*.flv", "*.wmv", "*.rmvb", "*.avi"));
+		chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter(MsgUtil.getMessage("resource.txt"), "*.txt"));
+		File target = chooser.showOpenDialog(GUIState.getStage().getOwner());
+		if (target == null) {
+			return;
+		}
+		this.filePath.setText(target.getAbsolutePath());
+		this.size.setText(getFileSize(target));
+		this.uploadFile = target;
+	}
+
+	@FXML
+	private void upload() {
+		String filePath = uploadFile.getAbsolutePath();
+		String fileName = FileUtil.getFileName(filePath);
+		String ext = FileUtil.getFileExt(filePath);
+		// 重命名
+		String rename = System.currentTimeMillis() + "." + ext;
+		// 上传文件到FTP
+//		try {
+			// FIXME
+			boolean uploaded = true;
+//			boolean uploaded = FTPUtils.getInstance().uploadFile("192.168.1.125", ResourceConsts.FTP_RES_PATH, rename, new FileInputStream(uploadFile));
+			if (!uploaded) {
+				Alert alert = new Alert(AlertType.ERROR);
+				alert.initOwner(GUIState.getStage().getOwner());
+				alert.setContentText(MsgUtil.getMessage("ftp.upload.failure"));
+				alert.show();
+				return;
+			}
+//		} catch (FileNotFoundException e) {
+//			e.printStackTrace();
+//		}
+		// 封装资源记录
+		Resource resource = new Resource();
+		resource.setKeyword(keywords.getText());
+		resource.setPath(ResourceConsts.FTP_RES_PATH + rename);
+		resource.setName(fileName);
+		if (ext.equals("png") || ext.equals("jpg")) {
+			resource.setType(0);
+		} else if (ext.equals("swf")) {
+			resource.setType(1);
+		} else if (ext.equals("mp4") || ext.equals("wmv") || ext.equals("rmvb") || ext.equals("flv") || ext.equals("avi")) {
+			resource.setType(2);
+		} else if (ext.equals("txt")) {
+			resource.setType(3);
+		} else if (ext.equals("doc") || ext.equals("docx")) {
+			resource.setType(4);
+		} else if (ext.equals("ppt") || ext.equals("pptx")) {
+			resource.setType(5);
+		} else if (ext.equals("xls") || ext.equals("xlsx")) {
+			resource.setType(6);
+		} else if (ext.equals("pdf")) {
+			resource.setType(7);
+		}
+		// TODO 记录到数据库
+	}
+
+	@FXML
+	private void orderBy() {
 		reload();
+	}
+
+	private void clear() {
+		picCheck.setSelected(true);
+		swfCheck.setSelected(true);
+		videoCheck.setSelected(true);
+		txtCheck.setSelected(true);
+		wordCheck.setSelected(true);
+		pptCheck.setSelected(true);
+		excelCheck.setSelected(true);
+		pdfCheck.setSelected(true);
+		resourceTypes.add(0);
+		resourceTypes.add(1);
+		resourceTypes.add(2);
+		resourceTypes.add(3);
+		resourceTypes.add(4);
+		resourceTypes.add(5);
+		resourceTypes.add(6);
+		resourceTypes.add(7);
+
+		order.getToggles().get(0).setSelected(true);
+	}
+
+	private void reload() {
+		clear();
+		// loadResources();
+		loadPieChart();
 	}
 
 	@Override
@@ -305,4 +444,25 @@ public class ResourceList extends HBox implements IContent {
 		return this;
 	}
 
+	public static String getFileSize(File file) {
+		String size = "";
+		if (file.exists() && file.isFile()) {
+			long fileS = file.length();
+			DecimalFormat df = new DecimalFormat("#.00");
+			if (fileS < 1024) {
+				size = df.format((double) fileS) + "BT";
+			} else if (fileS < 1048576) {
+				size = df.format((double) fileS / 1024) + "KB";
+			} else if (fileS < 1073741824) {
+				size = df.format((double) fileS / 1048576) + "MB";
+			} else {
+				size = df.format((double) fileS / 1073741824) + "GB";
+			}
+		} else if (file.exists() && file.isDirectory()) {
+			size = "";
+		} else {
+			size = "0BT";
+		}
+		return size;
+	}
 }
