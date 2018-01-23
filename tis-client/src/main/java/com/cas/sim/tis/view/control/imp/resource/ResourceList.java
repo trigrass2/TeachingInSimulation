@@ -5,8 +5,10 @@ import java.io.IOException;
 import java.net.URL;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 
 import javax.swing.filechooser.FileSystemView;
 
@@ -15,6 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.cas.sim.tis.consts.ResourceConsts;
+import com.cas.sim.tis.consts.ResourceType;
 import com.cas.sim.tis.entity.Resource;
 import com.cas.sim.tis.util.MsgUtil;
 import com.cas.sim.tis.util.SpringUtil;
@@ -116,7 +119,7 @@ public class ResourceList extends HBox implements IContent {
 	private Label show;
 	private File uploadFile;
 
-	private List<Integer> resourceTypes = new ArrayList<>();
+	private List<ResourceType> resourceTypes = new ArrayList<>();
 	private List<Integer> creators = new ArrayList<>();
 
 	/**
@@ -177,39 +180,20 @@ public class ResourceList extends HBox implements IContent {
 		id.setVisible(false);
 		id.setKey("id");
 		// 资源图标
-		Column<Integer> icon = new Column<>();
+		Column<ResourceType> icon = new Column<>();
 		icon.setAlignment(Pos.CENTER_RIGHT);
 		icon.setKey("type");
 		icon.setText("");
 		icon.setMaxWidth(25);
 		icon.getStyleClass().add("gray-label");
-		icon.setCellFactory(IconCell.forTableColumn(new StringConverter<Integer>() {
+		icon.setCellFactory(IconCell.forTableColumn(new StringConverter<ResourceType>() {
 			@Override
-			public String toString(Integer type) {
-				switch (type) {
-				case 0:
-					return ResourceConsts.PIC_ICON;
-				case 1:
-					return ResourceConsts.SWF_ICON;
-				case 2:
-					return ResourceConsts.VIDEO_ICON;
-				case 3:
-					return ResourceConsts.TXT_ICON;
-				case 4:
-					return ResourceConsts.WORD_ICON;
-				case 5:
-					return ResourceConsts.PPT_ICON;
-				case 6:
-					return ResourceConsts.EXCEL_ICON;
-				case 7:
-					return ResourceConsts.PDF_ICON;
-				default:
-					return null;
-				}
+			public String toString(ResourceType type) {
+				return type.getIcon();
 			}
 
 			@Override
-			public Integer fromString(String string) {
+			public ResourceType fromString(String string) {
 				return null;
 			}
 		}));
@@ -251,7 +235,9 @@ public class ResourceList extends HBox implements IContent {
 		String orderByClause = order.getSelectedToggle().getUserData().toString();
 
 		PageInfo<Resource> page = null;
-		page = action.findResourcesByCreator(curr, pageSize, resourceTypes, keyword, orderByClause, creators);
+//		取出用户所选资源的类型
+		List<Integer> types = resourceTypes.stream().map(ResourceType::getType).collect(Collectors.toList());
+		page = action.findResourcesByCreator(curr, pageSize, types, keyword, orderByClause, creators);
 		pagination.setMaxPageIndicatorCount((int) page.getTotal());
 		table.setItems(new JSONArray(page.getList()));
 		table.build();
@@ -311,26 +297,27 @@ public class ResourceList extends HBox implements IContent {
 
 	@FXML
 	private void typeFilter(ActionEvent event) {
-		int type = -1;
+		ResourceType type;
 		if (event.getSource().equals(picCheck)) {
-			type = 0;
+			type = ResourceType.IMAGE;
 		} else if (event.getSource().equals(swfCheck)) {
-			type = 1;
+			type = ResourceType.SWF;
 		} else if (event.getSource().equals(videoCheck)) {
-			type = 2;
+			type = ResourceType.VIDEO;
 		} else if (event.getSource().equals(txtCheck)) {
-			type = 3;
+			type = ResourceType.TXT;
 		} else if (event.getSource().equals(wordCheck)) {
-			type = 4;
+			type = ResourceType.WORD;
 		} else if (event.getSource().equals(pptCheck)) {
-			type = 5;
+			type = ResourceType.PPT;
 		} else if (event.getSource().equals(excelCheck)) {
-			type = 6;
+			type = ResourceType.EXCEL;
 		} else if (event.getSource().equals(pdfCheck)) {
-			type = 7;
+			type = ResourceType.PDF;
 		} else {
 			return;
 		}
+		
 		if (((CheckBox) event.getSource()).isSelected()) {
 			resourceTypes.add(type);
 		} else {
@@ -345,14 +332,14 @@ public class ResourceList extends HBox implements IContent {
 		FileChooser chooser = new FileChooser();
 		chooser.setInitialDirectory(FileSystemView.getFileSystemView().getHomeDirectory());
 		chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter(MsgUtil.getMessage("resource.all"), "*.doc", "*.docx", "*.xls", "*.xlsx", "*.ppt", "*.pptx", "*.pdf", "*.png", "*.jpg", "*.swf", "*.mp4", "*.flv", "*.wmv", "*.rmvb", "*.avi", "*.txt"));
-		chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter(MsgUtil.getMessage("resource.word"), "*.doc", "*.docx"));
-		chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter(MsgUtil.getMessage("resource.excel"), "*.xls", "*.xlsx"));
-		chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter(MsgUtil.getMessage("resource.ppt"), "*.ppt", "*.pptx"));
-		chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter(MsgUtil.getMessage("resource.pdf"), "*.pdf"));
-		chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter(MsgUtil.getMessage("resource.pic"), "*.png", "*.jpg"));
-		chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter(MsgUtil.getMessage("resource.swf"), "*.swf"));
-		chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter(MsgUtil.getMessage("resource.video"), "*.mp4", "*.flv", "*.wmv", "*.rmvb", "*.avi"));
-		chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter(MsgUtil.getMessage("resource.txt"), "*.txt"));
+		chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter(MsgUtil.getMessage("resource.word"), ResourceType.WORD.getSuffixs()));
+		chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter(MsgUtil.getMessage("resource.excel"),ResourceType.EXCEL.getSuffixs()));
+		chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter(MsgUtil.getMessage("resource.ppt"), ResourceType.PPT.getSuffixs()));
+		chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter(MsgUtil.getMessage("resource.pdf"), ResourceType.PDF.getSuffixs()));
+		chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter(MsgUtil.getMessage("resource.pic"), ResourceType.IMAGE.getSuffixs()));
+		chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter(MsgUtil.getMessage("resource.swf"), ResourceType.SWF.getSuffixs()));
+		chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter(MsgUtil.getMessage("resource.video"), ResourceType.VIDEO.getSuffixs()));
+		chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter(MsgUtil.getMessage("resource.txt"), ResourceType.TXT.getSuffixs()));
 		File target = chooser.showOpenDialog(GUIState.getStage().getOwner());
 		if (target == null) {
 			return;
@@ -389,22 +376,11 @@ public class ResourceList extends HBox implements IContent {
 		resource.setKeyword(keywords.getText());
 		resource.setPath(ResourceConsts.FTP_RES_PATH + rename);
 		resource.setName(fileName);
-		if (ext.equals("png") || ext.equals("jpg")) {
-			resource.setType(0);
-		} else if (ext.equals("swf")) {
-			resource.setType(1);
-		} else if (ext.equals("mp4") || ext.equals("wmv") || ext.equals("rmvb") || ext.equals("flv") || ext.equals("avi")) {
-			resource.setType(2);
-		} else if (ext.equals("txt")) {
-			resource.setType(3);
-		} else if (ext.equals("doc") || ext.equals("docx")) {
-			resource.setType(4);
-		} else if (ext.equals("ppt") || ext.equals("pptx")) {
-			resource.setType(5);
-		} else if (ext.equals("xls") || ext.equals("xlsx")) {
-			resource.setType(6);
-		} else if (ext.equals("pdf")) {
-			resource.setType(7);
+		try {
+			resource.setType(ResourceType.parseType(ext));
+		} catch (Exception e) {
+			LOG.warn("解析文件后缀名出现错误", e);
+			throw e;
 		}
 		// TODO 记录到数据库
 	}
@@ -423,14 +399,7 @@ public class ResourceList extends HBox implements IContent {
 		pptCheck.setSelected(true);
 		excelCheck.setSelected(true);
 		pdfCheck.setSelected(true);
-		resourceTypes.add(0);
-		resourceTypes.add(1);
-		resourceTypes.add(2);
-		resourceTypes.add(3);
-		resourceTypes.add(4);
-		resourceTypes.add(5);
-		resourceTypes.add(6);
-		resourceTypes.add(7);
+		resourceTypes.addAll(Arrays.asList(ResourceType.values()));
 
 		order.getToggles().get(0).setSelected(true);
 	}

@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-import com.cas.sim.tis.consts.ResourceConsts;
+import com.cas.sim.tis.consts.ResourceType;
 import com.cas.sim.tis.consts.Session;
 import com.cas.sim.tis.entity.Resource;
 import com.cas.sim.tis.util.MsgUtil;
@@ -18,7 +18,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
@@ -86,29 +85,30 @@ public class ResourceViewer extends VBox implements IContent {
 	 */
 	private void createViewer() {
 		int type = resource.getType();
-		switch (type) {
-		case ResourceConsts.RES_PIC:
+		ResourceType resourceType = ResourceType.getResourceType(type);
+		switch (resourceType) {
+		case IMAGE:
 			createXdocViewer();
 			break;
-		case ResourceConsts.RES_SWF:
+		case SWF:
 			createSWFViewer();
 			break;
-		case ResourceConsts.RES_VIDEO:
+		case VIDEO:
 			createVLCViewer();
 			break;
-		case ResourceConsts.RES_TXT:
+		case TXT:
 			createXdocViewer();
 			break;
-		case ResourceConsts.RES_WORD:
+		case WORD:
 			createXdocViewer();
 			break;
-		case ResourceConsts.RES_PPT:
+		case PPT:
 			createXdocViewer();
 			break;
-		case ResourceConsts.RES_EXCEL:
+		case EXCEL:
 			createXdocViewer();
 			break;
-		case ResourceConsts.RES_PDF:
+		case PDF:
 			createPDFViewer();
 			break;
 		default:

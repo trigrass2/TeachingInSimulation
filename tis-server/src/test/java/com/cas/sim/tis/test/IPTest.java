@@ -9,6 +9,14 @@ import java.util.Enumeration;
 import org.junit.Test;
 
 public class IPTest {
+//	@Test
+//	public void testName() throws Exception {
+//		System.out.println("IPTest.testName()" + (99>>2));
+//		int a = 'A'/'a'> 1 ? 4: 5;
+//		a+='A';
+//		System.out.println( ((int)'a'));
+//	}
+	
 	@Test
 	public void testNb() throws Exception {
 		String ip = null;

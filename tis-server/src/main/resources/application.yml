@@ -4,6 +4,7 @@ mybatis:
   mapper-locations:
   - classpath:mybatis/mapper/*.xml                    #所有的mapper映射
 mapper:
+  wrapKeyword: "`{0}`"                                #SQL语句中的关键字用反引号``包裹，避免与数据库关键字冲突MySQL用`{0}`, SQLServer用[{0}]
   mappers:
   - com.cas.sim.tis.mapper.ClassMapper
   - com.cas.sim.tis.mapper.QuestionMapper
