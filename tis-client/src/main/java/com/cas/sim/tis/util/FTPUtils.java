@@ -1,5 +1,7 @@
 package com.cas.sim.tis.util;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -64,10 +66,10 @@ public class FTPUtils {
 	 * @return <b>true</b>：上传成功 <br/>
 	 *         <b>false</b>：上传失败
 	 */
-	public boolean uploadFile(String storePath, String fileName, InputStream is) {
+	public boolean uploadFile(String storePath, File file) {
 		boolean result = false;
-		try {
-			if (is.available() == 0) {
+		try (InputStream ins = new FileInputStream(file)){
+			if (ins.available() == 0) {
 				return result;
 			}
 			// 连接至服务器
@@ -75,22 +77,11 @@ public class FTPUtils {
 			// 判断服务器是否连接成功
 			if (result) {
 				// 上传文件
-				result = ftpClient.storeFile(fileName, is);
+				result = ftpClient.storeFile(file.getName(), ins);
 			}
-			// 关闭输入流
-			is.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		} finally {
-			// 判断输入流是否存在
-			if (null != is) {
-				try {
-					// 关闭输入流
-					is.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
 			// 登出服务器并断开连接
 			logout();
 		}
@@ -105,7 +96,7 @@ public class FTPUtils {
 	 * @param fileName 下载文件存储名称
 	 * @return <b>InputStream</b>：文件输入流
 	 */
-	public InputStream downloadFile(String serverName, String remotePath, String fileName) {
+	public InputStream downloadFile(String remotePath, String fileName) {
 		try {
 			// 连接至服务器
 			boolean result = connect(remotePath);
