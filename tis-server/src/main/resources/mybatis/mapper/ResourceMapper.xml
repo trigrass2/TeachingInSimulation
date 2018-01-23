@@ -7,10 +7,10 @@
 		<result column="TYPE" jdbcType="INTEGER" property="type" />
 		<result column="PATH" jdbcType="VARCHAR" property="path" />
 		<result column="KEYWORD" jdbcType="VARCHAR" property="keyword" />
-		<result column="COMMENT" jdbcType="VARCHAR" property="desc" />
+<!--		<result column="COMMENT" jdbcType="VARCHAR" property="desc" /> -->
 		<result column="CREATOR" jdbcType="INTEGER" property="creatorID" />
 		<result column="CREATE_DATE" jdbcType="VARCHAR" property="createDate" />
-		<result column="PUBLIC" jdbcType="INTEGER" property="open" />
+<!--		<result column="PUBLIC" jdbcType="INTEGER" property="open" />  -->
 		<result column="DEL" jdbcType="INTEGER" property="del" />
 	</resultMap>
 </mapper>

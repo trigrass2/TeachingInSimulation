@@ -3,6 +3,7 @@ package com.cas.sim.tis.entity;
 import java.io.Serializable;
 import java.util.Date;
 
+import javax.persistence.Column;
 import javax.persistence.Id;
 
 //资源
@@ -36,10 +37,12 @@ public class Resource implements Serializable {
 //	关键词（“,”分割）
 	private String keyword;
 //	资源描述
+	@Column(name="DETAIL")
 	private String desc;
 //	创建人（教师/管理员）
 	protected Integer creatorId;
 //	默认资源是私有的
+	@Column(name="OPEN")
 	protected Boolean share = Boolean.FALSE;
 	protected Date createDate;
 //	默认资源没有被删除

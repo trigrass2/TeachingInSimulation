@@ -11,16 +11,16 @@
 <?import javafx.scene.layout.VBox?>
 <?import com.cas.sim.tis.view.control.imp.LoginDecoration?>
 
-<VBox alignment="TOP_CENTER" prefWidth="430.0" style="-fx-background-color:transparent;" stylesheets="@../static/css/basic.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.cas.sim.tis.view.controller.LoginController">
+<VBox fx:id="loginView" alignment="TOP_CENTER" prefWidth="430.0" style="-fx-background-color:transparent;" stylesheets="@../static/css/basic.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.cas.sim.tis.view.controller.LoginController">
 	<children>
 		<VBox alignment="TOP_CENTER" spacing="25.0" styleClass="login">
 			<children>
 				<HBox alignment="TOP_RIGHT">
-					<LoginDecoration />
+					<LoginDecoration fx:id="loginDecoration" />
 				</HBox>
 				<ImageView fitHeight="40.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
 					<image>
-						<Image url="@../static/images/basic/login-logo.png" />
+						<Image url="static/images/basic/login-logo.png" />
 					</image>
 				</ImageView>
 				<VBox spacing="10.0" style="-fx-background-color: #ffffffcc;-fx-background-insets:0 0.3 0 0;">

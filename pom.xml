@@ -21,7 +21,7 @@
 		<!-- 主项目版本号 -->
 		<project.version>1.0.0-SNAPSHOT</project.version>
 		<!-- 引擎版本号 -->
-		<engine.version>3.2.0-stable</engine.version>
+		<engine.version>3.2.1-stable</engine.version>
 		<!-- 引擎与javafx集成版本号 -->
 		<jme3-jfx.version>1.7.1</jme3-jfx.version>
 		<!-- SpringBoot版本 -->

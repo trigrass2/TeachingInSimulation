@@ -4,36 +4,21 @@
 
 package com.cas.sim.tis.view.controller;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
+import java.util.Properties;
 import java.util.ResourceBundle;
-
-import javax.annotation.Resource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.beans.factory.support.BeanDefinitionBuilder;
-import org.springframework.beans.factory.support.DefaultListableBeanFactory;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
-import org.springframework.context.MessageSource;
-import org.springframework.context.annotation.PropertySource;
-import org.springframework.remoting.rmi.RmiProxyFactoryBean;
 import org.springframework.util.StringUtils;
 
 import com.cas.sim.tis.message.LoginMessage;
-import com.cas.sim.tis.services.ResourceService;
-import com.cas.sim.tis.services.StudentService;
-import com.cas.sim.tis.services.TeacherService;
-import com.cas.sim.tis.services.UserService;
+import com.cas.sim.tis.view.control.imp.LoginDecoration;
 import com.jme3.network.NetworkClient;
 
-import de.felixroske.jfxsupport.FXMLController;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -41,13 +26,12 @@ import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Region;
 
 /**
  * Login Controller.
  */
-@FXMLController
-@PropertySource(value = { "file:cfg.properties" })
-public class LoginController extends AnchorPane implements Initializable, ApplicationContextAware {
+public class LoginController implements Initializable {
 	private final static Logger LOG = LoggerFactory.getLogger(LoginController.class);
 
 	protected double xOffset;
@@ -55,84 +39,65 @@ public class LoginController extends AnchorPane implements Initializable, Applic
 
 	public static int USER_ROLE = -1;
 
-	@Resource
 	private NetworkClient client;
 
-	@Value("${login.account}")
-	private String account;
+	private ResourceBundle resources;
 
-	@Value("${server.base.address}")
-	private String address;
-
-	@Value("${server.base.port}")
-	private Integer port;
-
-	@Value("${server.rmi.registry}")
-	private Integer rmiPort;
-
-	@Resource
-	private MessageSource messageSource; // 自动注入对象
-
+	@FXML
+	private Region loginView;
+	@FXML
+	private LoginDecoration loginDecoration;
 	@FXML
 	private TextField userId;
 	@FXML
 	private PasswordField password;
 	@FXML
-	private Button login;
-	@FXML
 	private Label errorMessage;
-
-	private ApplicationContext applicationContext;
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		userId.setText(account);
+		this.resources = resources;
+//		
+		Properties prop = new Properties();
+		try {
+			prop.load(new FileInputStream("cfg.properties"));
+		} catch (FileNotFoundException e) {
+			LOG.warn("未找到配置文件cfg.properties");
+		} catch (IOException e) {
+			LOG.warn("文件解析失败cfg.properties");
+		}
+		userId.setText(prop.getProperty("login.account", ""));
 	}
 
 	@FXML
 	public void processLogin() {
 //		0、验证登录信息的完整性
 		if (StringUtils.isEmpty(userId.getText())) {
-			setErrorMsg(messageSource.getMessage("login.account.notnull", null, Locale.getDefault()));
+			setErrorMsg(resources.getString("login.account.notnull"));
 			return;
 		}
 		if (StringUtils.isEmpty(password.getText())) {
-			setErrorMsg(messageSource.getMessage("login.password.notnull", null, Locale.getDefault()));
+			setErrorMsg(resources.getString("login.password.notnull"));
 			return;
 		}
 
 		if (!client.isConnected()) {
+			String address = null;
+			int port = 0;
 //			1、尝试与服务器连接
 			try {
+				Properties prop = new Properties();
+				prop.load(new FileInputStream("cfg.properties"));
+				address = prop.getProperty("server.base.address", "127.0.0.1");
+				port = Integer.parseInt(prop.getProperty("server.base.port", "9000"));
 				client.connectToServer(address, port, port);
 			} catch (IOException e) {
 				LOG.error("连接服务器失败IP：{}，端口：{}", address, port);
-				setErrorMsg(messageSource.getMessage("server.connect.failure", null, Locale.getDefault()));
+				setErrorMsg(resources.getString("server.connect.failure"));
 				return;
 			}
 //			2、启动客户端
 			client.start();
-
-//			注册远程服务
-			new Thread(() -> {
-				Map<String, Class<?>> map = new HashMap<>();
-				map.put("userServiceFactory", UserService.class);
-				map.put("resourceServiceFactory", ResourceService.class);
-				map.put("studentServiceFactory", StudentService.class);
-				map.put("teacherServiceFactory", TeacherService.class);
-//				TODO 注册更多的远程服务
-				DefaultListableBeanFactory defaultListableBeanFactory = (DefaultListableBeanFactory) applicationContext.getAutowireCapableBeanFactory();
-				map.entrySet().forEach(e -> {
-//					注册的对象通过SpringUtil.getBean获取
-					BeanDefinitionBuilder beanDefinitionBuilder = BeanDefinitionBuilder.genericBeanDefinition(RmiProxyFactoryBean.class);
-					String serviceUrl = "rmi://" + address + ":" + rmiPort + "/" + StringUtils.uncapitalize(e.getValue().getSimpleName());
-					LoggerFactory.getLogger(getClass()).info("远程访问路径：{}", serviceUrl);
-					beanDefinitionBuilder.addPropertyValue("serviceUrl", serviceUrl);
-					beanDefinitionBuilder.addPropertyValue("serviceInterface", e.getValue());
-//					动态注册bean.  
-					defaultListableBeanFactory.registerBeanDefinition(e.getKey(), beanDefinitionBuilder.getBeanDefinition());
-				});
-			}).start();
 		}
 
 //		3、项服务器发送登录消息
@@ -146,9 +111,16 @@ public class LoginController extends AnchorPane implements Initializable, Applic
 		errorMessage.setText(msg);
 	}
 
-	@Override
-	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-		this.applicationContext = applicationContext;
+	public void setSettingView(Region settingView) {
+		this.loginDecoration.setSettingView(settingView);
+	}
+
+	public void setClient(NetworkClient client) {
+		this.client = client;
+	}
+
+	public void close() {
+		loginView.getScene().getWindow().hide();
 	}
 
 }

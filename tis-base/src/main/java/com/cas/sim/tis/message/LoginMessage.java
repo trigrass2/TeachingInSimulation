@@ -1,5 +1,6 @@
 package com.cas.sim.tis.message;
 
+import com.cas.sim.tis.consts.LoginResult;
 import com.jme3.network.AbstractMessage;
 import com.jme3.network.serializing.Serializable;
 
@@ -10,17 +11,6 @@ import com.jme3.network.serializing.Serializable;
 @Serializable()
 public class LoginMessage extends AbstractMessage {
 
-	public static final int RESULT_FAILURE = 0;
-
-	public static final int RESULT_SUCCESS = 1;
-	/**
-	 * 重复登录
-	 */
-	public static final int RESULT_DUPLICATE = 2;
-	/**
-	 * 人员已满
-	 */
-	public static final int RESULT_MAX_SIZE = 3;
 	/**
 	 * 有新用户登录
 	 */
@@ -37,7 +27,7 @@ public class LoginMessage extends AbstractMessage {
 	private String userCode;
 	private String userPwd;
 
-	private int result;
+	private LoginResult result;
 
 	public int getUserId() {
 		return userId;
@@ -71,11 +61,11 @@ public class LoginMessage extends AbstractMessage {
 		this.userType = userType;
 	}
 
-	public int getResult() {
+	public LoginResult getResult() {
 		return result;
 	}
 
-	public void setResult(int result) {
+	public void setResult(LoginResult result) {
 		this.result = result;
 	}
 

@@ -6,8 +6,9 @@ import org.apache.ibatis.exceptions.TooManyResultsException;
 import org.springframework.stereotype.Service;
 
 import com.cas.sim.tis.entity.User;
-import com.cas.sim.tis.services.ServiceException;
 import com.cas.sim.tis.services.UserService;
+import com.cas.sim.tis.services.exception.ServerException;
+import com.cas.sim.tis.services.exception.ServiceException;
 
 import tk.mybatis.mapper.entity.Condition;
 import tk.mybatis.mapper.entity.Example.Criteria;
@@ -21,7 +22,12 @@ public class UserServiceImpl extends AbstractService<User> implements UserServic
 		criteria.andEqualTo("code", usercode);
 		criteria.andEqualTo("password", password);
 		criteria.andEqualTo("del", 0);
-		List<User> user = mapper.selectByCondition(condition);
+		List<User> user = null;
+		try {
+			user = mapper.selectByCondition(condition);
+		} catch (Exception e) {
+			throw new ServerException("服务器异常", e);
+		}
 		if (user.size() == 1) {
 			return user.get(0);
 		} else if (user.size() == 0) {

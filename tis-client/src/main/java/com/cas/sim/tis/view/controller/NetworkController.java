@@ -14,18 +14,14 @@ import java.util.ResourceBundle;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
 
-import com.cas.sim.tis.Application;
-import com.cas.sim.tis.view.LoginView;
-
-import de.felixroske.jfxsupport.FXMLController;
 import javafx.animation.RotateTransition;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Point3D;
+import javafx.scene.Parent;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.Region;
 import javafx.util.Duration;
 
 /**
@@ -34,48 +30,52 @@ import javafx.util.Duration;
  * @作者 Caowj
  * @创建日期 2018年1月17日
  * @修改人 Caowj
+ * @修改人 张振宇
  */
-@FXMLController
-@PropertySource(value = { "file:cfg.properties" })
 public class NetworkController implements Initializable {
 	
-	
 	private static final Logger LOG = LoggerFactory.getLogger(NetworkController.class);
-
+	
+	@FXML
+	private Region pane;
+	
 	@FXML
 	private TextField ip;
 	@FXML
 	private TextField port;
 
-	@Value("${server.base.address}")
-	private String address;
+//	@Value("${server.base.address}")
+//	private String address;
+//
+//	@Value("${server.base.port}")
+//	private Integer num;
 
-	@Value("${server.base.port}")
-	private Integer num;
+	private Properties prop = new Properties();
 
-	private Properties properties = new Properties();
-
+	private Region loginScene;
+	
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		// 读取服务器信息配置
 		try {
-			properties.load(new FileInputStream("cfg.properties"));
-			ip.setText(address);
-			port.setText(String.valueOf(num));
+			prop.load(new FileInputStream("cfg.properties"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		
+		ip.setText(prop.getProperty("server.base.address", "127.0.0.1"));
+		port.setText(prop.getProperty("server.base.port", "9000"));
 	}
 	
 	@FXML
 	public void ok() throws FileNotFoundException, IOException {
 		// 记录服务器信息
-		properties.setProperty("server.base.address", ip.getText());
-		properties.setProperty("server.base.port", port.getText());
+		prop.setProperty("server.base.address", ip.getText());
+		prop.setProperty("server.base.port", port.getText());
 		
 		LOG.info("修改与服务器的连接配置，修改后的服务器地址:{}, 端口:{}", ip.getText(), port.getText());
 //		服务器信息保存
-		properties.store(new FileOutputStream("cfg.properties"), "");
+		prop.store(new FileOutputStream("cfg.properties"), "");
 		back();
 	}
 
@@ -91,20 +91,29 @@ public class NetworkController implements Initializable {
 	 * 返回登录界面
 	 */
 	private void back() {
-		RotateTransition rotateTransition = new RotateTransition(Duration.millis(200), Application.getScene().getRoot());
+		RotateTransition rotateTransition = new RotateTransition(Duration.millis(200), pane.getScene().getRoot());
 		rotateTransition.setAxis(new Point3D(0, 1, 0));
 		rotateTransition.setFromAngle(0);
 		rotateTransition.setToAngle(90);
 		rotateTransition.setOnFinished(e -> {
-			Application.showView(LoginView.class);
-			RotateTransition r = new RotateTransition(Duration.millis(200), Application.getScene().getRoot());
+//			Application.showView(LoginView.class);
+			
+			Parent root = pane.getScene().getRoot();
+			
+			pane.getScene().setRoot(loginScene);
+			
+			RotateTransition r = new RotateTransition(Duration.millis(200), root);
 			r.setAxis(new Point3D(0, 1, 0));
 			r.setFromAngle(90);
 			r.setToAngle(0);
 			r.play();
-			ip.setText(address);
-			port.setText(String.valueOf(num));
+//			ip.setText(address);
+//			port.setText(String.valueOf(num));
 		});
 		rotateTransition.play();
+	}
+	
+	public void setLoginView(Region loginScene) {
+		this.loginScene = loginScene;
 	}
 }

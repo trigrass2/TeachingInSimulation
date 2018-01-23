@@ -4,14 +4,14 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-import com.cas.sim.tis.Application;
-import com.cas.sim.tis.view.NetworkView;
-
 import javafx.animation.RotateTransition;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Point3D;
+import javafx.scene.Parent;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Region;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 
 /**
@@ -23,6 +23,8 @@ import javafx.util.Duration;
  */
 public class LoginDecoration extends HBox {
 
+	private Region settingView;
+	
 	public LoginDecoration() {
 		FXMLLoader loader = new FXMLLoader();
 		URL fxmlUrl = this.getClass().getResource("/view/LoginDecoration.fxml");
@@ -42,20 +44,26 @@ public class LoginDecoration extends HBox {
 	 */
 	@FXML
 	private void min() {
-		Application.getStage().setIconified(true);
+		Stage stage = (Stage) getScene().getWindow();
+		stage.setIconified(true);
 	}
 
 	@FXML
 	private void more() {
 		// TODO 高级
-		RotateTransition rotateTransition = new RotateTransition(Duration.millis(200), Application.getScene().getRoot());
+		RotateTransition rotateTransition = new RotateTransition(Duration.millis(200), getScene().getRoot());
 		rotateTransition.setAxis(new Point3D(0, 1, 0));
 		rotateTransition.setFromAngle(0);
 		rotateTransition.setToAngle(90);
 		rotateTransition.setOnFinished(e->{
-			Application.showView(NetworkView.class);
-			RotateTransition r = new RotateTransition(Duration.millis(200), Application.getScene().getRoot());
-			r.setNode(Application.getScene().getRoot());
+//			Application.showView(NetworkView.class);
+			
+			Parent root = getScene().getRoot();
+
+			getScene().setRoot(settingView);
+			
+			RotateTransition r = new RotateTransition(Duration.millis(200), root);
+			r.setNode(root);
 			r.setAxis(new Point3D(0, 1, 0));
 			r.setFromAngle(90);
 			r.setToAngle(0);
@@ -68,5 +76,9 @@ public class LoginDecoration extends HBox {
 	private void close() {
 		// FIXME
 		System.exit(0);
+	}
+
+	public void setSettingView(Region settingView) {
+		this.settingView = settingView;
 	}
 }
