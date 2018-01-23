@@ -6,9 +6,6 @@ import java.io.InputStream;
 import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPReply;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
-import org.springframework.stereotype.Component;
 
 /**
  * @功能 FTP服务器工具类
@@ -16,28 +13,10 @@ import org.springframework.stereotype.Component;
  * @创建日期 2016年1月26日
  * @修改人 ScOrPiO
  */
-@Component
-@PropertySource(value = { "file:cfg.properties" })
 public class FTPUtils {
 	private FTPClient ftpClient;
 
-	@Value("${server.ftp.port}")
-	private Integer port; // FTP服务器端口
-	@Value("${server.ftp.address}")
-	private String host; // 服务器地址
-	
-	private String username = "anonymous"; // 用户登录名
-	private String password = ""; // 用户登录密码
-
-//	文件下载输入流
-	private InputStream downloading;
-
-	/**
-	 * 私有构造方法
-	 */
-	public FTPUtils() {
-		ftpClient = new FTPClient();
-	}
+	private FtpAttr attr;
 
 	/**
 	 * 连接（配置通用连接属性）至服务器
@@ -51,9 +30,9 @@ public class FTPUtils {
 		boolean result = false;
 		try {
 			// 连接至服务器，端口默认为21时，可直接通过URL连接
-			ftpClient.connect(host, port);
+			ftpClient.connect(attr.getHost(), attr.getPort());
 			// 登录服务器
-			ftpClient.login(username, password);
+			ftpClient.login(attr.getUsername(), attr.getPassword());
 			// 判断返回码是否合法
 			if (!FTPReply.isPositiveCompletion(ftpClient.getReplyCode())) {
 				// 不合法时断开连接
@@ -128,18 +107,17 @@ public class FTPUtils {
 	 */
 	public InputStream downloadFile(String serverName, String remotePath, String fileName) {
 		try {
-			boolean result = false;
 			// 连接至服务器
-			result = connect(remotePath);
+			boolean result = connect(remotePath);
 			// 判断服务器是否连接成功
 			if (result) {
 				// 获取文件输入流
-				downloading = ftpClient.retrieveFileStream(fileName);
+				return ftpClient.retrieveFileStream(fileName);
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		return downloading;
+		return null;
 	}
 
 	/**
@@ -216,14 +194,6 @@ public class FTPUtils {
 	 */
 	public boolean logout() {
 		boolean result = false;
-		if (null != downloading) {
-			try {
-				// 关闭输入流
-				downloading.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
 		if (null != ftpClient) {
 			try {
 				// 登出服务器
@@ -231,17 +201,28 @@ public class FTPUtils {
 			} catch (IOException e) {
 				e.printStackTrace();
 			} finally {
-				// 判断连接是否存在
-				if (ftpClient.isConnected()) {
-					try {
-						// 断开连接
-						ftpClient.disconnect();
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-				}
+				disconnect();
 			}
 		}
 		return result;
 	}
+
+	public void disconnect() {
+		if (ftpClient.isConnected()) {
+			try {
+				ftpClient.disconnect();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	public void setFtpClient(FTPClient ftpClient) {
+		this.ftpClient = ftpClient;
+	}
+
+	public void setAttr(FtpAttr attr) {
+		this.attr = attr;
+	}
+
 }
