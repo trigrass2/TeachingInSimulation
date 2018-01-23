@@ -2,12 +2,15 @@ package com.cas.sim.tis.util;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
 import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPReply;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @功能 FTP服务器工具类
@@ -16,6 +19,7 @@ import org.apache.commons.net.ftp.FTPReply;
  * @修改人 ScOrPiO
  */
 public class FTPUtils {
+	private static final Logger LOG = LoggerFactory.getLogger(FTPUtils.class);
 	private FTPClient ftpClient;
 
 	private FtpAttr attr;
@@ -28,33 +32,45 @@ public class FTPUtils {
 	 *         <b>false</b>：连接失败
 	 */
 	public boolean connect(String remotePath) {
-		// 定义返回值
-		boolean result = false;
+		// 连接至服务器，端口默认为21时，可直接通过URL连接
 		try {
-			// 连接至服务器，端口默认为21时，可直接通过URL连接
 			ftpClient.connect(attr.getHost(), attr.getPort());
-			// 登录服务器
-			ftpClient.login(attr.getUsername(), attr.getPassword());
-			// 判断返回码是否合法
-			if (!FTPReply.isPositiveCompletion(ftpClient.getReplyCode())) {
-				// 不合法时断开连接
-				ftpClient.disconnect();
-				// 结束程序
-				return false;
-			}
-			// 切换到对应的文件目录
-			result = ftpClient.changeWorkingDirectory(remotePath);
-			// 设置文件类型，二进制
-			result = ftpClient.setFileType(FTP.BINARY_FILE_TYPE);
-			// 设置缓冲区大小
-			ftpClient.setBufferSize(2048); // 2K
-			// 设置字符编码
-			ftpClient.setControlEncoding("UTF-8");
-			ftpClient.enterLocalPassiveMode();
-		} catch (IOException e) {
-			e.printStackTrace();
+		} catch (Exception e) {
+			LOG.error("无法连接到FTP服务器{}，{}", attr.getHost(), attr.getPort());
+			return false;
 		}
-		return result;
+		// 登录服务器
+		try {
+			ftpClient.login(attr.getUsername(), attr.getPassword());
+		} catch (IOException e) {
+			LOG.error("无法登录到FTP服务器{}，{}", attr.getUsername(), attr.getPassword());
+			return false;
+		}
+		// 判断返回码是否合法
+		if (!FTPReply.isPositiveCompletion(ftpClient.getReplyCode())) {
+			// 不合法时断开连接
+			disconnect();
+			// 结束程序
+			return false;
+		}
+		// 切换到对应的文件目录
+		try {
+			ftpClient.changeWorkingDirectory(remotePath);
+		} catch (IOException e) {
+			LOG.error("远程目录不存在{}", remotePath);
+			return false;
+		}
+		// 设置文件类型，二进制
+		try {
+			ftpClient.setFileType(FTP.BINARY_FILE_TYPE);
+		} catch (IOException e) {
+		}
+		// 设置缓冲区大小
+		ftpClient.setBufferSize(2048); // 2K
+		// 设置字符编码
+		ftpClient.setControlEncoding("UTF-8");
+		ftpClient.enterLocalPassiveMode();
+		return true;
 	}
 
 	/**
@@ -66,9 +82,9 @@ public class FTPUtils {
 	 * @return <b>true</b>：上传成功 <br/>
 	 *         <b>false</b>：上传失败
 	 */
-	public boolean uploadFile(String storePath, File file) {
+	public boolean uploadFile(String storePath, File file, String storedName) {
 		boolean result = false;
-		try (InputStream ins = new FileInputStream(file)){
+		try (InputStream ins = new FileInputStream(file)) {
 			if (ins.available() == 0) {
 				return result;
 			}
@@ -77,7 +93,7 @@ public class FTPUtils {
 			// 判断服务器是否连接成功
 			if (result) {
 				// 上传文件
-				result = ftpClient.storeFile(file.getName(), ins);
+				result = ftpClient.storeFile(storedName, ins);
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -103,7 +119,30 @@ public class FTPUtils {
 			// 判断服务器是否连接成功
 			if (result) {
 				// 获取文件输入流
-				return ftpClient.retrieveFileStream(fileName);
+				return ftpClient.retrieveFileStream(new String(fileName.getBytes("UTF-8"), "ISO-8859-1"));
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	/**
+	 * 下载FTP服务器文件至本地<br/>
+	 * 操作完成后需调用logout方法与服务器断开连接
+	 * @param serverName 服务器名称
+	 * @param remotePath 下载文件存储路径
+	 * @param fileName 下载文件存储名称
+	 * @return <b>InputStream</b>：文件输入流
+	 */
+	public InputStream retrieveFile(String remotePath, String fileName) {
+		try {
+			// 连接至服务器
+			boolean result = connect(remotePath);
+			// 判断服务器是否连接成功
+			if (result) {
+				// 获取文件输入流
+				ftpClient.retrieveFile(new String(fileName.getBytes("UTF-8"), "ISO-8859-1"), new FileOutputStream("C://name"));
 			}
 		} catch (IOException e) {
 			e.printStackTrace();

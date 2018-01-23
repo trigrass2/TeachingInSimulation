@@ -1,11 +1,15 @@
 package com.cas.sim.tis.test.ftp;
 
+import static org.junit.Assert.*;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
 import org.apache.commons.net.ftp.FTPClient;
+import org.apache.commons.net.io.Util;
+import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.util.StopWatch;
 
@@ -13,8 +17,8 @@ import com.cas.sim.tis.util.FTPUtils;
 import com.cas.sim.tis.util.FtpAttr;
 
 public class FileDownload {
-	@Test
-	public void testConcurrent() throws Exception {
+
+	private FTPUtils getUtil(String user, String password) {
 		FTPUtils util = new FTPUtils();
 
 		FTPClient client = new FTPClient();
@@ -23,38 +27,47 @@ public class FileDownload {
 		FtpAttr attr = new FtpAttr();
 		attr.setHost("192.168.1.19");
 		attr.setPort(21);
-		attr.setUsername("anonymous");
-		attr.setPassword("");
+		attr.setUsername(user);
+		attr.setPassword(password);
 		util.setAttr(attr);
+		return util;
+	}
 
-//		ExecutorService pool = Executors.newFixedThreadPool(50);
-//		List<Future<?>> tasks = new ArrayList<>(50);
+	@Test
+	public void testUpload() throws Exception {
+//		管理员可以上传文件
+		FTPUtils util = getUtil("admin", "admin");
+		boolean result = util.uploadFile("/assets/Model", new File("G:\\jfxrt.jar"), System.currentTimeMillis() + ".jar");
+		Assert.assertTrue(result);
+
+//		匿名用户不允许上传
+		util = getUtil("anonymous", "");
+		result = util.uploadFile("/assets/Model", new File("G:\\jfxrt.jar"), System.currentTimeMillis() + ".jar");
+		Assert.assertFalse(result);
+	}
+
+	@Test
+	public void testConcurrent() throws Exception {
+		FTPUtils util = getUtil("anonymous", "");
+
 		StopWatch w = new StopWatch();
 		w.start("开始下载");
-//		for (int i = 0; i < 10; i++) {
-//			final int index = i;
-//			Future<?> task = pool.submit(() -> {
-				
-				InputStream stream = util.downloadFile("/assets/Model/", "11.j3o");
-				FileOutputStream out;
-				try {
-					out = new FileOutputStream(new File("model-file-" + 0));
-					byte b[] = new byte[1024];
-					while (stream.read(b) != -1) {
-						out.write(b, 0, b.length);
-					}
-					out.close();
-					System.out.println(w.getTotalTimeMillis());
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-//			});
-//			tasks.add(task);
-//		}
-//		for (int i = 0; i < tasks.size(); i++) {
-//			Future<?> t = tasks.get(i);
-//			t.get();
-//		}
-		w.stop();
+
+		InputStream stream = util.downloadFile("/assets/Model/", "11.j3o");
+
+		FileOutputStream out;
+		try {
+			File file;
+			out = new FileOutputStream(file = new File("model-file-" + 0));
+			Util.copyStream(stream, out);
+			out.close();
+
+			Assert.assertEquals(3506624, file.length()); // 服务器中11.j3o文件大小是3,506,624
+
+			w.stop();
+			System.out.println(w.getTotalTimeMillis());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 }
