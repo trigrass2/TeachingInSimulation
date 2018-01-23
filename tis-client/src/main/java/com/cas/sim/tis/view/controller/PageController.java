@@ -3,6 +3,8 @@ package com.cas.sim.tis.view.controller;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import com.cas.sim.tis.Application;
+import com.cas.sim.tis.view.HomeView;
 import com.cas.sim.tis.view.control.IContent;
 import com.cas.sim.tis.view.control.ILeftContent;
 
@@ -34,13 +36,29 @@ public class PageController implements Initializable {
 	@FXML
 	private Region arrow;
 
+	/**
+	 * 上一层内容
+	 */
+	private IContent prevContent;
+	/**
+	 * 当前层内容
+	 */
+	private IContent currContent;
+
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 	}
 
 	@FXML
 	private void back() {
-		show();
+		// 返回上一个界面
+		if (this.prevContent != null) {
+			loadContent(prevContent);
+		}else {
+			loadLeftMenu(null);
+			loadContent(null);
+			Application.showView(HomeView.class);
+		}
 	}
 
 	@FXML
@@ -61,6 +79,8 @@ public class PageController implements Initializable {
 
 	public void loadContent(IContent content) {
 		this.content.getChildren().clear();
+		this.prevContent = this.currContent;
+		this.currContent = content;
 		if (content != null) {
 			this.content.getChildren().add(content.getContent());
 		}
