@@ -37,13 +37,9 @@ public class Application extends AbstractJavaFxApplicationSupport implements App
 		
 		launchApplicationView((ConfigurableApplicationContext) applicationContext);
 		
-//		launch(Application.class, LoginView.class, args);
-//		launch(Application.class, , args);
 		Platform.runLater(()->{
 			try {
-				Stage stage = new Stage();
-				stage.initStyle(StageStyle.TRANSPARENT);
-				start(stage);
+				start(new Stage(StageStyle.TRANSPARENT));
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

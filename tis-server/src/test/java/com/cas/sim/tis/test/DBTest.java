@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -13,6 +14,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import com.cas.sim.tis.Application;
 import com.cas.sim.tis.entity.Student;
 import com.cas.sim.tis.entity.Teacher;
+import com.cas.sim.tis.entity.User;
 import com.cas.sim.tis.mapper.CatalogMapper;
 import com.cas.sim.tis.mapper.ClassMapper;
 import com.cas.sim.tis.mapper.ExaminationAnswerMapper;
@@ -28,6 +30,7 @@ import com.cas.sim.tis.mapper.ResourceMapper;
 import com.cas.sim.tis.mapper.SchematicMapper;
 import com.cas.sim.tis.mapper.StudentMapper;
 import com.cas.sim.tis.mapper.TeacherMapper;
+import com.cas.sim.tis.mapper.UserMapper;
 
 import tk.mybatis.mapper.entity.Condition;
 import tk.mybatis.mapper.entity.Example.Criteria;
@@ -60,27 +63,21 @@ public class DBTest {
 	@Resource
 	private CatalogMapper sectionMapper;
 	@Resource
-	private StudentMapper studentMapper;
-	@Resource
-	private TeacherMapper teacherMapper;
+	private UserMapper userMapper;
 
 	@Test
-	public void testLogin() throws Exception {
-		Condition condition = new Condition(Student.class);
+	public void testAdminLogin() throws Exception {
+		Condition condition = new Condition(User.class);
 		Criteria criteria = condition.createCriteria();
 		criteria.andEqualTo("code", "admin");
 		criteria.andEqualTo("password", "123456");
-//		criteria.andEqualTo("role", 3);
-
-//		teacherMapper.selectAll();
-		
 		try {
-			List<Teacher> teachers = teacherMapper.selectByCondition(condition);
-			teachers.forEach(System.out::println);
+			List<User> users = userMapper.selectByCondition(condition);
+			Assert.assertEquals(1, users.size());
+			users.forEach(System.out::println);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
 	}
 	
 	@Test
@@ -94,11 +91,11 @@ public class DBTest {
 //		mappers.add(libraryMapper);
 //		mappers.add(questionMapper);
 //
-//		mappers.add(resourceMapper);
+		mappers.add(resourceMapper);
 //		mappers.add(schematicMapper);
 //		mappers.add(sectionMapper);
-		mappers.add(studentMapper);
-		mappers.add(teacherMapper);
+//		mappers.add(studentMapper);
+//		mappers.add(teacherMapper);
 		mappers.stream().forEach(IMapper::selectAll);
 	}
 }

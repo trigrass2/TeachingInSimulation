@@ -5,6 +5,9 @@ import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import org.apache.ibatis.exceptions.TooManyResultsException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -63,11 +66,13 @@ public abstract class AbstractService<T> implements BaseService<T> {
 		mapper.updateByPrimaryKeySelective(model);
 	}
 
+	@Nullable
 	public T findById(Integer id) {
 		return mapper.selectByPrimaryKey(id);
 	}
 
 	@Override
+	@Nullable
 	public T findBy(String fieldName, Object value) throws TooManyResultsException {
 		try {
 			T model = modelClass.newInstance();
@@ -80,6 +85,7 @@ public abstract class AbstractService<T> implements BaseService<T> {
 		}
 	}
 
+	@Nonnull
 	public List<T> findByIds(String ids) {
 		List<T> dataList = mapper.selectByIds(ids);
 		if (dataList == null) {
@@ -88,6 +94,7 @@ public abstract class AbstractService<T> implements BaseService<T> {
 		return dataList;
 	}
 
+	@Nonnull
 	public List<T> findByCondition(Condition condition) {
 		List<T> dataList = mapper.selectByCondition(condition);
 		if (dataList == null) {
@@ -96,6 +103,7 @@ public abstract class AbstractService<T> implements BaseService<T> {
 		return dataList;
 	}
 
+	@Nonnull
 	public List<T> findAll() {
 		List<T> dataList = mapper.selectAll();
 		if (dataList == null) {

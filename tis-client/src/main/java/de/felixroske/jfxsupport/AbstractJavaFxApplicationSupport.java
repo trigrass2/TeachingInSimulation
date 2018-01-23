@@ -1,5 +1,17 @@
 package de.felixroske.jfxsupport;
 
+import java.awt.SystemTray;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.boot.SpringApplication;
+import org.springframework.context.ConfigurableApplicationContext;
+
 import javafx.application.Application;
 import javafx.application.HostServices;
 import javafx.application.Platform;
@@ -9,21 +21,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.image.Image;
-import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.boot.SpringApplication;
-import org.springframework.context.ConfigurableApplicationContext;
-
-import java.awt.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-import java.util.concurrent.CompletableFuture;
 
 /**
  * The Class AbstractJavaFxApplicationSupport.
@@ -143,8 +142,8 @@ public abstract class AbstractJavaFxApplicationSupport extends Application {
 
         GUIState.setStage(stage);
         GUIState.setHostServices(this.getHostServices());
-        final Stage splashStage = new Stage(StageStyle.TRANSPARENT);
-
+//        final Stage splashStage = new Stage(StageStyle.TRANSPARENT);
+//
 //		if (AbstractJavaFxApplicationSupport.splashScreen.visible()) {
 //			final Scene splashScene = new Scene(splashScreen.getParent(), Color.TRANSPARENT);
 //			splashStage.setScene(splashScene);
@@ -176,21 +175,21 @@ public abstract class AbstractJavaFxApplicationSupport extends Application {
     }
 
 
-    /**
-     * Show initial view.
-     */
-    private void showInitialView() {
-        final String stageStyle = applicationContext.getEnvironment().getProperty(Constant.KEY_STAGE_STYLE);
-        if (stageStyle != null) {
-            GUIState.getStage().initStyle(StageStyle.valueOf(stageStyle.toUpperCase()));
-        } else {
-            GUIState.getStage().initStyle(StageStyle.DECORATED);
-        }
-
-        beforeInitialView(GUIState.getStage(), applicationContext);
-
-        showView(savedInitialView);
-    }
+//    /**
+//     * Show initial view.
+//     */
+//    private void showInitialView() {
+//        final String stageStyle = applicationContext.getEnvironment().getProperty(Constant.KEY_STAGE_STYLE);
+//        if (stageStyle != null) {
+//            GUIState.getStage().initStyle(StageStyle.valueOf(stageStyle.toUpperCase()));
+//        } else {
+//            GUIState.getStage().initStyle(StageStyle.DECORATED);
+//        }
+//
+//        beforeInitialView(GUIState.getStage(), applicationContext);
+//
+//        showView(savedInitialView);
+//    }
 
 
     /**
