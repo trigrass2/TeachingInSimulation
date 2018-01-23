@@ -37,12 +37,12 @@ public class Resource implements Serializable {
 //	关键词（“,”分割）
 	private String keyword;
 //	资源描述
-	@Column(name="DETAIL")
+	@Column(name = "DETAIL")
 	private String desc;
 //	创建人（教师/管理员）
-	protected Integer creatorId;
+	protected Integer creator;
 //	默认资源是私有的
-	@Column(name="OPEN")
+	@Column(name = "OPEN")
 	protected Boolean share = Boolean.FALSE;
 	protected Date createDate;
 //	默认资源没有被删除
@@ -96,12 +96,12 @@ public class Resource implements Serializable {
 		this.desc = desc;
 	}
 
-	public Integer getCreatorId() {
-		return creatorId;
+	public Integer getCreator() {
+		return creator;
 	}
 
-	public void setCreatorId(Integer creatorId) {
-		this.creatorId = creatorId;
+	public void setCreator(Integer creator) {
+		this.creator = creator;
 	}
 
 	public Date getCreateDate() {

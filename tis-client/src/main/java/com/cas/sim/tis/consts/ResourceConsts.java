@@ -6,6 +6,38 @@ public final class ResourceConsts {
 	 */
 	public final static String FTP_RES_PATH = "resources/";
 	/**
+	 * 资源类型——图片
+	 */
+	public final static int RES_PIC = 0;
+	/**
+	 * 资源类型——flash
+	 */
+	public final static int RES_SWF = 1;
+	/**
+	 * 资源类型——视频
+	 */
+	public final static int RES_VIDEO = 2;
+	/**
+	 * 资源类型——文本
+	 */
+	public final static int RES_TXT =3;
+	/**
+	 * 资源类型——word
+	 */
+	public final static int RES_WORD = 4;
+	/**
+	 * 资源类型——ppt
+	 */
+	public final static int RES_PPT =5;
+	/**
+	 * 资源类型——excel
+	 */
+	public final static int RES_EXCEL = 6;
+	/**
+	 * 资源类型——pdf
+	 */
+	public final static int RES_PDF = 7;
+	/**
 	 * 资源类型图标——图片
 	 */
 	public final static String PIC_ICON = "static/images/resource/pic.png";

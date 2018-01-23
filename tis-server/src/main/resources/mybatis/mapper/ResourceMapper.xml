@@ -7,10 +7,30 @@
 		<result column="TYPE" jdbcType="INTEGER" property="type" />
 		<result column="PATH" jdbcType="VARCHAR" property="path" />
 		<result column="KEYWORD" jdbcType="VARCHAR" property="keyword" />
-<!--		<result column="COMMENT" jdbcType="VARCHAR" property="desc" /> -->
-		<result column="CREATOR" jdbcType="INTEGER" property="creatorID" />
+		<!-- <result column="COMMENT" jdbcType="VARCHAR" property="desc" /> -->
+		<result column="CREATOR" jdbcType="INTEGER" property="creator" />
 		<result column="CREATE_DATE" jdbcType="VARCHAR" property="createDate" />
-<!--		<result column="PUBLIC" jdbcType="INTEGER" property="open" />  -->
+		<!-- <result column="PUBLIC" jdbcType="INTEGER" property="open" /> -->
 		<result column="DEL" jdbcType="INTEGER" property="del" />
 	</resultMap>
+	<resultMap id="resourceInfoMap" type="com.cas.sim.tis.vo.ResourceInfo">
+		<result property="creator" column="creator" />
+		<result property="createDate" column="create_date" />
+		<result property="browsedTimes" column="browsed_times" />
+		<result property="collectedTimes" column="collected_times" />
+	</resultMap>
+
+	<select id="selectResourceInfoByID" resultMap="resourceInfoMap">
+		select
+		u.name as creator,r.create_date,r.browsed_times,r.collected_times
+		from
+		resource r
+		left join
+		user u
+		on
+		r.creator=u.id
+		where
+		r.id=#{id}
+	</select>
+
 </mapper>

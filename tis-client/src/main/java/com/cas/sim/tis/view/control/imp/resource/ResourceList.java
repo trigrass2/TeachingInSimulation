@@ -154,7 +154,7 @@ public class ResourceList extends HBox implements IContent {
 	/**
 	 * 界面初始化
 	 */
-	public void initialize() {
+	private void initialize() {
 		createTable();
 		order.selectedToggleProperty().addListener((observe, oldVal, newVal) -> {
 			if (newVal == null) {

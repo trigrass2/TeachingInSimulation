@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.remoting.rmi.RmiProxyFactoryBean;
 
+import com.cas.sim.tis.services.CollectionService;
 import com.cas.sim.tis.services.ResourceService;
 import com.cas.sim.tis.services.UserService;
 
@@ -41,6 +42,15 @@ public class RMIConfig {
 		RmiProxyFactoryBean bean = new RmiProxyFactoryBean();
 		bean.setServiceUrl("rmi://" + host + ":" + port + "/resourceService");
 		bean.setServiceInterface(ResourceService.class);
+		return bean;
+	}
+	
+	@Bean
+	@Qualifier("collectionServiceFactory")
+	public RmiProxyFactoryBean buildCollectionServiceFactory() {
+		RmiProxyFactoryBean bean = new RmiProxyFactoryBean();
+		bean.setServiceUrl("rmi://" + host + ":" + port + "/collectionService");
+		bean.setServiceInterface(CollectionService.class);
 		return bean;
 	}
 }
