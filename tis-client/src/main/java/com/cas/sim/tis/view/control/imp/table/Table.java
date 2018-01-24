@@ -4,10 +4,9 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONException;
+import com.alibaba.fastjson.JSONObject;
 import com.cas.util.Util;
 
 import javafx.beans.property.BooleanProperty;
@@ -199,7 +198,7 @@ public class Table extends VBox {
 			JSONArray items = new JSONArray();
 			for (Row row : rows) {
 				JSONObject obj = row.getItems();
-				items.put(obj);
+				items.add(obj);
 			}
 			setItems(items);
 			super.set(newValue);
@@ -340,7 +339,7 @@ public class Table extends VBox {
 			return;
 		}
 		try {
-			for (int i = 0; i < newItems.length(); i++) {
+			for (int i = 0; i < newItems.size(); i++) {
 				JSONObject object = newItems.getJSONObject(i);
 				Row row = null;
 				row = new Row(normalStyleClass, hoverStyleClass, selectedStyleClass);

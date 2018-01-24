@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import com.cas.sim.tis.view.control.imp.Decoration?>
 
-<StackPane prefHeight="768.0" prefWidth="1366.0" style="-fx-background-image: url(/static/images/basic/bg.png);;" stylesheets="@../static/css/basic.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.cas.sim.tis.view.controller.PageController">
+<StackPane prefHeight="768.0" prefWidth="1366.0" style="-fx-background-image: url(/static/images/basic/bg.png);" stylesheets="@../static/css/basic.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.cas.sim.tis.view.controller.PageController">
 	<children>
 		<HBox>
 			<children>

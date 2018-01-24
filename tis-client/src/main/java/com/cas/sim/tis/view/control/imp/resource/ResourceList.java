@@ -5,24 +5,24 @@ import java.io.IOException;
 import java.net.URL;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
-import java.util.stream.Collectors;
 
 import javax.swing.filechooser.FileSystemView;
 
-import org.json.JSONArray;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.alibaba.fastjson.JSONArray;
 import com.cas.sim.tis.consts.ResourceConsts;
 import com.cas.sim.tis.consts.ResourceType;
 import com.cas.sim.tis.entity.Resource;
+import com.cas.sim.tis.util.FTPUtils;
 import com.cas.sim.tis.util.MsgUtil;
 import com.cas.sim.tis.util.SpringUtil;
 import com.cas.sim.tis.view.action.ResourceAction;
 import com.cas.sim.tis.view.control.IContent;
+import com.cas.sim.tis.view.control.imp.SearchBox;
 import com.cas.sim.tis.view.control.imp.table.BtnsCell;
 import com.cas.sim.tis.view.control.imp.table.Column;
 import com.cas.sim.tis.view.control.imp.table.IconCell;
@@ -43,11 +43,13 @@ import javafx.scene.chart.PieChart;
 import javafx.scene.chart.PieChart.Data;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Pagination;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.stage.FileChooser;
@@ -87,6 +89,8 @@ public class ResourceList extends HBox implements IContent {
 	private CheckBox excelCheck;
 	@FXML
 	private CheckBox pdfCheck;
+	@FXML
+	private SearchBox search;
 
 	// 我的资源统计
 	@FXML
@@ -119,7 +123,6 @@ public class ResourceList extends HBox implements IContent {
 	private Label show;
 	private File uploadFile;
 
-	private List<ResourceType> resourceTypes = new ArrayList<>();
 	private List<Integer> creators = new ArrayList<>();
 
 	/**
@@ -170,33 +173,42 @@ public class ResourceList extends HBox implements IContent {
 			List<String> words = StringUtil.split(text);
 			show.setText(StringUtil.combine(words, ' '));
 		});
+		search.setOnKeyPressed(event -> {
+			if (event.getCode() == KeyCode.ENTER) {
+				reload();
+			}
+		});
 	}
 
 	private void createTable() {
-		Table table = new Table();
 		// 数据库唯一表示
 		Column<Integer> id = new Column<>();
 		id.setPrimary(true);
 		id.setVisible(false);
 		id.setKey("id");
 		// 资源图标
-		Column<ResourceType> icon = new Column<>();
+		Column<Integer> icon = new Column<>();
 		icon.setAlignment(Pos.CENTER_RIGHT);
 		icon.setKey("type");
 		icon.setText("");
 		icon.setMaxWidth(25);
 		icon.getStyleClass().add("gray-label");
-		icon.setCellFactory(IconCell.forTableColumn(new StringConverter<ResourceType>() {
+		StringConverter<Integer> converter = new StringConverter<Integer>() {
 			@Override
-			public String toString(ResourceType type) {
-				return type.getIcon();
+			public String toString(Integer type) {
+				if (type == null) {
+					return null;
+				}
+				ResourceType resourceType = ResourceType.getResourceType(type);
+				return resourceType.getIcon();
 			}
 
 			@Override
-			public ResourceType fromString(String string) {
+			public Integer fromString(String string) {
 				return null;
 			}
-		}));
+		};
+		icon.setCellFactory(IconCell.forTableColumn(converter));
 		// 资源名称
 		Column<String> name = new Column<>();
 		name.setAlignment(Pos.CENTER_LEFT);
@@ -207,7 +219,7 @@ public class ResourceList extends HBox implements IContent {
 		// 上传日期
 		Column<String> updateDate = new Column<>();
 		updateDate.setAlignment(Pos.CENTER);
-		updateDate.setKey("update_date");
+		updateDate.setKey("create_date");
 		updateDate.setText("上传日期");
 		updateDate.setMaxWidth(160);
 		updateDate.getStyleClass().add("gray-label");
@@ -229,17 +241,42 @@ public class ResourceList extends HBox implements IContent {
 		int curr = pagination.getCurrentPageIndex();
 		int pageSize = pagination.getPageCount();
 
-		// FIXME
-		String keyword = null;
+		String keyword = search.getText();
 
 		String orderByClause = order.getSelectedToggle().getUserData().toString();
 
 		PageInfo<Resource> page = null;
 //		取出用户所选资源的类型
-		List<Integer> types = resourceTypes.stream().map(ResourceType::getType).collect(Collectors.toList());
+		List<Integer> types = new ArrayList<>();
+		if (picCheck.isSelected()) {
+			types.add(ResourceType.IMAGE.getType());
+		}
+		if (swfCheck.isSelected()) {
+			types.add(ResourceType.SWF.getType());
+		}
+		if (videoCheck.isSelected()) {
+			types.add(ResourceType.VIDEO.getType());
+		}
+		if (txtCheck.isSelected()) {
+			types.add(ResourceType.TXT.getType());
+		}
+		if (wordCheck.isSelected()) {
+			types.add(ResourceType.WORD.getType());
+		}
+		if (pptCheck.isSelected()) {
+			types.add(ResourceType.PPT.getType());
+		}
+		if (excelCheck.isSelected()) {
+			types.add(ResourceType.EXCEL.getType());
+		}
+		if (pdfCheck.isSelected()) {
+			types.add(ResourceType.PDF.getType());
+		}
 		page = action.findResourcesByCreator(curr, pageSize, types, keyword, orderByClause, creators);
 		pagination.setMaxPageIndicatorCount((int) page.getTotal());
-		table.setItems(new JSONArray(page.getList()));
+		JSONArray array = new JSONArray();
+		array.addAll(page.getList());
+		table.setItems(array);
 		table.build();
 	}
 
@@ -247,24 +284,15 @@ public class ResourceList extends HBox implements IContent {
 	 * 加载饼图数据
 	 */
 	private void loadPieChart() {
-		// FIXME
-		String keyword = null;
-//		int picNum = action.countResourceByType(1, 0, resourceTypes, keyword);
-//		int swfNum = action.countResourceByType(1, 1, resourceTypes, keyword);
-//		int videoNum = action.countResourceByType(1, 2, resourceTypes, keyword);
-//		int txtNum = action.countResourceByType(1, 3, resourceTypes, keyword);
-//		int wordNum = action.countResourceByType(1, 4, resourceTypes, keyword);
-//		int pptNum = action.countResourceByType(1, 5, resourceTypes, keyword);
-//		int excelNum = action.countResourceByType(1, 6, resourceTypes, keyword);
-//		int pdfNum = action.countResourceByType(1, 7, resourceTypes, keyword);
-		int picNum = 17;
-		int swfNum = 12;
-		int videoNum = 20;
-		int txtNum = 10;
-		int wordNum = 13;
-		int pptNum = 24;
-		int excelNum = 21;
-		int pdfNum = 15;
+		String keyword = search.getText();
+		int picNum = picCheck.isSelected() ? action.countResourceByType(ResourceType.IMAGE.getType(), keyword, creators) : 0;
+		int swfNum = swfCheck.isSelected() ? action.countResourceByType(ResourceType.SWF.getType(), keyword, creators) : 0;
+		int videoNum = videoCheck.isSelected() ? action.countResourceByType(ResourceType.VIDEO.getType(), keyword, creators) : 0;
+		int txtNum = txtCheck.isSelected() ? action.countResourceByType(ResourceType.TXT.getType(), keyword, creators) : 0;
+		int wordNum = wordCheck.isSelected() ? action.countResourceByType(ResourceType.WORD.getType(), keyword, creators) : 0;
+		int pptNum = pptCheck.isSelected() ? action.countResourceByType(ResourceType.PPT.getType(), keyword, creators) : 0;
+		int excelNum = excelCheck.isSelected() ? action.countResourceByType(ResourceType.EXCEL.getType(), keyword, creators) : 0;
+		int pdfNum = pdfCheck.isSelected() ? action.countResourceByType(ResourceType.PDF.getType(), keyword, creators) : 0;
 
 		ObservableList<Data> datas = FXCollections.observableArrayList(new PieChart.Data(MsgUtil.getMessage("resource.pic"), picNum), new PieChart.Data(MsgUtil.getMessage("resource.swf"), swfNum), new PieChart.Data(MsgUtil.getMessage("resource.video"), videoNum), new PieChart.Data(MsgUtil.getMessage("resource.txt"), txtNum), new PieChart.Data(MsgUtil.getMessage("resource.word"), wordNum), new PieChart.Data(MsgUtil.getMessage("resource.ppt"), pptNum), new PieChart.Data(MsgUtil.getMessage("resource.excel"), excelNum), new PieChart.Data(MsgUtil.getMessage("resource.pdf"), pdfNum));
 		chart.setData(datas);
@@ -297,32 +325,6 @@ public class ResourceList extends HBox implements IContent {
 
 	@FXML
 	private void typeFilter(ActionEvent event) {
-		ResourceType type;
-		if (event.getSource().equals(picCheck)) {
-			type = ResourceType.IMAGE;
-		} else if (event.getSource().equals(swfCheck)) {
-			type = ResourceType.SWF;
-		} else if (event.getSource().equals(videoCheck)) {
-			type = ResourceType.VIDEO;
-		} else if (event.getSource().equals(txtCheck)) {
-			type = ResourceType.TXT;
-		} else if (event.getSource().equals(wordCheck)) {
-			type = ResourceType.WORD;
-		} else if (event.getSource().equals(pptCheck)) {
-			type = ResourceType.PPT;
-		} else if (event.getSource().equals(excelCheck)) {
-			type = ResourceType.EXCEL;
-		} else if (event.getSource().equals(pdfCheck)) {
-			type = ResourceType.PDF;
-		} else {
-			return;
-		}
-		
-		if (((CheckBox) event.getSource()).isSelected()) {
-			resourceTypes.add(type);
-		} else {
-			resourceTypes.remove(type);
-		}
 		reload();
 	}
 
@@ -333,7 +335,7 @@ public class ResourceList extends HBox implements IContent {
 		chooser.setInitialDirectory(FileSystemView.getFileSystemView().getHomeDirectory());
 		chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter(MsgUtil.getMessage("resource.all"), "*.doc", "*.docx", "*.xls", "*.xlsx", "*.ppt", "*.pptx", "*.pdf", "*.png", "*.jpg", "*.swf", "*.mp4", "*.flv", "*.wmv", "*.rmvb", "*.avi", "*.txt"));
 		chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter(MsgUtil.getMessage("resource.word"), ResourceType.WORD.getSuffixs()));
-		chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter(MsgUtil.getMessage("resource.excel"),ResourceType.EXCEL.getSuffixs()));
+		chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter(MsgUtil.getMessage("resource.excel"), ResourceType.EXCEL.getSuffixs()));
 		chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter(MsgUtil.getMessage("resource.ppt"), ResourceType.PPT.getSuffixs()));
 		chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter(MsgUtil.getMessage("resource.pdf"), ResourceType.PDF.getSuffixs()));
 		chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter(MsgUtil.getMessage("resource.pic"), ResourceType.IMAGE.getSuffixs()));
@@ -350,27 +352,22 @@ public class ResourceList extends HBox implements IContent {
 	}
 
 	@FXML
-	private void upload() {
+	private void upload(ActionEvent event) {
+		// 禁用上传按钮
+		((Button) event.getSource()).setDisable(true);
 		String filePath = uploadFile.getAbsolutePath();
 		String fileName = FileUtil.getFileName(filePath);
 		String ext = FileUtil.getFileExt(filePath);
 		// 重命名
 		String rename = System.currentTimeMillis() + "." + ext;
 		// 上传文件到FTP
-//		try {
-			// FIXME
-			boolean uploaded = true;
-//			boolean uploaded = FTPUtils.getInstance().uploadFile("192.168.1.125", ResourceConsts.FTP_RES_PATH, rename, new FileInputStream(uploadFile));
-			if (!uploaded) {
-				Alert alert = new Alert(AlertType.ERROR);
-				alert.initOwner(GUIState.getStage().getOwner());
-				alert.setContentText(MsgUtil.getMessage("ftp.upload.failure"));
-				alert.show();
-				return;
-			}
-//		} catch (FileNotFoundException e) {
-//			e.printStackTrace();
-//		}
+		boolean uploaded = SpringUtil.getBean(FTPUtils.class).uploadFile(ResourceConsts.FTP_RES_PATH, uploadFile, rename);
+		if (!uploaded) {
+			Alert alert = new Alert(AlertType.ERROR, MsgUtil.getMessage("ftp.upload.failure"));
+			alert.initOwner(GUIState.getStage().getOwner());
+			alert.show();
+			return;
+		}
 		// 封装资源记录
 		Resource resource = new Resource();
 		resource.setKeyword(keywords.getText());
@@ -382,7 +379,15 @@ public class ResourceList extends HBox implements IContent {
 			LOG.warn("解析文件后缀名出现错误", e);
 			throw e;
 		}
-		// TODO 记录到数据库
+		// 记录到数据库
+		action.addResource(resource);
+		// 启用上传按钮
+		((Button) event.getSource()).setDisable(false);
+		Alert alert = new Alert(AlertType.INFORMATION, MsgUtil.getMessage("ftp.upload.success"));
+		alert.initOwner(GUIState.getStage().getOwner());
+		alert.show();
+		clear();
+		reload();
 	}
 
 	@FXML
@@ -399,13 +404,20 @@ public class ResourceList extends HBox implements IContent {
 		pptCheck.setSelected(true);
 		excelCheck.setSelected(true);
 		pdfCheck.setSelected(true);
-		resourceTypes.addAll(Arrays.asList(ResourceType.values()));
-
 		order.getToggles().get(0).setSelected(true);
+
+		clearUpload();
+	}
+
+	private void clearUpload() {
+		filePath.setText(null);
+		keywords.setText(null);
+		size.setText(null);
+		show.setText(null);
 	}
 
 	private void reload() {
-		// loadResources();
+		loadResources();
 		loadPieChart();
 	}
 

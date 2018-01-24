@@ -135,13 +135,13 @@
 .pagination > .pagination-control .left-arrow {
     -fx-background-color: #ffffff;
     -fx-translate-x: -3.5;
-    -fx-translate-y: -1;
+    -fx-translate-y: -1.0;
 }
 
 .pagination > .pagination-control .right-arrow {
     -fx-background-color: #ffffff;
     -fx-translate-x: 3.5;
-    -fx-translate-y: -1;
+    -fx-translate-y: -1.0;
 }
 /*******************************************************************************
  *                                                                             *
@@ -219,6 +219,39 @@
 }
 .login-decoration:hover {
 	-fx-background-color: #136989; 
+}
+/*******************************************************************************
+ *                                                                             *
+ * 搜索设置样式                                                          *
+ *                                                                             *
+ ******************************************************************************/
+.search-box {
+	-fx-background-color: white;
+    -fx-background-insets: 1.0;
+    -fx-background-radius: 15.0;
+    -fx-padding: -9.0 5.0 -11.0 0.0;
+    -fx-border-image-source: url("/static/images/basic/search.png");
+    -fx-border-image-slice: 12.0 12.0 12.0 22.0 fill;
+    -fx-border-image-width: 12.0 12.0 12.0 22.0;
+    -fx-border-image-repeat: stretch;
+    -fx-font-size: 13.0px;
+    -fx-prompt-text-fill: grey;
+}
+
+.search-box:focused {
+    -fx-background-color: -fx-focus-color, white;
+    -fx-background-insets: -1.4, 1.0;
+    -fx-background-radius: 14.4;
+}
+
+.search-btn {
+    -fx-background-color: null;
+    -fx-background-image: url("/static/images/basic/search-clear.png");
+    -fx-background-repeat: no-repeat;
+}
+
+.search-btn:hover {
+    -fx-background-image: url("/static/images/basic/search-clear-over.png");
 }
 /*******************************************************************************
  *                                                                             *
@@ -417,38 +450,6 @@
  }
 /*******************************************************************************
  *                                                                             *
- * 搜索框样式                                                          *
- *                                                                             *
- ******************************************************************************/
-.search-box .text-field {
-    -fx-background-color: white;
-    -fx-background-insets: 1.0;
-    -fx-background-radius: 15.0;
-    -fx-padding: -9.0 5.0 -11.0 0.0;
-    -fx-border-image-source: url("static/images/basic/search.png");
-    -fx-border-image-slice: 12.0 12.0 12.0 22.0 fill;
-    -fx-border-image-width: 12.0 12.0 12.0 22.0;
-    -fx-border-image-repeat: stretch;
-    -fx-font-size: 13.0px;
-    -fx-prompt-text-fill: grey;
-}
-
-.search-box .text-field:focused {
-    -fx-background-color: -fx-focus-color, white;
-    -fx-background-insets: -1.4, 1.0;
-    -fx-background-radius: 14.4;
-}
-
-.search-box .button {
-    -fx-background-color: null;
-    -fx-background-image: url("static/images/basic/search-clear.png");
-}
-
-.search-box .button:hover {
-    -fx-background-image: url("static/images/basic/search-clear-over.png");
-}
-/*******************************************************************************
- *                                                                             *
  * ASK多选框样式                                                          *
  *                                                                             *
  ******************************************************************************/
@@ -482,4 +483,31 @@
  	-fx-background-color: transparent;
  	-fx-translate-x: 15.0;
  	-fx-translate-y: 15.0;
+ }
+ /*******************************************************************************
+ *                                                                             *
+ * 表格样式                                                                  *
+ *                                                                             *
+ ******************************************************************************/
+ .table>.header {
+ 	-fx-background-color: #f6f6f6;
+ }
+ .table>.header>.cell {
+ 	-fx-font-weight:bold;
+ }
+ .tab-row {
+ 	-fx-background-color: #f6f6f6;
+ }
+ .tab-row-hover {
+ 	-fx-background-color: #e1e1e1;
+ }
+ .tab-row-selected {
+ 	-fx-background-color: #19b0c6;
+ }
+ .tab-row-selected>.cell {
+ 	-fx-text-fill:#ffffff;
+ 	-fx-font-weight:bold;
+ }
+ .table-row-hover {
+ 	-fx-background-color:#f9f9f9;
  }

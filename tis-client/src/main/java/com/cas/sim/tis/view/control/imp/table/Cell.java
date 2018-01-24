@@ -85,7 +85,7 @@ public class Cell<T>extends Label {
 	}
 
 	// --- item
-	private ObjectProperty<T> item = new SimpleObjectProperty<T>(this, "item") {
+	protected ObjectProperty<T> item = new SimpleObjectProperty<T>(this, "item") {
 		@Override
 		public void set(T newValue) {
 			if (newValue == null) {

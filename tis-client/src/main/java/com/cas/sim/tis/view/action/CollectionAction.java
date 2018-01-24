@@ -1,8 +1,5 @@
 package com.cas.sim.tis.view.action;
 
-import java.util.Date;
-import java.util.List;
-
 import javax.annotation.Resource;
 
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -12,9 +9,6 @@ import org.springframework.stereotype.Component;
 import com.cas.sim.tis.consts.Session;
 import com.cas.sim.tis.entity.Collection;
 import com.cas.sim.tis.services.CollectionService;
-
-import tk.mybatis.mapper.entity.Condition;
-import tk.mybatis.mapper.entity.Example.Criteria;
 
 @Component
 public class CollectionAction {
@@ -27,17 +21,7 @@ public class CollectionAction {
 			return false;
 		}
 		CollectionService service = (CollectionService) collectionServiceFactory.getObject();
-
-		Condition condition = new Condition(Collection.class);
-		Criteria criteria = condition.createCriteria();
-		criteria.andEqualTo("RID", rid);
-
-		int total = service.getTotalBy(condition);
-		if (total == 0) {
-			return false;
-		} else {
-			return true;
-		}
+		return service.checkCollected(rid);
 	}
 
 	public void uncollect(Integer rid) {
@@ -45,30 +29,18 @@ public class CollectionAction {
 			return;
 		}
 		CollectionService service = (CollectionService) collectionServiceFactory.getObject();
-
-		Condition condition = new Condition(Collection.class);
-		Criteria criteria = condition.createCriteria();
-		criteria.andEqualTo("RID", rid);
-		criteria.andEqualTo("DEL", 0);
-
-		List<Collection> collections = service.findByCondition(condition);
-		for (Collection collection : collections) {
-			collection.setDel(1);
-			service.update(collection);
-		}
+		service.uncollect(rid);
 	}
 
 	public void collected(Integer rid) {
 		if (rid == null) {
 			return;
 		}
-		CollectionService service = (CollectionService) collectionServiceFactory.getObject();
-
 		Collection collection = new Collection();
 		collection.setResourceId(rid);
 		collection.setCreator(Session.get(Session.KEY_LOGIN_ID));
-		collection.setCreateDate(new Date());
-
-		service.save(collection);
+		
+		CollectionService service = (CollectionService) collectionServiceFactory.getObject();
+		service.collected(collection);
 	}
 }
