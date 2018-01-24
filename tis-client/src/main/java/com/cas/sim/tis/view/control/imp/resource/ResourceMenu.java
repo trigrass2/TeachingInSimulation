@@ -11,7 +11,7 @@ public class ResourceMenu extends LeftMenu {
 	@Override
 	protected void initMenu() {
 		int role = Session.get(Session.KEY_LOGIN_ROLE);
-		int userId = Session.get(Session.KEY_LOGIN_USER_ID);
+		int userId = Session.get(Session.KEY_LOGIN_ID);
 		if (RoleConst.ADMIN == role) {
 			addMenuItem("系统资源", "static/images/left/resource.png", e -> {
 				PageController controller = SpringUtil.getBean(PageController.class);

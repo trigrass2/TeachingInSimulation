@@ -46,14 +46,14 @@ public class LoginMessageHandler implements ServerHandler<LoginMessage> {
 				throw new RuntimeException("客户端数量已经达到上限");
 			} else {
 //				检查用户是否已经登录了
-				boolean exist = clients.stream().filter(c -> user.getId().equals(c.getAttribute(Session.KEY_LOGIN_USER_ID.name()))).findAny().isPresent();
+				boolean exist = clients.stream().filter(c -> user.getId().equals(c.getAttribute(Session.KEY_LOGIN_ID.name()))).findAny().isPresent();
 				if (exist) {
 //					用户已经登录了
 					respMsg.setResult(LoginResult.DUPLICATE);
 					source.send(respMsg);
 				} else {
-					source.setAttribute(Session.KEY_LOGIN_USER_ID.name(), user.getId());
-					source.setAttribute(Session.KEY_LOGIN_USER.name(), user);
+					source.setAttribute(Session.KEY_LOGIN_ID.name(), user.getId());
+					source.setAttribute(Session.KEY_LOGIN_ACCOUNT.name(), user.getCode());
 					clients.add(source);
 					LOG.info("客户端登录成功，当前客户端数量{}", clients.size());
 //					用户成功连接

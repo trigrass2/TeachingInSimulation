@@ -29,7 +29,7 @@ public class ResourceAction {
 	public void addResource(Resource resource) {
 		ResourceService service = (ResourceService) resourceServiceFactory.getObject();
 		
-		resource.setCreator(Session.get(Session.KEY_LOGIN_USER_ID));
+		resource.setCreator(Session.get(Session.KEY_LOGIN_ID));
 		resource.setCreateDate(new Date());
 		
 		service.save(resource);

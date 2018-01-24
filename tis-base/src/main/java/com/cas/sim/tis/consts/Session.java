@@ -5,14 +5,14 @@ import java.util.Map;
 
 public enum Session {
 	/**
-	 * 用户对象
+	 * 用户账号
 	 */
-	KEY_LOGIN_USER,
+	KEY_LOGIN_ACCOUNT,
 
 	/**
 	 * 用户ID
 	 */
-	KEY_LOGIN_USER_ID,
+	KEY_LOGIN_ID,
 	/**
 	 * 用户角色
 	 */

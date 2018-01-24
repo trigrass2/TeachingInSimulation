@@ -154,7 +154,7 @@ public class ResourceViewer extends VBox implements IContent {
 	 * 加载资源信息
 	 */
 	private void loadResourceInfo() {
-		int userId = Session.get(Session.KEY_LOGIN_USER_ID);
+		int userId = Session.get(Session.KEY_LOGIN_ID);
 		ResourceInfo info = SpringUtil.getBean(ResourceAction.class).findResourceInfoByID(userId);
 		if (info != null) {
 			this.creator.setText(MsgUtil.getMessage("resource.creator", info.getCreator()));

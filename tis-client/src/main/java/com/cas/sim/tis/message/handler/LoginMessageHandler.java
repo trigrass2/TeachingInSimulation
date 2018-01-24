@@ -26,8 +26,9 @@ public class LoginMessageHandler implements ClientHandler<LoginMessage> {
 		if (LoginResult.SUCCESS == m.getResult()) {
 //			登录成功
 //			1、记录Session
-			Session.set(Session.KEY_LOGIN_USER_ID, m.getUserId());
+			Session.set(Session.KEY_LOGIN_ID, m.getUserId());
 			Session.set(Session.KEY_LOGIN_ROLE, m.getUserType());
+			Session.set(Session.KEY_LOGIN_ACCOUNT, m.getUserCode());
 //			2、记录当前登录用户
 			properties.load(new FileInputStream("cfg.properties"));
 			properties.setProperty("login.account", m.getUserCode());

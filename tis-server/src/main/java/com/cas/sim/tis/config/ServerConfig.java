@@ -21,7 +21,6 @@ import org.springframework.context.annotation.Configuration;
 
 import com.cas.sim.tis.consts.Session;
 import com.cas.sim.tis.consts.SystemInfo;
-import com.cas.sim.tis.entity.User;
 import com.cas.sim.tis.message.handler.ServerHandler;
 import com.jme3.network.ConnectionListener;
 import com.jme3.network.HostedConnection;
@@ -86,8 +85,8 @@ public class ServerConfig {
 			public void connectionRemoved(Server server, HostedConnection conn) {
 				boolean success = clients.remove(conn);
 				if (success) {
-					User user = conn.getAttribute(Session.KEY_LOGIN_USER.name());
-					LOG.info("用户{}已断开连接, 当前客户端数量{}", user.getCode(), clients.size());
+					String account = conn.getAttribute(Session.KEY_LOGIN_ACCOUNT.name());
+					LOG.info("用户{}已断开连接, 当前客户端数量{}", account, clients.size());
 				}
 			}
 		});

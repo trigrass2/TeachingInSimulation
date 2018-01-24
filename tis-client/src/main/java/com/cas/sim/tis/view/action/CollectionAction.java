@@ -66,7 +66,7 @@ public class CollectionAction {
 
 		Collection collection = new Collection();
 		collection.setResourceId(rid);
-		collection.setCreator(Session.get(Session.KEY_LOGIN_USER_ID));
+		collection.setCreator(Session.get(Session.KEY_LOGIN_ID));
 		collection.setCreateDate(new Date());
 
 		service.save(collection);
