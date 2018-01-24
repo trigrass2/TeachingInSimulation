@@ -17,7 +17,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<!-- 编译时的编码 -->
-		<maven.compiler.encoding>UTF-8</maven.compiler.encoding>  
+		<maven.compiler.encoding>UTF-8</maven.compiler.encoding>
 		<!-- 主项目版本号 -->
 		<project.version>1.0.0-SNAPSHOT</project.version>
 		<!-- 引擎版本号 -->
@@ -87,12 +87,36 @@
 				<version>4.12</version>
 				<scope>test</scope>
 			</dependency>
-			
+
+			<dependency>
+				<groupId>uk.co.caprica</groupId>
+				<artifactId>vlcj</artifactId>
+				<version>3.10.1</version>
+			</dependency>
+			<!-- https://mvnrepository.com/artifact/uk.co.caprica/vlcj-info -->
+			<dependency>
+				<groupId>uk.co.caprica</groupId>
+				<artifactId>vlcj-info</artifactId>
+				<version>1.0.1</version>
+			</dependency>
+
+			<dependency>
+				<groupId>com.teamdev.jxbrowser</groupId>
+				<artifactId>jxbrowser</artifactId>
+				<version>6.14.2-refine</version>
+			</dependency>
+
+			<dependency>
+				<groupId>com.teamdev.jxbrowser</groupId>
+				<artifactId>jxbrowser-win32-win</artifactId>
+				<version>6.14.2-refine</version>
+			</dependency>
+
 			<!-- https://mvnrepository.com/artifact/com.google.code.findbugs/jsr305 -->
 			<dependency>
-			    <groupId>com.google.code.findbugs</groupId>
-			    <artifactId>jsr305</artifactId>
-			    <version>3.0.2</version>
+				<groupId>com.google.code.findbugs</groupId>
+				<artifactId>jsr305</artifactId>
+				<version>3.0.2</version>
 			</dependency>
 
 			<dependency>

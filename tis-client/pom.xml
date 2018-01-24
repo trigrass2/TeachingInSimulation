@@ -39,6 +39,24 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 		</dependency>
+
+		<dependency>
+			<groupId>uk.co.caprica</groupId>
+			<artifactId>vlcj</artifactId>
+		</dependency>
+<!-- 		<dependency> -->
+<!-- 			<groupId>uk.co.caprica</groupId> -->
+<!-- 			<artifactId>vlcj-info</artifactId> -->
+<!-- 		</dependency> -->
+		<dependency>
+			<groupId>com.teamdev.jxbrowser</groupId>
+			<artifactId>jxbrowser</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>com.teamdev.jxbrowser</groupId>
+			<artifactId>jxbrowser-win32-win</artifactId>
+		</dependency>
 	</dependencies>
 
 	<build>
