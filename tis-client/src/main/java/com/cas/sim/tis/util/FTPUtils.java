@@ -47,6 +47,7 @@ public class FTPUtils {
 		boolean login = ftpClient.login(attr.getUsername(), attr.getPassword());
 		if (!login) {
 			LOG.error("无法登录到FTP服务器{},{}", attr.getUsername(), attr.getPassword());
+			disconnect();
 			return false;
 		}
 		// 判断返回码是否合法
@@ -58,23 +59,24 @@ public class FTPUtils {
 			return false;
 		}
 		// 切换到对应的文件目录
+		try {
 		boolean exist = ftpClient.changeWorkingDirectory(remotePath);
 		if (!exist) {
-			LOG.warn("目录不存在{}, 准备创建", remotePath);
 			ftpClient.cwd("/");
 
 			boolean created = mkDir(remotePath);
 			if (created) {
 				ftpClient.changeWorkingDirectory(remotePath);
-			}else {
-				LOG.warn("创建目录【{}】失败", remotePath);
 			}
 		}
-		// 设置文件类型，二进制
-		try {
-			ftpClient.setFileType(FTP.BINARY_FILE_TYPE);
-		} catch (IOException e) {
+		} catch (Exception e) {
+			disconnect();
+			LOG.warn("目录{}不存在，且无法创建", remotePath);
+			throw e;
 		}
+
+		// 设置文件类型，二进制
+		ftpClient.setFileType(FTP.BINARY_FILE_TYPE);
 		// 设置缓冲区大小
 		ftpClient.setBufferSize(2048); // 2K
 		// 设置字符编码
@@ -125,17 +127,19 @@ public class FTPUtils {
 						LOG.info("成功创建目录【{}】", str[i]);
 					} else {
 						LOG.warn("创建目录【{}】失败", str[i]);
+						throw new RuntimeException(String.format("创建目录【%1$s】失败", str[i]));
 					}
 				} else {
 					LOG.info("目录【{}】已存在", str[i]);
 				}
 //				进入子目录中
 				boolean enter = ftpClient.changeWorkingDirectory(dirName);
-				if (!enter) {
+				if (enter) {
+					parent += "../";
+				} else {
 					LOG.warn("进入目录【{}】失败", str[i]);
-					throw new RuntimeException(String.format("进入目录【{}】失败", str[i]));
+					throw new RuntimeException(String.format("进入目录【%1$s】失败", str[i]));
 				}
-				parent += "../";
 			}
 //			创建完成后回到之前的目录中
 			if (str.length >= 1) {
@@ -326,6 +330,7 @@ public class FTPUtils {
 		if (ftpClient.isConnected()) {
 			try {
 				ftpClient.disconnect();
+				LOG.info("主动与服务器断开连接");
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
