@@ -1,7 +1,5 @@
 package com.cas.sim.tis.test.ftp;
 
-import static org.junit.Assert.*;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -33,6 +31,26 @@ public class FileDownload {
 		return util;
 	}
 
+	@Test
+	public void testDirectory() throws Exception {
+		FTPUtils util = getUtil("admin", "admin");
+
+		util.connect("");
+		boolean success = util.mkDir("测试目录/二级目录/三级目录");
+		Assert.assertTrue(success);
+		success = util.mkDir("测试目录/二级目录2/三级目录1");
+		Assert.assertTrue(success);
+		success = util.mkDir("测试目录/二级目录2/三级目录2");
+		Assert.assertTrue(success);
+	}
+
+	@Test
+	public void testUpload2() throws Exception {
+//		管理员可以上传文件
+		FTPUtils util = getUtil("admin", "admin");
+		boolean result = util.uploadFile("/Test", new File("G:\\jfxrt.jar"), System.currentTimeMillis() + ".jar");
+		Assert.assertTrue(result);
+	}
 	@Test
 	public void testUpload() throws Exception {
 //		管理员可以上传文件
