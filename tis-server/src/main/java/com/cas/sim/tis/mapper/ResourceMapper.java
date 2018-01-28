@@ -10,4 +10,9 @@ public interface ResourceMapper extends IMapper<Resource> {
 
 	ResourceInfo selectResourceInfoByID(int id);
 
+	void increaseBrowse(Integer id);
+
+	void increaseCollection(Integer id);
+	
+	void decreaseCollection(Integer id);
 }

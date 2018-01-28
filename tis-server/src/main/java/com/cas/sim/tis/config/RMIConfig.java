@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.remoting.rmi.RmiServiceExporter;
 
+import com.cas.sim.tis.services.BrowseHistoryService;
 import com.cas.sim.tis.services.CollectionService;
 import com.cas.sim.tis.services.ResourceService;
 import com.cas.sim.tis.services.StudentService;
@@ -29,6 +30,8 @@ public class RMIConfig {
 	private TeacherService teacherService;
 	@Resource
 	private CollectionService collectionService;
+	@Resource
+	private BrowseHistoryService browseHistoryService;
 
 	@Value("${server.rmi.registry}")
 	private Integer registPort;
@@ -109,6 +112,23 @@ public class RMIConfig {
 		exporter.setServiceInterface(CollectionService.class);
 		exporter.setServiceName("collectionService");
 		exporter.setService(collectionService);
+		
+		if (servicePort != null) {
+			exporter.setServicePort(servicePort);
+		}
+//		RegistryPort端口默认为1099，用户客户端访问时用的，rmi://host:RegistryPort/serviceName
+		if (registPort != null) {
+			exporter.setRegistryPort(registPort);
+		}
+		return exporter;
+	}
+	
+	@Bean
+	public RmiServiceExporter browseHistoryServiceExporter() {
+		RmiServiceExporter exporter = new RmiServiceExporter();
+		exporter.setServiceInterface(BrowseHistoryService.class);
+		exporter.setServiceName("browseHistoryService");
+		exporter.setService(browseHistoryService);
 		
 		if (servicePort != null) {
 			exporter.setServicePort(servicePort);
