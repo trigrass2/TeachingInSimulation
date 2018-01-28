@@ -33,15 +33,10 @@ public class FileDownload {
 
 	@Test
 	public void testDirectory() throws Exception {
-		FTPUtils util = getUtil("admin", "admin");
+		FTPUtils util = getUtil("anonymous", "");
 
-		util.connect("");
-		boolean success = util.mkDir("测试目录/二级目录/三级目录");
-		Assert.assertTrue(success);
-		success = util.mkDir("测试目录/二级目录2/三级目录1");
-		Assert.assertTrue(success);
-		success = util.mkDir("测试目录/二级目录2/三级目录2");
-		Assert.assertTrue(success);
+		boolean success = util.connect("Test001/Test002");
+		Assert.assertFalse(success);
 	}
 
 	@Test
