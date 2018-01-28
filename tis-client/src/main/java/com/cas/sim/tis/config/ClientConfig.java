@@ -1,8 +1,6 @@
 package com.cas.sim.tis.config;
 
 import org.apache.commons.net.ftp.FTPClient;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -36,8 +34,8 @@ public class ClientConfig {
 
 		util.setHost(address);
 		util.setPort(port);
-		util.setUsername("anonymous");
-		util.setPassword("");
+		util.setUsername("admin");
+		util.setPassword("admin");
 
 		try {
 			SocketTest.test(address, apachePort);
