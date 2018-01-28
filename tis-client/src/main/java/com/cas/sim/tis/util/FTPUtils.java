@@ -25,7 +25,13 @@ public class FTPUtils {
 	private static final Logger LOG = LoggerFactory.getLogger(FTPUtils.class);
 	private FTPClient ftpClient;
 
-	private FtpAttr attr;
+	private String host;
+
+	private Integer port;
+
+	private String username;
+
+	private String password;
 
 	/**
 	 * 连接（配置通用连接属性）至服务器
@@ -38,15 +44,15 @@ public class FTPUtils {
 	public boolean connect(String remotePath) throws Exception {
 		// 连接至服务器，端口默认为21时，可直接通过URL连接
 		try {
-			ftpClient.connect(attr.getHost(), attr.getPort());
+			ftpClient.connect(host, port);
 		} catch (Exception e) {
-			LOG.error("无法连接到FTP服务器{}:{}", attr.getHost(), attr.getPort());
+			LOG.error("无法连接到FTP服务器{}:{}", host, port);
 			throw e;
 		}
 		// 登录服务器
-		boolean login = ftpClient.login(attr.getUsername(), attr.getPassword());
+		boolean login = ftpClient.login(username, password);
 		if (!login) {
-			LOG.error("无法登录到FTP服务器{},{}", attr.getUsername(), attr.getPassword());
+			LOG.error("无法登录到FTP服务器{},{}", username, password);
 			disconnect();
 			return false;
 		}
@@ -60,15 +66,15 @@ public class FTPUtils {
 		}
 		// 切换到对应的文件目录
 		try {
-		boolean exist = ftpClient.changeWorkingDirectory(remotePath);
-		if (!exist) {
-			ftpClient.cwd("/");
+			boolean exist = ftpClient.changeWorkingDirectory(remotePath);
+			if (!exist) {
+				ftpClient.cwd("/");
 
-			boolean created = mkDir(remotePath);
-			if (created) {
-				ftpClient.changeWorkingDirectory(remotePath);
+				boolean created = mkDir(remotePath);
+				if (created) {
+					ftpClient.changeWorkingDirectory(remotePath);
+				}
 			}
-		}
 		} catch (Exception e) {
 			disconnect();
 			LOG.warn("目录{}不存在，且无法创建", remotePath);
@@ -336,21 +342,33 @@ public class FTPUtils {
 			}
 		}
 	}
-	
+
 	public String getUrl(String path) {
 		path = path.replaceAll("//", "/");
 		if (path.startsWith("/")) {
 			path = path.substring(1);
 		}
-		return "ftp://"+attr.getHost() +":"+attr.getPort()+"/" + path;
+		return "ftp://" + host + ":" + port + "/" + path;
 	}
 
 	public void setFtpClient(FTPClient ftpClient) {
 		this.ftpClient = ftpClient;
 	}
 
-	public void setAttr(FtpAttr attr) {
-		this.attr = attr;
+	public void setHost(String host) {
+		this.host = host;
+	}
+
+	public void setPort(Integer port) {
+		this.port = port;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
 	}
 
 }
