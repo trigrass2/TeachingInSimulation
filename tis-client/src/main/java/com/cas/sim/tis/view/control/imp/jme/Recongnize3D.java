@@ -26,4 +26,10 @@ public class Recongnize3D implements IContent, ICanvasPossess {
 	public Canvas getCanvas() {
 		return canvas;
 	}
+
+	@Override
+	public void removed() {
+		// TODO Auto-generated method stub
+
+	}
 }

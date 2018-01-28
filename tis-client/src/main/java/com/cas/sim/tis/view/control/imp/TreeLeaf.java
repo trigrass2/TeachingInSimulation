@@ -28,7 +28,7 @@ public class TreeLeaf extends VBox {
 	@FXML
 	private VBox children;
 
-	enum Level {
+	public static enum Level {
 		Level1("lv1"), Level2("lv2"), Level3("lv3"), Level4("lv4");
 
 		private String styleClass;
@@ -46,6 +46,9 @@ public class TreeLeaf extends VBox {
 		}
 	}
 
+	public TreeLeaf(String leafName, Level level, boolean collapsible) {
+		this(leafName, 0, level, collapsible);
+	}
 	public TreeLeaf(String leafName, int num, Level level, boolean collapsible) {
 		FXMLLoader loader = new FXMLLoader();
 		URL fxmlUrl = this.getClass().getResource("/view/TreeLeaf.fxml");
