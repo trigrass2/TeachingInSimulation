@@ -81,14 +81,17 @@ public class PageController implements Initializable {
 		this.content.getChildren().clear();
 		if (currContent == null) {
 			this.currContent = content;
-		} else if (content == null) {
-			this.currContent = content;
-			this.prevContent = this.currContent;
-		} else if (currContent.getClass() == content.getClass()) {
-			this.currContent = content;
 		} else {
-			this.prevContent = this.currContent;
-			this.currContent = content;
+			this.currContent.removed();
+			if (content == null) {
+				this.currContent = content;
+				this.prevContent = this.currContent;
+			} else if (currContent.getClass() == content.getClass()) {
+				this.currContent = content;
+			} else {
+				this.prevContent = this.currContent;
+				this.currContent = content;
+			}
 		}
 		if (content != null) {
 			this.content.getChildren().add(content.getContent());
