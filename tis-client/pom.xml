@@ -44,10 +44,19 @@
 			<groupId>uk.co.caprica</groupId>
 			<artifactId>vlcj</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>uk.co.caprica</groupId>
+			<artifactId>vlcj</artifactId>
+		</dependency>
 <!-- 		<dependency> -->
 <!-- 			<groupId>uk.co.caprica</groupId> -->
 <!-- 			<artifactId>vlcj-info</artifactId> -->
 <!-- 		</dependency> -->
+		<dependency>
+			<groupId>net.java.dev.jna</groupId>
+			<artifactId>jna-platform</artifactId>
+		</dependency>
+		
 		<dependency>
 			<groupId>com.teamdev.jxbrowser</groupId>
 			<artifactId>jxbrowser-all</artifactId>
