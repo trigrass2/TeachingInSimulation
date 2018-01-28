@@ -46,6 +46,8 @@
 		<slf4j.version>1.7.21</slf4j.version>
 		<!-- FTP服务器版本 -->
 		<ftp.version>1.1.1</ftp.version>
+		<!-- JxBrowser版本 -->
+		<jxbrowser.version>6.18</jxbrowser.version>
 	</properties>
 
 	<repositories>
@@ -102,14 +104,8 @@
 
 			<dependency>
 				<groupId>com.teamdev.jxbrowser</groupId>
-				<artifactId>jxbrowser</artifactId>
-				<version>6.14.2-refine</version>
-			</dependency>
-
-			<dependency>
-				<groupId>com.teamdev.jxbrowser</groupId>
-				<artifactId>jxbrowser-win32-win</artifactId>
-				<version>6.14.2-refine</version>
+				<artifactId>jxbrowser-all</artifactId>
+				<version>${jxbrowser.version}</version>
 			</dependency>
 
 			<!-- https://mvnrepository.com/artifact/com.google.code.findbugs/jsr305 -->
