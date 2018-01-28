@@ -378,7 +378,7 @@ public class ResourceList extends HBox implements IContent {
 		chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter(MsgUtil.getMessage("resource.swf"), ResourceType.SWF.getSuffixs()));
 		chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter(MsgUtil.getMessage("resource.video"), ResourceType.VIDEO.getSuffixs()));
 		chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter(MsgUtil.getMessage("resource.txt"), ResourceType.TXT.getSuffixs()));
-		File target = chooser.showOpenDialog(GUIState.getStage().getOwner());
+		File target = chooser.showOpenDialog(GUIState.getStage());
 		if (target == null) {
 			return;
 		}
