@@ -9,6 +9,7 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.ConfigurableApplicationContext;
 
 import com.cas.sim.tis.view.HomeView;
+import com.teamdev.jxbrowser.chromium.Refine;
 
 import de.felixroske.jfxsupport.AbstractJavaFxApplicationSupport;
 import de.felixroske.jfxsupport.GUIState;
@@ -25,6 +26,9 @@ public class Application extends AbstractJavaFxApplicationSupport implements App
 
 	@Override
 	public void beforeInitialView(Stage stage, ConfigurableApplicationContext ctx) {
+//		初始化JxBrowser信息
+		Refine.init();
+		
 		GUIState.setScene(new Scene(new Region()));
 		GUIState.getScene().setFill(null);
 
