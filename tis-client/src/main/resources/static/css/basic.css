@@ -89,59 +89,69 @@
  * 分页控件                                                           *
  *                                                                             *
  ******************************************************************************/
-.pagination > .pagination-control > .control-box{
-	-fx-spacing: 10.0px;
+.pagination-bar>.button{
+	-fx-background-color:#ffffff;
+	-fx-background-radius: 0.0px;
+	-fx-border-color: #e2e2e2;
+	-fx-border-radius: 0.0px;
+	-fx-border-width: 1.0 0.5 1.0 0.5;
+	-fx-text-fill: #333333;
+	-fx-pref-width:40.0px;
+	-fx-pref-height:30.0px;
 }
-
-.pagination .toggle-button {
-	-fx-font-size:12.0px;
-	-fx-text-fill: #ffffff;
-	-fx-background-color:#19b0c6;
-    -fx-background-radius:0.0px;
-    -fx-background-insets: 0.0px;
-    -fx-min-width:30.0px;
-    -fx-min-height:30.0px;
-}
-
-.pagination .toggle-button:hover {
+.pagination-bar>.button:hover{
 	-fx-background-color:#51bfcf;
-}
-
-.pagination .toggle-button:selected {
+	-fx-border-color: #51bfcf;
 	-fx-text-fill: #ffffff;
-	-fx-font-weight: bolder;
-	-fx-background-color:#22678f;
-	-fx-background-insets: 1.0px;
 }
-
-.pagination .button{
-	-fx-font-size:12.0px;
-    -fx-background-color:#19b0c6;
-    -fx-background-radius:0.0px;
-    -fx-background-insets: 0.0px;
-    -fx-min-width:30.0px;
-    -fx-min-height:30.0px;
+.pagination-bar>*>.toggle-button{
+	-fx-background-color:#ffffff;
+	-fx-background-radius: 0.0px;
+	-fx-border-color: #e2e2e2;
+	-fx-border-radius: 0.0px;
+	-fx-border-width: 1.0 0.5 1.0 0.5;
+	-fx-border-insets: 0.0 0.0 -1.0 0.0;
+	-fx-text-fill: #333333;
+	-fx-pref-width:40.0px;
+	-fx-pref-height:30.0px;
 }
-
-.pagination .label {
-    -fx-text-fill: #333333;
+.pagination-bar>*>.toggle-button:hover{
+	-fx-background-color:#51bfcf;
+	-fx-border-color: #51bfcf;
+	-fx-text-fill: #ffffff;
 }
-
-.pagination > .pagination-control > .control-box > .left-arrow-button:disabled,
-.pagination > .pagination-control > .control-box > .right-arrow-button:disabled {
-    -fx-background-color: #98b2b6;
+.pagination-bar>*>.toggle-button:selected{
+	-fx-background-color:#19b0c6;
+	-fx-border-color: #19b0c6;
+	-fx-text-fill: #ffffff;
 }
-
-.pagination > .pagination-control .left-arrow {
-    -fx-background-color: #ffffff;
-    -fx-translate-x: -3.5;
-    -fx-translate-y: -1.0;
+.pagination-bar>.prev>.prev-arrow{
+	-fx-background-color:#333333;
+	-fx-padding: 10px;
+    -fx-shape: "M 0 0 L -13 7 L 0 13 z";
+    -fx-scale-shape: true;
 }
-
-.pagination > .pagination-control .right-arrow {
-    -fx-background-color: #ffffff;
-    -fx-translate-x: 3.5;
-    -fx-translate-y: -1.0;
+.pagination-bar>.next>.next-arrow{
+	-fx-background-color:#333333;
+	-fx-padding: 0.375em 0.291em 0.375em 0.291em;
+	-fx-shape: "M 0 0 L 13 7 L 0 13 z";
+	-fx-scale-shape: true;
+}
+.pagination-bar>.prev:hover>.prev-arrow{
+	-fx-background-color:#ffffff;
+}
+.pagination-bar>.next:hover>.next-arrow{
+	-fx-background-color:#ffffff;
+}
+.pagination-bar>*>.etc{
+	-fx-background-color:#ffffff;
+	-fx-background-radius: 0.0px;
+	-fx-border-color: #e2e2e2;
+	-fx-border-radius: 0.0px;
+	-fx-border-width: 1.0 0.5 1.0 0.5;
+	-fx-text-fill: #333333;
+	-fx-pref-width:45.0px;
+	-fx-pref-height:30.0px;
 }
 /*******************************************************************************
  *                                                                             *
@@ -188,6 +198,9 @@
 }
 .blue-btn:hover{
 	-fx-background-color: #51bfcf;
+}
+.blue-btn:disable{
+	-fx-text-fill: #c5c5c5;
 }
 .decoration{
 	-fx-background-color: #224f7a;

@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -22,11 +23,16 @@ import com.cas.sim.tis.util.MsgUtil;
 import com.cas.sim.tis.util.SpringUtil;
 import com.cas.sim.tis.view.action.ResourceAction;
 import com.cas.sim.tis.view.control.IContent;
+import com.cas.sim.tis.view.control.imp.ResourceViewer;
 import com.cas.sim.tis.view.control.imp.SearchBox;
-import com.cas.sim.tis.view.control.imp.table.BtnsCell;
+import com.cas.sim.tis.view.control.imp.pagination.PaginationBar;
+import com.cas.sim.tis.view.control.imp.table.BtnCell;
+import com.cas.sim.tis.view.control.imp.table.Cell;
 import com.cas.sim.tis.view.control.imp.table.Column;
 import com.cas.sim.tis.view.control.imp.table.IconCell;
 import com.cas.sim.tis.view.control.imp.table.Table;
+import com.cas.sim.tis.view.controller.PageController;
+import com.cas.util.DateUtil;
 import com.cas.util.FileUtil;
 import com.cas.util.StringUtil;
 import com.github.pagehelper.PageInfo;
@@ -46,7 +52,6 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
-import javafx.scene.control.Pagination;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.input.KeyCode;
@@ -68,7 +73,7 @@ public class ResourceList extends HBox implements IContent {
 	@FXML
 	private Table table;
 	@FXML
-	private Pagination pagination;
+	private PaginationBar pagination;
 	@FXML
 	private ToggleGroup order;
 	@FXML
@@ -135,6 +140,7 @@ public class ResourceList extends HBox implements IContent {
 	public ResourceList(boolean editable, int... creators) {
 		action = SpringUtil.getBean(ResourceAction.class);
 
+		this.editable = editable;
 		if (creators == null) {
 			LOG.warn("此处传入creator不可能为空！");
 		} else {
@@ -175,8 +181,12 @@ public class ResourceList extends HBox implements IContent {
 		});
 		search.setOnKeyPressed(event -> {
 			if (event.getCode() == KeyCode.ENTER) {
+				pagination.setPageIndex(0);
 				reload();
 			}
+		});
+		pagination.pageIndexProperty().addListener((b, o, n) -> {
+			reload();
 		});
 	}
 
@@ -214,23 +224,49 @@ public class ResourceList extends HBox implements IContent {
 		name.setAlignment(Pos.CENTER_LEFT);
 		name.setKey("name");
 		name.setText("资源名称");// FIXME
-		name.setMaxWidth(110);
+		name.setMaxWidth(250);
 		name.getStyleClass().add("gray-label");
 		// 上传日期
-		Column<String> updateDate = new Column<>();
-		updateDate.setAlignment(Pos.CENTER);
-		updateDate.setKey("create_date");
-		updateDate.setText("上传日期");
-		updateDate.setMaxWidth(160);
-		updateDate.getStyleClass().add("gray-label");
-		table.getColumns().addAll(id, icon, name, updateDate);
+		Column<Date> createDate = new Column<>();
+		createDate.setAlignment(Pos.CENTER);
+		createDate.setKey("createDate");
+		createDate.setText("上传日期");
+		createDate.setMaxWidth(160);
+		createDate.getStyleClass().add("gray-label");
+		createDate.setCellFactory(Cell.forTableColumn(new StringConverter<Date>() {
+
+			@Override
+			public String toString(Date date) {
+				return DateUtil.date2Str(date, DateUtil.DATE_TIME_PAT_SHOW_);
+			}
+
+			@Override
+			public Date fromString(String string) {
+				return null;
+			}
+		}));
+		table.getColumns().addAll(id, icon, name, createDate);
 		if (editable) {
-			// 编辑按钮
-			Column<String> btns = new Column<String>();
-			btns.setCellFactory(BtnsCell.forTableColumn());
-			btns.setAlignment(Pos.CENTER_RIGHT);
-			btns.setPrefWidth(145);
-			table.getColumns().add(btns);
+			// 删除按钮
+			Column<String> view = new Column<String>();
+			view.setCellFactory(BtnCell.forTableColumn(MsgUtil.getMessage("button.view"), "blue-btn", rid -> {
+				// 跳转到查看页面
+				ResourceAction action = SpringUtil.getBean(ResourceAction.class);
+				Resource resource = action.findResourceByID((Integer) rid);
+				PageController controller = SpringUtil.getBean(PageController.class);
+				controller.loadContent(new ResourceViewer(resource));
+			}));
+			view.setAlignment(Pos.CENTER_RIGHT);
+			table.getColumns().add(view);
+			// 删除按钮
+			Column<String> delete = new Column<String>();
+			delete.setCellFactory(BtnCell.forTableColumn(MsgUtil.getMessage("button.delete"), "blue-btn", rid -> {
+
+			}));
+			delete.setAlignment(Pos.CENTER);
+			delete.setPrefWidth(58);
+			delete.setMaxWidth(58);
+			table.getColumns().add(delete);
 		}
 	}
 
@@ -238,8 +274,8 @@ public class ResourceList extends HBox implements IContent {
 	 * 加载资源
 	 */
 	private void loadResources() {
-		int curr = pagination.getCurrentPageIndex();
-		int pageSize = pagination.getPageCount();
+		int curr = pagination.getPageIndex();
+		int pageSize = 10;
 
 		String keyword = search.getText();
 
@@ -273,7 +309,7 @@ public class ResourceList extends HBox implements IContent {
 			types.add(ResourceType.PDF.getType());
 		}
 		page = action.findResourcesByCreator(curr, pageSize, types, keyword, orderByClause, creators);
-		pagination.setMaxPageIndicatorCount((int) page.getTotal());
+		pagination.setPageCount((int) page.getPages());
 		JSONArray array = new JSONArray();
 		array.addAll(page.getList());
 		table.setItems(array);
@@ -366,6 +402,8 @@ public class ResourceList extends HBox implements IContent {
 			Alert alert = new Alert(AlertType.ERROR, MsgUtil.getMessage("ftp.upload.failure"));
 			alert.initOwner(GUIState.getStage().getOwner());
 			alert.show();
+			// 启用上传按钮
+			((Button) event.getSource()).setDisable(false);
 			return;
 		}
 		// 封装资源记录
@@ -392,6 +430,7 @@ public class ResourceList extends HBox implements IContent {
 
 	@FXML
 	private void orderBy() {
+		pagination.setPageIndex(0);
 		reload();
 	}
 

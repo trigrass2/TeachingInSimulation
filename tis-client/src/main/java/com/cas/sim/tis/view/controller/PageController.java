@@ -54,7 +54,7 @@ public class PageController implements Initializable {
 		// 返回上一个界面
 		if (this.prevContent != null) {
 			loadContent(prevContent);
-		}else {
+		} else {
 			loadLeftMenu(null);
 			loadContent(null);
 			Application.showView(HomeView.class);
@@ -79,8 +79,17 @@ public class PageController implements Initializable {
 
 	public void loadContent(IContent content) {
 		this.content.getChildren().clear();
-		this.prevContent = this.currContent;
-		this.currContent = content;
+		if (currContent == null) {
+			this.currContent = content;
+		} else if (content == null) {
+			this.currContent = content;
+			this.prevContent = this.currContent;
+		} else if (currContent.getClass() == content.getClass()) {
+			this.currContent = content;
+		} else {
+			this.prevContent = this.currContent;
+			this.currContent = content;
+		}
 		if (content != null) {
 			this.content.getChildren().add(content.getContent());
 		}

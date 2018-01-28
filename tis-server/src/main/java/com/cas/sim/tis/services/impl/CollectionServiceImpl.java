@@ -18,7 +18,7 @@ public class CollectionServiceImpl extends AbstractService<Collection> implement
 	public boolean checkCollected(Integer rid) {
 		Condition condition = new Condition(Collection.class);
 		Criteria criteria = condition.createCriteria();
-		criteria.andEqualTo("RID", rid);
+		criteria.andEqualTo("resourceId", rid);
 
 		int total = getTotalBy(condition);
 		if (total == 0) {
@@ -32,8 +32,8 @@ public class CollectionServiceImpl extends AbstractService<Collection> implement
 	public void uncollect(Integer rid) {
 		Condition condition = new Condition(Collection.class);
 		Criteria criteria = condition.createCriteria();
-		criteria.andEqualTo("RID", rid);
-		criteria.andEqualTo("DEL", 0);
+		criteria.andEqualTo("resourceId", rid);
+		criteria.andEqualTo("del", 0);
 
 		List<Collection> collections = findByCondition(condition);
 		for (Collection collection : collections) {
