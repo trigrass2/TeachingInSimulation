@@ -488,4 +488,9 @@ public class ResourceList extends HBox implements IContent {
 		}
 		return size;
 	}
+
+	@Override
+	public void removed() {
+		
+	}
 }

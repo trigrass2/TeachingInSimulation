@@ -27,4 +27,9 @@ public class Preparation extends HBox implements IContent{
 	public Region getContent() {
 		return this;
 	}
+
+	@Override
+	public void removed() {
+		
+	}
 }
