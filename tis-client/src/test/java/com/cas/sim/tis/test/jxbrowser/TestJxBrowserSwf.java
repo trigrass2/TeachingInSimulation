@@ -55,7 +55,7 @@ public class TestJxBrowserSwf extends Application {
 		primaryStage.show();
 
 		Timer t = new Timer(3000, (e)-> {
-			browser.loadHTML(HTML_SWF_HEAD + "http://192.168.1.23:8082/teachResources.swf" + HTML_SWF_END);
+			browser.loadHTML(HTML_SWF_HEAD + "http://192.168.1.19:8082/Test/teachResources.swf" + HTML_SWF_END);
 		});
 		
 		t.start();

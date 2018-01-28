@@ -22,7 +22,7 @@ public class TestJxBrowserPdf extends Application {
 		Browser browser = new Browser();
 		BrowserView view = new BrowserView(browser);
 		primaryStage.setScene(new Scene(view));
-		browser.loadURL("ftp://192.168.1.19/test/Fanuc0i参数说明书.pdf");
+		browser.loadURL("http://192.168.1.19:8082/Test/Fanuc0i参数说明书.pdf");
 		primaryStage.show();
 	}
 }
