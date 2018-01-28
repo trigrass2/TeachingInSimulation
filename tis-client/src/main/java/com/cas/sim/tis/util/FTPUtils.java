@@ -336,6 +336,14 @@ public class FTPUtils {
 			}
 		}
 	}
+	
+	public String getUrl(String path) {
+		path = path.replaceAll("//", "/");
+		if (path.startsWith("/")) {
+			path = path.substring(1);
+		}
+		return "ftp://"+attr.getHost() +":"+attr.getPort()+"/" + path;
+	}
 
 	public void setFtpClient(FTPClient ftpClient) {
 		this.ftpClient = ftpClient;
