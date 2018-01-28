@@ -48,6 +48,9 @@ public class Resource implements Serializable {
 //	默认资源没有被删除
 	protected Boolean del = Boolean.FALSE;
 
+	private Integer browsedTimes;
+	private Integer collectedTimes;
+
 	public Integer getId() {
 		return id;
 	}
@@ -126,6 +129,22 @@ public class Resource implements Serializable {
 
 	public void setDel(Boolean del) {
 		this.del = del;
+	}
+
+	public Integer getBrowsedTimes() {
+		return browsedTimes;
+	}
+
+	public void setBrowsedTimes(Integer browsedTimes) {
+		this.browsedTimes = browsedTimes;
+	}
+
+	public Integer getCollectedTimes() {
+		return collectedTimes;
+	}
+
+	public void setCollectedTimes(Integer collectedTimes) {
+		this.collectedTimes = collectedTimes;
 	}
 
 }

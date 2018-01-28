@@ -19,6 +19,7 @@ import tk.mybatis.mapper.entity.Example.Criteria;
 
 @Service
 public class ResourceServiceImpl extends AbstractService<Resource> implements ResourceService {
+
 	@Override
 	public ResourceInfo findResourceInfoByID(int id) {
 		ResourceMapper resourceMapper = (ResourceMapper) mapper;
@@ -91,6 +92,12 @@ public class ResourceServiceImpl extends AbstractService<Resource> implements Re
 	public void addResource(Resource resource) {
 		resource.setCreateDate(new Date());
 		save(resource);
+	}
+
+	@Override
+	public void browsed(Integer id) {
+			ResourceMapper resourceMapper = (ResourceMapper) mapper;
+			resourceMapper.increaseBrowse(id);
 	}
 
 }

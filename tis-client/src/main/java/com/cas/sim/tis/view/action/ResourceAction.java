@@ -46,4 +46,9 @@ public class ResourceAction {
 		ResourceService service = (ResourceService) resourceServiceFactory.getObject();
 		return service.findById(id);
 	}
+
+	public void browsed(Integer id) {
+		ResourceService service = (ResourceService) resourceServiceFactory.getObject();
+		service.browsed(id);
+	}
 }
