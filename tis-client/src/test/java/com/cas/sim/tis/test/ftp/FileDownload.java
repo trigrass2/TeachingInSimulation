@@ -12,7 +12,6 @@ import org.junit.Test;
 import org.springframework.util.StopWatch;
 
 import com.cas.sim.tis.util.FTPUtils;
-import com.cas.sim.tis.util.FtpAttr;
 
 public class FileDownload {
 
@@ -22,12 +21,10 @@ public class FileDownload {
 		FTPClient client = new FTPClient();
 		util.setFtpClient(client);
 
-		FtpAttr attr = new FtpAttr();
-		attr.setHost("192.168.1.19");
-		attr.setPort(21);
-		attr.setUsername(user);
-		attr.setPassword(password);
-		util.setAttr(attr);
+		util.setHost("192.168.1.19");
+		util.setPort(21);
+		util.setUsername(user);
+		util.setPassword(password);
 		return util;
 	}
 
