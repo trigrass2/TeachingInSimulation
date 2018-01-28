@@ -91,6 +91,9 @@ public class Row extends HBox {
 			if (cell instanceof BtnsCell<?>) {
 				((BtnsCell<?>) cell).setHovering(true);
 			}
+			if (cell instanceof BtnCell<?>) {
+				((BtnCell<?>) cell).setHovering(true);
+			}
 		}
 	}
 
@@ -104,6 +107,9 @@ public class Row extends HBox {
 		for (Cell<?> cell : cells) {
 			if (cell instanceof BtnsCell<?>) {
 				((BtnsCell<?>) cell).setHovering(false);
+			}
+			if (cell instanceof BtnCell<?>) {
+				((BtnCell<?>) cell).setHovering(false);
 			}
 		}
 	}

@@ -41,4 +41,9 @@ public class ResourceAction {
 		ResourceService service = (ResourceService) resourceServiceFactory.getObject();
 		return service.findResourceInfoByID(id);
 	}
+
+	public Resource findResourceByID(Integer id) {
+		ResourceService service = (ResourceService) resourceServiceFactory.getObject();
+		return service.findById(id);
+	}
 }

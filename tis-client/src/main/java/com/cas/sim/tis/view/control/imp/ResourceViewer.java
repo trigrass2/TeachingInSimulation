@@ -13,6 +13,7 @@ import com.cas.sim.tis.view.action.CollectionAction;
 import com.cas.sim.tis.view.action.ResourceAction;
 import com.cas.sim.tis.view.control.IContent;
 import com.cas.sim.tis.vo.ResourceInfo;
+import com.cas.util.DateUtil;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -38,7 +39,7 @@ public class ResourceViewer extends VBox implements IContent {
 	@FXML
 	private Label createDate;
 	@FXML
-	private Label browseTimes;
+	private Label browsedTimes;
 	@FXML
 	private Label collectedTimes;
 	@FXML
@@ -127,7 +128,7 @@ public class ResourceViewer extends VBox implements IContent {
 	 * 创建视频查看器
 	 */
 	private void createVLCViewer() {
-
+		
 	}
 
 	/**
@@ -158,8 +159,8 @@ public class ResourceViewer extends VBox implements IContent {
 		ResourceInfo info = SpringUtil.getBean(ResourceAction.class).findResourceInfoByID(userId);
 		if (info != null) {
 			this.creator.setText(MsgUtil.getMessage("resource.creator", info.getCreator()));
-			this.createDate.setText(MsgUtil.getMessage("resource.create.date", info.getCreateDate()));
-			this.browseTimes.setText(MsgUtil.getMessage("resource.browse.times", String.valueOf(info.getBrowsedTimes())));
+			this.createDate.setText(MsgUtil.getMessage("resource.create.date", DateUtil.date2Str(info.getCreateDate(), DateUtil.DATE_SHT_PAT_10_)));
+			this.browsedTimes.setText(MsgUtil.getMessage("resource.browse.times", String.valueOf(info.getBrowsedTimes())));
 			this.collectedTimes.setText(MsgUtil.getMessage("resource.collection.times", String.valueOf(info.getCollectedTimes())));
 		}
 		collected = SpringUtil.getBean(CollectionAction.class).checkCollected(resource.getId());
