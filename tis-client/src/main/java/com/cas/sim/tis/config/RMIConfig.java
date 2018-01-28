@@ -10,6 +10,7 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.remoting.rmi.RmiProxyFactoryBean;
 
 import com.cas.sim.tis.services.CollectionService;
+import com.cas.sim.tis.services.ElecCompService;
 import com.cas.sim.tis.services.ResourceService;
 import com.cas.sim.tis.services.UserService;
 
@@ -28,12 +29,12 @@ public class RMIConfig {
 	@Bean
 	@Qualifier("userServiceFactory")
 	public RmiProxyFactoryBean buildUserServiceFactory() {
-		RmiProxyFactoryBean factoryBean = new RmiProxyFactoryBean();
-		factoryBean.setServiceUrl("rmi://" + host + ":" + port + "/userService");
+		RmiProxyFactoryBean bean = new RmiProxyFactoryBean();
+		bean.setServiceUrl("rmi://" + host + ":" + port + "/userService");
 
-		LOG.info("远程访问用户信息路径：{}", factoryBean.getServiceUrl());
-		factoryBean.setServiceInterface(UserService.class);
-		return factoryBean;
+		LOG.info("远程访问路径：{}", bean.getServiceUrl());
+		bean.setServiceInterface(UserService.class);
+		return bean;
 	}
 
 	@Bean
@@ -41,6 +42,7 @@ public class RMIConfig {
 	public RmiProxyFactoryBean buildResourceServiceFactory() {
 		RmiProxyFactoryBean bean = new RmiProxyFactoryBean();
 		bean.setServiceUrl("rmi://" + host + ":" + port + "/resourceService");
+		LOG.info("远程访问路径：{}", bean.getServiceUrl());
 		bean.setServiceInterface(ResourceService.class);
 		return bean;
 	}
@@ -50,7 +52,18 @@ public class RMIConfig {
 	public RmiProxyFactoryBean buildCollectionServiceFactory() {
 		RmiProxyFactoryBean bean = new RmiProxyFactoryBean();
 		bean.setServiceUrl("rmi://" + host + ":" + port + "/collectionService");
+		LOG.info("远程访问路径：{}", bean.getServiceUrl());
 		bean.setServiceInterface(CollectionService.class);
+		return bean;
+	}
+	
+	@Bean
+	@Qualifier("elecCompServiceFactory")
+	public RmiProxyFactoryBean buildElecCompServiceFactory() {
+		RmiProxyFactoryBean bean = new RmiProxyFactoryBean();
+		bean.setServiceUrl("rmi://" + host + ":" + port + "/elecCompService");
+		LOG.info("远程访问路径：{}", bean.getServiceUrl());
+		bean.setServiceInterface(ElecCompService.class);
 		return bean;
 	}
 }
