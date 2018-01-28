@@ -12,6 +12,8 @@
 		<result column="CREATE_DATE" jdbcType="VARCHAR" property="createDate" />
 		<!-- <result column="PUBLIC" jdbcType="INTEGER" property="open" /> -->
 		<result column="DEL" jdbcType="INTEGER" property="del" />
+		<result column="BROWSED_TIMES" jdbcType="INTEGER" property="browsedTimes" />
+		<result column="COLLECTED_TIMES" jdbcType="INTEGER" property="collectedTimes" />
 	</resultMap>
 	<resultMap id="resourceInfoMap" type="com.cas.sim.tis.vo.ResourceInfo">
 		<result property="creator" column="creator" />
@@ -33,4 +35,15 @@
 		r.id=#{id}
 	</select>
 
+	<update id="increaseBrowse">
+		update resource set browsed_times=browsed_times+1 where id=#{id}
+	</update>
+
+	<update id="increaseCollection">
+		update resource set collected_times=collected_times+1 where id=#{id}
+	</update>
+
+	<update id="decreaseCollection">
+		update resource set collected_times=collected_times-1 where id=#{id}
+	</update>
 </mapper>
