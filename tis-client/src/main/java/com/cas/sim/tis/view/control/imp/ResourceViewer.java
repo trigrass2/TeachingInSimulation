@@ -127,7 +127,6 @@ public class ResourceViewer extends VBox implements IContent {
 	 * 创建文档文件查看器
 	 */
 	private void createXdocViewer() {
-
 	}
 
 	/**
@@ -215,9 +214,4 @@ public class ResourceViewer extends VBox implements IContent {
 			}
 		}
 	}
-
-	public StackPane getViewer() {
-		return viewer;
-	}
-
 }
