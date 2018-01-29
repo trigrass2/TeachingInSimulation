@@ -296,6 +296,7 @@
 										<TextField fx:id="keywords" prefHeight="40.0" HBox.hgrow="ALWAYS" promptText="%resource.keyword.split" />
 									</children>
 								</HBox>
+								<Label fx:id="uploadTip" styleClass="error" />
 								<Button mnemonicParsing="false" prefHeight="40.0" prefWidth="443.0" styleClass="blue-btn" text="%button.upload" onAction="#upload" />
 							</children>
 							<padding>

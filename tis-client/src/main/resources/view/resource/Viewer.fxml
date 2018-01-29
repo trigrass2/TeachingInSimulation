@@ -13,10 +13,10 @@
 		<Title title="资源查看" />
 		<VBox VBox.vgrow="ALWAYS">
 			<children>
-				<StackPane fx:id="viewer" VBox.vgrow="ALWAYS"/>
+				<StackPane fx:id="viewer" VBox.vgrow="ALWAYS" />
 				<HBox alignment="CENTER_LEFT" spacing="20.0">
 					<children>
-						<Label fx:id="creator"/>
+						<Label fx:id="creator" />
 						<Label fx:id="createDate" />
 						<Label fx:id="browsedTimes" />
 						<Label fx:id="collectedTimes" />

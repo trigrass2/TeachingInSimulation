@@ -127,6 +127,9 @@ public class ResourceList extends HBox implements IContent {
 	private Label size;
 	@FXML
 	private Label show;
+	@FXML
+	private Label uploadTip;
+
 	private File uploadFile;
 
 	private List<Integer> creators = new ArrayList<>();
@@ -400,10 +403,11 @@ public class ResourceList extends HBox implements IContent {
 		// 重命名
 		String rename = System.currentTimeMillis() + "." + ext;
 		// 上传文件到FTP
+		uploadTip.setText(MsgUtil.getMessage("ftp.upload.waiting"));
 		boolean uploaded = SpringUtil.getBean(FTPUtils.class).uploadFile(ResourceConsts.FTP_RES_PATH, uploadFile, rename);
 		if (!uploaded) {
 			Alert alert = new Alert(AlertType.ERROR, MsgUtil.getMessage("ftp.upload.failure"));
-			alert.initOwner(GUIState.getStage().getOwner());
+			alert.initOwner(GUIState.getStage());
 			alert.show();
 			// 启用上传按钮
 			((Button) event.getSource()).setDisable(false);
@@ -412,7 +416,7 @@ public class ResourceList extends HBox implements IContent {
 		// 封装资源记录
 		Resource resource = new Resource();
 		resource.setKeyword(keywords.getText());
-		resource.setPath(ResourceConsts.FTP_RES_PATH + rename);
+		resource.setPath(ResourceConsts.FTP_RES_PATH + File.separator + rename);
 		resource.setName(fileName);
 		try {
 			resource.setType(ResourceType.parseType(ext));
@@ -425,7 +429,7 @@ public class ResourceList extends HBox implements IContent {
 		// 启用上传按钮
 		((Button) event.getSource()).setDisable(false);
 		Alert alert = new Alert(AlertType.INFORMATION, MsgUtil.getMessage("ftp.upload.success"));
-		alert.initOwner(GUIState.getStage().getOwner());
+		alert.initOwner(GUIState.getStage());
 		alert.show();
 		clear();
 		reload();
@@ -456,6 +460,7 @@ public class ResourceList extends HBox implements IContent {
 		keywords.setText(null);
 		size.setText(null);
 		show.setText(null);
+		uploadTip.setText(null);
 	}
 
 	private void reload() {
@@ -494,6 +499,6 @@ public class ResourceList extends HBox implements IContent {
 
 	@Override
 	public void removed() {
-		
+
 	}
 }

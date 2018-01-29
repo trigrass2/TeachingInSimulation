@@ -16,6 +16,10 @@ import com.cas.sim.tis.view.control.IDistory;
 import com.cas.sim.tis.view.control.imp.vlc.VLCPlayer;
 import com.cas.sim.tis.vo.ResourceInfo;
 import com.cas.util.DateUtil;
+import com.teamdev.jxbrowser.chromium.Browser;
+import com.teamdev.jxbrowser.chromium.BrowserType;
+import com.teamdev.jxbrowser.chromium.Refine;
+import com.teamdev.jxbrowser.chromium.javafx.BrowserView;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -140,14 +144,24 @@ public class ResourceViewer extends VBox implements IContent {
 	 * 创建PDF查看器
 	 */
 	private void createPDFViewer() {
-
+		Refine.init();
+		Browser browser = new Browser(BrowserType.LIGHTWEIGHT);
+		// FIXME
+		browser.loadURL("http://192.168.1.19:8082/Test/Fanuc0i参数说明书.pdf");
+	    BrowserView view = new BrowserView(browser);
+		viewer.getChildren().add(view);
 	}
 
 	/**
 	 * 创建FLASH查看器
 	 */
 	private void createSWFViewer() {
-
+		Refine.init();
+		SWFBrowser browser = new SWFBrowser(BrowserType.LIGHTWEIGHT);
+		// FIXME
+		browser.loadHTML("http://192.168.1.19:8082/Test/teachResources.swf");
+		BrowserView view = new BrowserView(browser);
+		viewer.getChildren().add(view);
 	}
 
 	/**
@@ -200,6 +214,10 @@ public class ResourceViewer extends VBox implements IContent {
 				((IDistory) child).distroy();
 			}
 		}
+	}
+
+	public StackPane getViewer() {
+		return viewer;
 	}
 
 }
