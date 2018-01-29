@@ -7,16 +7,20 @@ import java.util.ResourceBundle;
 import com.cas.sim.tis.consts.ResourceType;
 import com.cas.sim.tis.consts.Session;
 import com.cas.sim.tis.entity.Resource;
+import com.cas.sim.tis.util.HTTPUtils;
 import com.cas.sim.tis.util.MsgUtil;
 import com.cas.sim.tis.util.SpringUtil;
 import com.cas.sim.tis.view.action.CollectionAction;
 import com.cas.sim.tis.view.action.ResourceAction;
 import com.cas.sim.tis.view.control.IContent;
+import com.cas.sim.tis.view.control.IDistory;
+import com.cas.sim.tis.view.control.imp.vlc.VLCPlayer;
 import com.cas.sim.tis.vo.ResourceInfo;
 import com.cas.util.DateUtil;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
@@ -77,7 +81,6 @@ public class ResourceViewer extends VBox implements IContent {
 	 */
 	private void initialize() {
 		createViewer();
-		loadViewer();
 		loadResourceInfo();
 	}
 
@@ -128,7 +131,10 @@ public class ResourceViewer extends VBox implements IContent {
 	 * 创建视频查看器
 	 */
 	private void createVLCViewer() {
-		
+		VLCPlayer player = SpringUtil.getBean(VLCPlayer.class);
+		viewer.getChildren().add(player);
+		HTTPUtils utils = SpringUtil.getBean(HTTPUtils.class);
+		player.loadVideo(utils.getHttpUrl(resource.getPath()));
 	}
 
 	/**
@@ -146,17 +152,10 @@ public class ResourceViewer extends VBox implements IContent {
 	}
 
 	/**
-	 * 加载查看内容
-	 */
-	private void loadViewer() {
-	}
-
-	/**
 	 * 加载资源信息
 	 */
 	private void loadResourceInfo() {
-		int userId = Session.get(Session.KEY_LOGIN_ID);
-		ResourceInfo info = SpringUtil.getBean(ResourceAction.class).findResourceInfoByID(userId);
+		ResourceInfo info = SpringUtil.getBean(ResourceAction.class).findResourceInfoByID(resource.getId());
 		if (info != null) {
 			this.creator.setText(MsgUtil.getMessage("resource.creator", info.getCreator()));
 			this.createDate.setText(MsgUtil.getMessage("resource.create.date", DateUtil.date2Str(info.getCreateDate(), DateUtil.DATE_SHT_PAT_10_)));
@@ -193,6 +192,15 @@ public class ResourceViewer extends VBox implements IContent {
 	public Region getContent() {
 		initialize();
 		return this;
+	}
+
+	@Override
+	public void removed() {
+		for (Node child : viewer.getChildren()) {
+			if (child instanceof IDistory) {
+				((IDistory) child).distroy();
+			}
+		}
 	}
 
 }
