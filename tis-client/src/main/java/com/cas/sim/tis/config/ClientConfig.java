@@ -38,7 +38,7 @@ public class ClientConfig {
 		util.setPassword("admin");
 
 		try {
-			SocketTest.test(address, apachePort);
+			SocketTest.test(address, port);
 		} catch (RuntimeException e) {
 			throw e;
 		}
