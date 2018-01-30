@@ -126,6 +126,13 @@
 				<version>${jxbrowser.version}</version>
 			</dependency>
 
+			<dependency>
+				<groupId>com.cas.sim</groupId>
+				<artifactId>xdoc-starter</artifactId>
+				<version>1.0</version>
+				<type>pom</type>
+			</dependency>
+
 			<!-- https://mvnrepository.com/artifact/com.google.code.findbugs/jsr305 -->
 			<dependency>
 				<groupId>com.google.code.findbugs</groupId>
