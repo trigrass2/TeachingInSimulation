@@ -1,11 +1,13 @@
 package com.cas.sim.tis.services.impl;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.cas.sim.tis.consts.ResourceConsts;
 import com.cas.sim.tis.entity.Resource;
 import com.cas.sim.tis.mapper.ResourceMapper;
 import com.cas.sim.tis.services.ResourceService;
@@ -89,15 +91,20 @@ public class ResourceServiceImpl extends AbstractService<Resource> implements Re
 	}
 
 	@Override
-	public void addResource(Resource resource) {
+	public boolean addResource(Resource resource, boolean convertable) {
+		// 判断是否需要转化
+		if (convertable) {
+			// TODO
+		}
 		resource.setCreateDate(new Date());
 		save(resource);
+		return true;
 	}
 
 	@Override
 	public void browsed(Integer id) {
-			ResourceMapper resourceMapper = (ResourceMapper) mapper;
-			resourceMapper.increaseBrowse(id);
+		ResourceMapper resourceMapper = (ResourceMapper) mapper;
+		resourceMapper.increaseBrowse(id);
 	}
 
 }

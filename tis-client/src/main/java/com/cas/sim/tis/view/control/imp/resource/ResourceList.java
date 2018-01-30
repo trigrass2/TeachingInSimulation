@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.UUID;
 
 import javax.swing.filechooser.FileSystemView;
 
@@ -401,7 +402,7 @@ public class ResourceList extends HBox implements IContent {
 		String fileName = FileUtil.getFileName(filePath);
 		String ext = FileUtil.getFileExt(filePath);
 		// 重命名
-		String rename = System.currentTimeMillis() + "." + ext;
+		String rename = UUID.randomUUID() + "." + ext;
 		// 上传文件到FTP
 		uploadTip.setText(MsgUtil.getMessage("ftp.upload.waiting"));
 		boolean uploaded = SpringUtil.getBean(FTPUtils.class).uploadFile(ResourceConsts.FTP_RES_PATH, uploadFile, rename);
@@ -414,23 +415,30 @@ public class ResourceList extends HBox implements IContent {
 			return;
 		}
 		// 封装资源记录
+		int type = ResourceType.parseType(ext);
 		Resource resource = new Resource();
 		resource.setKeyword(keywords.getText());
-		resource.setPath(ResourceConsts.FTP_RES_PATH + File.separator + rename);
+		resource.setPath(rename);
 		resource.setName(fileName);
 		try {
-			resource.setType(ResourceType.parseType(ext));
+			resource.setType(type);
 		} catch (Exception e) {
 			LOG.warn("解析文件后缀名出现错误", e);
 			throw e;
 		}
 		// 记录到数据库
-		action.addResource(resource);
+		boolean converter = action.addResource(resource, ResourceType.getResourceType(type));
+		if (converter) {
+			Alert alert = new Alert(AlertType.INFORMATION, MsgUtil.getMessage("ftp.upload.success"));
+			alert.initOwner(GUIState.getStage());
+			alert.show();
+		} else {
+			Alert alert = new Alert(AlertType.ERROR, MsgUtil.getMessage("ftp.upload.converter.failure"));
+			alert.initOwner(GUIState.getStage());
+			alert.show();
+		}
 		// 启用上传按钮
 		((Button) event.getSource()).setDisable(false);
-		Alert alert = new Alert(AlertType.INFORMATION, MsgUtil.getMessage("ftp.upload.success"));
-		alert.initOwner(GUIState.getStage());
-		alert.show();
 		clear();
 		reload();
 	}

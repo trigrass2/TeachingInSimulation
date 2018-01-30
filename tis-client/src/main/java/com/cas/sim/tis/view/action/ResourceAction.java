@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.remoting.rmi.RmiProxyFactoryBean;
 import org.springframework.stereotype.Component;
 
+import com.cas.sim.tis.consts.ResourceType;
 import com.cas.sim.tis.consts.Session;
 import com.cas.sim.tis.entity.Resource;
 import com.cas.sim.tis.services.ResourceService;
@@ -18,13 +19,10 @@ public class ResourceAction {
 	@Qualifier("resourceServiceFactory")
 	private RmiProxyFactoryBean resourceServiceFactory;
 
-	public void addResource(Resource resource) {
-		if (resource == null) {
-			return;
-		}
+	public boolean addResource(Resource resource, ResourceType resourceType) {
 		ResourceService service = (ResourceService) resourceServiceFactory.getObject();
 		resource.setCreator(Session.get(Session.KEY_LOGIN_ID));
-		service.addResource(resource);
+		return service.addResource(resource, resourceType.isConvertable());
 	}
 
 	public PageInfo<Resource> findResourcesByCreator(int pagination, int pageSize, List<Integer> resourceTypes, String keyword, String orderByClause, List<Integer> creators) {
