@@ -8,9 +8,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.Resource;
+
 import org.apache.ftpserver.ConnectionConfigFactory;
 import org.apache.ftpserver.FtpServer;
 import org.apache.ftpserver.FtpServerFactory;
+import org.apache.ftpserver.ftplet.UserManager;
 import org.apache.ftpserver.listener.ListenerFactory;
 import org.apache.ftpserver.usermanager.PropertiesUserManagerFactory;
 import org.slf4j.Logger;
@@ -45,6 +48,17 @@ public class ServerConfig {
 	@Value(value = "${server.ftp.port}")
 	private Integer ftpPort;
 
+	@Resource
+	private UserManager userManager;
+	
+	@Bean
+	public UserManager initUserManager() {
+//		设置用户控制中心
+		PropertiesUserManagerFactory propertiesUserManagerFactory = new PropertiesUserManagerFactory();
+		propertiesUserManagerFactory.setFile(new File("users.properties"));
+		return propertiesUserManagerFactory.createUserManager();
+	}
+
 	@Bean
 	public FtpServer createFtpServer() {
 //		Apache Ftp Server 默认的编码是"UTF-8"
@@ -55,10 +69,7 @@ public class ServerConfig {
 		connectionConfigFactory.setAnonymousLoginEnabled(true);
 		serverFactory.setConnectionConfig(connectionConfigFactory.createConnectionConfig());
 //		
-//		设置用户控制中心
-		PropertiesUserManagerFactory propertiesUserManagerFactory = new PropertiesUserManagerFactory();
-		propertiesUserManagerFactory.setFile(new File("users.properties"));
-		serverFactory.setUserManager(propertiesUserManagerFactory.createUserManager());
+		serverFactory.setUserManager(userManager);
 
 //      配置FTP端口
 		ListenerFactory listenerFactory = new ListenerFactory();
