@@ -16,14 +16,14 @@
 			<groupId>com.cas.sim</groupId>
 			<artifactId>tis-base</artifactId>
 		</dependency>
-<!-- 		<dependency> -->
-<!-- 			<groupId>com.cas.sim</groupId> -->
-<!-- 			<artifactId>locker</artifactId> -->
-<!-- 		</dependency> -->
-<!-- 		<dependency> -->
-<!-- 			<groupId>com.cas</groupId> -->
-<!-- 			<artifactId>authority-client</artifactId> -->
-<!-- 		</dependency> -->
+		<!-- <dependency> -->
+		<!-- <groupId>com.cas.sim</groupId> -->
+		<!-- <artifactId>locker</artifactId> -->
+		<!-- </dependency> -->
+		<!-- <dependency> -->
+		<!-- <groupId>com.cas</groupId> -->
+		<!-- <artifactId>authority-client</artifactId> -->
+		<!-- </dependency> -->
 		<dependency>
 			<groupId>org.jmonkeyengine</groupId>
 			<artifactId>jme3-networking</artifactId>
@@ -66,6 +66,11 @@
 		<dependency>
 			<groupId>com.github.pagehelper</groupId>
 			<artifactId>pagehelper-spring-boot-starter</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.jodconverter</groupId>
+			<artifactId>jodconverter-local</artifactId>
 		</dependency>
 	</dependencies>
 
