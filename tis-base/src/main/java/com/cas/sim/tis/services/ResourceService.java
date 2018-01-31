@@ -13,7 +13,7 @@ public interface ResourceService extends BaseService<Resource> {
 
 	int countResourceByType(int type, String keyword, List<Integer> creators);
 
-	void addResource(Resource resource);
+	boolean addResource(Resource resource, boolean convertable);
 
 	void browsed(Integer id);
 }
