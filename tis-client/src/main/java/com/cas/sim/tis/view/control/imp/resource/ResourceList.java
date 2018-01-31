@@ -251,20 +251,20 @@ public class ResourceList extends HBox implements IContent {
 			}
 		}));
 		table.getColumns().addAll(id, icon, name, createDate);
+		// 查看按钮
+		Column<String> view = new Column<String>();
+		view.setCellFactory(BtnCell.forTableColumn(MsgUtil.getMessage("button.view"), "blue-btn", rid -> {
+			SpringUtil.getBean(ResourceAction.class).browsed((Integer) rid);
+			SpringUtil.getBean(BrowseHistoryAction.class).addBrowseHistory((Integer) rid);
+			ResourceAction action = SpringUtil.getBean(ResourceAction.class);
+			Resource resource = action.findResourceByID((Integer) rid);
+			// 跳转到查看页面
+			PageController controller = SpringUtil.getBean(PageController.class);
+			controller.loadContent(new ResourceViewer(resource));
+		}));
+		view.setAlignment(Pos.CENTER_RIGHT);
+		table.getColumns().add(view);
 		if (editable) {
-			// 查看按钮
-			Column<String> view = new Column<String>();
-			view.setCellFactory(BtnCell.forTableColumn(MsgUtil.getMessage("button.view"), "blue-btn", rid -> {
-				SpringUtil.getBean(ResourceAction.class).browsed((Integer) rid);
-				SpringUtil.getBean(BrowseHistoryAction.class).addBrowseHistory((Integer) rid);
-				ResourceAction action = SpringUtil.getBean(ResourceAction.class);
-				Resource resource = action.findResourceByID((Integer) rid);
-				// 跳转到查看页面
-				PageController controller = SpringUtil.getBean(PageController.class);
-				controller.loadContent(new ResourceViewer(resource));
-			}));
-			view.setAlignment(Pos.CENTER_RIGHT);
-			table.getColumns().add(view);
 			// 删除按钮
 			Column<String> delete = new Column<String>();
 			delete.setCellFactory(BtnCell.forTableColumn(MsgUtil.getMessage("button.delete"), "blue-btn", rid -> {
