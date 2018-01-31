@@ -8,6 +8,11 @@
 	<artifactId>tis-client</artifactId>
 	<dependencies>
 		<dependency>
+			<groupId>javafx.embed.swt</groupId>
+			<artifactId>jfxswt</artifactId>
+		</dependency>
+
+		<dependency>
 			<groupId>com.cas.sim</groupId>
 			<artifactId>cas-util</artifactId>
 		</dependency>

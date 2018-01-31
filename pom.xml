@@ -79,6 +79,13 @@
 				<systemPath>${env.JAVA_HOME}\lib\tools.jar</systemPath>
 			</dependency>
 			<dependency>
+				<groupId>javafx.embed.swt</groupId>
+				<artifactId>jfxswt</artifactId>
+				<version>1.0</version>
+				<scope>system</scope>
+				<systemPath>${env.JAVA_HOME}\jre\lib\jfxswt.jar</systemPath>
+			</dependency>
+			<dependency>
 				<groupId>com.cas.sim</groupId>
 				<artifactId>cas-util</artifactId>
 				<version>1.0.1</version>
