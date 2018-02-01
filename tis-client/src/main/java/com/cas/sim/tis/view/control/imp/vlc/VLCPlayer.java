@@ -15,13 +15,14 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.control.Tooltip;
+import javafx.scene.image.ImageView;
 import javafx.scene.image.PixelFormat;
 import javafx.scene.image.PixelWriter;
+import javafx.scene.image.WritableImage;
 import javafx.scene.image.WritablePixelFormat;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
@@ -49,12 +50,12 @@ public class VLCPlayer extends BorderPane implements IDistory {
 	/**
 	 * Lightweight JavaFX canvas, the video is rendered here.
 	 */
-	private final Canvas canvas;
+	private final ImageView canvas;
 
 	/**
 	 * Pixel writer to update the canvas.
 	 */
-	private final PixelWriter pixelWriter;
+	private PixelWriter pixelWriter;
 
 	/**
 	 * Pixel format.
@@ -100,15 +101,19 @@ public class VLCPlayer extends BorderPane implements IDistory {
 
 	private boolean playSkip;
 
+	private WritableImage writableImage;
+
 	public VLCPlayer() {
 		NativeLibrary.addSearchPath(RuntimeUtil.getLibVlcLibraryName(), "VLC");
 
 		this.setStyle("-fx-background-color:black;");
 
-		canvas = new Canvas();
-
-		pixelWriter = canvas.getGraphicsContext2D().getPixelWriter();
+//		canvas = new Canvas();
+//
+//		pixelWriter = canvas.getGraphicsContext2D().getPixelWriter();
 		pixelFormat = PixelFormat.getByteBgraInstance();
+
+		canvas = new ImageView();
 
 		this.setCenter(canvas);
 
@@ -196,6 +201,19 @@ public class VLCPlayer extends BorderPane implements IDistory {
 		controls.setStyle("-fx-background-color:#f0f0f0");
 		controls.getChildren().addAll(playPauseButton, playSlider, time, volumeMuteButton, volumeSlider);
 		this.setBottom(controls);
+		this.heightProperty().addListener((b, o, n) -> {
+			if (writableImage == null || o.doubleValue() == 0) {
+				return;
+			}
+			double zoom = n.doubleValue() / o.doubleValue();
+			if (zoom > 1) {
+				canvas.setFitHeight(writableImage.getHeight() * zoom);
+				canvas.setFitWidth(writableImage.getWidth() * zoom);
+			} else {
+				canvas.setFitHeight(writableImage.getHeight());
+				canvas.setFitWidth(writableImage.getWidth());
+			}
+		});
 	}
 
 	public void loadVideo(String videoPath) {
@@ -232,8 +250,10 @@ public class VLCPlayer extends BorderPane implements IDistory {
 					width = (int) (height * sourceWidth * 1f / sourceHeight);
 				}
 			}
-			canvas.setWidth(width);
-			canvas.setHeight(height);
+			writableImage = new WritableImage(width, height);
+			canvas.setImage(writableImage);
+			canvas.setFitWidth(width);
+			canvas.setFitHeight(height);
 			return new RV32BufferFormat(width, height);
 		}
 	}
@@ -252,12 +272,19 @@ public class VLCPlayer extends BorderPane implements IDistory {
 				ByteBuffer byteBuffer = nativeBuffer.getByteBuffer(0, nativeBuffer.size());
 				BufferFormat bufferFormat = ((DefaultDirectMediaPlayer) mediaPlayerComponent.getMediaPlayer()).getBufferFormat();
 				if (bufferFormat.getWidth() > 0 && bufferFormat.getHeight() > 0) {
-					pixelWriter.setPixels(0, 0, bufferFormat.getWidth(), bufferFormat.getHeight(), pixelFormat, byteBuffer, bufferFormat.getPitches()[0]);
+					getPW().setPixels(0, 0, bufferFormat.getWidth(), bufferFormat.getHeight(), pixelFormat, byteBuffer, bufferFormat.getPitches()[0]);
 				}
 			}
 		}
 		playSlider.setValue(mediaPlayerComponent.getMediaPlayer().getPosition() * 100);
 		mediaPlayerComponent.getMediaPlayer().unlock();
+	}
+
+	private PixelWriter getPW() {
+		if (pixelWriter == null) {
+			pixelWriter = writableImage.getPixelWriter();
+		}
+		return pixelWriter;
 	}
 
 	/**
@@ -285,15 +312,15 @@ public class VLCPlayer extends BorderPane implements IDistory {
 	}
 
 	public static String formatTime(long value) {
-        value /= 1000;
-        int hours = (int) value / 3600;
-        int remainder = (int) value - hours * 3600;
-        int minutes = remainder / 60;
-        remainder = remainder - minutes * 60;
-        int seconds = remainder;
-        return String.format("%d:%02d:%02d", hours, minutes, seconds);
-    }
-	
+		value /= 1000;
+		int hours = (int) value / 3600;
+		int remainder = (int) value - hours * 3600;
+		int minutes = remainder / 60;
+		remainder = remainder - minutes * 60;
+		int seconds = remainder;
+		return String.format("%d:%02d:%02d", hours, minutes, seconds);
+	}
+
 	@Override
 	public void distroy() {
 		stop();

@@ -136,7 +136,9 @@ public class ResourceViewer extends VBox implements IContent {
 	 * 创建图片浏览
 	 */
 	public void createImageViewer() {
+		HTTPUtils utils = SpringUtil.getBean(HTTPUtils.class);
 		Image image = new Image("http://192.168.1.19:8082/Test/1516772514400.png");
+//		Image image = new Image(utils.getHttpUrl(resource.getPath()));
 		ImageView imageView = new ImageView(image);
 
 		HBox box = new HBox(imageView);
@@ -196,7 +198,8 @@ public class ResourceViewer extends VBox implements IContent {
 		VLCPlayer player = SpringUtil.getBean(VLCPlayer.class);
 		viewer.getChildren().add(player);
 		HTTPUtils utils = SpringUtil.getBean(HTTPUtils.class);
-		player.loadVideo(utils.getHttpUrl(resource.getPath()));
+//		player.loadVideo(utils.getHttpUrl(resource.getPath()));
+		player.loadVideo("http://192.168.1.19:8082/resources/4dae3b67-1d55-4125-a577-4086585464c1.mp4");
 	}
 
 	/**
@@ -206,6 +209,8 @@ public class ResourceViewer extends VBox implements IContent {
 		Refine.init();
 		Browser browser = new Browser(BrowserType.LIGHTWEIGHT);
 		// FIXME
+		HTTPUtils utils = SpringUtil.getBean(HTTPUtils.class);
+//		browser.loadURL(utils.getHttpUrl(resource.getPath()));
 		browser.loadURL("http://192.168.1.19:8082/Test/Fanuc0i参数说明书.pdf");
 		BrowserView view = new BrowserView(browser);
 		viewer.getChildren().add(view);
@@ -218,6 +223,8 @@ public class ResourceViewer extends VBox implements IContent {
 		Refine.init();
 		SWFBrowser browser = new SWFBrowser(BrowserType.LIGHTWEIGHT);
 		// FIXME
+		HTTPUtils utils = SpringUtil.getBean(HTTPUtils.class);
+//		browser.loadHTML(utils.getHttpUrl(resource.getPath()));
 		browser.loadHTML("http://192.168.1.19:8082/Test/teachResources.swf");
 		BrowserView view = new BrowserView(browser);
 		viewer.getChildren().add(view);
