@@ -25,6 +25,10 @@ public class ElecCompAction {
 		return compService.findAll();
 	}
 
+	/**
+	 * key:元器件型号
+	 * @return
+	 */
 	public Map<String, List<ElecComp>> getElecCompMap() {
 
 		ElecCompService compService = (ElecCompService) elecCompServiceFactory.getObject();

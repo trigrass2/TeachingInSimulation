@@ -1,34 +1,50 @@
 package com.cas.sim.tis.view.control.imp.jme;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import com.cas.sim.tis.entity.ElecComp;
 import com.cas.sim.tis.util.SpringUtil;
 import com.cas.sim.tis.view.action.ElecCompAction;
-import com.cas.sim.tis.view.control.imp.Tree;
-import com.cas.sim.tis.view.control.imp.TreeLeaf;
-import com.cas.sim.tis.view.control.imp.TreeLeaf.Level;
+import com.cas.sim.tis.view.control.ILeftContent;
 
-public class RecongnizeMenu extends Tree {
+import javafx.scene.control.Accordion;
+import javafx.scene.control.Label;
+import javafx.scene.control.TitledPane;
+import javafx.scene.layout.Region;
+import javafx.scene.layout.VBox;
+
+public class RecongnizeMenu implements ILeftContent {
+
+	private Recongnize3D recongnize3D;
+
+	public RecongnizeMenu(Recongnize3D recongnize3D) {
+		this.recongnize3D = recongnize3D;
+	}
 
 	@Override
-	protected List<TreeLeaf> loadTreeData() {
+	public Region getLeftContent() {
 //		查询元器件列表
 		ElecCompAction elecCompAction = SpringUtil.getBean(ElecCompAction.class);
 		Map<String, List<ElecComp>> map = elecCompAction.getElecCompMap();
 
-		List<TreeLeaf> branches = new ArrayList<>();
+		Accordion accordion = new Accordion();
 		map.entrySet().forEach(entry -> {
-			TreeLeaf branch = new TreeLeaf(entry.getKey(), Level.Level1, false);
-			branches.add(branch);
-			entry.getValue().forEach(e -> {
-				TreeLeaf leaf = new TreeLeaf(e.getName() + "(" + e.getModel() + ")", Level.Level2, false);
-				branch.getChildren().add(leaf);
-			});
-		});
+//			
+			TitledPane t1 = new TitledPane();
+			accordion.getPanes().add(t1);
 
-		return branches;
+			t1.setText(entry.getKey());
+			VBox content = new VBox();
+			entry.getValue().forEach(e -> {
+				Label lbl = new Label(e.getName() + "(" + e.getModel() + ")");
+				lbl.setOnMouseClicked(event -> {
+					recongnize3D.setModelPath(e.getMdlPath());
+				});
+				content.getChildren().add(lbl);
+			});
+			t1.setContent(content);
+		});
+		return accordion;
 	}
 }

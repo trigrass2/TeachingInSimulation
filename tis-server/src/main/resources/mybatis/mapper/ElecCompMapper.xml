@@ -6,5 +6,6 @@
 		<result column="TYPE" jdbcType="VARCHAR" property="type" />
 		<result column="NAME" jdbcType="VARCHAR" property="name" />
 		<result column="MODEL" jdbcType="VARCHAR" property="model" />
+		<result column="MDL_PATH" jdbcType="VARCHAR" property="mdlPath" />
 	</resultMap>
 </mapper>

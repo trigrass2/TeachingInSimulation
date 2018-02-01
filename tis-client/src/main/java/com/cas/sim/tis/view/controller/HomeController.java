@@ -15,11 +15,6 @@ import com.cas.sim.tis.view.control.imp.jme.Recongnize3D;
 import com.cas.sim.tis.view.control.imp.jme.RecongnizeMenu;
 import com.cas.sim.tis.view.control.imp.resource.ResourceMenu;
 import com.cas.sim.tis.view.controller.PageController.PageLevel;
-<<<<<<< HEAD
-=======
-import com.jme3.system.AppSettings;
-import com.jme3x.jfx.injfx.JmeToJFXIntegrator;
->>>>>>> a29eafe222ddffdb82e2b906e3686ed27ab2a808
 
 import de.felixroske.jfxsupport.FXMLController;
 import javafx.fxml.FXML;
@@ -71,7 +66,6 @@ public class HomeController implements Initializable {
 
 		PageController controller = SpringUtil.getBean(PageController.class);
 		Recongnize3D content = new Recongnize3D();
-<<<<<<< HEAD
 		
 		controller.loadLeftMenu(new RecongnizeMenu(content));
 		controller.loadContent(content, PageLevel.Level1);
@@ -88,9 +82,6 @@ public class HomeController implements Initializable {
 	 */
 	public void exersize() {
 	}
-=======
-		controller.loadContent(content, PageLevel.Level1);
->>>>>>> a29eafe222ddffdb82e2b906e3686ed27ab2a808
 
 	/**
 	 * 电路维修

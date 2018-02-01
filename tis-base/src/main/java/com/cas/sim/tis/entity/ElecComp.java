@@ -23,6 +23,8 @@ public class ElecComp implements Serializable {
 //	元器件型号
 	private String model;
 
+	private String mdlPath;
+
 	public Integer getId() {
 		return id;
 	}
@@ -53,6 +55,14 @@ public class ElecComp implements Serializable {
 
 	public void setModel(String model) {
 		this.model = model;
+	}
+
+	public String getMdlPath() {
+		return mdlPath;
+	}
+
+	public void setMdlPath(String mdlPath) {
+		this.mdlPath = mdlPath;
 	}
 
 }

@@ -571,3 +571,16 @@
  .mute{
  	-fx-graphic: url(/static/images/player/mute.png);
  }
+  /*******************************************************************************
+ *                                                                             *
+ * 认知模块按钮样式                                                          *
+ *                                                                             *
+ ******************************************************************************/
+ .recognize-btn{
+ 	-fx-pref-height: 40;
+ 	-fx-background-color: #19b0c6;
+ 	-fx-padding: 10,5;
+ }
+ .recognize-btn:hover{
+ 	-fx-background-color: #31D6F2;
+ }

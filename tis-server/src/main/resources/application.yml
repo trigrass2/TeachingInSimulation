@@ -9,8 +9,8 @@ mapper:
   - com.cas.sim.tis.mapper.ClassMapper
   - com.cas.sim.tis.mapper.QuestionMapper
   - com.cas.sim.tis.mapper.ResourceMapper
-  - com.cas.sim.tis.mapper.StudentMapper
-  - com.cas.sim.tis.mapper.TeacherMapper
+  - com.cas.sim.tis.mapper.UserMapper
+
 pagehelper:
   dialect: com.github.pagehelper.dialect.helper.MySqlDialect
 server:

@@ -58,7 +58,6 @@ public abstract class BaseState extends AbstractAppState {
 			inputMappings.put(mappingName, triggerList);
 		}
 		triggerList.addAll(Arrays.asList(triggers));
-
 	}
 
 	protected void addListener(InputListener listener, String... mappingNames) {
@@ -71,7 +70,7 @@ public abstract class BaseState extends AbstractAppState {
 
 	@Override
 	public void stateAttached(AppStateManager stateManager) {
-		LOG.debug(getClass() + ".stateAttached()");
+		LOG.debug("添加状态机{}", getClass());
 		super.stateAttached(stateManager);
 	}
 
@@ -97,17 +96,17 @@ public abstract class BaseState extends AbstractAppState {
 
 	@Override
 	public void stateDetached(AppStateManager stateManager) {
-		LOG.debug(getClass() + ".stateDetached()");
+		LOG.debug("移除状态机{}", getClass());
 		super.stateDetached(stateManager);
 	}
 
 	@Override
 	public void cleanup() {
-		LOG.debug(getClass() + ".cleanup(清除本类中添加的事件映射)");
+		LOG.debug("清除{}中添加的事件映射", getClass());
 		inputMappings.entrySet().stream().forEach(e -> e.getValue().forEach(t -> inputManager.deleteTrigger(e.getKey(), t)));// 删除
 		inputMappings.clear();
 
-		LOG.debug(getClass() + ".cleanup(清除本类中添加的事件监听)");
+		LOG.debug("清除{}中添加的事件监听", getClass());
 		inputListeners.stream().forEach(inputManager::removeListener);
 		inputListeners.clear();
 		super.cleanup();
