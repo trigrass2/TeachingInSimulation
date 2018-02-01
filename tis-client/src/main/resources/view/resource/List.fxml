@@ -159,7 +159,7 @@
 					</VBox>
 					<PaginationBar fx:id="pagination" />
 					<padding>
-						<Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+						<Insets left="20.0" />
 					</padding>
 				</VBox>
 			</children>
@@ -169,10 +169,10 @@
 		</VBox>
 		<VBox prefWidth="435.0" style="-fx-background-color: #fbfbfb;">
 			<children>
-				<Title title="我的资源统计" />
-				<VBox prefWidth="435.0" spacing="20.0" VBox.vgrow="ALWAYS">
+				<VBox>
 					<children>
-						<VBox>
+						<Title title="我的资源统计" />
+						<VBox VBox.vgrow="ALWAYS">
 							<children>
 								<StackPane prefHeight="200.0">
 									<children>
@@ -277,8 +277,8 @@
 						</VBox>
 					</children>
 				</VBox>
-				<Title title="上传资源" />
-				<VBox>
+				<VBox fx:id="uploadPane">
+					<Title title="上传资源" />
 					<children>
 						<VBox spacing="10.0">
 							<children>

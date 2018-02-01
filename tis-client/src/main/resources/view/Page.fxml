@@ -18,7 +18,7 @@
 				<Pane fx:id="leftBlock" maxWidth="230" minWidth="230" />
 				<VBox HBox.hgrow="ALWAYS">
 					<children>
-						<HBox alignment="CENTER_LEFT" prefHeight="75.0" styleClass="top-cover">
+						<HBox alignment="CENTER_LEFT" prefHeight="75.0" minHeight="75.0" styleClass="top-cover">
 							<children>
 								<Button mnemonicParsing="false" onAction="#back" styleClass="img-btn" text="返回" textFill="WHITE">
 									<graphic>
@@ -36,7 +36,7 @@
 								</HBox>
 							</children>
 						</HBox>
-						<StackPane fx:id="content" VBox.vgrow="ALWAYS"/>
+						<StackPane fx:id="content" VBox.vgrow="ALWAYS" />
 					</children>
 				</VBox>
 			</children>

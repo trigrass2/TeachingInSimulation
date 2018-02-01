@@ -94,7 +94,7 @@ public class Cell<T>extends Label {
 		public void set(T newValue) {
 			if (newValue == null) {
 				setText("");
-				tooltip.setText("");
+				setTooltip(null);
 			} else if (getConverter() == null) {
 				setText(String.valueOf(newValue));
 				tooltip.setText(String.valueOf(newValue));

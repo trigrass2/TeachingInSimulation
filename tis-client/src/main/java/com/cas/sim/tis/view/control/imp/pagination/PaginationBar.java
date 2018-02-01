@@ -5,6 +5,7 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.Toggle;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.HBox;
@@ -115,9 +116,13 @@ public class PaginationBar extends HBox {
 		pages.getChildren().clear();
 		pageBtn.getToggles().clear();
 
+		first.setDisable(false);
 		pages.getChildren().add(first);
 		pageBtn.getToggles().add(first);
-		if (getPageCount() == 1) {
+		if (getPageCount() == 0) {
+			first.setDisable(true);
+			return;
+		} else if (getPageCount() == 1) {
 			return;
 		} else if (getPageCount() <= LIMIT + 1) {
 			addMiddles(getPageCount() - 2, 2);
@@ -136,7 +141,11 @@ public class PaginationBar extends HBox {
 		last.setText(String.valueOf(getPageCount()));
 		pages.getChildren().add(last);
 		pageBtn.getToggles().add(last);
-		pageBtn.getToggles().get(getPageIndex()).setSelected(true);
+		for (Toggle toggle : pageBtn.getToggles()) {
+			if (getPageIndex() == (int) toggle.getUserData()) {
+				toggle.setSelected(true);
+			}
+		}
 	}
 
 	private void addMiddles(int size, int start) {

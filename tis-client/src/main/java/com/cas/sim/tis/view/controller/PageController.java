@@ -39,11 +39,17 @@ public class PageController implements Initializable {
 	/**
 	 * 上一层内容
 	 */
-	private IContent prevContent;
+	private IContent level2Content;
 	/**
 	 * 当前层内容
 	 */
-	private IContent currContent;
+	private IContent level1Content;
+
+	private PageLevel level;
+
+	public enum PageLevel {
+		Level1, Level2;
+	}
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
@@ -52,13 +58,14 @@ public class PageController implements Initializable {
 	@FXML
 	private void back() {
 		// 返回上一个界面
-		if (this.prevContent != null) {
-			this.currContent = prevContent;
-			this.prevContent = null;
-			this.content.getChildren().add(currContent.getContent());
+		if (this.level == PageLevel.Level2) {
+			this.level = PageLevel.Level1;
+			this.level2Content.removed();
+			this.level1Content = level2Content;
+			this.level2Content = null;
+			this.content.getChildren().add(level1Content.getContent());
 		} else {
-			loadLeftMenu(null);
-			loadContent(null);
+			clear();
 			Application.showView(HomeView.class);
 		}
 	}
@@ -79,19 +86,21 @@ public class PageController implements Initializable {
 		}
 	}
 
-	public void loadContent(IContent content) {
+	public void loadContent(IContent content, PageLevel level) {
 		this.content.getChildren().clear();
 		if (content == null) {
-			this.currContent = null;
-			this.prevContent = null;
+			this.level1Content = null;
+			this.level2Content = null;
 			return;
 		}
-		if (this.currContent == null) {
-			this.currContent = content;
-			this.prevContent = null;
-		} else {
-			this.prevContent = this.currContent;
-			this.currContent = content;
+		if (PageLevel.Level1 == level || level == null) {
+			this.level = PageLevel.Level1;
+			this.level1Content = content;
+			this.level2Content = null;
+		} else if (PageLevel.Level2 == level) {
+			this.level = PageLevel.Level2;
+			this.level2Content = this.level1Content;
+			this.level1Content = content;
 		}
 		this.content.getChildren().add(content.getContent());
 	}
@@ -114,5 +123,18 @@ public class PageController implements Initializable {
 		arrow.getStyleClass().clear();
 		arrow.getStyleClass().add("hide");
 		visible = true;
+	}
+
+	private void clear() {
+		if (level1Content != null) {
+			this.level1Content.removed();
+			this.level1Content = null;
+		}
+		if (level2Content != null) {
+			this.level2Content.removed();
+			this.level2Content = null;
+		}
+		this.content.getChildren().clear();
+		this.leftContent.getChildren().clear();
 	}
 }

@@ -30,6 +30,7 @@
  * 饼图样式                                                                  *
  *                                                                             *
  ******************************************************************************/
+/* 彩虹色
 .default-color0.chart-pie { -fx-pie-color: #dd3a2e; }
 .default-color1.chart-pie { -fx-pie-color: #ff9e2c; }
 .default-color2.chart-pie { -fx-pie-color: #ffdd40; }
@@ -37,7 +38,15 @@
 .default-color4.chart-pie { -fx-pie-color: #2bc9f7; }
 .default-color5.chart-pie { -fx-pie-color: #1cabbb; }
 .default-color6.chart-pie { -fx-pie-color: #2b73f7; }     
-.default-color7.chart-pie { -fx-pie-color: #9760f1; }           
+.default-color7.chart-pie { -fx-pie-color: #9760f1; }  */   
+.default-color0.chart-pie { -fx-pie-color: #FF6666; }
+.default-color1.chart-pie { -fx-pie-color: #0099CC; }
+.default-color2.chart-pie { -fx-pie-color: #B000CC; }
+.default-color3.chart-pie { -fx-pie-color: #FF9100; }
+.default-color4.chart-pie { -fx-pie-color: #2E6196; }
+.default-color5.chart-pie { -fx-pie-color: #FF5E00; }
+.default-color6.chart-pie { -fx-pie-color: #5A9947; }     
+.default-color7.chart-pie { -fx-pie-color: #976464; }       
 /*******************************************************************************
  *                                                                             *
  * 提示样式                                                                  *
@@ -73,7 +82,12 @@
     -fx-background-insets: 0.0;
 }
 .scroll-bar> .thumb {
+	-fx-background-color: #51bfcf;
     -fx-background-radius:0.0;
+}
+.scroll-bar > .increment-button > .increment-arrow ,
+.scroll-bar > .increment-button > .decrement-arrow {
+    -fx-background-color: #51bfcf;
 }
 /*******************************************************************************
  *                                                                             *
@@ -96,9 +110,10 @@
 	-fx-border-radius: 0.0px;
 	-fx-border-width: 1.0 0.5 1.0 0.5;
 	-fx-text-fill: #333333;
-	-fx-pref-width:20.0px;
-	-fx-pref-height:15.0px;
-	-fx-padding: 2.5px 5.0px;
+	-fx-min-width:35.0px;
+	-fx-min-height:35.0px;
+	-fx-max-width:35.0px;
+	-fx-max-height:35.0px;
 }
 .pagination-bar>.button:hover{
 	-fx-background-color:#51bfcf;
@@ -113,20 +128,26 @@
 	-fx-border-width: 1.0 0.5 1.0 0.5;
 	-fx-border-insets: 0.0 0.0 -1.0 0.0;
 	-fx-text-fill: #333333;
-	-fx-pref-width:15.0px;
-	-fx-pref-height:15.0px;
+	-fx-min-width:35.0px;
+	-fx-min-height:35.0px;
+	-fx-max-width:35.0px;
+	-fx-max-height:35.0px;
 }
 .pagination-bar>*>.toggle-button:hover{
 	-fx-background-color:#51bfcf;
 	-fx-border-color: #51bfcf;
 	-fx-text-fill: #ffffff;
+	-fx-background-insets:0.0;
 }
 .pagination-bar>*>.toggle-button:selected{
 	-fx-background-color:#19b0c6;
 	-fx-border-color: #19b0c6;
 	-fx-text-fill: #ffffff;
 	-fx-background-insets:0.0;
-	-fx-border-insets: 0.0;
+}
+.pagination-bar>.prev,
+.pagination-bar>.next{
+	-fx-padding: 12px;
 }
 .pagination-bar>.prev:disabled,
 .pagination-bar>.next:disabled{
@@ -155,8 +176,12 @@
 	-fx-border-radius: 0.0px;
 	-fx-border-width: 1.0 0.5 1.0 0.5;
 	-fx-text-fill: #333333;
-	-fx-pref-width:45.0px;
-	-fx-pref-height:30.0px;
+	-fx-text-alignment: center;
+	-fx-alignment: center;
+	-fx-min-width:35.0px;
+	-fx-min-height:35.0px;
+	-fx-max-width:35.0px;
+	-fx-max-height:35.0px;
 }
 /*******************************************************************************
  *                                                                             *

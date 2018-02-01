@@ -9,7 +9,8 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.control.Button;
+import javafx.scene.control.ToggleButton;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Region;
@@ -19,7 +20,9 @@ public abstract class LeftMenu extends VBox implements ILeftContent {
 
 	@FXML
 	private VBox menu;
-	
+
+	private ToggleGroup items = new ToggleGroup();
+
 	public LeftMenu() {
 		FXMLLoader loader = new FXMLLoader();
 		URL fxmlUrl = this.getClass().getResource("/view/LeftMenu.fxml");
@@ -31,16 +34,22 @@ public abstract class LeftMenu extends VBox implements ILeftContent {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		items.selectedToggleProperty().addListener((b, o, n) -> {
+			if (n == null) {
+				items.selectToggle(o);
+			}
+		});
 		initMenu();
 	}
 
 	protected abstract void initMenu();
-	
+
 	protected void addMenuItem(String name, String icon, EventHandler<ActionEvent> e) {
-		Button button = new Button(name, new ImageView(new Image(icon)));
+		ToggleButton button = new ToggleButton(name, new ImageView(new Image(icon)));
 		button.setOnAction(e);
 		button.getStyleClass().add("left-menu");
 		menu.getChildren().add(button);
+		items.getToggles().add(button);
 	}
 
 	@Override

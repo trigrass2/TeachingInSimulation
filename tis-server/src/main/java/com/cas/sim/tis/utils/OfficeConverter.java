@@ -2,6 +2,10 @@ package com.cas.sim.tis.utils;
 
 import java.io.File;
 
+import javax.annotation.Resource;
+
+import org.apache.ftpserver.ftplet.FtpException;
+import org.apache.ftpserver.ftplet.UserManager;
 import org.jodconverter.JodConverter;
 import org.jodconverter.office.LocalOfficeManager;
 import org.jodconverter.office.LocalOfficeUtils;
@@ -24,12 +28,17 @@ public class OfficeConverter {
 	private String path;
 	@Value(value = "${open.office.port}")
 	private Integer port;
+	@Resource
+	private UserManager userManager;
 
 	public void resourceConverter(String src) {
-		// FIXME
-		String ftpHome = "E://FTP_HOME//";
-		String des = src.substring(0, src.lastIndexOf(".")) + ".pdf";
-		converter(ftpHome + ResourceConsts.FTP_RES_PATH + src, ftpHome + ResourceConsts.FTP_CONVERT_PATH + des);
+		try {
+			String ftpHome = userManager.getUserByName(userManager.getAdminName()).getHomeDirectory();
+			String des = src.substring(0, src.lastIndexOf(".")) + ".pdf";
+			converter(ftpHome + ResourceConsts.FTP_RES_PATH + src, ftpHome + ResourceConsts.FTP_CONVERT_PATH + des);
+		} catch (FtpException e) {
+			e.printStackTrace();
+		}
 	}
 
 	private void converter(String srcPath, String desPath) {

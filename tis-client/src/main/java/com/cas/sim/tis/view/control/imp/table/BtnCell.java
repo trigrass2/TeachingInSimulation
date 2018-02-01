@@ -7,6 +7,7 @@ import javafx.beans.property.ReadOnlyBooleanWrapper;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
+import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
@@ -21,7 +22,11 @@ import javafx.util.Callback;
  */
 public class BtnCell<T>extends Cell<T> {
 	public static <T> Callback<Column<T>, Cell<T>> forTableColumn(String btnName, String btnStlyeClass, Consumer<Object> action) {
-		return column -> new BtnCell<T>(btnName, btnStlyeClass, action);
+		return column -> new BtnCell<T>(btnName, Priority.SOMETIMES, btnStlyeClass, action);
+	}
+	
+	public static <T> Callback<Column<T>, Cell<T>> forTableColumn(String btnName, Priority priority, String btnStlyeClass, Consumer<Object> action) {
+		return column -> new BtnCell<T>(btnName, priority, btnStlyeClass, action);
 	}
 
 	private Row row;
@@ -29,16 +34,17 @@ public class BtnCell<T>extends Cell<T> {
 	private Button btn = new Button();
 	private ChangeListener<Boolean> hoverListener;
 
-	public BtnCell(String btnName, String btnStlyeClass, Consumer<Object> action) {
+	public BtnCell(String btnName, Priority priority, String btnStlyeClass, Consumer<Object> action) {
 		super(null);
 		this.setTooltip(null);
+		this.setPadding(new Insets(0, 10, 0, 0));
 		btn.setText(btnName);
 		btn.getStyleClass().add(btnStlyeClass);
 		btn.setOnAction(event -> {
 			Object id = row.primaryCellProperty().get().getItem();
 			action.accept(id);
 		});
-		HBox.setHgrow(this, Priority.ALWAYS);
+		HBox.setHgrow(this, priority);
 		bind();
 	}
 

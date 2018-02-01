@@ -15,14 +15,14 @@
 		<result column="BROWSED_TIMES" jdbcType="INTEGER" property="browsedTimes" />
 		<result column="COLLECTED_TIMES" jdbcType="INTEGER" property="collectedTimes" />
 	</resultMap>
-	<resultMap id="resourceInfoMap" type="com.cas.sim.tis.vo.ResourceInfo">
+	<resultMap id="ResourceInfoMap" type="com.cas.sim.tis.vo.ResourceInfo">
 		<result property="creator" column="creator" />
 		<result property="createDate" column="create_date" />
 		<result property="browsedTimes" column="browsed_times" />
 		<result property="collectedTimes" column="collected_times" />
 	</resultMap>
 
-	<select id="selectResourceInfoByID" resultMap="resourceInfoMap">
+	<select id="selectResourceInfoByID" resultMap="ResourceInfoMap">
 		select
 		u.name as creator,r.create_date,r.browsed_times,r.collected_times
 		from
@@ -33,6 +33,72 @@
 		r.creator=u.id
 		where
 		r.id=#{id}
+	</select>
+
+	<select id="findResourcesByBrowseHistory" resultMap="BaseResultMap">
+		select
+		r.*
+		from
+		browse_history b,resource r
+		where
+		b.rid=r.id and b.creator=#{creator}
+		<if test="keyword != null and keyword != ''">
+			and r.keyword like '%${keyword}%'
+		</if>
+		<if test="types.size()>0 and types != null">
+			and r.type in
+			<foreach item="type" collection="types" open="(" separator="," close=")">
+				#{type}
+			</foreach>
+		</if>
+		order by b.create_date desc
+	</select>
+
+	<select id="countBrowseResourceByType" resultType="java.lang.Integer">
+		select
+		count(*) 
+		from
+		(select distinct
+		r.id
+		from
+		browse_history b,resource r
+		where
+		b.rid=r.id and b.creator=#{creator} and r.type = #{type}
+		<if test="keyword != null and keyword != ''">
+			and r.keyword like '%${keyword}%'
+		</if>
+		) a
+	</select>
+
+	<select id="findResourcesByCollection" resultMap="BaseResultMap">
+		select
+		r.*
+		from
+		collection c,resource r
+		where
+		c.rid=r.id and c.del=0 and c.creator=#{creator}
+		<if test="keyword != null and keyword != ''">
+			and r.keyword like '%${keyword}%'
+		</if>
+		<if test="types.size()>0 and types != null">
+			and r.type in
+			<foreach item="type" collection="types" open="(" separator="," close=")">
+				#{type}
+			</foreach>
+		</if>
+		order by c.create_date desc
+	</select>
+
+	<select id="countCollectionResourceByType" resultType="java.lang.Integer">
+		select 
+		count(r.id)
+		from
+		collection c,resource r
+		where
+		c.rid=r.id and c.del=0 and c.creator=#{creator} and r.type = #{type}
+		<if test="keyword != null and keyword != ''">
+			and r.keyword like '%${keyword}%'
+		</if>
 	</select>
 
 	<update id="increaseBrowse">

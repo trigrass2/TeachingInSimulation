@@ -34,6 +34,7 @@ import com.cas.sim.tis.view.control.imp.table.Column;
 import com.cas.sim.tis.view.control.imp.table.IconCell;
 import com.cas.sim.tis.view.control.imp.table.Table;
 import com.cas.sim.tis.view.controller.PageController;
+import com.cas.sim.tis.view.controller.PageController.PageLevel;
 import com.cas.util.DateUtil;
 import com.cas.util.FileUtil;
 import com.cas.util.StringUtil;
@@ -58,7 +59,9 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
+import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.util.StringConverter;
 
@@ -71,6 +74,11 @@ import javafx.util.StringConverter;
  */
 public class ResourceList extends HBox implements IContent {
 	private static final Logger LOG = LoggerFactory.getLogger(ResourceAction.class);
+
+	public enum ResourceMenuType {
+		EDITABLE, READONLY, BROWSE, COLLECTION;
+	}
+
 	// 我的资源列表
 	@FXML
 	private Table table;
@@ -121,6 +129,8 @@ public class ResourceList extends HBox implements IContent {
 
 	// 上传资源
 	@FXML
+	private VBox uploadPane;
+	@FXML
 	private TextField filePath;
 	@FXML
 	private TextField keywords;
@@ -138,14 +148,14 @@ public class ResourceList extends HBox implements IContent {
 	/**
 	 * 资源列表是否可操作
 	 */
-	private boolean editable;
+	private ResourceMenuType type;
 
 	private ResourceAction action;
 
-	public ResourceList(boolean editable, int... creators) {
+	public ResourceList(ResourceMenuType type, int... creators) {
 		action = SpringUtil.getBean(ResourceAction.class);
 
-		this.editable = editable;
+		this.type = type;
 		if (creators == null) {
 			LOG.warn("此处传入creator不可能为空！");
 		} else {
@@ -172,6 +182,9 @@ public class ResourceList extends HBox implements IContent {
 	 * 界面初始化
 	 */
 	private void initialize() {
+		if (type != ResourceMenuType.EDITABLE) {
+			uploadPane.setVisible(false);
+		}
 		createTable();
 		order.selectedToggleProperty().addListener((observe, oldVal, newVal) -> {
 			if (newVal == null) {
@@ -253,25 +266,24 @@ public class ResourceList extends HBox implements IContent {
 		table.getColumns().addAll(id, icon, name, createDate);
 		// 查看按钮
 		Column<String> view = new Column<String>();
-		view.setCellFactory(BtnCell.forTableColumn(MsgUtil.getMessage("button.view"), "blue-btn", rid -> {
+		view.setCellFactory(BtnCell.forTableColumn(MsgUtil.getMessage("button.view"), Priority.ALWAYS, "blue-btn", rid -> {
 			SpringUtil.getBean(ResourceAction.class).browsed((Integer) rid);
 			SpringUtil.getBean(BrowseHistoryAction.class).addBrowseHistory((Integer) rid);
 			ResourceAction action = SpringUtil.getBean(ResourceAction.class);
 			Resource resource = action.findResourceByID((Integer) rid);
 			// 跳转到查看页面
 			PageController controller = SpringUtil.getBean(PageController.class);
-			controller.loadContent(new ResourceViewer(resource));
+			controller.loadContent(new ResourceViewer(resource), PageLevel.Level2);
 		}));
 		view.setAlignment(Pos.CENTER_RIGHT);
 		table.getColumns().add(view);
-		if (editable) {
+		if (type == ResourceMenuType.EDITABLE) {
 			// 删除按钮
 			Column<String> delete = new Column<String>();
 			delete.setCellFactory(BtnCell.forTableColumn(MsgUtil.getMessage("button.delete"), "blue-btn", rid -> {
 				SpringUtil.getBean(ResourceAction.class).detele((Integer) rid);
 			}));
-			delete.setAlignment(Pos.CENTER);
-			delete.setPrefWidth(58);
+			delete.setAlignment(Pos.CENTER_RIGHT);
 			delete.setMaxWidth(58);
 			table.getColumns().add(delete);
 		}
@@ -315,12 +327,18 @@ public class ResourceList extends HBox implements IContent {
 		if (pdfCheck.isSelected()) {
 			types.add(ResourceType.PDF.getType());
 		}
-		page = action.findResourcesByCreator(curr, pageSize, types, keyword, orderByClause, creators);
-		pagination.setPageCount((int) page.getPages());
-		JSONArray array = new JSONArray();
-		array.addAll(page.getList());
-		table.setItems(array);
-		table.build();
+		page = action.findResources(type, curr, pageSize, types, keyword, orderByClause, creators);
+		if (page == null) {
+			pagination.setPageCount(0);
+			table.setItems(null);
+			table.build();
+		} else {
+			pagination.setPageCount((int) page.getPages());
+			JSONArray array = new JSONArray();
+			array.addAll(page.getList());
+			table.setItems(array);
+			table.build();
+		}
 	}
 
 	/**
@@ -328,14 +346,14 @@ public class ResourceList extends HBox implements IContent {
 	 */
 	private void loadPieChart() {
 		String keyword = search.getText();
-		int picNum = picCheck.isSelected() ? action.countResourceByType(ResourceType.IMAGE.getType(), keyword, creators) : 0;
-		int swfNum = swfCheck.isSelected() ? action.countResourceByType(ResourceType.SWF.getType(), keyword, creators) : 0;
-		int videoNum = videoCheck.isSelected() ? action.countResourceByType(ResourceType.VIDEO.getType(), keyword, creators) : 0;
-		int txtNum = txtCheck.isSelected() ? action.countResourceByType(ResourceType.TXT.getType(), keyword, creators) : 0;
-		int wordNum = wordCheck.isSelected() ? action.countResourceByType(ResourceType.WORD.getType(), keyword, creators) : 0;
-		int pptNum = pptCheck.isSelected() ? action.countResourceByType(ResourceType.PPT.getType(), keyword, creators) : 0;
-		int excelNum = excelCheck.isSelected() ? action.countResourceByType(ResourceType.EXCEL.getType(), keyword, creators) : 0;
-		int pdfNum = pdfCheck.isSelected() ? action.countResourceByType(ResourceType.PDF.getType(), keyword, creators) : 0;
+		int picNum = picCheck.isSelected() ? action.countResourceByType(type, ResourceType.IMAGE.getType(), keyword, creators) : 0;
+		int swfNum = swfCheck.isSelected() ? action.countResourceByType(type, ResourceType.SWF.getType(), keyword, creators) : 0;
+		int videoNum = videoCheck.isSelected() ? action.countResourceByType(type, ResourceType.VIDEO.getType(), keyword, creators) : 0;
+		int txtNum = txtCheck.isSelected() ? action.countResourceByType(type, ResourceType.TXT.getType(), keyword, creators) : 0;
+		int wordNum = wordCheck.isSelected() ? action.countResourceByType(type, ResourceType.WORD.getType(), keyword, creators) : 0;
+		int pptNum = pptCheck.isSelected() ? action.countResourceByType(type, ResourceType.PPT.getType(), keyword, creators) : 0;
+		int excelNum = excelCheck.isSelected() ? action.countResourceByType(type, ResourceType.EXCEL.getType(), keyword, creators) : 0;
+		int pdfNum = pdfCheck.isSelected() ? action.countResourceByType(type, ResourceType.PDF.getType(), keyword, creators) : 0;
 
 		ObservableList<Data> datas = FXCollections.observableArrayList(new PieChart.Data(MsgUtil.getMessage("resource.pic"), picNum), new PieChart.Data(MsgUtil.getMessage("resource.swf"), swfNum), new PieChart.Data(MsgUtil.getMessage("resource.video"), videoNum), new PieChart.Data(MsgUtil.getMessage("resource.txt"), txtNum), new PieChart.Data(MsgUtil.getMessage("resource.word"), wordNum), new PieChart.Data(MsgUtil.getMessage("resource.ppt"), pptNum), new PieChart.Data(MsgUtil.getMessage("resource.excel"), excelNum), new PieChart.Data(MsgUtil.getMessage("resource.pdf"), pdfNum));
 		chart.setData(datas);
