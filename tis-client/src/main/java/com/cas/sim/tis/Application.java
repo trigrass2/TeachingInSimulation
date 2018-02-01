@@ -23,31 +23,36 @@ import javafx.stage.StageStyle;
 public class Application extends AbstractJavaFxApplicationSupport implements ApplicationRunner, ApplicationContextAware {
 
 	private ApplicationContext applicationContext;
-
-	@Override
-	public void beforeInitialView(Stage stage, ConfigurableApplicationContext ctx) {
-//		初始化JxBrowser信息
-		Refine.init();
-		
-		GUIState.setScene(new Scene(new Region()));
-		GUIState.getScene().setFill(null);
-
-		stage.initStyle(StageStyle.TRANSPARENT);
-		super.beforeInitialView(stage, ctx);
-	}
+//	private double xOffset;
+//	private double yOffset;
 
 	@Override
 	public void run(ApplicationArguments args) throws Exception {
-		
+//		初始化JxBrowser信息
+		Refine.init();
+
 		launchApplicationView((ConfigurableApplicationContext) applicationContext);
-		
-		Platform.runLater(()->{
+
+		Platform.runLater(() -> {
 			try {
 				start(new Stage(StageStyle.TRANSPARENT));
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-			
+			Scene scene = new Scene(new Region());
+			scene.setFill(null);
+			GUIState.setScene(scene);
+
+//			scene.setOnMouseDragged(e -> {
+//				GUIState.getStage().setX(e.getScreenX() + xOffset);
+//				GUIState.getStage().setY(e.getScreenY() + yOffset);
+//			});
+//			scene.setOnMousePressed(e -> {
+////				按下鼠标后，记录当前鼠标的坐标
+//				xOffset = GUIState.getStage().getX() - e.getScreenX();
+//				yOffset = GUIState.getStage().getY() - e.getScreenY();
+//			});
+
 			showView(HomeView.class);
 		});
 	}
