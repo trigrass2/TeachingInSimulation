@@ -4,11 +4,11 @@ public final class ResourceConsts {
 	/**
 	 * FTP服务器资源上传路径
 	 */
-	public final static String FTP_RES_PATH = "resources";
+	public final static String FTP_RES_PATH = "resources/";
 	/**
 	 * FTP服务器资源转化路径
 	 */
-	public final static String FTP_CONVERT_PATH = "converter";
+	public final static String FTP_CONVERT_PATH = "converter/";
 //	/**
 //	 * 资源类型——图片
 //	 */

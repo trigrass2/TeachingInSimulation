@@ -1,16 +1,23 @@
 package com.cas.sim.tis.services.impl;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.TransactionDefinition;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
 
-import com.cas.sim.tis.consts.ResourceConsts;
+import com.cas.sim.tis.consts.ResourceType;
+import com.cas.sim.tis.entity.Collection;
 import com.cas.sim.tis.entity.Resource;
 import com.cas.sim.tis.mapper.ResourceMapper;
+import com.cas.sim.tis.services.CollectionService;
 import com.cas.sim.tis.services.ResourceService;
+import com.cas.sim.tis.util.SpringUtil;
+import com.cas.sim.tis.utils.OfficeConverter;
 import com.cas.sim.tis.vo.ResourceInfo;
 import com.cas.util.StringUtil;
 import com.github.pagehelper.PageHelper;
@@ -21,6 +28,11 @@ import tk.mybatis.mapper.entity.Example.Criteria;
 
 @Service
 public class ResourceServiceImpl extends AbstractService<Resource> implements ResourceService {
+
+	@javax.annotation.Resource
+	private OfficeConverter converter;
+	@javax.annotation.Resource
+	private CollectionService collectionService;
 
 	@Override
 	public ResourceInfo findResourceInfoByID(int id) {
@@ -91,10 +103,11 @@ public class ResourceServiceImpl extends AbstractService<Resource> implements Re
 	}
 
 	@Override
-	public boolean addResource(Resource resource, boolean convertable) {
+	public boolean addResource(Resource resource) {
 		// 判断是否需要转化
-		if (convertable) {
-			// TODO
+		ResourceType type = ResourceType.getResourceType(resource.getType());
+		if (type.isConvertable()) {
+			OfficeConverter.resourceConverter(resource.getPath());
 		}
 		resource.setCreateDate(new Date());
 		save(resource);
@@ -105,6 +118,78 @@ public class ResourceServiceImpl extends AbstractService<Resource> implements Re
 	public void browsed(Integer id) {
 		ResourceMapper resourceMapper = (ResourceMapper) mapper;
 		resourceMapper.increaseBrowse(id);
+	}
+
+	@Override
+	public void uncollect(Integer id, Integer userId) {
+		// 1.获取事务控制管理器
+		DataSourceTransactionManager transactionManager = SpringUtil.getBean("txManager", DataSourceTransactionManager.class);
+		// 2.获取事务定义
+		DefaultTransactionDefinition def = new DefaultTransactionDefinition();
+		// 3.设置事务隔离级别，开启新事务
+		def.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW);
+		// 4.获得事务状态
+		TransactionStatus status = transactionManager.getTransaction(def);
+
+		try {
+			// 减少资源收藏数量
+			ResourceMapper resourceMapper = (ResourceMapper) mapper;
+			resourceMapper.decreaseCollection(id);
+
+			status.flush();
+			// 修改用户收藏记录
+			Condition condition = new Condition(Collection.class);
+			Criteria criteria = condition.createCriteria();
+			criteria.andEqualTo("creator", userId);
+			criteria.andEqualTo("resourceId", id);
+			criteria.andEqualTo("del", 0);
+
+			List<Collection> collections = collectionService.findByCondition(condition);
+			for (Collection collection : collections) {
+				collection.setDel(1);
+				collectionService.update(collection);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			transactionManager.rollback(status);
+		} finally {
+			transactionManager.commit(status);
+		}
+	}
+
+	@Override
+	public void collected(Collection collection) {
+		// 1.获取事务控制管理器
+		DataSourceTransactionManager transactionManager = SpringUtil.getBean("txManager", DataSourceTransactionManager.class);
+		// 2.获取事务定义
+		DefaultTransactionDefinition def = new DefaultTransactionDefinition();
+		// 3.设置事务隔离级别，开启新事务
+		def.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW);
+		// 4.获得事务状态
+		TransactionStatus status = transactionManager.getTransaction(def);
+		try {
+			// 增加资源收藏数量
+			ResourceMapper resourceMapper = (ResourceMapper) mapper;
+			resourceMapper.increaseCollection(collection.getResourceId());
+
+			status.flush();
+
+			// 新增用户收藏记录
+			collection.setCreateDate(new Date());
+			collectionService.save(collection);
+		} catch (Exception e) {
+			e.printStackTrace();
+			transactionManager.rollback(status);
+		} finally {
+			transactionManager.commit(status);
+		}
+	}
+
+	@Override
+	public void deteleResource(Integer id) {
+		Resource resource = findById(id);
+		resource.setDel(true);
+		update(resource);
 	}
 
 }

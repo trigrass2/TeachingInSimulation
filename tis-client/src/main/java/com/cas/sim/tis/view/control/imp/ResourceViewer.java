@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import com.cas.sim.tis.consts.ResourceConsts;
 import com.cas.sim.tis.consts.ResourceType;
 import com.cas.sim.tis.entity.Resource;
 import com.cas.sim.tis.util.HTTPUtils;
@@ -21,12 +22,20 @@ import com.teamdev.jxbrowser.chromium.BrowserType;
 import com.teamdev.jxbrowser.chromium.Refine;
 import com.teamdev.jxbrowser.chromium.javafx.BrowserView;
 
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.SimpleDoubleProperty;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.ScrollEvent;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
@@ -95,7 +104,7 @@ public class ResourceViewer extends VBox implements IContent {
 		ResourceType resourceType = ResourceType.getResourceType(type);
 		switch (resourceType) {
 		case IMAGE:
-			createXdocViewer();
+			createImageViewer();
 			break;
 		case SWF:
 			createSWFViewer();
@@ -104,16 +113,16 @@ public class ResourceViewer extends VBox implements IContent {
 			createVLCViewer();
 			break;
 		case TXT:
-			createXdocViewer();
+			createOfficeViewer();
 			break;
 		case WORD:
-			createXdocViewer();
+			createOfficeViewer();
 			break;
 		case PPT:
-			createXdocViewer();
+			createOfficeViewer();
 			break;
 		case EXCEL:
-			createXdocViewer();
+			createOfficeViewer();
 			break;
 		case PDF:
 			createPDFViewer();
@@ -124,9 +133,60 @@ public class ResourceViewer extends VBox implements IContent {
 	}
 
 	/**
+	 * 创建图片浏览
+	 */
+	public void createImageViewer() {
+		Image image = new Image("http://192.168.1.19:8082/Test/1516772514400.png");
+		ImageView imageView = new ImageView(image);
+
+		HBox box = new HBox(imageView);
+		box.setAlignment(Pos.CENTER);
+
+		ScrollPane scrollPane = new ScrollPane(box);
+		scrollPane.setFitToWidth(true);
+		scrollPane.setFitToHeight(true);
+
+		double width = image.getWidth();
+		double height = image.getHeight();
+		DoubleProperty zoomProperty = new SimpleDoubleProperty(1);
+		zoomProperty.addListener(observable -> {
+			if (height * zoomProperty.get() > viewer.getHeight()) {
+				return;
+			}
+			imageView.setFitWidth(width * zoomProperty.get());
+			imageView.setFitHeight(height * zoomProperty.get());
+		});
+		scrollPane.addEventFilter(ScrollEvent.ANY, new EventHandler<ScrollEvent>() {
+			@Override
+			public void handle(ScrollEvent event) {
+				double delta = event.getDeltaY() / 100;
+				double zoom = zoomProperty.get();
+				double zoomDelta = zoom + delta;
+				if (zoomDelta < 0.5) {
+					zoomProperty.set(0.5);
+				} else if (zoomDelta > 2) {
+					zoomProperty.set(2);
+				} else {
+					zoomProperty.set(zoomDelta);
+				}
+			}
+		});
+		viewer.getChildren().add(scrollPane);
+	}
+
+	/**
 	 * 创建文档文件查看器
 	 */
-	private void createXdocViewer() {
+	private void createOfficeViewer() {
+		Refine.init();
+		Browser browser = new Browser(BrowserType.LIGHTWEIGHT);
+		String officeName = resource.getName();
+		String pdfName = officeName.substring(0, officeName.lastIndexOf(".")) + ".pdf";
+		String pdfPath = SpringUtil.getBean(HTTPUtils.class).getHttpUrl(ResourceConsts.FTP_CONVERT_PATH + pdfName);
+		// FIXME
+		browser.loadURL("http://192.168.1.19:8082/Test/Fanuc0i参数说明书.pdf");
+		BrowserView view = new BrowserView(browser);
+		viewer.getChildren().add(view);
 	}
 
 	/**
@@ -147,7 +207,7 @@ public class ResourceViewer extends VBox implements IContent {
 		Browser browser = new Browser(BrowserType.LIGHTWEIGHT);
 		// FIXME
 		browser.loadURL("http://192.168.1.19:8082/Test/Fanuc0i参数说明书.pdf");
-	    BrowserView view = new BrowserView(browser);
+		BrowserView view = new BrowserView(browser);
 		viewer.getChildren().add(view);
 	}
 
@@ -190,12 +250,12 @@ public class ResourceViewer extends VBox implements IContent {
 		if (collected) {
 			this.collectedBtn.setGraphic(new ImageView("/static/images/resource/uncollect.png"));
 			this.collectedBtn.setText(MsgUtil.getMessage("resource.collection.todo"));
-			SpringUtil.getBean(CollectionAction.class).uncollect(rid);
+			SpringUtil.getBean(ResourceAction.class).uncollect(rid);
 			collected = false;
 		} else {
 			this.collectedBtn.setGraphic(new ImageView("/static/images/resource/collected.png"));
 			this.collectedBtn.setText(MsgUtil.getMessage("resource.collection.done"));
-			SpringUtil.getBean(CollectionAction.class).collected(rid);
+			SpringUtil.getBean(ResourceAction.class).collected(rid);
 			collected = true;
 		}
 	}

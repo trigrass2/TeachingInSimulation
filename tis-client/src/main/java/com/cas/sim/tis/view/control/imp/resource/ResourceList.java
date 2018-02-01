@@ -268,7 +268,7 @@ public class ResourceList extends HBox implements IContent {
 			// 删除按钮
 			Column<String> delete = new Column<String>();
 			delete.setCellFactory(BtnCell.forTableColumn(MsgUtil.getMessage("button.delete"), "blue-btn", rid -> {
-
+				SpringUtil.getBean(ResourceAction.class).detele((Integer) rid);
 			}));
 			delete.setAlignment(Pos.CENTER);
 			delete.setPrefWidth(58);
@@ -427,7 +427,7 @@ public class ResourceList extends HBox implements IContent {
 			throw e;
 		}
 		// 记录到数据库
-		boolean converter = action.addResource(resource, ResourceType.getResourceType(type));
+		boolean converter = action.addResource(resource);
 		if (converter) {
 			Alert alert = new Alert(AlertType.INFORMATION, MsgUtil.getMessage("ftp.upload.success"));
 			alert.initOwner(GUIState.getStage());
