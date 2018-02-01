@@ -368,7 +368,7 @@ public class ResourceList extends HBox implements IContent {
 
 	@FXML
 	private void typeFilter(ActionEvent event) {
-		reload();
+		pagination.setPageIndex(0);
 	}
 
 	@FXML

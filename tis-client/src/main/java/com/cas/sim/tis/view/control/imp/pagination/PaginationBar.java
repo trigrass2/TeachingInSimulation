@@ -132,8 +132,8 @@ public class PaginationBar extends HBox {
 			addMiddles(LIMIT, getPageIndex() + 1 - LIMIT / 2);
 			pages.getChildren().add(etc2);
 		}
-		last.setUserData(getPageCount());
-		last.setText(String.valueOf(getPageCount() - 1));
+		last.setUserData(getPageCount() - 1);
+		last.setText(String.valueOf(getPageCount()));
 		pages.getChildren().add(last);
 		pageBtn.getToggles().add(last);
 		pageBtn.getToggles().get(getPageIndex()).setSelected(true);
