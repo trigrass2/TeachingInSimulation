@@ -31,6 +31,7 @@ public class BtnCell<T>extends Cell<T> {
 
 	public BtnCell(String btnName, String btnStlyeClass, Consumer<Object> action) {
 		super(null);
+		this.setTooltip(null);
 		btn.setText(btnName);
 		btn.getStyleClass().add(btnStlyeClass);
 		btn.setOnAction(event -> {

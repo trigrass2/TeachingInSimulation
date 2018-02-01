@@ -22,6 +22,8 @@ import javafx.collections.ObservableList;
 import javafx.collections.WeakListChangeListener;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.ScrollPane.ScrollBarPolicy;
 import javafx.scene.control.Separator;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
@@ -32,6 +34,8 @@ public class Table extends VBox {
 	protected String normalStyleClass;
 	protected String hoverStyleClass;
 	protected String selectedStyleClass;
+
+	private VBox content = new VBox(10);
 
 	public Table() {
 		this(null, null, null);
@@ -44,6 +48,7 @@ public class Table extends VBox {
 		this.normalStyleClass = normalStyleClass;
 		this.hoverStyleClass = hoverStyleClass;
 		this.selectedStyleClass = selectedStyleClass;
+
 	}
 
 	// --- Headerable
@@ -261,7 +266,8 @@ public class Table extends VBox {
 		row.setAlignment(Pos.CENTER_LEFT);
 		row.setPadding(getRowPadding());
 		VBox.setVgrow(row, Priority.ALWAYS);
-		this.getChildren().add(row);
+//		this.getChildren().add(row);
+		this.content.getChildren().add(row);
 		this.layout();
 		this.rows.add(row);
 	}
@@ -271,7 +277,8 @@ public class Table extends VBox {
 		separator.setMaxHeight(1);
 		separator.getStyleClass().add("lightgray-separator");
 		VBox.setVgrow(separator, Priority.ALWAYS);
-		this.getChildren().add(separator);
+//		this.getChildren().add(separator);
+		this.content.getChildren().add(separator);
 		this.layout();
 	}
 
@@ -322,6 +329,8 @@ public class Table extends VBox {
 			}
 			cell.setItem(value);
 			if (getRowHeight() != -1) {
+				cell.setMinHeight(getRowHeight());
+				cell.setMaxHeight(getRowHeight());
 				cell.setPrefHeight(getRowHeight());
 			}
 			cell.updateTableColumn((Column<Object>) column);
@@ -339,6 +348,11 @@ public class Table extends VBox {
 			return;
 		}
 		try {
+			content.getChildren().clear();
+			ScrollPane scrollPane = new ScrollPane(content);
+			scrollPane.setFitToWidth(true);
+			scrollPane.setHbarPolicy(ScrollBarPolicy.NEVER);
+			this.getChildren().add(scrollPane);
 			for (int i = 0; i < newItems.size(); i++) {
 				JSONObject object = newItems.getJSONObject(i);
 				Row row = null;

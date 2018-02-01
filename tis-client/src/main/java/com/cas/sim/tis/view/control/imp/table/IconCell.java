@@ -1,6 +1,5 @@
 package com.cas.sim.tis.view.control.imp.table;
 
-import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -19,6 +18,7 @@ public class IconCell<T>extends Cell<T> {
 		view.setFitHeight(25);
 		view.setFitWidth(25);
 		this.setGraphic(view);
+		this.setTooltip(null);
 		this.item = new SimpleObjectProperty<T>(this, "item") {
 			@Override
 			public void set(T newValue) {

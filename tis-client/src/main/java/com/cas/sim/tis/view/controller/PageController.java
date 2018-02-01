@@ -53,7 +53,9 @@ public class PageController implements Initializable {
 	private void back() {
 		// 返回上一个界面
 		if (this.prevContent != null) {
-			loadContent(prevContent);
+			this.currContent = prevContent;
+			this.prevContent = null;
+			this.content.getChildren().add(currContent.getContent());
 		} else {
 			loadLeftMenu(null);
 			loadContent(null);
@@ -79,23 +81,19 @@ public class PageController implements Initializable {
 
 	public void loadContent(IContent content) {
 		this.content.getChildren().clear();
-		if (currContent == null) {
+		if (content == null) {
+			this.currContent = null;
+			this.prevContent = null;
+			return;
+		}
+		if (this.currContent == null) {
 			this.currContent = content;
+			this.prevContent = null;
 		} else {
-			this.currContent.removed();
-			if (content == null) {
-				this.currContent = content;
-				this.prevContent = this.currContent;
-			} else if (currContent.getClass() == content.getClass()) {
-				this.currContent = content;
-			} else {
-				this.prevContent = this.currContent;
-				this.currContent = content;
-			}
+			this.prevContent = this.currContent;
+			this.currContent = content;
 		}
-		if (content != null) {
-			this.content.getChildren().add(content.getContent());
-		}
+		this.content.getChildren().add(content.getContent());
 	}
 
 	private void hide() {

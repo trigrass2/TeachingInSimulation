@@ -14,6 +14,7 @@ import javafx.beans.value.WeakChangeListener;
 import javafx.collections.WeakListChangeListener;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
+import javafx.scene.control.Tooltip;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.util.Callback;
@@ -25,13 +26,16 @@ public class Cell<T>extends Label {
 	}
 
 	protected Row row;
+	
+	protected Tooltip tooltip = new Tooltip();
 
 	private ChangeListener<Boolean> editListener;
 
 	public Cell(StringConverter<T> converter) {
 		this.setText("");
 		this.getStyleClass().add("cell");
-		this.setWrapText(true);
+		this.setWrapText(false);
+		this.setTooltip(tooltip);
 		HBox.setHgrow(this, Priority.ALWAYS);
 		setConverter(converter);
 		bind();
@@ -90,10 +94,13 @@ public class Cell<T>extends Label {
 		public void set(T newValue) {
 			if (newValue == null) {
 				setText("");
+				tooltip.setText("");
 			} else if (getConverter() == null) {
 				setText(String.valueOf(newValue));
+				tooltip.setText(String.valueOf(newValue));
 			} else {
 				setText(getConverter().toString(newValue));
+				tooltip.setText(getConverter().toString(newValue));
 			}
 			super.set(newValue);
 		};
