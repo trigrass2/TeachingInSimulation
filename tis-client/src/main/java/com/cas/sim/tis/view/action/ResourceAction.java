@@ -7,7 +7,6 @@ import org.springframework.remoting.rmi.RmiProxyFactoryBean;
 import org.springframework.stereotype.Component;
 
 import com.cas.sim.tis.consts.Session;
-import com.cas.sim.tis.entity.Collection;
 import com.cas.sim.tis.entity.Resource;
 import com.cas.sim.tis.services.ResourceService;
 import com.cas.sim.tis.vo.ResourceInfo;
@@ -47,7 +46,7 @@ public class ResourceAction {
 
 	public void browsed(Integer id) {
 		ResourceService service = (ResourceService) resourceServiceFactory.getObject();
-		service.browsed(id);
+		service.browsed(id, Session.get(Session.KEY_LOGIN_ID));
 	}
 
 	public void uncollect(Integer id) {
@@ -62,12 +61,8 @@ public class ResourceAction {
 		if (id == null) {
 			return;
 		}
-		Collection collection = new Collection();
-		collection.setResourceId(id);
-		collection.setCreator(Session.get(Session.KEY_LOGIN_ID));
-
 		ResourceService service = (ResourceService) resourceServiceFactory.getObject();
-		service.collected(collection);
+		service.collected(id, Session.get(Session.KEY_LOGIN_ID));
 	}
 
 	public void detele(Integer id) {

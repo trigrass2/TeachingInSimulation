@@ -180,11 +180,11 @@ public class ResourceViewer extends VBox implements IContent {
 	private void createOfficeViewer() {
 		Refine.init();
 		Browser browser = new Browser(BrowserType.LIGHTWEIGHT);
-		String officeName = resource.getName();
+		String officeName = resource.getPath();
 		String pdfName = officeName.substring(0, officeName.lastIndexOf(".")) + ".pdf";
 		String pdfPath = SpringUtil.getBean(HTTPUtils.class).getHttpUrl(ResourceConsts.FTP_CONVERT_PATH + pdfName);
 		// FIXME
-		browser.loadURL("http://192.168.1.19:8082/Test/Fanuc0i参数说明书.pdf");
+		browser.loadURL(pdfPath);
 		BrowserView view = new BrowserView(browser);
 		viewer.getChildren().add(view);
 	}

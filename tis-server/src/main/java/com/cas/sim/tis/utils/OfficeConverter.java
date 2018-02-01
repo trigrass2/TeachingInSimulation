@@ -10,27 +10,29 @@ import org.jodconverter.office.OfficeManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 
 import com.cas.sim.tis.consts.ResourceConsts;
 
 @Component
+@PropertySource("file:cfg.properties")
 public class OfficeConverter {
 	private static final Logger LOG = LoggerFactory.getLogger(OfficeConverter.class);
 
 	@Value(value = "${open.office.path}")
-	private static String path;
+	private String path;
 	@Value(value = "${open.office.port}")
-	private static Integer port;
+	private Integer port;
 
-	public static void resourceConverter(String src) {
+	public void resourceConverter(String src) {
 		// FIXME
-		String ftpHome = "E://FTP_HOME";
+		String ftpHome = "E://FTP_HOME//";
 		String des = src.substring(0, src.lastIndexOf(".")) + ".pdf";
 		converter(ftpHome + ResourceConsts.FTP_RES_PATH + src, ftpHome + ResourceConsts.FTP_CONVERT_PATH + des);
 	}
 
-	private static void converter(String srcPath, String desPath) {
+	private void converter(String srcPath, String desPath) {
 		// 源文件目录
 		File inputFile = new File(srcPath);
 		if (!inputFile.exists()) {

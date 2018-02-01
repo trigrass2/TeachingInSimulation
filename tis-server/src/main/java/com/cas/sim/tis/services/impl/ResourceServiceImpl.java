@@ -11,9 +11,11 @@ import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import com.cas.sim.tis.consts.ResourceType;
+import com.cas.sim.tis.entity.BrowseHistory;
 import com.cas.sim.tis.entity.Collection;
 import com.cas.sim.tis.entity.Resource;
 import com.cas.sim.tis.mapper.ResourceMapper;
+import com.cas.sim.tis.services.BrowseHistoryService;
 import com.cas.sim.tis.services.CollectionService;
 import com.cas.sim.tis.services.ResourceService;
 import com.cas.sim.tis.util.SpringUtil;
@@ -33,6 +35,8 @@ public class ResourceServiceImpl extends AbstractService<Resource> implements Re
 	private OfficeConverter converter;
 	@javax.annotation.Resource
 	private CollectionService collectionService;
+	@javax.annotation.Resource
+	private BrowseHistoryService browseHistoryService;
 
 	@Override
 	public ResourceInfo findResourceInfoByID(int id) {
@@ -107,7 +111,7 @@ public class ResourceServiceImpl extends AbstractService<Resource> implements Re
 		// 判断是否需要转化
 		ResourceType type = ResourceType.getResourceType(resource.getType());
 		if (type.isConvertable()) {
-			OfficeConverter.resourceConverter(resource.getPath());
+			converter.resourceConverter(resource.getPath());
 		}
 		resource.setCreateDate(new Date());
 		save(resource);
@@ -115,15 +119,40 @@ public class ResourceServiceImpl extends AbstractService<Resource> implements Re
 	}
 
 	@Override
-	public void browsed(Integer id) {
-		ResourceMapper resourceMapper = (ResourceMapper) mapper;
-		resourceMapper.increaseBrowse(id);
+	public void browsed(Integer id, Integer userId) {
+		// 1.获取事务控制管理器
+		DataSourceTransactionManager transactionManager = SpringUtil.getBean(DataSourceTransactionManager.class);
+		// 2.获取事务定义
+		DefaultTransactionDefinition def = new DefaultTransactionDefinition();
+		// 3.设置事务隔离级别，开启新事务
+		def.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW);
+		// 4.获得事务状态
+		TransactionStatus status = transactionManager.getTransaction(def);
+
+		try {
+			// 增加资源查看数量
+			ResourceMapper resourceMapper = (ResourceMapper) mapper;
+			resourceMapper.increaseBrowse(id);
+
+			status.flush();
+
+			BrowseHistory history = new BrowseHistory();
+			history.setResourceId(id);
+			history.setCreator(userId);
+			history.setCreateDate(new Date());
+			browseHistoryService.save(history);
+		} catch (Exception e) {
+			e.printStackTrace();
+			transactionManager.rollback(status);
+		} finally {
+			transactionManager.commit(status);
+		}
 	}
 
 	@Override
 	public void uncollect(Integer id, Integer userId) {
 		// 1.获取事务控制管理器
-		DataSourceTransactionManager transactionManager = SpringUtil.getBean("txManager", DataSourceTransactionManager.class);
+		DataSourceTransactionManager transactionManager = SpringUtil.getBean(DataSourceTransactionManager.class);
 		// 2.获取事务定义
 		DefaultTransactionDefinition def = new DefaultTransactionDefinition();
 		// 3.设置事务隔离级别，开启新事务
@@ -158,9 +187,9 @@ public class ResourceServiceImpl extends AbstractService<Resource> implements Re
 	}
 
 	@Override
-	public void collected(Collection collection) {
+	public void collected(Integer id, Integer userId) {
 		// 1.获取事务控制管理器
-		DataSourceTransactionManager transactionManager = SpringUtil.getBean("txManager", DataSourceTransactionManager.class);
+		DataSourceTransactionManager transactionManager = SpringUtil.getBean(DataSourceTransactionManager.class);
 		// 2.获取事务定义
 		DefaultTransactionDefinition def = new DefaultTransactionDefinition();
 		// 3.设置事务隔离级别，开启新事务
@@ -170,11 +199,14 @@ public class ResourceServiceImpl extends AbstractService<Resource> implements Re
 		try {
 			// 增加资源收藏数量
 			ResourceMapper resourceMapper = (ResourceMapper) mapper;
-			resourceMapper.increaseCollection(collection.getResourceId());
+			resourceMapper.increaseCollection(id);
 
 			status.flush();
 
 			// 新增用户收藏记录
+			Collection collection = new Collection();
+			collection.setResourceId(id);
+			collection.setCreator(userId);
 			collection.setCreateDate(new Date());
 			collectionService.save(collection);
 		} catch (Exception e) {
