@@ -21,11 +21,9 @@ import com.jme3.network.NetworkClient;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Region;
 
 /**
@@ -45,6 +43,8 @@ public class LoginController implements Initializable {
 
 	@FXML
 	private Region loginView;
+	@FXML
+	private Region loginBtn;
 	@FXML
 	private LoginDecoration loginDecoration;
 	@FXML
@@ -71,6 +71,7 @@ public class LoginController implements Initializable {
 
 	@FXML
 	public void processLogin() {
+		errorMessage.setText("");
 //		0、验证登录信息的完整性
 		if (StringUtils.isEmpty(userId.getText())) {
 			setErrorMsg(resources.getString("login.account.notnull"));
@@ -92,13 +93,14 @@ public class LoginController implements Initializable {
 				port = Integer.parseInt(prop.getProperty("server.base.port", "9000"));
 				client.connectToServer(address, port, port);
 			} catch (IOException e) {
-				LOG.error("连接服务器失败IP：{}，端口：{}", address, port);
+				LOG.error("连接服务器失败{}:{}", address, port);
 				setErrorMsg(resources.getString("server.connect.failure"));
 				return;
 			}
 //			2、启动客户端
 			client.start();
 		}
+		loginBtn.setDisable(true);
 
 //		3、项服务器发送登录消息
 		LoginMessage msg = new LoginMessage();
@@ -119,6 +121,10 @@ public class LoginController implements Initializable {
 		this.client = client;
 	}
 
+	public void enableLoginButton() {
+		loginBtn.setDisable(false);
+	}
+	
 	public void close() {
 		loginView.getScene().getWindow().hide();
 	}

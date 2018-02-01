@@ -5,10 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
-import javax.annotation.Resource;
-
 import com.cas.sim.tis.Application;
-import com.cas.sim.tis.app.JmeApplication;
 import com.cas.sim.tis.consts.RoleConst;
 import com.cas.sim.tis.consts.Session;
 import com.cas.sim.tis.util.SpringUtil;
@@ -17,8 +14,7 @@ import com.cas.sim.tis.view.control.imp.HomeMenu;
 import com.cas.sim.tis.view.control.imp.jme.Recongnize3D;
 import com.cas.sim.tis.view.control.imp.jme.RecongnizeMenu;
 import com.cas.sim.tis.view.control.imp.resource.ResourceMenu;
-import com.jme3.system.AppSettings;
-import com.jme3x.jfx.injfx.JmeToJFXIntegrator;
+import com.cas.sim.tis.view.controller.PageController.PageLevel;
 
 import de.felixroske.jfxsupport.FXMLController;
 import javafx.fxml.FXML;
@@ -29,9 +25,6 @@ import javafx.scene.layout.HBox;
 public class HomeController implements Initializable {
 	@FXML
 	private HBox menu;
-
-	@Resource
-	private JmeApplication jmeApp;
 
 	private List<HomeMenu> homeMenus = new ArrayList<HomeMenu>();
 
@@ -59,24 +52,41 @@ public class HomeController implements Initializable {
 			PageController controller = SpringUtil.getBean(PageController.class);
 			ResourceMenu menu = new ResourceMenu();
 			controller.loadLeftMenu(menu);
-			controller.loadContent(null);
+			controller.loadContent(null, null);
 		});
 		homeMenus.add(resource);
 	}
 
+	/**
+	 * 认知
+	 */
 	public void recongize() {
 		// 跳转到认知页面
 		Application.showView(PageView.class);
+
 		PageController controller = SpringUtil.getBean(PageController.class);
-		controller.loadLeftMenu(new RecongnizeMenu());
-
 		Recongnize3D content = new Recongnize3D();
-		controller.loadContent(content);
+		
+		controller.loadLeftMenu(new RecongnizeMenu(content));
+		controller.loadContent(content, PageLevel.Level1);
+	}
 
-		final AppSettings settings = JmeToJFXIntegrator.prepareSettings(new AppSettings(true), 60);
-		jmeApp.setSettings(settings);
-		jmeApp.setShowSettings(false);
-		JmeToJFXIntegrator.startAndBindMainViewPort(jmeApp, content.getCanvas(), Thread::new);
+	/**
+	 * 典型案例
+	 */
+	public void typicalCase() {
+	}
+
+	/**
+	 * 接线练习
+	 */
+	public void exersize() {
+	}
+
+	/**
+	 * 电路维修
+	 */
+	public void repair() {
 	}
 
 }
