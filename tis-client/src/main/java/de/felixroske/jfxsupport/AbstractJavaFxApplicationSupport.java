@@ -345,24 +345,24 @@ public abstract class AbstractJavaFxApplicationSupport extends Application {
         launch(appClass, view, splashScreen, args);
     }
     
-    /**
-     * Gets called after full initialization of Spring application context
-     * and JavaFX platform right before the initial view is shown.
-     * Override this method as a hook to add special code for your app. Especially meant to
-     * add AWT code to add a system tray icon and behavior by calling
-     * GUIState.getSystemTray() and modifying it accordingly.
-     * <p>
-     * By default noop.
-     *
-     * @param stage can be used to customize the stage before being displayed
-     * @param ctx   represents spring ctx where you can loog for beans.
-     */
-    public void beforeInitialView(final Stage stage, final ConfigurableApplicationContext ctx) {
-    }
-
-    public void beforeShowingSplash(Stage splashStage) {
-
-    }
+//    /**
+//     * Gets called after full initialization of Spring application context
+//     * and JavaFX platform right before the initial view is shown.
+//     * Override this method as a hook to add special code for your app. Especially meant to
+//     * add AWT code to add a system tray icon and behavior by calling
+//     * GUIState.getSystemTray() and modifying it accordingly.
+//     * <p>
+//     * By default noop.
+//     *
+//     * @param stage can be used to customize the stage before being displayed
+//     * @param ctx   represents spring ctx where you can loog for beans.
+//     */
+//    public void beforeInitialView(final Stage stage, final ConfigurableApplicationContext ctx) {
+//    }
+//
+//    public void beforeShowingSplash(Stage splashStage) {
+//
+//    }
 
     public Collection<Image> loadDefaultIcons() {
         return Arrays.asList(new Image(getClass().getResource("/icons/gear_16x16.png").toExternalForm()),
