@@ -46,6 +46,8 @@ public class LoginMessageHandler implements ClientHandler<LoginMessage> {
 			Platform.runLater(() -> {
 				String messageKey = m.getResult().getMsg();
 				loginController.setErrorMsg(bundle.getString(messageKey));
+				
+				loginController.enableLoginButton();
 			});
 		}
 	}
