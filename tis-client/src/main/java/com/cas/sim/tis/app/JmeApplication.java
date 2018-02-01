@@ -2,45 +2,39 @@ package com.cas.sim.tis.app;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
 
-import com.jme3.material.Material;
-import com.jme3.math.ColorRGBA;
-import com.jme3.scene.Geometry;
-import com.jme3.scene.shape.Box;
+import com.cas.sim.tis.util.HTTPUtils;
+import com.cas.sim.tis.util.SpringUtil;
+import com.jme3.asset.plugins.UrlLocator;
+import com.jme3.system.AppSettings;
 import com.jme3x.jfx.injfx.JmeToJFXApplication;
+import com.jme3x.jfx.injfx.JmeToJFXIntegrator;
 
-@Component
 public class JmeApplication extends JmeToJFXApplication {
 	public static final Logger LOG = LoggerFactory.getLogger(JmeApplication.class);
 
-	protected Geometry player;
-
 	public JmeApplication() {
+		final AppSettings settings = JmeToJFXIntegrator.prepareSettings(new AppSettings(true), 60);
+		setSettings(settings);
+		setShowSettings(false);
 	}
-	
+
+	@Override
+	public void start() {
+		LOG.info("start");
+		super.start();
+	}
+
 	@Override
 	public void simpleInitApp() {
+//		注册资源路径
+		String assetPath = SpringUtil.getBean(HTTPUtils.class).getHttpUrl("assets/");
+		LOG.debug("注册资源路径:{}", assetPath);
+		assetManager.registerLocator(assetPath, UrlLocator.class);
+
 		super.simpleInitApp();
-		
-		inputManager.setCursorVisible(true);
-//		鼠标拖拽旋转相机
-		flyCam.setDragToRotate(true);
-		
-		Box b = new Box(1, 1, 1);
-		player = new Geometry("Player", b);
-		Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
-		mat.setColor("Color", ColorRGBA.Blue);
-		player.setMaterial(mat);
-		rootNode.attachChild(player);
 	}
 
-	@Override
-	public void simpleUpdate(float tpf) {
-		super.simpleUpdate(tpf);
-		player.rotate(0, 0, tpf);
-	}
-	
 	@Override
 	public void update() {
 		try {
@@ -49,4 +43,17 @@ public class JmeApplication extends JmeToJFXApplication {
 			LOG.error("出现一个未知的异常", e);
 		}
 	}
+
+	@Override
+	public void stop() {
+		LOG.info("stop");
+		super.stop();
+	}
+
+	@Override
+	public void destroy() {
+		LOG.info("destroy");
+		super.destroy();
+	}
+
 }
