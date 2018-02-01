@@ -143,15 +143,23 @@
 				<version>${jxbrowser.version}</version>
 			</dependency>
 
-			<!-- https://mvnrepository.com/artifact/org.jodconverter/jodconverter-local -->
+			<!-- https://mvnrepository.com/artifact/org.jodconverter/jodconverter-spring-boot-starter -->
 			<dependency>
 				<groupId>org.jodconverter</groupId>
-				<artifactId>jodconverter-local</artifactId>
+				<artifactId>jodconverter-spring-boot-starter</artifactId>
 				<version>${jodconverter.version}</version>
 				<exclusions>
 					<exclusion>
 						<groupId>org.slf4j</groupId>
 						<artifactId>slf4j-api</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>org.springframework.boot</groupId>
+						<artifactId>spring-boot-starter</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>org.springframework.boot</groupId>
+						<artifactId>spring-boot-configuration-processor</artifactId>
 					</exclusion>
 				</exclusions>
 			</dependency>
@@ -273,6 +281,11 @@
 						<artifactId>spring-boot-starter-logging</artifactId>
 					</exclusion>
 				</exclusions>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-configuration-processor</artifactId>
+				<version>${springboot.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.springframework.boot</groupId>
