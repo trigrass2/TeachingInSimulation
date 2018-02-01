@@ -17,6 +17,7 @@ import com.cas.sim.tis.view.control.imp.HomeMenu;
 import com.cas.sim.tis.view.control.imp.jme.Recongnize3D;
 import com.cas.sim.tis.view.control.imp.jme.RecongnizeMenu;
 import com.cas.sim.tis.view.control.imp.resource.ResourceMenu;
+import com.cas.sim.tis.view.controller.PageController.PageLevel;
 import com.jme3.system.AppSettings;
 import com.jme3x.jfx.injfx.JmeToJFXIntegrator;
 
@@ -59,7 +60,7 @@ public class HomeController implements Initializable {
 			PageController controller = SpringUtil.getBean(PageController.class);
 			ResourceMenu menu = new ResourceMenu();
 			controller.loadLeftMenu(menu);
-			controller.loadContent(null);
+			controller.loadContent(null, null);
 		});
 		homeMenus.add(resource);
 	}
@@ -71,7 +72,7 @@ public class HomeController implements Initializable {
 		controller.loadLeftMenu(new RecongnizeMenu());
 
 		Recongnize3D content = new Recongnize3D();
-		controller.loadContent(content);
+		controller.loadContent(content, PageLevel.Level1);
 
 		final AppSettings settings = JmeToJFXIntegrator.prepareSettings(new AppSettings(true), 60);
 		jmeApp.setSettings(settings);

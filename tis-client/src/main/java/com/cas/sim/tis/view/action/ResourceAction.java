@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 import com.cas.sim.tis.consts.Session;
 import com.cas.sim.tis.entity.Resource;
 import com.cas.sim.tis.services.ResourceService;
+import com.cas.sim.tis.view.control.imp.resource.ResourceList.ResourceMenuType;
 import com.cas.sim.tis.vo.ResourceInfo;
 import com.github.pagehelper.PageInfo;
 
@@ -24,14 +25,26 @@ public class ResourceAction {
 		return service.addResource(resource);
 	}
 
-	public PageInfo<Resource> findResourcesByCreator(int pagination, int pageSize, List<Integer> resourceTypes, String keyword, String orderByClause, List<Integer> creators) {
+	public PageInfo<Resource> findResources(ResourceMenuType type, int pagination, int pageSize, List<Integer> resourceTypes, String keyword, String orderByClause, List<Integer> creators) {
 		ResourceService service = (ResourceService) resourceServiceFactory.getObject();
-		return service.findResourcesByCreator(pagination, pageSize, resourceTypes, keyword, orderByClause, creators);
+		if (ResourceMenuType.BROWSE == type) {
+			return service.findResourcesByBrowseHistory(pagination, pageSize, resourceTypes, keyword, orderByClause, creators.get(0));
+		} else if (ResourceMenuType.COLLECTION == type) {
+			return service.findResourcesByCollection(pagination, pageSize, resourceTypes, keyword, orderByClause, creators.get(0));
+		} else {
+			return service.findResourcesByCreator(pagination, pageSize, resourceTypes, keyword, orderByClause, creators);
+		}
 	}
 
-	public int countResourceByType(int type, String keyword, List<Integer> creators) {
+	public int countResourceByType(ResourceMenuType menuType, int type, String keyword, List<Integer> creators) {
 		ResourceService service = (ResourceService) resourceServiceFactory.getObject();
-		return service.countResourceByType(type, keyword, creators);
+		if (ResourceMenuType.BROWSE == menuType) {
+			return service.countBrowseResourceByType(type, keyword, creators.get(0));
+		} else if (ResourceMenuType.COLLECTION == menuType) {
+			return service.countCollectionResourceByType(type, keyword, creators.get(0));
+		} else {
+			return service.countResourceByType(type, keyword, creators);
+		}
 	}
 
 	public ResourceInfo findResourceInfoByID(int id) {

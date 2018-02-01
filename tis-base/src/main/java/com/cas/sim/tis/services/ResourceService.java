@@ -11,6 +11,10 @@ public interface ResourceService extends BaseService<Resource> {
 
 	PageInfo<Resource> findResourcesByCreator(int pagination, int pageSize, List<Integer> resourceTypes, String keyword, String orderByClause, List<Integer> creators);
 
+	PageInfo<Resource> findResourcesByBrowseHistory(int pagination, int pageSize, List<Integer> resourceTypes, String keyword, String orderByClause, Integer creater);
+	
+	PageInfo<Resource> findResourcesByCollection(int pagination, int pageSize, List<Integer> resourceTypes, String keyword, String orderByClause, Integer creater);
+	
 	int countResourceByType(int type, String keyword, List<Integer> creators);
 
 	boolean addResource(Resource resource);
@@ -22,4 +26,8 @@ public interface ResourceService extends BaseService<Resource> {
 	void collected(Integer id, Integer userId);
 	
 	void deteleResource(Integer id);
+	
+	int countBrowseResourceByType(int type, String keyword, Integer creator);
+	
+	int countCollectionResourceByType(int type, String keyword, Integer creator);
 }

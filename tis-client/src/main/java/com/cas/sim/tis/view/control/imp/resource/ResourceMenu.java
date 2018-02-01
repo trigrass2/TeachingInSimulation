@@ -4,7 +4,9 @@ import com.cas.sim.tis.consts.RoleConst;
 import com.cas.sim.tis.consts.Session;
 import com.cas.sim.tis.util.SpringUtil;
 import com.cas.sim.tis.view.control.imp.LeftMenu;
+import com.cas.sim.tis.view.control.imp.resource.ResourceList.ResourceMenuType;
 import com.cas.sim.tis.view.controller.PageController;
+import com.cas.sim.tis.view.controller.PageController.PageLevel;
 
 public class ResourceMenu extends LeftMenu {
 
@@ -15,29 +17,31 @@ public class ResourceMenu extends LeftMenu {
 		if (RoleConst.ADMIN == role) {
 			addMenuItem("系统资源", "static/images/left/resource.png", e -> {
 				PageController controller = SpringUtil.getBean(PageController.class);
-				controller.loadContent(new ResourceList(true, 1));
+				controller.loadContent(new ResourceList(ResourceMenuType.EDITABLE, 1), PageLevel.Level1);
 			});
 		} else if (RoleConst.TEACHER == role) {
 			addMenuItem("系统资源", "static/images/left/resource.png", e -> {
 				PageController controller = SpringUtil.getBean(PageController.class);
-				controller.loadContent(new ResourceList(false, 1));
+				controller.loadContent(new ResourceList(ResourceMenuType.READONLY, 1), PageLevel.Level1);
 			});
 			addMenuItem("我的资源", "static/images/left/resource.png", e -> {
 				PageController controller = SpringUtil.getBean(PageController.class);
-				controller.loadContent(new ResourceList(true, userId));
+				controller.loadContent(new ResourceList(ResourceMenuType.EDITABLE, userId), PageLevel.Level1);
 			});
 		} else if (RoleConst.STUDENT == role) {
 			addMenuItem("系统资源", "static/images/left/resource.png", e -> {
 				// 获得教师编号
 				PageController controller = SpringUtil.getBean(PageController.class);
-				controller.loadContent(new ResourceList(false, 1));
+				controller.loadContent(new ResourceList(ResourceMenuType.READONLY, 1), PageLevel.Level1);
 			});
 		}
 		addMenuItem("浏览记录", "static/images/left/history.png", e -> {
-
+			PageController controller = SpringUtil.getBean(PageController.class);
+			controller.loadContent(new ResourceList(ResourceMenuType.BROWSE, 1), PageLevel.Level1);
 		});
 		addMenuItem("我的收藏", "static/images/left/favorite.png", e -> {
-
+			PageController controller = SpringUtil.getBean(PageController.class);
+			controller.loadContent(new ResourceList(ResourceMenuType.COLLECTION, 1), PageLevel.Level1);
 		});
 	}
 }

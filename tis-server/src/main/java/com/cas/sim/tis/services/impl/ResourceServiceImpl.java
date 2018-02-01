@@ -83,6 +83,34 @@ public class ResourceServiceImpl extends AbstractService<Resource> implements Re
 	}
 
 	@Override
+	public PageInfo<Resource> findResourcesByBrowseHistory(int pagination, int pageSize, List<Integer> resourceTypes, String keyword, String orderByClause, Integer creator) {
+		ResourceMapper resourceMapper = (ResourceMapper) mapper;
+		// 开始分页查询
+		PageHelper.startPage(pagination, pageSize, orderByClause);
+		List<Resource> result = resourceMapper.findResourcesByBrowseHistory(resourceTypes, keyword, creator);
+		PageInfo<Resource> page = new PageInfo<Resource>(result);
+//		查到的总记录数
+//		解释一下：这个page.getTotal()，是所有符合条件的记录数。
+//		result.size()：是当前页中的数据量 <= pageSize
+		LOG.info("成功查找到{}条资源,当前页码{},每页{}条资源,共{}页", result.size(), pagination, pageSize, page.getPages());
+		return page;
+	}
+
+	@Override
+	public PageInfo<Resource> findResourcesByCollection(int pagination, int pageSize, List<Integer> resourceTypes, String keyword, String orderByClause, Integer creator) {
+		ResourceMapper resourceMapper = (ResourceMapper) mapper;
+		// 开始分页查询
+		PageHelper.startPage(pagination, pageSize, orderByClause);
+		List<Resource> result = resourceMapper.findResourcesByCollection(resourceTypes, keyword, creator);
+		PageInfo<Resource> page = new PageInfo<Resource>(result);
+//		查到的总记录数
+//		解释一下：这个page.getTotal()，是所有符合条件的记录数。
+//		result.size()：是当前页中的数据量 <= pageSize
+		LOG.info("成功查找到{}条资源,当前页码{},每页{}条资源,共{}页", result.size(), pagination, pageSize, page.getPages());
+		return page;
+	}
+
+	@Override
 	public int countResourceByType(int type, String keyword, List<Integer> creators) {
 //		获取当前登陆者身份信息
 		Condition condition = new Condition(Resource.class);
@@ -136,6 +164,16 @@ public class ResourceServiceImpl extends AbstractService<Resource> implements Re
 
 			status.flush();
 
+			Condition condition = new Condition(BrowseHistory.class);
+			condition.orderBy("createDate").asc();
+			Criteria criteria = condition.createCriteria();
+			criteria.andEqualTo("creator", userId);
+			List<BrowseHistory> histories = browseHistoryService.findByCondition(condition);
+			// 查看历史记录是否超过100条，注意这里是物理删除！！！
+			if (histories.size() == 100) {
+				BrowseHistory history = histories.get(0);
+				browseHistoryService.deleteById(history.getId());
+			}
 			BrowseHistory history = new BrowseHistory();
 			history.setResourceId(id);
 			history.setCreator(userId);
@@ -222,6 +260,18 @@ public class ResourceServiceImpl extends AbstractService<Resource> implements Re
 		Resource resource = findById(id);
 		resource.setDel(true);
 		update(resource);
+	}
+
+	@Override
+	public int countBrowseResourceByType(int type, String keyword, Integer creator) {
+		ResourceMapper resourceMapper = (ResourceMapper) mapper;
+		return resourceMapper.countBrowseResourceByType(type, keyword, creator);
+	}
+
+	@Override
+	public int countCollectionResourceByType(int type, String keyword, Integer creator) {
+		ResourceMapper resourceMapper = (ResourceMapper) mapper;
+		return resourceMapper.countCollectionResourceByType(type, keyword, creator);
 	}
 
 }
