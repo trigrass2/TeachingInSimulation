@@ -17,16 +17,21 @@ import com.cas.sim.tis.view.control.imp.resource.ResourceMenu;
 import com.cas.sim.tis.view.controller.PageController.PageLevel;
 
 import de.felixroske.jfxsupport.FXMLController;
+import de.felixroske.jfxsupport.GUIState;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 
 @FXMLController
 public class HomeController implements Initializable {
 	@FXML
 	private HBox menu;
-
+	@FXML
+	private Pane handle;
 	private List<HomeMenu> homeMenus = new ArrayList<HomeMenu>();
+	private double xOffset;
+	private double yOffset;
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
@@ -40,6 +45,18 @@ public class HomeController implements Initializable {
 
 		}
 		menu.getChildren().addAll(homeMenus);
+		
+		handle.setOnMouseDragged(e -> {
+			GUIState.getStage().setX(e.getScreenX() + xOffset);
+			GUIState.getStage().setY(e.getScreenY() + yOffset);
+		});
+		handle.setOnMousePressed(e -> {
+//			按下鼠标后，记录当前鼠标的坐标
+			xOffset = GUIState.getStage().getX() - e.getScreenX();
+			yOffset = GUIState.getStage().getY() - e.getScreenY();
+		});
+
+		
 	}
 
 	private void resourceMenuItem() {

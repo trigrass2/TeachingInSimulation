@@ -13,12 +13,12 @@
 
 <StackPane prefHeight="768.0" prefWidth="1366.0" style="-fx-background-image: url(/static/images/basic/bg.png);" stylesheets="@../static/css/basic.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.cas.sim.tis.view.controller.PageController">
 	<children>
-		<HBox>
+		<HBox >
 			<children>
 				<Pane fx:id="leftBlock" maxWidth="230" minWidth="230" />
 				<VBox HBox.hgrow="ALWAYS">
 					<children>
-						<HBox alignment="CENTER_LEFT" prefHeight="75.0" minHeight="75.0" styleClass="top-cover">
+						<HBox fx:id="handle" alignment="CENTER_LEFT" prefHeight="75.0" minHeight="75.0" styleClass="top-cover">
 							<children>
 								<Button mnemonicParsing="false" onAction="#back" styleClass="img-btn" text="返回" textFill="WHITE">
 									<graphic>

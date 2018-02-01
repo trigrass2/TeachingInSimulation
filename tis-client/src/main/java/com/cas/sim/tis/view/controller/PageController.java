@@ -9,6 +9,7 @@ import com.cas.sim.tis.view.control.IContent;
 import com.cas.sim.tis.view.control.ILeftContent;
 
 import de.felixroske.jfxsupport.FXMLController;
+import de.felixroske.jfxsupport.GUIState;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.layout.HBox;
@@ -20,6 +21,9 @@ import javafx.scene.layout.StackPane;
 public class PageController implements Initializable {
 
 	private boolean visible = true;
+
+	@FXML
+	private Pane handle;
 
 	@FXML
 	private Pane leftBlock;
@@ -47,12 +51,26 @@ public class PageController implements Initializable {
 
 	private PageLevel level;
 
+	private double xOffset;
+
+	private double yOffset;
+
 	public enum PageLevel {
 		Level1, Level2;
 	}
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
+		
+		handle.setOnMouseDragged(e -> {
+			GUIState.getStage().setX(e.getScreenX() + xOffset);
+			GUIState.getStage().setY(e.getScreenY() + yOffset);
+		});
+		handle.setOnMousePressed(e -> {
+//			按下鼠标后，记录当前鼠标的坐标
+			xOffset = GUIState.getStage().getX() - e.getScreenX();
+			yOffset = GUIState.getStage().getY() - e.getScreenY();
+		});
 	}
 
 	@FXML
