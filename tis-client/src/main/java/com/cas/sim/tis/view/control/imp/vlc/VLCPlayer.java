@@ -6,6 +6,7 @@ import com.cas.sim.tis.view.control.IDistory;
 import com.sun.jna.Memory;
 import com.sun.jna.NativeLibrary;
 
+import de.felixroske.jfxsupport.GUIState;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
@@ -23,9 +24,10 @@ import javafx.scene.image.PixelFormat;
 import javafx.scene.image.PixelWriter;
 import javafx.scene.image.WritableImage;
 import javafx.scene.image.WritablePixelFormat;
-import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 import uk.co.caprica.vlcj.component.DirectMediaPlayerComponent;
 import uk.co.caprica.vlcj.player.MediaPlayer;
@@ -35,16 +37,11 @@ import uk.co.caprica.vlcj.player.direct.DefaultDirectMediaPlayer;
 import uk.co.caprica.vlcj.player.direct.format.RV32BufferFormat;
 import uk.co.caprica.vlcj.runtime.RuntimeUtil;
 
-public class VLCPlayer extends BorderPane implements IDistory {
+public class VLCPlayer extends VBox implements IDistory {
 	/**
 	*
 	*/
-	private static final double FPS = 60.0;
-
-	/**
-	 * Set this to <code>true</code> to resize the display to the dimensions of the video, otherwise it will use {@link #WIDTH} and {@link #height}.
-	 */
-	private static final boolean useSourceSize = true;
+	private static final double FPS = 25.0;
 
 	/**
 	 * Lightweight JavaFX canvas, the video is rendered here.
@@ -102,6 +99,8 @@ public class VLCPlayer extends BorderPane implements IDistory {
 
 	private WritableImage writableImage;
 
+	public boolean initSize;
+
 	static {
 		NativeLibrary.addSearchPath(RuntimeUtil.getLibVlcLibraryName(), "VLC");
 	}
@@ -109,15 +108,19 @@ public class VLCPlayer extends BorderPane implements IDistory {
 	public VLCPlayer() {
 
 		this.setStyle("-fx-background-color:black;");
+		this.setAlignment(Pos.BOTTOM_CENTER);
 
 //		canvas = new Canvas();
 //
 //		pixelWriter = canvas.getGraphicsContext2D().getPixelWriter();
+		canvas = new ImageView();
 		pixelFormat = PixelFormat.getByteBgraInstance();
 
-		canvas = new ImageView();
+		StackPane pane = new StackPane(canvas);
+		pane.setMinSize(0, 0);
+		VBox.setVgrow(pane, Priority.ALWAYS);
 
-		this.setCenter(canvas);
+		this.getChildren().add(pane);
 
 		mediaPlayerComponent = new DirectMediaPlayerComponent(new DirectBufferFormatCallback()) {
 			@Override
@@ -212,35 +215,75 @@ public class VLCPlayer extends BorderPane implements IDistory {
 		controls.setAlignment(Pos.CENTER_LEFT);
 		controls.setStyle("-fx-background-color:#f0f0f0");
 		controls.getChildren().addAll(playPauseButton, playSlider, time, volumeMuteButton, volumeSlider);
-		this.setBottom(controls);
+		this.getChildren().add(controls);
 		this.widthProperty().addListener((b, o, n) -> {
-			if (writableImage == null) {
+			if (!initSize) {
 				return;
 			}
-			double zoom = n.doubleValue() / o.doubleValue();
-			if (zoom > 1) {
-				canvas.setFitWidth(writableImage.getWidth() * zoom);
+			if (o.doubleValue() > n.doubleValue()) {
+				// 让被撑开的父容器还原
+				double maxW = GUIState.getScene().getWidth() - 280;
+				double maxH = GUIState.getScene().getHeight() - 205;
+				if (n.doubleValue() > maxW || getHeight() > maxH) {
+					canvas.setFitWidth(16);
+					canvas.setFitHeight(9);
+					this.layoutChildren();
+					return;
+				} else {
+					double width = n.doubleValue();
+					double height = getHeight() - controls.getHeight();
+					resizeCanvas(width, height);
+				}
 			} else {
-				canvas.setFitWidth(writableImage.getWidth());
+				double width = n.doubleValue();
+				double height = getHeight() - controls.getHeight();
+				resizeCanvas(width, height);
 			}
 		});
 		this.heightProperty().addListener((b, o, n) -> {
-			if (writableImage == null) {
+			if (!initSize) {
 				return;
 			}
-			double zoom = n.doubleValue() / o.doubleValue();
-			if (zoom > 1) {
-				canvas.setFitHeight(writableImage.getHeight() * zoom);
+			if (o.doubleValue() > n.doubleValue()) {
+				// 让被撑开的父容器还原
+				double maxW = GUIState.getScene().getWidth() - 280;
+				double maxH = GUIState.getScene().getHeight() - 205;
+				if (getWidth() > maxW || n.doubleValue() > maxH) {
+					canvas.setFitWidth(16);
+					canvas.setFitHeight(9);
+					this.layoutChildren();
+					return;
+				} else {
+					double width = getWidth();
+					double height = n.doubleValue() - controls.getHeight();
+					resizeCanvas(width, height);
+				}
 			} else {
-				canvas.setFitHeight(writableImage.getHeight());
+				double width = getWidth();
+				double height = n.doubleValue() - controls.getHeight();
+				resizeCanvas(width, height);
 			}
 		});
+	}
+
+	private void resizeCanvas(double width, double height) {
+		double sourceWidth = writableImage.getWidth();
+		double sourceHeight = writableImage.getHeight();
+		double rateW = width / sourceWidth;
+		double rateH = height / sourceHeight;
+		if (rateW > rateH) {
+			width = height * sourceWidth / sourceHeight;
+		} else {
+			height = width * sourceHeight / sourceWidth;
+		}
+		canvas.setFitHeight(height);
+		canvas.setFitWidth(width);
 	}
 
 	public void loadVideo(String videoPath) {
 		mediaPlayerComponent.getMediaPlayer().prepareMedia(videoPath);
 //		默认播放
-		startTimer();
+//		startTimer();
 	}
 
 	public final void stop() {
@@ -261,25 +304,21 @@ public class VLCPlayer extends BorderPane implements IDistory {
 
 		@Override
 		public BufferFormat getBufferFormat(int sourceWidth, int sourceHeight) {
-			int width = (int) VLCPlayer.this.getWidth();
-			int height = (int) (VLCPlayer.this.getHeight() - VLCPlayer.this.controls.getHeight());
-			if (useSourceSize) {
-				float rateW = width * 1f / sourceWidth;
-				float rateH = height * 1f / sourceHeight;
-				if (width >= sourceWidth && height >= sourceHeight) {
-					width = sourceWidth;
-					height = sourceHeight;
-				} else if (rateW < rateH) {
-					height = (int) (width * sourceHeight * 1f / sourceWidth);
-				} else {
-					width = (int) (height * sourceWidth * 1f / sourceHeight);
-				}
+			double width = VLCPlayer.this.getWidth();
+			double height = VLCPlayer.this.getHeight() - VLCPlayer.this.controls.getHeight();
+			double rateW = width / sourceWidth;
+			double rateH = height / sourceHeight;
+			if (rateW > rateH) {
+				width = height * sourceWidth / sourceHeight;
+			} else {
+				height = width * sourceHeight / sourceWidth;
 			}
-			writableImage = new WritableImage(width, height);
+			writableImage = new WritableImage(sourceWidth, sourceHeight);
 			canvas.setImage(writableImage);
 			canvas.setFitWidth(width);
 			canvas.setFitHeight(height);
-			return new RV32BufferFormat(width, height);
+			initSize = true;
+			return new RV32BufferFormat(sourceWidth, sourceHeight);
 		}
 	}
 

@@ -144,6 +144,8 @@ public class PageController implements Initializable {
 		arrow.getStyleClass().clear();
 		arrow.getStyleClass().add("hide");
 		visible = true;
+		this.leftMenu.layout();
+		this.leftBlock.getParent().layout();
 	}
 
 	private void clear() {

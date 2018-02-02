@@ -199,7 +199,8 @@ public class ResourceViewer extends VBox implements IContent {
 		viewer.getChildren().add(player);
 		HTTPUtils utils = SpringUtil.getBean(HTTPUtils.class);
 //		player.loadVideo(utils.getHttpUrl(resource.getPath()));
-		player.loadVideo("http://192.168.1.19:8082/resources/4dae3b67-1d55-4125-a577-4086585464c1.mp4");
+		player.loadVideo("http://192.168.1.19:8082/Test/Mux140928003405.avi");
+//		player.loadVideo("http://192.168.1.19:8082/resources/4dae3b67-1d55-4125-a577-4086585464c1.mp4");
 	}
 
 	/**
