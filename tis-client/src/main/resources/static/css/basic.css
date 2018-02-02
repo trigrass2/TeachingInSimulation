@@ -474,14 +474,14 @@
  * 标题样式                                                          *
  *                                                                             *
  ******************************************************************************/
- .title{
+ ._title{
  	-fx-background-color: #ff9e2c;
  	-fx-background-radius: 0.0 20.0 20.0 0.0;
  	-fx-pref-height: 35.0px;
  	-fx-pref-width: 150.0px;
  	-fx-alignment: CENTER-LEFT;
  }
- .title>.icon{
+ ._title>.icon{
  	-fx-pref-height: 5.0px;
  	-fx-pref-width: 5.0px;
  	-fx-max-height: 5.0px;
