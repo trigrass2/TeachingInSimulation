@@ -241,17 +241,23 @@ public class ResourceList extends HBox implements IContent {
 		Column<String> name = new Column<>();
 		name.setAlignment(Pos.CENTER_LEFT);
 		name.setKey("name");
-		name.setText("资源名称");// FIXME
+		name.setText(MsgUtil.getMessage("resource.name"));// FIXME
 		name.setMaxWidth(250);
 		name.getStyleClass().add("gray-label");
-		// 上传日期
-		Column<Date> createDate = new Column<>();
-		createDate.setAlignment(Pos.CENTER);
-		createDate.setKey("createDate");
-		createDate.setText("上传日期");
-		createDate.setMaxWidth(160);
-		createDate.getStyleClass().add("gray-label");
-		createDate.setCellFactory(Cell.forTableColumn(new StringConverter<Date>() {
+		// 日期
+		Column<Date> date = new Column<>();
+		date.setAlignment(Pos.CENTER);
+		date.setKey("createDate");
+		if (ResourceMenuType.BROWSE == type) {
+			date.setText(MsgUtil.getMessage("resource.browsed.date"));
+		} else if (ResourceMenuType.COLLECTION == type) {
+			date.setText(MsgUtil.getMessage("resource.collected.date"));
+		} else {
+			date.setText(MsgUtil.getMessage("resource.upload.date"));
+		}
+		date.setMaxWidth(160);
+		date.getStyleClass().add("gray-label");
+		date.setCellFactory(Cell.forTableColumn(new StringConverter<Date>() {
 
 			@Override
 			public String toString(Date date) {
@@ -263,7 +269,7 @@ public class ResourceList extends HBox implements IContent {
 				return null;
 			}
 		}));
-		table.getColumns().addAll(id, icon, name, createDate);
+		table.getColumns().addAll(id, icon, name, date);
 		// 查看按钮
 		Column<String> view = new Column<String>();
 		view.setCellFactory(BtnCell.forTableColumn(MsgUtil.getMessage("button.view"), Priority.ALWAYS, "blue-btn", rid -> {
@@ -293,7 +299,7 @@ public class ResourceList extends HBox implements IContent {
 	 * 加载资源
 	 */
 	private void loadResources() {
-		int curr = pagination.getPageIndex();
+		int curr = pagination.getPageIndex() + 1;
 		int pageSize = 10;
 
 		String keyword = search.getText();
