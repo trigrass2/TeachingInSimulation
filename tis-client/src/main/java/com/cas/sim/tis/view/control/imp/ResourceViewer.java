@@ -195,7 +195,7 @@ public class ResourceViewer extends VBox implements IContent {
 	 * 创建视频查看器
 	 */
 	private void createVLCViewer() {
-		VLCPlayer player = SpringUtil.getBean(VLCPlayer.class);
+		VLCPlayer player = new VLCPlayer();
 		viewer.getChildren().add(player);
 		HTTPUtils utils = SpringUtil.getBean(HTTPUtils.class);
 //		player.loadVideo(utils.getHttpUrl(resource.getPath()));

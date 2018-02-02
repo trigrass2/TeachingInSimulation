@@ -2,8 +2,6 @@ package com.cas.sim.tis.view.control.imp.vlc;
 
 import java.nio.ByteBuffer;
 
-import org.springframework.stereotype.Component;
-
 import com.cas.sim.tis.view.control.IDistory;
 import com.sun.jna.Memory;
 import com.sun.jna.NativeLibrary;
@@ -37,7 +35,6 @@ import uk.co.caprica.vlcj.player.direct.DefaultDirectMediaPlayer;
 import uk.co.caprica.vlcj.player.direct.format.RV32BufferFormat;
 import uk.co.caprica.vlcj.runtime.RuntimeUtil;
 
-@Component
 public class VLCPlayer extends BorderPane implements IDistory {
 	/**
 	*
@@ -52,7 +49,7 @@ public class VLCPlayer extends BorderPane implements IDistory {
 	/**
 	 * Lightweight JavaFX canvas, the video is rendered here.
 	 */
-	private final ImageView canvas;
+	private ImageView canvas;
 
 	/**
 	 * Pixel writer to update the canvas.
@@ -62,22 +59,22 @@ public class VLCPlayer extends BorderPane implements IDistory {
 	/**
 	 * Pixel format.
 	 */
-	private final WritablePixelFormat<ByteBuffer> pixelFormat;
+	private WritablePixelFormat<ByteBuffer> pixelFormat;
 
 	/**
 	 * The vlcj direct rendering media player component.
 	 */
-	private final DirectMediaPlayerComponent mediaPlayerComponent;
+	private DirectMediaPlayerComponent mediaPlayerComponent;
 
 	/**
 	*
 	*/
-	private final Timeline timeline;
+	private Timeline timeline;
 
 	/**
 	*
 	*/
-	private final EventHandler<ActionEvent> nextFrameHandler = new EventHandler<ActionEvent>() {
+	private EventHandler<ActionEvent> nextFrameHandler = new EventHandler<ActionEvent>() {
 		@Override
 		public void handle(ActionEvent t) {
 			if (playSkip) {
@@ -89,24 +86,27 @@ public class VLCPlayer extends BorderPane implements IDistory {
 
 	private HBox controls;
 
-	private final Button playPauseButton;
+	private Button playPauseButton;
 
-	private final Slider playSlider;
-	private final Tooltip playSliderTip;
+	private Slider playSlider;
+	private Tooltip playSliderTip;
 
-	private final Label time;
+	private Label time;
 
-	private final Button volumeMuteButton;
+	private Button volumeMuteButton;
 
-	private final Slider volumeSlider;
-	private final Tooltip volumeSliderTip;
+	private Slider volumeSlider;
+	private Tooltip volumeSliderTip;
 
 	private boolean playSkip;
 
 	private WritableImage writableImage;
 
-	public VLCPlayer() {
+	static {
 		NativeLibrary.addSearchPath(RuntimeUtil.getLibVlcLibraryName(), "VLC");
+	}
+
+	public VLCPlayer() {
 
 		this.setStyle("-fx-background-color:black;");
 
@@ -122,7 +122,7 @@ public class VLCPlayer extends BorderPane implements IDistory {
 		mediaPlayerComponent = new DirectMediaPlayerComponent(new DirectBufferFormatCallback()) {
 			@Override
 			public void playing(MediaPlayer mediaPlayer) {
-				Platform.runLater(()->{
+				Platform.runLater(() -> {
 					ObservableList<String> styleClass = playPauseButton.getStyleClass();
 					styleClass.remove("play");
 					styleClass.add("pause");
@@ -131,7 +131,7 @@ public class VLCPlayer extends BorderPane implements IDistory {
 
 			@Override
 			public void paused(MediaPlayer mediaPlayer) {
-				Platform.runLater(()->{
+				Platform.runLater(() -> {
 					ObservableList<String> styleClass = playPauseButton.getStyleClass();
 					styleClass.remove("pause");
 					styleClass.add("play");
@@ -139,7 +139,7 @@ public class VLCPlayer extends BorderPane implements IDistory {
 			}
 		};
 		mediaPlayerComponent.getMediaPlayer().setVolume(50);
-		
+
 		timeline = new Timeline();
 		timeline.setCycleCount(Timeline.INDEFINITE);
 		double duration = 1000.0 / FPS;
@@ -152,7 +152,7 @@ public class VLCPlayer extends BorderPane implements IDistory {
 			if (mediaPlayerComponent.getMediaPlayer().isPlaying()) {
 				pauseTimer();
 			} else {
-				startTimer();
+				playTimer();
 			}
 		});
 
@@ -163,16 +163,14 @@ public class VLCPlayer extends BorderPane implements IDistory {
 			playSkip = true;
 		});
 		playSlider.setOnMouseDragReleased(e -> {
-			System.out.println(playSlider.getValue());
-			mediaPlayerComponent.getMediaPlayer().setPosition((float) (playSlider.getValue() / 100f));
+			mediaPlayerComponent.getMediaPlayer().setTime((long) ((playSlider.getValue() / 100f) * mediaPlayerComponent.getMediaPlayer().getLength()));
 			playSkip = false;
 		});
 		playSlider.setOnMousePressed(e -> {
 			playSkip = true;
 		});
 		playSlider.setOnMouseReleased(e -> {
-			System.out.println(playSlider.getValue());
-			mediaPlayerComponent.getMediaPlayer().setPosition((float) (playSlider.getValue() / 100f));
+			mediaPlayerComponent.getMediaPlayer().setTime((long) ((playSlider.getValue() / 100f) * mediaPlayerComponent.getMediaPlayer().getLength()));
 			playSkip = false;
 		});
 		playSlider.valueProperty().addListener((b, o, n) -> {
@@ -203,30 +201,38 @@ public class VLCPlayer extends BorderPane implements IDistory {
 		});
 
 		volumeSlider = new Slider();
-		volumeSlider.setTooltip(volumeSliderTip = new Tooltip());
+		volumeSlider.setTooltip(volumeSliderTip = new Tooltip("50"));
 		volumeSlider.setValue(50);
 		volumeSlider.valueProperty().addListener((b, o, n) -> {
 			mediaPlayerComponent.getMediaPlayer().setVolume(n.intValue());
-			volumeSliderTip.setText(String.valueOf(n));
+			volumeSliderTip.setText(String.valueOf(n.intValue()));
 		});
-
 		controls = new HBox(10);
 		controls.setPadding(new Insets(10));
 		controls.setAlignment(Pos.CENTER_LEFT);
 		controls.setStyle("-fx-background-color:#f0f0f0");
 		controls.getChildren().addAll(playPauseButton, playSlider, time, volumeMuteButton, volumeSlider);
 		this.setBottom(controls);
+		this.widthProperty().addListener((b, o, n) -> {
+			if (writableImage == null) {
+				return;
+			}
+			double zoom = n.doubleValue() / o.doubleValue();
+			if (zoom > 1) {
+				canvas.setFitWidth(writableImage.getWidth() * zoom);
+			} else {
+				canvas.setFitWidth(writableImage.getWidth());
+			}
+		});
 		this.heightProperty().addListener((b, o, n) -> {
-			if (writableImage == null || o.doubleValue() == 0) {
+			if (writableImage == null) {
 				return;
 			}
 			double zoom = n.doubleValue() / o.doubleValue();
 			if (zoom > 1) {
 				canvas.setFitHeight(writableImage.getHeight() * zoom);
-				canvas.setFitWidth(writableImage.getWidth() * zoom);
 			} else {
 				canvas.setFitHeight(writableImage.getHeight());
-				canvas.setFitWidth(writableImage.getWidth());
 			}
 		});
 	}
@@ -238,7 +244,9 @@ public class VLCPlayer extends BorderPane implements IDistory {
 	}
 
 	public final void stop() {
-		stopTimer();
+		pauseTimer();
+
+		mediaPlayerComponent.getMediaPlayer().setTime(0);
 
 		ObservableList<String> styleClass = playPauseButton.getStyleClass();
 		styleClass.remove("pause");
@@ -258,7 +266,7 @@ public class VLCPlayer extends BorderPane implements IDistory {
 			if (useSourceSize) {
 				float rateW = width * 1f / sourceWidth;
 				float rateH = height * 1f / sourceHeight;
-				if (width >= sourceHeight && height >= sourceWidth) {
+				if (width >= sourceWidth && height >= sourceHeight) {
 					width = sourceWidth;
 					height = sourceHeight;
 				} else if (rateW < rateH) {
@@ -304,10 +312,15 @@ public class VLCPlayer extends BorderPane implements IDistory {
 		return pixelWriter;
 	}
 
+	private void startTimer() {
+		timeline.playFromStart();
+		mediaPlayerComponent.getMediaPlayer().start();
+	}
+
 	/**
 	 *
 	 */
-	public void startTimer() {
+	public void playTimer() {
 		timeline.play();
 		mediaPlayerComponent.getMediaPlayer().play();
 	}
@@ -326,6 +339,7 @@ public class VLCPlayer extends BorderPane implements IDistory {
 	public void stopTimer() {
 		timeline.stop();
 		mediaPlayerComponent.getMediaPlayer().stop();
+		mediaPlayerComponent.getMediaPlayer().release();
 	}
 
 	public static String formatTime(long value) {
@@ -340,6 +354,6 @@ public class VLCPlayer extends BorderPane implements IDistory {
 
 	@Override
 	public void distroy() {
-		stop();
+		stopTimer();
 	}
 }
