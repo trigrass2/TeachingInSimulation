@@ -355,7 +355,14 @@ public class ResourceList extends HBox implements IContent {
 		int excelNum = excelCheck.isSelected() ? action.countResourceByType(type, ResourceType.EXCEL.getType(), keyword, creators) : 0;
 		int pdfNum = pdfCheck.isSelected() ? action.countResourceByType(type, ResourceType.PDF.getType(), keyword, creators) : 0;
 
-		ObservableList<Data> datas = FXCollections.observableArrayList(new PieChart.Data(MsgUtil.getMessage("resource.pic"), picNum), new PieChart.Data(MsgUtil.getMessage("resource.swf"), swfNum), new PieChart.Data(MsgUtil.getMessage("resource.video"), videoNum), new PieChart.Data(MsgUtil.getMessage("resource.txt"), txtNum), new PieChart.Data(MsgUtil.getMessage("resource.word"), wordNum), new PieChart.Data(MsgUtil.getMessage("resource.ppt"), pptNum), new PieChart.Data(MsgUtil.getMessage("resource.excel"), excelNum), new PieChart.Data(MsgUtil.getMessage("resource.pdf"), pdfNum));
+		ObservableList<Data> datas = FXCollections.observableArrayList(new PieChart.Data(MsgUtil.getMessage("resource.pdf"), pdfNum), //
+				new PieChart.Data(MsgUtil.getMessage("resource.ppt"), pptNum), //
+				new PieChart.Data(MsgUtil.getMessage("resource.txt"), txtNum), //
+				new PieChart.Data(MsgUtil.getMessage("resource.excel"), excelNum), //
+				new PieChart.Data(MsgUtil.getMessage("resource.pic"), picNum), //
+				new PieChart.Data(MsgUtil.getMessage("resource.video"), videoNum), //
+				new PieChart.Data(MsgUtil.getMessage("resource.word"), wordNum), //
+				new PieChart.Data(MsgUtil.getMessage("resource.swf"), swfNum)); //
 		chart.setData(datas);
 
 		chart.setOnMouseMoved(e -> {
@@ -525,6 +532,6 @@ public class ResourceList extends HBox implements IContent {
 
 	@Override
 	public void distroy() {
-		
+
 	}
 }
