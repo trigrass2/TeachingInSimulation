@@ -1,7 +1,8 @@
 package com.cas.sim.tis.view.control;
 
-import javafx.scene.layout.Region;
+import javafx.scene.Node;
 
 public interface IContent extends IDistory {
-	Region getContent();
+//	StackPane的content
+	Node[] getContent();
 }

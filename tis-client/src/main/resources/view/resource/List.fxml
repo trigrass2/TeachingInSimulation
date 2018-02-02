@@ -30,7 +30,7 @@
 		<VBox HBox.hgrow="ALWAYS">
 			<children>
 				<HBox>
-					<Title title="我的资源列表" />
+					<Title title="%resource.title.mine" />
 					<HBox alignment="CENTER_RIGHT" HBox.hgrow="ALWAYS">
 						<SearchBox fx:id="search" />
 					</HBox>
@@ -171,7 +171,7 @@
 			<children>
 				<VBox>
 					<children>
-						<Title title="我的资源统计" />
+						<Title title="%resource.title.stats" />
 						<VBox VBox.vgrow="ALWAYS">
 							<children>
 								<StackPane prefHeight="200.0">
@@ -278,7 +278,7 @@
 					</children>
 				</VBox>
 				<VBox fx:id="uploadPane">
-					<Title title="上传资源" />
+					<Title title="%resource.button.upload" />
 					<children>
 						<VBox spacing="10.0">
 							<children>

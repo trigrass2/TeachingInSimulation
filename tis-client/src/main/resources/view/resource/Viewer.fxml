@@ -10,7 +10,7 @@
 
 <fx:root type="VBox" style="-fx-background-color: #ffffff;" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
 	<children>
-		<Title title="资源查看" />
+		<Title title="%resource.title.viewer" />
 		<VBox VBox.vgrow="ALWAYS">
 			<children>
 				<StackPane fx:id="viewer" VBox.vgrow="ALWAYS" />

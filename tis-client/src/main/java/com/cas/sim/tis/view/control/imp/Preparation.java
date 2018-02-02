@@ -6,8 +6,8 @@ import java.net.URL;
 import com.cas.sim.tis.view.control.IContent;
 
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Region;
 
 public class Preparation extends HBox implements IContent{
 	public Preparation() {
@@ -24,8 +24,8 @@ public class Preparation extends HBox implements IContent{
 	}
 
 	@Override
-	public Region getContent() {
-		return this;
+	public Node[] getContent() {
+		return new Node[] {this};
 	}
 
 	@Override
