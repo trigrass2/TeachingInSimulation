@@ -16,15 +16,4 @@ public class BrowseHistoryAction {
 	@Qualifier("browseHistoryServiceFactory")
 	private RmiProxyFactoryBean browseHistoryServiceFactory;
 
-	public void addBrowseHistory(Integer rid) {
-		if (rid == null) {
-			return;
-		}
-		BrowseHistory browseHistory = new BrowseHistory();
-		browseHistory.setResourceId(rid);
-		browseHistory.setCreator(Session.get(Session.KEY_LOGIN_ID));
-		
-		BrowseHistoryService service = (BrowseHistoryService) browseHistoryServiceFactory.getObject();
-		service.addBrowseHistory(browseHistory);
-	}
 }
