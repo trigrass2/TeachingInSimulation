@@ -274,7 +274,7 @@ public class ResourceViewer extends VBox implements IContent {
 	}
 
 	@Override
-	public void removed() {
+	public void distroy() {
 		for (Node child : viewer.getChildren()) {
 			if (child instanceof IDistory) {
 				((IDistory) child).distroy();

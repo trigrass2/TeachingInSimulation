@@ -29,7 +29,7 @@ public class Preparation extends HBox implements IContent{
 	}
 
 	@Override
-	public void removed() {
+	public void distroy() {
 		
 	}
 }

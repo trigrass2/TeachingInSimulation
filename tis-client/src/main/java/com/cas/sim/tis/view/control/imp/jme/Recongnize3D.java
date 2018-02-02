@@ -50,7 +50,7 @@ public class Recongnize3D implements IContent {
 	}
 
 	@Override
-	public void removed() {
+	public void distroy() {
 		ElecCompState compState = jmeApp.getStateManager().getState(ElecCompState.class);
 		jmeApp.getStateManager().detach(compState);
 		jmeApp.stop(true);
