@@ -293,7 +293,7 @@ public class ResourceList extends HBox implements IContent {
 	 * 加载资源
 	 */
 	private void loadResources() {
-		int curr = pagination.getPageIndex();
+		int curr = pagination.getPageIndex() + 1;
 		int pageSize = 10;
 
 		String keyword = search.getText();
