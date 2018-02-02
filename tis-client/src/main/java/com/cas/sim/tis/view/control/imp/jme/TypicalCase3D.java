@@ -19,14 +19,14 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
 
-public class Recongnize3D implements IContent {
+public class TypicalCase3D implements IContent {
 
-	private static final Logger LOG = LoggerFactory.getLogger(Recongnize3D.class);
+	private static final Logger LOG = LoggerFactory.getLogger(TypicalCase3D.class);
 	private JmeApplication jmeApp;
 	private Region btns;
 	private Canvas canvas;
 
-	public Recongnize3D() {
+	public TypicalCase3D() {
 //		创建一个Canvas层，用于显示JME
 		canvas = new Canvas();
 //		canvas.setStyle("-fx-background-size: cover");
@@ -49,7 +49,7 @@ public class Recongnize3D implements IContent {
 		FXMLLoader loader = new FXMLLoader();
 		loader.setResources(ResourceBundle.getBundle("i18n/messages"));
 		try {
-			btns = loader.load(Recongnize3D.class.getResourceAsStream("/view/jme/Recognize.fxml"));
+			btns = loader.load(TypicalCase3D.class.getResourceAsStream("/view/jme/Recognize.fxml"));
 			RecongnizeBtnController btnController = loader.getController();
 			btnController.setState(compState);
 		} catch (IOException e) {
