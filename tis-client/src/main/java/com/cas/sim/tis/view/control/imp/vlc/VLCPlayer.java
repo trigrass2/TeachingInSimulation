@@ -10,6 +10,7 @@ import com.sun.jna.NativeLibrary;
 
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -29,6 +30,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.util.Duration;
 import uk.co.caprica.vlcj.component.DirectMediaPlayerComponent;
+import uk.co.caprica.vlcj.player.MediaPlayer;
 import uk.co.caprica.vlcj.player.direct.BufferFormat;
 import uk.co.caprica.vlcj.player.direct.BufferFormatCallback;
 import uk.co.caprica.vlcj.player.direct.DefaultDirectMediaPlayer;
@@ -85,7 +87,7 @@ public class VLCPlayer extends BorderPane implements IDistory {
 		}
 	};
 
-	private static HBox controls;
+	private HBox controls;
 
 	private final Button playPauseButton;
 
@@ -117,9 +119,27 @@ public class VLCPlayer extends BorderPane implements IDistory {
 
 		this.setCenter(canvas);
 
-		mediaPlayerComponent = new DirectMediaPlayerComponent(new DirectBufferFormatCallback());
-		mediaPlayerComponent.getMediaPlayer().setVolume(50);
+		mediaPlayerComponent = new DirectMediaPlayerComponent(new DirectBufferFormatCallback()) {
+			@Override
+			public void playing(MediaPlayer mediaPlayer) {
+				Platform.runLater(()->{
+					ObservableList<String> styleClass = playPauseButton.getStyleClass();
+					styleClass.remove("play");
+					styleClass.add("pause");
+				});
+			}
 
+			@Override
+			public void paused(MediaPlayer mediaPlayer) {
+				Platform.runLater(()->{
+					ObservableList<String> styleClass = playPauseButton.getStyleClass();
+					styleClass.remove("pause");
+					styleClass.add("play");
+				});
+			}
+		};
+		mediaPlayerComponent.getMediaPlayer().setVolume(50);
+		
 		timeline = new Timeline();
 		timeline.setCycleCount(Timeline.INDEFINITE);
 		double duration = 1000.0 / FPS;
@@ -129,15 +149,10 @@ public class VLCPlayer extends BorderPane implements IDistory {
 		playPauseButton.getStyleClass().add("play");
 		playPauseButton.getStyleClass().add("img-btn");
 		playPauseButton.setOnAction(e -> {
-			ObservableList<String> styleClass = playPauseButton.getStyleClass();
-			if (styleClass.contains("play")) {
-				styleClass.remove("play");
-				styleClass.add("pause");
-				startTimer();
-			} else {
-				styleClass.remove("pause");
-				styleClass.add("play");
+			if (mediaPlayerComponent.getMediaPlayer().isPlaying()) {
 				pauseTimer();
+			} else {
+				startTimer();
 			}
 		});
 
@@ -218,6 +233,8 @@ public class VLCPlayer extends BorderPane implements IDistory {
 
 	public void loadVideo(String videoPath) {
 		mediaPlayerComponent.getMediaPlayer().prepareMedia(videoPath);
+//		默认播放
+		startTimer();
 	}
 
 	public final void stop() {
@@ -237,7 +254,7 @@ public class VLCPlayer extends BorderPane implements IDistory {
 		@Override
 		public BufferFormat getBufferFormat(int sourceWidth, int sourceHeight) {
 			int width = (int) VLCPlayer.this.getWidth();
-			int height = (int) (VLCPlayer.this.getHeight() - VLCPlayer.controls.getHeight());
+			int height = (int) (VLCPlayer.this.getHeight() - VLCPlayer.this.controls.getHeight());
 			if (useSourceSize) {
 				float rateW = width * 1f / sourceWidth;
 				float rateH = height * 1f / sourceHeight;
