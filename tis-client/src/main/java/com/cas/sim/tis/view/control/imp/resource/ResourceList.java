@@ -22,7 +22,6 @@ import com.cas.sim.tis.entity.Resource;
 import com.cas.sim.tis.util.FTPUtils;
 import com.cas.sim.tis.util.MsgUtil;
 import com.cas.sim.tis.util.SpringUtil;
-import com.cas.sim.tis.view.action.BrowseHistoryAction;
 import com.cas.sim.tis.view.action.ResourceAction;
 import com.cas.sim.tis.view.control.IContent;
 import com.cas.sim.tis.view.control.imp.ResourceViewer;
@@ -274,7 +273,6 @@ public class ResourceList extends HBox implements IContent {
 		Column<String> view = new Column<String>();
 		view.setCellFactory(BtnCell.forTableColumn(MsgUtil.getMessage("button.view"), Priority.ALWAYS, "blue-btn", rid -> {
 			SpringUtil.getBean(ResourceAction.class).browsed((Integer) rid);
-			SpringUtil.getBean(BrowseHistoryAction.class).addBrowseHistory((Integer) rid);
 			ResourceAction action = SpringUtil.getBean(ResourceAction.class);
 			Resource resource = action.findResourceByID((Integer) rid);
 			// 跳转到查看页面

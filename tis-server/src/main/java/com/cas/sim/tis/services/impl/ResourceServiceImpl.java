@@ -170,7 +170,7 @@ public class ResourceServiceImpl extends AbstractService<Resource> implements Re
 			criteria.andEqualTo("creator", userId);
 			List<BrowseHistory> histories = browseHistoryService.findByCondition(condition);
 			// 查看历史记录是否超过100条，注意这里是物理删除！！！
-			if (histories.size() == 100) {
+			if (histories.size() >= 100) {
 				BrowseHistory history = histories.get(0);
 				browseHistoryService.deleteById(history.getId());
 			}
