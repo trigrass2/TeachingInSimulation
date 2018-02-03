@@ -25,25 +25,25 @@ public class ResourceAction {
 		return service.addResource(resource);
 	}
 
-	public PageInfo<Resource> findResources(ResourceMenuType type, int pagination, int pageSize, List<Integer> resourceTypes, String keyword, String orderByClause, List<Integer> creators) {
+	public PageInfo<Resource> findResources(ResourceMenuType type, int pagination, int pageSize, List<Integer> resourceTypes, String keyword, String orderByClause, Integer creator) {
 		ResourceService service = (ResourceService) resourceServiceFactory.getObject();
 		if (ResourceMenuType.BROWSE == type) {
-			return service.findResourcesByBrowseHistory(pagination, pageSize, resourceTypes, keyword, orderByClause, creators.get(0));
+			return service.findResourcesByBrowseHistory(pagination, pageSize, resourceTypes, keyword, orderByClause, creator);
 		} else if (ResourceMenuType.COLLECTION == type) {
-			return service.findResourcesByCollection(pagination, pageSize, resourceTypes, keyword, orderByClause, creators.get(0));
+			return service.findResourcesByCollection(pagination, pageSize, resourceTypes, keyword, orderByClause, creator);
 		} else {
-			return service.findResourcesByCreator(pagination, pageSize, resourceTypes, keyword, orderByClause, creators);
+			return service.findResourcesByCreator(pagination, pageSize, resourceTypes, keyword, orderByClause, creator);
 		}
 	}
 
-	public int countResourceByType(ResourceMenuType menuType, int type, String keyword, List<Integer> creators) {
+	public int countResourceByType(ResourceMenuType menuType, int type, String keyword, Integer creator) {
 		ResourceService service = (ResourceService) resourceServiceFactory.getObject();
 		if (ResourceMenuType.BROWSE == menuType) {
-			return service.countBrowseResourceByType(type, keyword, creators.get(0));
+			return service.countBrowseResourceByType(type, keyword, creator);
 		} else if (ResourceMenuType.COLLECTION == menuType) {
-			return service.countCollectionResourceByType(type, keyword, creators.get(0));
+			return service.countCollectionResourceByType(type, keyword, creator);
 		} else {
-			return service.countResourceByType(type, keyword, creators);
+			return service.countResourceByType(type, keyword, creator);
 		}
 	}
 

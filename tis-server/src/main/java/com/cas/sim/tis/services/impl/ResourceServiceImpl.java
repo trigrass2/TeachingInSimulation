@@ -46,7 +46,7 @@ public class ResourceServiceImpl extends AbstractService<Resource> implements Re
 	}
 
 	@Override
-	public PageInfo<Resource> findResourcesByCreator(int pagination, int pageSize, List<Integer> resourceTypes, String keyword, String orderByClause, List<Integer> creators) {
+	public PageInfo<Resource> findResourcesByCreator(int pagination, int pageSize, List<Integer> resourceTypes, String keyword, String orderByClause, Integer creator) {
 //		获取当前登陆者身份信息
 		Condition condition = new Condition(Resource.class);
 		// 筛选创建人
@@ -66,11 +66,9 @@ public class ResourceServiceImpl extends AbstractService<Resource> implements Re
 			}
 			condition.and(criteria);
 		}
-		if (creators != null && creators.size() > 0) {
-			Criteria criteria = condition.createCriteria();
-			criteria.andIn("creator", creators);
-			condition.and(criteria);
-		}
+		Criteria criteria = condition.createCriteria();
+		criteria.andEqualTo("creator", creator);
+		condition.and(criteria);
 //		开始分页查询
 		PageHelper.startPage(pagination, pageSize, orderByClause);
 		List<Resource> result = findByCondition(condition);
@@ -111,7 +109,7 @@ public class ResourceServiceImpl extends AbstractService<Resource> implements Re
 	}
 
 	@Override
-	public int countResourceByType(int type, String keyword, List<Integer> creators) {
+	public int countResourceByType(int type, String keyword, Integer creator) {
 //		获取当前登陆者身份信息
 		Condition condition = new Condition(Resource.class);
 		Criteria criteria1 = condition.createCriteria();
@@ -126,12 +124,22 @@ public class ResourceServiceImpl extends AbstractService<Resource> implements Re
 			}
 			condition.and(criteria2);
 		}
-		if (creators != null && creators.size() > 0) {
-			Criteria criteria3 = condition.createCriteria();
-			criteria3.andIn("creator", creators);
-			condition.and(criteria3);
-		}
+		Criteria criteria3 = condition.createCriteria();
+		criteria3.andEqualTo("creator", creator);
+		condition.and(criteria3);
 		return getTotalBy(condition);
+	}
+
+	@Override
+	public int countBrowseResourceByType(int type, String keyword, Integer creator) {
+		ResourceMapper resourceMapper = (ResourceMapper) mapper;
+		return resourceMapper.countBrowseResourceByType(type, keyword, creator);
+	}
+
+	@Override
+	public int countCollectionResourceByType(int type, String keyword, Integer creator) {
+		ResourceMapper resourceMapper = (ResourceMapper) mapper;
+		return resourceMapper.countCollectionResourceByType(type, keyword, creator);
 	}
 
 	@Override
@@ -260,18 +268,6 @@ public class ResourceServiceImpl extends AbstractService<Resource> implements Re
 		Resource resource = findById(id);
 		resource.setDel(true);
 		update(resource);
-	}
-
-	@Override
-	public int countBrowseResourceByType(int type, String keyword, Integer creator) {
-		ResourceMapper resourceMapper = (ResourceMapper) mapper;
-		return resourceMapper.countBrowseResourceByType(type, keyword, creator);
-	}
-
-	@Override
-	public int countCollectionResourceByType(int type, String keyword, Integer creator) {
-		ResourceMapper resourceMapper = (ResourceMapper) mapper;
-		return resourceMapper.countCollectionResourceByType(type, keyword, creator);
 	}
 
 }

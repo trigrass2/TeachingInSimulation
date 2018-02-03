@@ -18,8 +18,6 @@ import org.slf4j.LoggerFactory;
 import com.alibaba.fastjson.JSONArray;
 import com.cas.sim.tis.consts.ResourceConsts;
 import com.cas.sim.tis.consts.ResourceType;
-import com.cas.sim.tis.consts.RoleConst;
-import com.cas.sim.tis.consts.Session;
 import com.cas.sim.tis.entity.Resource;
 import com.cas.sim.tis.util.FTPUtils;
 import com.cas.sim.tis.util.MsgUtil;
@@ -75,10 +73,38 @@ import javafx.util.StringConverter;
  * @修改人 Caowj
  */
 public class ResourceList extends HBox implements IContent {
-	private static final Logger LOG = LoggerFactory.getLogger(ResourceAction.class);
+	private static final Logger LOG = LoggerFactory.getLogger(ResourceList.class);
 
 	public enum ResourceMenuType {
-		EDITABLE, READONLY, BROWSE, COLLECTION;
+		ADMIN_SYS("resource.title.system", "resource.upload.date", true), //
+		TEACHER_SYS("resource.title.system", "resource.upload.date", false), //
+		TEACHER_MINE("resource.title.mine", "resource.upload.date", true), //
+		STUDENT_SYS("resource.title.system", "resource.upload.date", false), //
+		STUDENT_TECH("resource.title.teacher", "resource.upload.date", false), //
+		BROWSE("resource.title.history", "resource.browsed.date", false), //
+		COLLECTION("resource.title.collect", "resource.collected.date", false);
+
+		private String title;
+		private String dateLabel;
+		private boolean editable;
+
+		private ResourceMenuType(String key, String dateKey, boolean editable) {
+			this.title = MsgUtil.getMessage(key);
+			this.dateLabel = MsgUtil.getMessage(dateKey);
+			this.editable = editable;
+		}
+
+		public boolean isEditable() {
+			return editable;
+		}
+
+		public String getTitle() {
+			return title;
+		}
+
+		public String getDateLabel() {
+			return dateLabel;
+		}
 	}
 
 	// 我的资源列表
@@ -147,7 +173,7 @@ public class ResourceList extends HBox implements IContent {
 
 	private File uploadFile;
 
-	private List<Integer> creators = new ArrayList<>();
+	private int creator;
 
 	/**
 	 * 资源列表是否可操作
@@ -156,17 +182,11 @@ public class ResourceList extends HBox implements IContent {
 
 	private ResourceAction action;
 
-	public ResourceList(ResourceMenuType type, int... creators) {
+	public ResourceList(ResourceMenuType type, int creator) {
 		action = SpringUtil.getBean(ResourceAction.class);
 
 		this.type = type;
-		if (creators == null) {
-			LOG.warn("此处传入creator不可能为空！");
-		} else {
-			for (int creator : creators) {
-				this.creators.add(creator);
-			}
-		}
+		this.creator = creator;
 
 		FXMLLoader loader = new FXMLLoader();
 		URL fxmlUrl = this.getClass().getResource("/view/resource/List.fxml");
@@ -186,27 +206,10 @@ public class ResourceList extends HBox implements IContent {
 	 * 界面初始化
 	 */
 	private void initialize() {
-		if (type != ResourceMenuType.EDITABLE) {
+		if (!type.isEditable()) {
 			uploadPane.setVisible(false);
 		}
-		int role = Session.get(Session.KEY_LOGIN_ROLE);
-		if (type == ResourceMenuType.BROWSE) {
-			title.setTitle(MsgUtil.getMessage("resource.title.history"));
-		} else if (type == ResourceMenuType.COLLECTION) {
-			title.setTitle(MsgUtil.getMessage("resource.title.collect"));
-		} else if (type == ResourceMenuType.EDITABLE) {
-			if (RoleConst.ADMIN == role) {
-				title.setTitle(MsgUtil.getMessage("resource.title.system"));
-			} else if (RoleConst.TEACHER == role) {
-				title.setTitle(MsgUtil.getMessage("resource.title.mine"));
-			}
-		} else if (type == ResourceMenuType.READONLY) {
-			if (RoleConst.TEACHER == role) {
-				title.setTitle(MsgUtil.getMessage("resource.title.system"));
-			} else if (RoleConst.STUDENT == role) {
-				title.setTitle(MsgUtil.getMessage("resource.title.mine"));
-			}
-		}
+		title.setTitle(type.getTitle());
 		createTable();
 		order.selectedToggleProperty().addListener((observe, oldVal, newVal) -> {
 			if (newVal == null) {
@@ -270,13 +273,7 @@ public class ResourceList extends HBox implements IContent {
 		Column<Date> date = new Column<>();
 		date.setAlignment(Pos.CENTER);
 		date.setKey("createDate");
-		if (ResourceMenuType.BROWSE == type) {
-			date.setText(MsgUtil.getMessage("resource.browsed.date"));
-		} else if (ResourceMenuType.COLLECTION == type) {
-			date.setText(MsgUtil.getMessage("resource.collected.date"));
-		} else {
-			date.setText(MsgUtil.getMessage("resource.upload.date"));
-		}
+		date.setText(type.getDateLabel());
 		date.setMaxWidth(160);
 		date.getStyleClass().add("gray-label");
 		date.setCellFactory(Cell.forTableColumn(new StringConverter<Date>() {
@@ -304,7 +301,7 @@ public class ResourceList extends HBox implements IContent {
 		}));
 		view.setAlignment(Pos.CENTER_RIGHT);
 		table.getColumns().add(view);
-		if (type == ResourceMenuType.EDITABLE) {
+		if (type.isEditable()) {
 			// 删除按钮
 			Column<String> delete = new Column<String>();
 			delete.setCellFactory(BtnCell.forTableColumn(MsgUtil.getMessage("button.delete"), "blue-btn", rid -> {
@@ -354,7 +351,7 @@ public class ResourceList extends HBox implements IContent {
 		if (pdfCheck.isSelected()) {
 			types.add(ResourceType.PDF.getType());
 		}
-		page = action.findResources(type, curr, pageSize, types, keyword, orderByClause, creators);
+		page = action.findResources(type, curr, pageSize, types, keyword, orderByClause, creator);
 		if (page == null) {
 			pagination.setPageCount(0);
 			table.setItems(null);
@@ -373,14 +370,14 @@ public class ResourceList extends HBox implements IContent {
 	 */
 	private void loadPieChart() {
 		String keyword = search.getText();
-		int picNum = picCheck.isSelected() ? action.countResourceByType(type, ResourceType.IMAGE.getType(), keyword, creators) : 0;
-		int swfNum = swfCheck.isSelected() ? action.countResourceByType(type, ResourceType.SWF.getType(), keyword, creators) : 0;
-		int videoNum = videoCheck.isSelected() ? action.countResourceByType(type, ResourceType.VIDEO.getType(), keyword, creators) : 0;
-		int txtNum = txtCheck.isSelected() ? action.countResourceByType(type, ResourceType.TXT.getType(), keyword, creators) : 0;
-		int wordNum = wordCheck.isSelected() ? action.countResourceByType(type, ResourceType.WORD.getType(), keyword, creators) : 0;
-		int pptNum = pptCheck.isSelected() ? action.countResourceByType(type, ResourceType.PPT.getType(), keyword, creators) : 0;
-		int excelNum = excelCheck.isSelected() ? action.countResourceByType(type, ResourceType.EXCEL.getType(), keyword, creators) : 0;
-		int pdfNum = pdfCheck.isSelected() ? action.countResourceByType(type, ResourceType.PDF.getType(), keyword, creators) : 0;
+		int picNum = picCheck.isSelected() ? action.countResourceByType(type, ResourceType.IMAGE.getType(), keyword, creator) : 0;
+		int swfNum = swfCheck.isSelected() ? action.countResourceByType(type, ResourceType.SWF.getType(), keyword, creator) : 0;
+		int videoNum = videoCheck.isSelected() ? action.countResourceByType(type, ResourceType.VIDEO.getType(), keyword, creator) : 0;
+		int txtNum = txtCheck.isSelected() ? action.countResourceByType(type, ResourceType.TXT.getType(), keyword, creator) : 0;
+		int wordNum = wordCheck.isSelected() ? action.countResourceByType(type, ResourceType.WORD.getType(), keyword, creator) : 0;
+		int pptNum = pptCheck.isSelected() ? action.countResourceByType(type, ResourceType.PPT.getType(), keyword, creator) : 0;
+		int excelNum = excelCheck.isSelected() ? action.countResourceByType(type, ResourceType.EXCEL.getType(), keyword, creator) : 0;
+		int pdfNum = pdfCheck.isSelected() ? action.countResourceByType(type, ResourceType.PDF.getType(), keyword, creator) : 0;
 
 		ObservableList<Data> datas = FXCollections.observableArrayList(new PieChart.Data(MsgUtil.getMessage("resource.pdf"), pdfNum), //
 				new PieChart.Data(MsgUtil.getMessage("resource.ppt"), pptNum), //
