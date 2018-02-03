@@ -10,11 +10,11 @@
 
 <fx:root type="VBox" style="-fx-background-color: #ffffff;" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
 	<children>
-		<Title title="资源查看" />
+		<Title title="%resource.title.viewer" />
 		<VBox VBox.vgrow="ALWAYS">
 			<children>
 				<StackPane fx:id="viewer" VBox.vgrow="ALWAYS" />
-				<HBox alignment="CENTER_LEFT" spacing="20.0">
+				<HBox alignment="CENTER_LEFT" spacing="20.0" minHeight="45" maxHeight="45">
 					<children>
 						<Label fx:id="creator" />
 						<Label fx:id="createDate" />
@@ -27,12 +27,12 @@
 						</HBox>
 					</children>
 					<padding>
-						<Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+						<Insets left="10.0" right="10.0" top="10.0" />
 					</padding>
 				</HBox>
 			</children>
 			<padding>
-				<Insets bottom="10.0" left="20.0" right="10.0" top="10.0" />
+				<Insets left="20.0" right="10.0" top="10.0" />
 			</padding>
 		</VBox>
 	</children>
