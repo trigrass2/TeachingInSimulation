@@ -419,8 +419,15 @@ public class ResourceList extends HBox implements IContent {
 	}
 
 	@FXML
-	private void typeFilter(ActionEvent event) {
+	private void typeFilter() {
 		pagination.setPageIndex(0);
+		reload();
+	}
+
+	@FXML
+	private void orderBy() {
+		pagination.setPageIndex(0);
+		reload();
 	}
 
 	@FXML
@@ -492,12 +499,6 @@ public class ResourceList extends HBox implements IContent {
 		// 启用上传按钮
 		((Button) event.getSource()).setDisable(false);
 		clear();
-		reload();
-	}
-
-	@FXML
-	private void orderBy() {
-		pagination.setPageIndex(0);
 		reload();
 	}
 
