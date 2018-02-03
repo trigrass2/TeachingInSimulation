@@ -6,7 +6,6 @@ import com.cas.sim.tis.view.control.IDistory;
 import com.sun.jna.Memory;
 import com.sun.jna.NativeLibrary;
 
-import de.felixroske.jfxsupport.GUIState;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
@@ -99,8 +98,6 @@ public class VLCPlayer extends VBox implements IDistory {
 
 	private WritableImage writableImage;
 
-	public boolean initSize;
-
 	static {
 		NativeLibrary.addSearchPath(RuntimeUtil.getLibVlcLibraryName(), "VLC");
 	}
@@ -163,18 +160,18 @@ public class VLCPlayer extends VBox implements IDistory {
 		playSlider = new Slider();
 		playSlider.setTooltip(playSliderTip = new Tooltip());
 		playSlider.setOnMouseDragged(e -> {
-			playSkip = true;
+			pauseTimer();
 		});
 		playSlider.setOnMouseDragReleased(e -> {
-			mediaPlayerComponent.getMediaPlayer().setTime((long) ((playSlider.getValue() / 100f) * mediaPlayerComponent.getMediaPlayer().getLength()));
-			playSkip = false;
+			mediaPlayerComponent.getMediaPlayer().setPosition((float) (playSlider.getValue() / 100f));
+			playTimer();
 		});
 		playSlider.setOnMousePressed(e -> {
-			playSkip = true;
+			pauseTimer();
 		});
 		playSlider.setOnMouseReleased(e -> {
-			mediaPlayerComponent.getMediaPlayer().setTime((long) ((playSlider.getValue() / 100f) * mediaPlayerComponent.getMediaPlayer().getLength()));
-			playSkip = false;
+			mediaPlayerComponent.getMediaPlayer().setPosition((float) (playSlider.getValue() / 100f));
+			playTimer();
 		});
 		playSlider.valueProperty().addListener((b, o, n) -> {
 			if (n.floatValue() >= 100) {
@@ -192,14 +189,14 @@ public class VLCPlayer extends VBox implements IDistory {
 		volumeMuteButton.getStyleClass().add("img-btn");
 		volumeMuteButton.setOnAction(e -> {
 			ObservableList<String> styleClass = volumeMuteButton.getStyleClass();
-			if (styleClass.contains("volume")) {
-				styleClass.remove("volume");
-				styleClass.add("mute");
-				mediaPlayerComponent.getMediaPlayer().mute(true);
-			} else {
+			if (mediaPlayerComponent.getMediaPlayer().isMute()) {
 				styleClass.remove("mute");
 				styleClass.add("volume");
 				mediaPlayerComponent.getMediaPlayer().mute(false);
+			} else {
+				styleClass.remove("volume");
+				styleClass.add("mute");
+				mediaPlayerComponent.getMediaPlayer().mute(true);
 			}
 		});
 
@@ -216,68 +213,6 @@ public class VLCPlayer extends VBox implements IDistory {
 		controls.setStyle("-fx-background-color:#f0f0f0");
 		controls.getChildren().addAll(playPauseButton, playSlider, time, volumeMuteButton, volumeSlider);
 		this.getChildren().add(controls);
-		this.widthProperty().addListener((b, o, n) -> {
-			if (!initSize) {
-				return;
-			}
-			if (o.doubleValue() > n.doubleValue()) {
-				// 让被撑开的父容器还原
-				double maxW = GUIState.getScene().getWidth() - 280;
-				double maxH = GUIState.getScene().getHeight() - 205;
-				if (n.doubleValue() > maxW || getHeight() > maxH) {
-					canvas.setFitWidth(16);
-					canvas.setFitHeight(9);
-					this.layoutChildren();
-					return;
-				} else {
-					double width = n.doubleValue();
-					double height = getHeight() - controls.getHeight();
-					resizeCanvas(width, height);
-				}
-			} else {
-				double width = n.doubleValue();
-				double height = getHeight() - controls.getHeight();
-				resizeCanvas(width, height);
-			}
-		});
-		this.heightProperty().addListener((b, o, n) -> {
-			if (!initSize) {
-				return;
-			}
-			if (o.doubleValue() > n.doubleValue()) {
-				// 让被撑开的父容器还原
-				double maxW = GUIState.getScene().getWidth() - 280;
-				double maxH = GUIState.getScene().getHeight() - 205;
-				if (getWidth() > maxW || n.doubleValue() > maxH) {
-					canvas.setFitWidth(16);
-					canvas.setFitHeight(9);
-					this.layoutChildren();
-					return;
-				} else {
-					double width = getWidth();
-					double height = n.doubleValue() - controls.getHeight();
-					resizeCanvas(width, height);
-				}
-			} else {
-				double width = getWidth();
-				double height = n.doubleValue() - controls.getHeight();
-				resizeCanvas(width, height);
-			}
-		});
-	}
-
-	private void resizeCanvas(double width, double height) {
-		double sourceWidth = writableImage.getWidth();
-		double sourceHeight = writableImage.getHeight();
-		double rateW = width / sourceWidth;
-		double rateH = height / sourceHeight;
-		if (rateW > rateH) {
-			width = height * sourceWidth / sourceHeight;
-		} else {
-			height = width * sourceHeight / sourceWidth;
-		}
-		canvas.setFitHeight(height);
-		canvas.setFitWidth(width);
 	}
 
 	public void loadVideo(String videoPath) {
@@ -306,18 +241,10 @@ public class VLCPlayer extends VBox implements IDistory {
 		public BufferFormat getBufferFormat(int sourceWidth, int sourceHeight) {
 			double width = VLCPlayer.this.getWidth();
 			double height = VLCPlayer.this.getHeight() - VLCPlayer.this.controls.getHeight();
-			double rateW = width / sourceWidth;
-			double rateH = height / sourceHeight;
-			if (rateW > rateH) {
-				width = height * sourceWidth / sourceHeight;
-			} else {
-				height = width * sourceHeight / sourceWidth;
-			}
+			resizeCanvas(width, height, sourceWidth, sourceHeight);
 			writableImage = new WritableImage(sourceWidth, sourceHeight);
+			pixelWriter = writableImage.getPixelWriter();
 			canvas.setImage(writableImage);
-			canvas.setFitWidth(width);
-			canvas.setFitHeight(height);
-			initSize = true;
 			return new RV32BufferFormat(sourceWidth, sourceHeight);
 		}
 	}
@@ -336,7 +263,7 @@ public class VLCPlayer extends VBox implements IDistory {
 				ByteBuffer byteBuffer = nativeBuffer.getByteBuffer(0, nativeBuffer.size());
 				BufferFormat bufferFormat = ((DefaultDirectMediaPlayer) mediaPlayerComponent.getMediaPlayer()).getBufferFormat();
 				if (bufferFormat.getWidth() > 0 && bufferFormat.getHeight() > 0) {
-					getPW().setPixels(0, 0, bufferFormat.getWidth(), bufferFormat.getHeight(), pixelFormat, byteBuffer, bufferFormat.getPitches()[0]);
+					pixelWriter.setPixels(0, 0, bufferFormat.getWidth(), bufferFormat.getHeight(), pixelFormat, byteBuffer, bufferFormat.getPitches()[0]);
 				}
 			}
 		}
@@ -344,17 +271,10 @@ public class VLCPlayer extends VBox implements IDistory {
 		mediaPlayerComponent.getMediaPlayer().unlock();
 	}
 
-	private PixelWriter getPW() {
-		if (pixelWriter == null) {
-			pixelWriter = writableImage.getPixelWriter();
-		}
-		return pixelWriter;
-	}
-
-	private void startTimer() {
-		timeline.playFromStart();
-		mediaPlayerComponent.getMediaPlayer().start();
-	}
+//	private void startTimer() {
+//		timeline.playFromStart();
+//		mediaPlayerComponent.getMediaPlayer().start();
+//	}
 
 	/**
 	 *
@@ -389,6 +309,34 @@ public class VLCPlayer extends VBox implements IDistory {
 		remainder = remainder - minutes * 60;
 		int seconds = remainder;
 		return String.format("%d:%02d:%02d", hours, minutes, seconds);
+	}
+
+	@Override
+	public void resize(double width, double height) {
+		super.resize(width, height);
+		if (writableImage == null) {
+			return;
+		}
+		height = height - controls.getHeight();
+		resizeCanvas(width, height);
+	}
+
+	private void resizeCanvas(double width, double height) {
+		double sourceWidth = writableImage.getWidth();
+		double sourceHeight = writableImage.getHeight();
+		resizeCanvas(width, height, sourceWidth, sourceHeight);
+	}
+
+	private void resizeCanvas(double width, double height, double sourceWidth, double sourceHeight) {
+		double rateW = width / sourceWidth;
+		double rateH = height / sourceHeight;
+		if (rateW > rateH) {
+			width = height * sourceWidth / sourceHeight;
+		} else {
+			height = width * sourceHeight / sourceWidth;
+		}
+		canvas.setFitHeight(height);
+		canvas.setFitWidth(width);
 	}
 
 	@Override
