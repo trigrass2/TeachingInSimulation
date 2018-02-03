@@ -137,8 +137,8 @@ public class ResourceViewer extends VBox implements IContent {
 	 */
 	public void createImageViewer() {
 		HTTPUtils utils = SpringUtil.getBean(HTTPUtils.class);
-		Image image = new Image("http://192.168.1.19:8082/Test/1516772514400.png");
-//		Image image = new Image(utils.getHttpUrl(resource.getPath()));
+//		Image image = new Image("http://192.168.1.19:8082/Test/1516772514400.png");
+		Image image = new Image(utils.getHttpUrl(ResourceConsts.FTP_RES_PATH + resource.getPath()));
 		ImageView imageView = new ImageView(image);
 
 		HBox box = new HBox(imageView);
@@ -198,8 +198,8 @@ public class ResourceViewer extends VBox implements IContent {
 		VLCPlayer player = new VLCPlayer();
 		viewer.getChildren().add(player);
 		HTTPUtils utils = SpringUtil.getBean(HTTPUtils.class);
-//		player.loadVideo(utils.getHttpUrl(resource.getPath()));
-		player.loadVideo("http://192.168.1.19:8082/Test/Mux140928003405.avi");
+		player.loadVideo(utils.getHttpUrl(ResourceConsts.FTP_RES_PATH + resource.getPath()));
+//		player.loadVideo("http://192.168.1.19:8082/Test/Mux140928003405.avi");
 //		player.loadVideo("http://192.168.1.19:8082/resources/4dae3b67-1d55-4125-a577-4086585464c1.mp4");
 	}
 
@@ -211,8 +211,8 @@ public class ResourceViewer extends VBox implements IContent {
 		Browser browser = new Browser(BrowserType.LIGHTWEIGHT);
 		// FIXME
 		HTTPUtils utils = SpringUtil.getBean(HTTPUtils.class);
-//		browser.loadURL(utils.getHttpUrl(resource.getPath()));
-		browser.loadURL("http://192.168.1.19:8082/Test/Fanuc0i参数说明书.pdf");
+		browser.loadURL(utils.getHttpUrl(ResourceConsts.FTP_RES_PATH + resource.getPath()));
+//		browser.loadURL("http://192.168.1.19:8082/Test/Fanuc0i参数说明书.pdf");
 		BrowserView view = new BrowserView(browser);
 		viewer.getChildren().add(view);
 	}
@@ -225,8 +225,8 @@ public class ResourceViewer extends VBox implements IContent {
 		SWFBrowser browser = new SWFBrowser(BrowserType.LIGHTWEIGHT);
 		// FIXME
 		HTTPUtils utils = SpringUtil.getBean(HTTPUtils.class);
-//		browser.loadHTML(utils.getHttpUrl(resource.getPath()));
-		browser.loadHTML("http://192.168.1.19:8082/Test/teachResources.swf");
+		browser.loadHTML(utils.getHttpUrl(ResourceConsts.FTP_RES_PATH + resource.getPath()));
+//		browser.loadHTML("http://192.168.1.19:8082/Test/teachResources.swf");
 		BrowserView view = new BrowserView(browser);
 		viewer.getChildren().add(view);
 	}
