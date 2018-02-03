@@ -18,6 +18,8 @@ import org.slf4j.LoggerFactory;
 import com.alibaba.fastjson.JSONArray;
 import com.cas.sim.tis.consts.ResourceConsts;
 import com.cas.sim.tis.consts.ResourceType;
+import com.cas.sim.tis.consts.RoleConst;
+import com.cas.sim.tis.consts.Session;
 import com.cas.sim.tis.entity.Resource;
 import com.cas.sim.tis.util.FTPUtils;
 import com.cas.sim.tis.util.MsgUtil;
@@ -26,6 +28,7 @@ import com.cas.sim.tis.view.action.ResourceAction;
 import com.cas.sim.tis.view.control.IContent;
 import com.cas.sim.tis.view.control.imp.ResourceViewer;
 import com.cas.sim.tis.view.control.imp.SearchBox;
+import com.cas.sim.tis.view.control.imp.Title;
 import com.cas.sim.tis.view.control.imp.pagination.PaginationBar;
 import com.cas.sim.tis.view.control.imp.table.BtnCell;
 import com.cas.sim.tis.view.control.imp.table.Cell;
@@ -79,6 +82,8 @@ public class ResourceList extends HBox implements IContent {
 	}
 
 	// 我的资源列表
+	@FXML
+	private Title title;
 	@FXML
 	private Table table;
 	@FXML
@@ -183,6 +188,24 @@ public class ResourceList extends HBox implements IContent {
 	private void initialize() {
 		if (type != ResourceMenuType.EDITABLE) {
 			uploadPane.setVisible(false);
+		}
+		int role = Session.get(Session.KEY_LOGIN_ROLE);
+		if (type == ResourceMenuType.BROWSE) {
+			title.setTitle(MsgUtil.getMessage("resource.title.history"));
+		} else if (type == ResourceMenuType.COLLECTION) {
+			title.setTitle(MsgUtil.getMessage("resource.title.collect"));
+		} else if (type == ResourceMenuType.EDITABLE) {
+			if (RoleConst.ADMIN == role) {
+				title.setTitle(MsgUtil.getMessage("resource.title.system"));
+			} else if (RoleConst.TEACHER == role) {
+				title.setTitle(MsgUtil.getMessage("resource.title.mine"));
+			}
+		} else if (type == ResourceMenuType.READONLY) {
+			if (RoleConst.TEACHER == role) {
+				title.setTitle(MsgUtil.getMessage("resource.title.system"));
+			} else if (RoleConst.STUDENT == role) {
+				title.setTitle(MsgUtil.getMessage("resource.title.mine"));
+			}
 		}
 		createTable();
 		order.selectedToggleProperty().addListener((observe, oldVal, newVal) -> {
@@ -509,7 +532,7 @@ public class ResourceList extends HBox implements IContent {
 	public Region[] getContent() {
 		clear();
 		reload();
-		return new Region[] {this};
+		return new Region[] { this };
 	}
 
 	public static String getFileSize(File file) {

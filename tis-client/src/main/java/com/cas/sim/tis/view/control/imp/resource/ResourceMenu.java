@@ -26,12 +26,12 @@ public class ResourceMenu extends LeftMenu {
 				PageController controller = SpringUtil.getBean(PageController.class);
 				controller.loadContent(new ResourceList(ResourceMenuType.READONLY, 1), PageLevel.Level1);
 			});
-			addMenuItem(MsgUtil.getMessage("resource.menu.own"), "static/images/left/resource.png", e -> {
+			addMenuItem(MsgUtil.getMessage("resource.menu.mine"), "static/images/left/resource.png", e -> {
 				PageController controller = SpringUtil.getBean(PageController.class);
 				controller.loadContent(new ResourceList(ResourceMenuType.EDITABLE, userId), PageLevel.Level1);
 			});
 		} else if (RoleConst.STUDENT == role) {
-			addMenuItem(MsgUtil.getMessage("resource.menu.own"), "static/images/left/resource.png", e -> {
+			addMenuItem(MsgUtil.getMessage("resource.menu.mine"), "static/images/left/resource.png", e -> {
 				// 获得教师编号
 				Integer tearcherId = SpringUtil.getBean(UserAction.class).getTeacherIdByStudentId(Session.get(Session.KEY_LOGIN_ID));
 				PageController controller = SpringUtil.getBean(PageController.class);
