@@ -81,7 +81,7 @@ public class PageController implements Initializable {
 			this.level1Content.distroy();
 			this.level1Content = level2Content;
 			this.level2Content = null;
-			this.content.getChildren().add(level1Content.getContent());
+			this.content.getChildren().addAll(level1Content.getContent());
 		} else {
 			clear();
 			Application.showView(HomeView.class);
@@ -123,7 +123,7 @@ public class PageController implements Initializable {
 			this.level2Content = this.level1Content;
 			this.level1Content = content;
 		}
-		this.content.getChildren().add(content.getContent());
+		this.content.getChildren().addAll(content.getContent());
 	}
 
 	private void hide() {

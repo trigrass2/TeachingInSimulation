@@ -506,10 +506,10 @@ public class ResourceList extends HBox implements IContent {
 	}
 
 	@Override
-	public Region getContent() {
+	public Region[] getContent() {
 		clear();
 		reload();
-		return this;
+		return new Region[] {this};
 	}
 
 	public static String getFileSize(File file) {

@@ -7,6 +7,7 @@ import java.util.ResourceBundle;
 import com.cas.sim.tis.Application;
 import com.cas.sim.tis.util.MsgUtil;
 
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Bounds;
@@ -88,6 +89,7 @@ public class Decoration extends HBox {
 	@FXML
 	private void close() {
 		// FIXME
+		Platform.exit();
 		System.exit(0);
 	}
 }

@@ -8,7 +8,7 @@ import com.cas.sim.tis.app.state.ElecCompState;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.CheckBox;
-import javafx.scene.control.Label;
+import javafx.scene.control.Control;
 
 public class RecongnizeBtnController implements Initializable {
 	@FXML
@@ -22,15 +22,15 @@ public class RecongnizeBtnController implements Initializable {
 	@FXML
 	private CheckBox autoRoate;
 	@FXML
-	private Label center;
+	private Control center;
 	@FXML
-	private Label move;
+	private Control move;
 	@FXML
-	private Label rotate;
+	private Control rotate;
 	@FXML
-	private Label zoomIn;
+	private Control zoomIn;
 	@FXML
-	private Label zoomOut;
+	private Control zoomOut;
 
 	private ElecCompState compState;
 

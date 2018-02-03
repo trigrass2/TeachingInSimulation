@@ -269,9 +269,9 @@ public class ResourceViewer extends VBox implements IContent {
 	}
 
 	@Override
-	public Region getContent() {
+	public Region[] getContent() {
 		initialize();
-		return this;
+		return new Region[] {this};
 	}
 
 	@Override
