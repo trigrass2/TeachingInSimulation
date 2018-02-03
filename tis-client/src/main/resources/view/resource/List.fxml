@@ -30,7 +30,7 @@
 		<VBox HBox.hgrow="ALWAYS">
 			<children>
 				<HBox>
-					<Title title="%resource.title.mine" />
+					<Title fx:id="title" title="%resource.title.mine" />
 					<HBox alignment="CENTER_RIGHT" HBox.hgrow="ALWAYS">
 						<SearchBox fx:id="search" />
 					</HBox>
