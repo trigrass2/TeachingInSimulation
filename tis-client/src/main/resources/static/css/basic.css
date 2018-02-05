@@ -110,10 +110,11 @@
 	-fx-border-radius: 0.0px;
 	-fx-border-width: 1.0 0.5 1.0 0.5;
 	-fx-text-fill: #333333;
-	-fx-min-width:35.0px;
-	-fx-min-height:35.0px;
-	-fx-max-width:35.0px;
-	-fx-max-height:35.0px;
+	-fx-font-size: 10.0px;
+	-fx-min-width:30.0px;
+	-fx-min-height:30.0px;
+	-fx-max-width:30.0px;
+	-fx-max-height:30.0px;
 }
 .pagination-bar>.button:hover{
 	-fx-background-color:#51bfcf;
@@ -128,10 +129,11 @@
 	-fx-border-width: 1.0 0.5 1.0 0.5;
 	-fx-border-insets: 0.0 0.0 -1.0 0.0;
 	-fx-text-fill: #333333;
-	-fx-min-width:35.0px;
-	-fx-min-height:35.0px;
-	-fx-max-width:35.0px;
-	-fx-max-height:35.0px;
+	-fx-font-size: 10.0px;
+	-fx-min-width:30.0px;
+	-fx-min-height:30.0px;
+	-fx-max-width:30.0px;
+	-fx-max-height:30.0px;
 }
 .pagination-bar>*>.toggle-button:hover{
 	-fx-background-color:#51bfcf;
@@ -147,7 +149,7 @@
 }
 .pagination-bar>.prev,
 .pagination-bar>.next{
-	-fx-padding: 12.0px;
+	-fx-padding: 10.0px;
 }
 .pagination-bar>.prev:disabled,
 .pagination-bar>.next:disabled{
@@ -178,10 +180,10 @@
 	-fx-text-fill: #333333;
 	-fx-text-alignment: center;
 	-fx-alignment: center;
-	-fx-min-width:35.0px;
-	-fx-min-height:35.0px;
-	-fx-max-width:35.0px;
-	-fx-max-height:35.0px;
+	-fx-min-width:30.0px;
+	-fx-min-height:30.0px;
+	-fx-max-width:30.0px;
+	-fx-max-height:30.0px;
 }
 /*******************************************************************************
  *                                                                             *
@@ -518,23 +520,20 @@
  .table>.header>.cell {
  	-fx-font-weight:bold;
  }
- .tab-row {
+ .table-row {
  	-fx-background-color: #f6f6f6;
  }
- .tab-row-hover {
+ .table-row-hover {
  	-fx-background-color: #e1e1e1;
  }
- .tab-row-selected {
- 	-fx-background-color: #19b0c6;
+ .table-row-selected {
+ 	-fx-background-color: #19b0c688;
  }
- .tab-row-selected>.cell {
+ .table-row-selected>.cell {
  	-fx-text-fill:#ffffff;
  	-fx-font-weight:bold;
  }
- .table-row-hover {
- 	-fx-background-color:#f9f9f9;
- }
-  /*******************************************************************************
+/*******************************************************************************
  *                                                                             *
  * 认知模块按钮样式                                                          *
  *                                                                             *
