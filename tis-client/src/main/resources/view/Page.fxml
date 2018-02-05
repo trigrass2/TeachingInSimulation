@@ -9,6 +9,7 @@
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
+<?import com.cas.sim.tis.svg.SVGGlyph?>
 <?import com.cas.sim.tis.view.control.imp.Decoration?>
 
 <StackPane prefHeight="768.0" prefWidth="1366.0" style="-fx-background-image: url(/static/images/basic/bg.png);" stylesheets="@../static/css/basic.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.cas.sim.tis.view.controller.PageController">
@@ -22,11 +23,12 @@
 							<children>
 								<Button mnemonicParsing="false" onAction="#back" styleClass="img-btn" text="返回" textFill="WHITE">
 									<graphic>
-										<ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
-											<image>
-												<Image url="@../static/images/basic/back.png" />
-											</image>
-										</ImageView>
+										<!-- <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true"> -->
+										<!-- <image> -->
+										<!-- <Image url="@../static/images/basic/back.png" /> -->
+										<!-- </image> -->
+										<!-- </ImageView> -->
+										<SVGGlyph name="iconfont.svg.back" size="20" fill="WHITE" />
 									</graphic>
 								</Button>
 								<HBox alignment="TOP_RIGHT" HBox.hgrow="ALWAYS">
@@ -56,11 +58,12 @@
 						<StackPane fx:id="leftContent" VBox.vgrow="ALWAYS" alignment="TOP_CENTER" />
 						<Button mnemonicParsing="false" styleClass="left-menu" text="系统设置" textFill="WHITE">
 							<graphic>
-								<ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
-									<image>
-										<Image url="@../static/images/basic/setting.png" />
-									</image>
-								</ImageView>
+								<!-- <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true"> -->
+								<!-- <image> -->
+								<!-- <Image url="@../static/images/basic/setting.png" /> -->
+								<!-- </image> -->
+								<!-- </ImageView> -->
+								<SVGGlyph name="iconfont.svg.setting" size="25" fill="WHITE" />
 							</graphic>
 						</Button>
 					</children>

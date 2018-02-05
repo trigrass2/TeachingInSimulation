@@ -24,6 +24,7 @@
 <?import com.cas.sim.tis.view.control.imp.table.Table?>
 <?import com.cas.sim.tis.view.control.imp.SearchBox?>
 <?import com.cas.sim.tis.view.control.imp.pagination.PaginationBar?>
+<?import com.cas.sim.tis.svg.SVGGlyph?>
 
 <fx:root style="-fx-background-color: #ffffff;" type="HBox" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
 	<children>
@@ -39,11 +40,12 @@
 					<children>
 						<CheckBox fx:id="picCheck" mnemonicParsing="false" nodeOrientation="RIGHT_TO_LEFT" onAction="#typeFilter" selected="true" styleClass="img-check-box">
 							<graphic>
-								<ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
-									<image>
-										<Image url="@../../static/images/resource/pic.png" />
-									</image>
-								</ImageView>
+								<!-- <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true"> -->
+								<!-- <image> -->
+								<!-- <Image url="@../../static/images/resource/pic.png" /> -->
+								<!-- </image> -->
+								<!-- </ImageView> -->
+								<SVGGlyph name="iconfont.svg.image" size="25" fill="#2bc9f7" />
 							</graphic>
 							<tooltip>
 								<Tooltip text="%resource.pic" />
@@ -51,11 +53,12 @@
 						</CheckBox>
 						<CheckBox fx:id="swfCheck" mnemonicParsing="false" nodeOrientation="RIGHT_TO_LEFT" onAction="#typeFilter" selected="true" styleClass="img-check-box">
 							<graphic>
-								<ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
-									<image>
-										<Image url="@../../static/images/resource/swf.png" />
-									</image>
-								</ImageView>
+								<!-- <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true"> -->
+								<!-- <image> -->
+								<!-- <Image url="@../../static/images/resource/swf.png" /> -->
+								<!-- </image> -->
+								<!-- </ImageView> -->
+								<SVGGlyph name="iconfont.svg.video" size="25" fill="#9760f1" />
 							</graphic>
 							<tooltip>
 								<Tooltip text="%resource.swf" />
@@ -63,11 +66,12 @@
 						</CheckBox>
 						<CheckBox fx:id="videoCheck" mnemonicParsing="false" nodeOrientation="RIGHT_TO_LEFT" onAction="#typeFilter" selected="true" styleClass="img-check-box">
 							<graphic>
-								<ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
-									<image>
-										<Image url="@../../static/images/resource/video.png" />
-									</image>
-								</ImageView>
+								<!-- <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true"> -->
+								<!-- <image> -->
+								<!-- <Image url="@../../static/images/resource/video.png" /> -->
+								<!-- </image> -->
+								<!-- </ImageView> -->
+								<SVGGlyph name="iconfont.svg.video" size="25" fill="#1cabbb" />
 							</graphic>
 							<tooltip>
 								<Tooltip text="%resource.video" />
@@ -75,11 +79,12 @@
 						</CheckBox>
 						<CheckBox fx:id="txtCheck" mnemonicParsing="false" nodeOrientation="RIGHT_TO_LEFT" onAction="#typeFilter" selected="true" styleClass="img-check-box">
 							<graphic>
-								<ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
-									<image>
-										<Image url="@../../static/images/resource/txt.png" />
-									</image>
-								</ImageView>
+								<!-- <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true"> -->
+								<!-- <image> -->
+								<!-- <Image url="@../../static/images/resource/txt.png" /> -->
+								<!-- </image> -->
+								<!-- </ImageView> -->
+								<SVGGlyph name="iconfont.svg.txt" size="25" fill="#eacb42" />
 							</graphic>
 							<tooltip>
 								<Tooltip text="%resource.txt" />
@@ -87,11 +92,12 @@
 						</CheckBox>
 						<CheckBox fx:id="wordCheck" mnemonicParsing="false" nodeOrientation="RIGHT_TO_LEFT" onAction="#typeFilter" selected="true" styleClass="img-check-box">
 							<graphic>
-								<ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
-									<image>
-										<Image url="@../../static/images/resource/word.png" />
-									</image>
-								</ImageView>
+								<!-- <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true"> -->
+								<!-- <image> -->
+								<!-- <Image url="@../../static/images/resource/word.png" /> -->
+								<!-- </image> -->
+								<!-- </ImageView> -->
+								<SVGGlyph name="iconfont.svg.word" size="25" fill="#2b73f7" />
 							</graphic>
 							<tooltip>
 								<Tooltip text="%resource.word" />
@@ -99,11 +105,12 @@
 						</CheckBox>
 						<CheckBox fx:id="pptCheck" mnemonicParsing="false" nodeOrientation="RIGHT_TO_LEFT" onAction="#typeFilter" selected="true" styleClass="img-check-box">
 							<graphic>
-								<ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
-									<image>
-										<Image url="@../../static/images/resource/ppt.png" />
-									</image>
-								</ImageView>
+								<!-- <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true"> -->
+								<!-- <image> -->
+								<!-- <Image url="@../../static/images/resource/ppt.png" /> -->
+								<!-- </image> -->
+								<!-- </ImageView> -->
+								<SVGGlyph name="iconfont.svg.ppt" size="25" fill="#ff9e2c" />
 							</graphic>
 							<tooltip>
 								<Tooltip text="%resource.ppt" />
@@ -111,11 +118,12 @@
 						</CheckBox>
 						<CheckBox fx:id="excelCheck" mnemonicParsing="false" nodeOrientation="RIGHT_TO_LEFT" onAction="#typeFilter" selected="true" styleClass="img-check-box">
 							<graphic>
-								<ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
-									<image>
-										<Image url="@../../static/images/resource/excel.png" />
-									</image>
-								</ImageView>
+								<!-- <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true"> -->
+								<!-- <image> -->
+								<!-- <Image url="@../../static/images/resource/excel.png" /> -->
+								<!-- </image> -->
+								<!-- </ImageView> -->
+								<SVGGlyph name="iconfont.svg.excel" size="25" fill="#9abd57" />
 							</graphic>
 							<tooltip>
 								<Tooltip text="%resource.excel" />
@@ -123,11 +131,12 @@
 						</CheckBox>
 						<CheckBox fx:id="pdfCheck" mnemonicParsing="false" nodeOrientation="RIGHT_TO_LEFT" onAction="#typeFilter" selected="true" styleClass="img-check-box">
 							<graphic>
-								<ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
-									<image>
-										<Image url="@../../static/images/resource/pdf.png" />
-									</image>
-								</ImageView>
+								<!-- <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true"> -->
+								<!-- <image> -->
+								<!-- <Image url="@../../static/images/resource/pdf.png" /> -->
+								<!-- </image> -->
+								<!-- </ImageView> -->
+								<SVGGlyph name="iconfont.svg.pdf" size="25" fill="#dd3a2e" />
 							</graphic>
 							<tooltip>
 								<Tooltip text="%resource.pdf" />
@@ -198,74 +207,82 @@
 									<children>
 										<Label fx:id="pic" text="%resource.pic">
 											<graphic>
-												<ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
-													<image>
-														<Image url="@../../static/images/resource/pic.png" />
-													</image>
-												</ImageView>
+												<!-- <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true"> -->
+												<!-- <image> -->
+												<!-- <Image url="@../../static/images/resource/pic.png" /> -->
+												<!-- </image> -->
+												<!-- </ImageView> -->
+												<SVGGlyph name="iconfont.svg.image" size="25" fill="#2bc9f7" />
 											</graphic>
 										</Label>
 										<Label fx:id="swf" text="%resource.swf" GridPane.columnIndex="1">
 											<graphic>
-												<ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
-													<image>
-														<Image url="@../../static/images/resource/swf.png" />
-													</image>
-												</ImageView>
+												<!-- <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true"> -->
+												<!-- <image> -->
+												<!-- <Image url="@../../static/images/resource/swf.png" /> -->
+												<!-- </image> -->
+												<!-- </ImageView> -->
+												<SVGGlyph name="iconfont.svg.video" size="25" fill="#9760f1" />
 											</graphic>
 										</Label>
 										<Label fx:id="video" text="%resource.video" GridPane.columnIndex="2">
 											<graphic>
-												<ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
-													<image>
-														<Image url="@../../static/images/resource/video.png" />
-													</image>
-												</ImageView>
+												<!-- <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true"> -->
+												<!-- <image> -->
+												<!-- <Image url="@../../static/images/resource/video.png" /> -->
+												<!-- </image> -->
+												<!-- </ImageView> -->
+												<SVGGlyph name="iconfont.svg.video" size="25" fill="#1cabbb" />
 											</graphic>
 										</Label>
 										<Label fx:id="txt" text="%resource.txt" GridPane.columnIndex="3">
 											<graphic>
-												<ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
-													<image>
-														<Image url="@../../static/images/resource/txt.png" />
-													</image>
-												</ImageView>
+												<!-- <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true"> -->
+												<!-- <image> -->
+												<!-- <Image url="@../../static/images/resource/txt.png" /> -->
+												<!-- </image> -->
+												<!-- </ImageView> -->
+												<SVGGlyph name="iconfont.svg.txt" size="25" fill="#eacb42" />
 											</graphic>
 										</Label>
 										<Label fx:id="word" text="%resource.word" GridPane.rowIndex="1">
 											<graphic>
-												<ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
-													<image>
-														<Image url="@../../static/images/resource/word.png" />
-													</image>
-												</ImageView>
+												<!-- <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true"> -->
+												<!-- <image> -->
+												<!-- <Image url="@../../static/images/resource/word.png" /> -->
+												<!-- </image> -->
+												<!-- </ImageView> -->
+												<SVGGlyph name="iconfont.svg.word" size="25" fill="#2b73f7" />
 											</graphic>
 										</Label>
 										<Label fx:id="ppt" text="%resource.ppt" GridPane.columnIndex="1" GridPane.rowIndex="1">
 											<graphic>
-												<ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
-													<image>
-														<Image url="@../../static/images/resource/ppt.png" />
-													</image>
-												</ImageView>
+												<!-- <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true"> -->
+												<!-- <image> -->
+												<!-- <Image url="@../../static/images/resource/ppt.png" /> -->
+												<!-- </image> -->
+												<!-- </ImageView> -->
+												<SVGGlyph name="iconfont.svg.ppt" size="25" fill="#ff9e2c" />
 											</graphic>
 										</Label>
 										<Label fx:id="excel" text="%resource.excel" GridPane.columnIndex="2" GridPane.rowIndex="1">
 											<graphic>
-												<ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
-													<image>
-														<Image url="@../../static/images/resource/excel.png" />
-													</image>
-												</ImageView>
+												<!-- <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true"> -->
+												<!-- <image> -->
+												<!-- <Image url="@../../static/images/resource/excel.png" /> -->
+												<!-- </image> -->
+												<!-- </ImageView> -->
+												<SVGGlyph name="iconfont.svg.excel" size="25" fill="#9abd57" />
 											</graphic>
 										</Label>
 										<Label fx:id="pdf" text="%resource.pdf" GridPane.columnIndex="3" GridPane.rowIndex="1">
 											<graphic>
-												<ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
-													<image>
-														<Image url="@../../static/images/resource/pdf.png" />
-													</image>
-												</ImageView>
+												<!-- <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true"> -->
+												<!-- <image> -->
+												<!-- <Image url="@../../static/images/resource/pdf.png" /> -->
+												<!-- </image> -->
+												<!-- </ImageView> -->
+												<SVGGlyph name="iconfont.svg.pdf" size="25" fill="#dd3a2e" />
 											</graphic>
 										</Label>
 									</children>

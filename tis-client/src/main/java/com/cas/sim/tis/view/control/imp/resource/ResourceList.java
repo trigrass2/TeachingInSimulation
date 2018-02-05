@@ -9,6 +9,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.UUID;
+import java.util.function.Function;
 
 import javax.swing.filechooser.FileSystemView;
 
@@ -19,6 +20,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.cas.sim.tis.consts.ResourceConsts;
 import com.cas.sim.tis.consts.ResourceType;
 import com.cas.sim.tis.entity.Resource;
+import com.cas.sim.tis.svg.SVGGlyph;
 import com.cas.sim.tis.util.FTPUtils;
 import com.cas.sim.tis.util.MsgUtil;
 import com.cas.sim.tis.util.SpringUtil;
@@ -31,7 +33,7 @@ import com.cas.sim.tis.view.control.imp.pagination.PaginationBar;
 import com.cas.sim.tis.view.control.imp.table.BtnCell;
 import com.cas.sim.tis.view.control.imp.table.Cell;
 import com.cas.sim.tis.view.control.imp.table.Column;
-import com.cas.sim.tis.view.control.imp.table.IconCell;
+import com.cas.sim.tis.view.control.imp.table.SVGIconCell;
 import com.cas.sim.tis.view.control.imp.table.Table;
 import com.cas.sim.tis.view.controller.PageController;
 import com.cas.sim.tis.view.controller.PageController.PageLevel;
@@ -246,22 +248,18 @@ public class ResourceList extends HBox implements IContent {
 		icon.setText("");
 		icon.setMaxWidth(25);
 		icon.getStyleClass().add("gray-label");
-		StringConverter<Integer> converter = new StringConverter<Integer>() {
+		Function<Integer, SVGGlyph> converter = new Function<Integer, SVGGlyph>() {
+			
 			@Override
-			public String toString(Integer type) {
+			public SVGGlyph apply(Integer type) {
 				if (type == null) {
 					return null;
 				}
 				ResourceType resourceType = ResourceType.getResourceType(type);
-				return resourceType.getIcon();
-			}
-
-			@Override
-			public Integer fromString(String string) {
-				return null;
+				return new SVGGlyph(resourceType.getIcon(), resourceType.getColor(), 22, 25);
 			}
 		};
-		icon.setCellFactory(IconCell.forTableColumn(converter));
+		icon.setCellFactory(SVGIconCell.forTableColumn(converter));
 		// 资源名称
 		Column<String> name = new Column<>();
 		name.setAlignment(Pos.CENTER_LEFT);

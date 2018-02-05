@@ -7,6 +7,7 @@ import java.util.ResourceBundle;
 import com.cas.sim.tis.consts.ResourceConsts;
 import com.cas.sim.tis.consts.ResourceType;
 import com.cas.sim.tis.entity.Resource;
+import com.cas.sim.tis.svg.SVGGlyph;
 import com.cas.sim.tis.util.HTTPUtils;
 import com.cas.sim.tis.util.MsgUtil;
 import com.cas.sim.tis.util.SpringUtil;
@@ -39,6 +40,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 
 /**
  * 资源查看面板
@@ -198,8 +200,8 @@ public class ResourceViewer extends VBox implements IContent {
 		VLCPlayer player = new VLCPlayer();
 		viewer.getChildren().add(player);
 		HTTPUtils utils = SpringUtil.getBean(HTTPUtils.class);
-		player.loadVideo(utils.getHttpUrl(ResourceConsts.FTP_RES_PATH + resource.getPath()));
-//		player.loadVideo("http://192.168.1.19:8082/Test/Mux140928003405.avi");
+//		player.loadVideo(utils.getHttpUrl(ResourceConsts.FTP_RES_PATH + resource.getPath()));
+		player.loadVideo("http://192.168.1.19:8082/Test/Mux140928003405.avi");
 //		player.loadVideo("http://192.168.1.19:8082/resources/4dae3b67-1d55-4125-a577-4086585464c1.mp4");
 	}
 
@@ -244,10 +246,10 @@ public class ResourceViewer extends VBox implements IContent {
 		}
 		collected = SpringUtil.getBean(CollectionAction.class).checkCollected(resource.getId());
 		if (collected) {
-			this.collectedBtn.setGraphic(new ImageView("/static/images/resource/collected.png"));
+			this.collectedBtn.setGraphic(new SVGGlyph("iconfont.svg.collected", Color.web("#ff9e2c"), 25, 20));
 			this.collectedBtn.setText(MsgUtil.getMessage("resource.collection.done"));
 		} else {
-			this.collectedBtn.setGraphic(new ImageView("/static/images/resource/uncollect.png"));
+			this.collectedBtn.setGraphic(new SVGGlyph("iconfont.svg.uncollect", Color.web("#ff9e2c"), 25, 20));
 			this.collectedBtn.setText(MsgUtil.getMessage("resource.collection.todo"));
 		}
 	}
@@ -256,12 +258,12 @@ public class ResourceViewer extends VBox implements IContent {
 	private void collect() {
 		Integer rid = resource.getId();
 		if (collected) {
-			this.collectedBtn.setGraphic(new ImageView("/static/images/resource/uncollect.png"));
+			this.collectedBtn.setGraphic(new SVGGlyph("iconfont.svg.uncollect", Color.web("#ff9e2c"), 25, 20));
 			this.collectedBtn.setText(MsgUtil.getMessage("resource.collection.todo"));
 			SpringUtil.getBean(ResourceAction.class).uncollect(rid);
 			collected = false;
 		} else {
-			this.collectedBtn.setGraphic(new ImageView("/static/images/resource/collected.png"));
+			this.collectedBtn.setGraphic(new SVGGlyph("iconfont.svg.collected", Color.web("#ff9e2c"), 25, 20));
 			this.collectedBtn.setText(MsgUtil.getMessage("resource.collection.done"));
 			SpringUtil.getBean(ResourceAction.class).collected(rid);
 			collected = true;
@@ -271,7 +273,7 @@ public class ResourceViewer extends VBox implements IContent {
 	@Override
 	public Region[] getContent() {
 		initialize();
-		return new Region[] {this};
+		return new Region[] { this };
 	}
 
 	@Override

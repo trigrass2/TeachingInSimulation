@@ -6,16 +6,18 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.HBox?>
 <?import java.lang.String?>
+<?import com.cas.sim.tis.svg.SVGGlyph?>
 
 <fx:root alignment="TOP_RIGHT" type="HBox" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
 	<children>
 		<Button mnemonicParsing="false" onAction="#more" styleClass="login-decoration">
 			<graphic>
-				<ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
-					<image>
-						<Image url="static/images/basic/more.png" />
-					</image>
-				</ImageView>
+				<!-- <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true"> -->
+				<!-- <image> -->
+				<!-- <Image url="static/images/basic/more.png" /> -->
+				<!-- </image> -->
+				<!-- </ImageView> -->
+				<SVGGlyph name="iconfont.svg.expand" size="10" fill="#A2CBF3" />
 			</graphic>
 			<tooltip>
 				<Tooltip text="%button.setting" />
@@ -23,11 +25,12 @@
 		</Button>
 		<Button mnemonicParsing="false" onAction="#min" styleClass="login-decoration">
 			<graphic>
-				<ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
-					<image>
-						<Image url="static/images/basic/min.png" />
-					</image>
-				</ImageView>
+				<!-- <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true"> -->
+				<!-- <image> -->
+				<!-- <Image url="static/images/basic/min.png" /> -->
+				<!-- </image> -->
+				<!-- </ImageView> -->
+				<SVGGlyph name="iconfont.svg.min" size="10" fill="#A2CBF3" />
 			</graphic>
 			<tooltip>
 				<Tooltip text="%button.minimize" />
@@ -35,11 +38,12 @@
 		</Button>
 		<Button mnemonicParsing="false" onAction="#close" styleClass="login-decoration">
 			<graphic>
-				<ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
-					<image>
-						<Image url="@../static/images/basic/close.png" />
-					</image>
-				</ImageView>
+				<!-- <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true"> -->
+				<!-- <image> -->
+				<!-- <Image url="@../static/images/basic/close.png" /> -->
+				<!-- </image> -->
+				<!-- </ImageView> -->
+				<SVGGlyph name="iconfont.svg.close" size="10" fill="#A2CBF3" />
 			</graphic>
 			<tooltip>
 				<Tooltip text="%button.close" />

@@ -1,10 +1,8 @@
 package com.cas.sim.tis.svg;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -21,11 +19,6 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
-import javafx.beans.binding.Bindings;
-import javafx.scene.paint.Color;
-import javafx.scene.transform.Scale;
-import javafx.scene.transform.Translate;
-
 /**
  * will load icomoon svg font file, it will create a map of the available svg glyphs. the user can retrieve the svg glyph using its name.
  * @author Shadi Shaheen
@@ -34,10 +27,10 @@ import javafx.scene.transform.Translate;
  */
 public class SVGHelper {
 
-	private static final HashMap<String, SVGGlyphBuilder> glyphsMap = new HashMap<>();
+	private static final HashMap<String, SVGBuilder> glyphsMap = new HashMap<>();
 
-	public static SVGGlyph getGlyph(String glyphName) {
-		return glyphsMap.get(glyphName).build();
+	public static SVGBuilder getSVG(String name) {
+		return glyphsMap.get(name);
 	}
 
 	/**
@@ -45,18 +38,18 @@ public class SVGHelper {
 	 * @param glyphName the glyph name
 	 * @return SVGGlyph node
 	 */
-	public static SVGGlyph getIcoMoonGlyph(String glyphName) throws Exception {
-		SVGGlyphBuilder builder = glyphsMap.get(glyphName);
-		if (builder == null) throw new Exception("Glyph '" + glyphName + "' not found!");
-		SVGGlyph glyph = builder.build();
+//	public static SVG getIcoMoonGlyph(String glyphName) throws Exception {
+//		SVGBuilder builder = glyphsMap.get(glyphName);
+//		if (builder == null) throw new Exception("Glyph '" + glyphName + "' not found!");
+//		SVG svg = builder.build();
 		// we need to apply transformation to correct the icon since
 		// its being inverted after importing from icomoon
-		glyph.getTransforms().add(new Scale(1, -1));
-		Translate height = new Translate();
-		height.yProperty().bind(Bindings.createDoubleBinding(() -> -glyph.getHeight(), glyph.heightProperty()));
-		glyph.getTransforms().add(height);
-		return glyph;
-	}
+//		svg.getTransforms().add(new Scale(1, -1));
+//		Translate height = new Translate();
+//		height.yProperty().bind(Bindings.createDoubleBinding(() -> -glyph.getHeight(), svg.heightProperty()));
+//		svg.getTransforms().add(height);
+//		return svg;
+//	}
 
 	/**
 	 * @return a set of all loaded svg IDs (names)
@@ -93,8 +86,8 @@ public class SVGHelper {
 				}
 
 				String glyphId = glyphName.getNodeValue();
-				SVGGlyphBuilder glyphPane = new SVGGlyphBuilder(i, glyphId, glyph.getAttributes().getNamedItem("d").getNodeValue());
-				glyphsMap.put(svgFontFile.getName() + "." + glyphId, glyphPane);
+				SVGBuilder builder = new SVGBuilder(i, glyphId, glyph.getAttributes().getNamedItem("d").getNodeValue());
+				glyphsMap.put(svgFontFile.getName() + "." + glyphId, builder);
 			}
 		} catch (ParserConfigurationException | SAXException | URISyntaxException e) {
 			e.printStackTrace();
@@ -129,8 +122,8 @@ public class SVGHelper {
 				}
 
 				String glyphId = glyphName.getNodeValue();
-				SVGGlyphBuilder glyphPane = new SVGGlyphBuilder(i, glyphId, glyph.getAttributes().getNamedItem("d").getNodeValue());
-				glyphsMap.put(keyPrefix + "." + glyphId, glyphPane);
+				SVGBuilder builder = new SVGBuilder(i, glyphId, glyph.getAttributes().getNamedItem("d").getNodeValue());
+				glyphsMap.put(keyPrefix + "." + glyphId, builder);
 			}
 			stream.close();
 		} catch (ParserConfigurationException | SAXException e) {
@@ -145,25 +138,25 @@ public class SVGHelper {
 	 * @return SVGGLyph node
 	 * @throws IOException
 	 */
-	public static SVGGlyph loadGlyph(URL url) throws IOException {
-		String urlString = url.toString();
-		String filename = urlString.substring(urlString.lastIndexOf('/') + 1);
-
-		int startPos = 0;
-		int endPos = 0;
-		while (endPos < filename.length() && filename.charAt(endPos) != '-') {
-			endPos++;
-		}
-		int id = Integer.parseInt(filename.substring(startPos, endPos));
-		startPos = endPos + 1;
-
-		while (endPos < filename.length() && filename.charAt(endPos) != '.') {
-			endPos++;
-		}
-		String name = filename.substring(startPos, endPos);
-
-		return new SVGGlyph(id, name, extractSvgPath(getStringFromInputStream(url.openStream())), Color.BLACK);
-	}
+//	public static SVGGlyph loadGlyph(URL url) throws IOException {
+//		String urlString = url.toString();
+//		String filename = urlString.substring(urlString.lastIndexOf('/') + 1);
+//
+//		int startPos = 0;
+//		int endPos = 0;
+//		while (endPos < filename.length() && filename.charAt(endPos) != '-') {
+//			endPos++;
+//		}
+//		int id = Integer.parseInt(filename.substring(startPos, endPos));
+//		startPos = endPos + 1;
+//
+//		while (endPos < filename.length() && filename.charAt(endPos) != '.') {
+//			endPos++;
+//		}
+//		String name = filename.substring(startPos, endPos);
+//
+//		return new SVGGlyph(id, name, extractSvgPath(getStringFromInputStream(url.openStream())), Color.BLACK);
+//	}
 
 	/**
 	 * clear all loaded svg icons
@@ -172,47 +165,57 @@ public class SVGHelper {
 		glyphsMap.clear();
 	}
 
-	private static String extractSvgPath(String svgString) {
-		return svgString.replaceFirst(".*d=\"", "").replaceFirst("\".*", "");
-	}
+//	private static String extractSvgPath(String svgString) {
+//		return svgString.replaceFirst(".*d=\"", "").replaceFirst("\".*", "");
+//	}
+//
+//	private static String getStringFromInputStream(InputStream is) {
+//		BufferedReader br = null;
+//		StringBuilder sb = new StringBuilder();
+//
+//		String line;
+//		try {
+//			br = new BufferedReader(new InputStreamReader(is));
+//			while ((line = br.readLine()) != null) {
+//				sb.append(line);
+//			}
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		} finally {
+//			if (br != null) {
+//				try {
+//					br.close();
+//				} catch (IOException e) {
+//					e.printStackTrace();
+//				}
+//			}
+//		}
+//		return sb.toString();
+//	}
 
-	private static String getStringFromInputStream(InputStream is) {
-		BufferedReader br = null;
-		StringBuilder sb = new StringBuilder();
+	public static final class SVGBuilder {
+		private final int glyphId;
+		private final String name;
+		private final String svgPathContent;
 
-		String line;
-		try {
-			br = new BufferedReader(new InputStreamReader(is));
-			while ((line = br.readLine()) != null) {
-				sb.append(line);
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		} finally {
-			if (br != null) {
-				try {
-					br.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
-		}
-		return sb.toString();
-	}
-
-	private static final class SVGGlyphBuilder {
-		private int glyphId;
-		private String name;
-		private String svgPathContent;
-
-		SVGGlyphBuilder(int glyphId, String name, String svgPathContent) {
+		SVGBuilder(int glyphId, String name, String svgPathContent) {
 			this.glyphId = glyphId;
 			this.name = name;
 			this.svgPathContent = svgPathContent;
 		}
 
-		SVGGlyph build() {
-			return new SVGGlyph(glyphId, name, svgPathContent, Color.BLACK);
+		public int getGlyphId() {
+			return glyphId;
+		}
+
+
+
+		public String getName() {
+			return name;
+		}
+
+		public String getSvgPathContent() {
+			return svgPathContent;
 		}
 	}
 }

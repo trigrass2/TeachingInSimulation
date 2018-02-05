@@ -3,6 +3,7 @@ package com.cas.sim.tis.view.control.imp;
 import java.io.IOException;
 import java.net.URL;
 
+import com.cas.sim.tis.svg.SVGGlyph;
 import com.cas.sim.tis.view.control.ILeftContent;
 
 import javafx.event.ActionEvent;
@@ -11,10 +12,9 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 
 public abstract class LeftMenu extends VBox implements ILeftContent {
 
@@ -44,8 +44,9 @@ public abstract class LeftMenu extends VBox implements ILeftContent {
 
 	protected abstract void initMenu();
 
-	protected void addMenuItem(String name, String icon, EventHandler<ActionEvent> e) {
-		ToggleButton button = new ToggleButton(name, new ImageView(new Image(icon)));
+	protected void addMenuItem(String name, String svg, EventHandler<ActionEvent> e) {
+		SVGGlyph glyph = new SVGGlyph(svg, Color.WHITE, 22);
+		ToggleButton button = new ToggleButton(name, glyph);
 		button.setOnAction(e);
 		button.getStyleClass().add("left-menu");
 		menu.getChildren().add(button);

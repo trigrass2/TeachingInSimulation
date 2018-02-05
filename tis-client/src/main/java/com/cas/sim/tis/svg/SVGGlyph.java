@@ -10,9 +10,12 @@ import java.util.List;
 
 import com.sun.javafx.css.converters.SizeConverter;
 
+import javafx.beans.binding.Bindings;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.css.CssMetaData;
 import javafx.css.SimpleStyleableDoubleProperty;
 import javafx.css.Styleable;
@@ -27,6 +30,8 @@ import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.SVGPath;
 import javafx.scene.shape.Shape;
+import javafx.scene.transform.Scale;
+import javafx.scene.transform.Translate;
 
 /**
  * Node that is used to show svg images
@@ -34,22 +39,62 @@ import javafx.scene.shape.Shape;
  * @version 1.0
  * @since 2016-03-09
  */
+@SuppressWarnings("restriction")
 public class SVGGlyph extends Pane {
 	private static final String DEFAULT_STYLE_CLASS = "jfx-svg-glyph";
 
-	private final int glyphId;
-	private final String name;
+	private int glyphId;
+	private StringProperty name = new SimpleStringProperty() {
+		public void set(String newValue) {
+			super.set(newValue);
+			if (newValue != null) {
+				SVGHelper.SVGBuilder builder = SVGHelper.getSVG(newValue);
+				glyphId = builder.getGlyphId();
+				init(builder.getSvgPathContent(), getFill());
+			}
+		};
+	};
 	private static final int DEFAULT_PREF_SIZE = 64;
 	private double widthHeightRatio = 1;
-	private ObjectProperty<Paint> fill = new SimpleObjectProperty<>();
+	private ObjectProperty<Paint> fill = new SimpleObjectProperty<>(Color.BLACK);
 
-	public SVGGlyph(String svgPathContent) {
-		this(-1, "UNNAMED", svgPathContent, Color.BLACK);
+	public SVGGlyph() {
+
 	}
 
-	public SVGGlyph(String svgPathContent, Paint fill) {
-		this(-1, "UNNAMED", svgPathContent, fill);
+	public SVGGlyph(String name) {
+		setName(name);
 	}
+
+	public SVGGlyph(String name, Paint fill) {
+		setName(name);
+		setFill(fill);
+	}
+
+	public SVGGlyph(String name, double size) {
+		setName(name);
+		setSize(size, size);
+	}
+
+	public SVGGlyph(String name, Paint fill, double size) {
+		setName(name);
+		setFill(fill);
+		setSize(size, size);
+	}
+	
+	public SVGGlyph(String name, Paint fill, double width, double height) {
+		setName(name);
+		setFill(fill);
+		setSize(width, height);
+	}
+
+//	public SVGGlyph(String svgPathContent) {
+//		this(-1, "UNNAMED", svgPathContent, Color.BLACK);
+//	}
+
+//	public SVGGlyph(String svgPathContent, Paint fill) {
+//		this(-1, "UNNAMED", svgPathContent, fill);
+//	}
 
 	/**
 	 * Constructs SVGGlyph node for a specified svg content and color <b>Note:</b> name and glyphId is not needed when creating a single SVG image, they have been used in {@link SVGHelper} to load icomoon svg font.
@@ -58,9 +103,13 @@ public class SVGGlyph extends Pane {
 	 * @param svgPathContent svg content
 	 * @param fill svg color
 	 */
-	public SVGGlyph(int glyphId, String name, String svgPathContent, Paint fill) {
-		this.glyphId = glyphId;
-		this.name = name;
+//	public SVGGlyph(int glyphId, String name, String svgPathContent, Paint fill) {
+//		this.glyphId = glyphId;
+//		this.name.set(name);
+//		init(svgPathContent, fill);
+//	}
+
+	private void init(String svgPathContent, Paint fill) {
 		getStyleClass().add(DEFAULT_STYLE_CLASS);
 		this.fill.addListener((observable) -> setBackground(new Background(new BackgroundFill(getFill() == null ? Color.BLACK : getFill(), null, null))));
 
@@ -80,6 +129,11 @@ public class SVGGlyph extends Pane {
 
 		setFill(fill);
 		setPrefSize(DEFAULT_PREF_SIZE, DEFAULT_PREF_SIZE);
+		
+		getTransforms().add(new Scale(1, -1));
+		Translate height = new Translate();
+		height.yProperty().bind(Bindings.createDoubleBinding(() -> -this.getHeight(), this.heightProperty()));
+		getTransforms().add(height);
 	}
 
 	/**
@@ -92,8 +146,16 @@ public class SVGGlyph extends Pane {
 	/**
 	 * @return current svg name
 	 */
-	public String getName() {
+	public void setName(String name) {
+		this.name.setValue(name);
+	}
+
+	public StringProperty nameProperty() {
 		return name;
+	}
+
+	public String getName() {
+		return name.get();
 	}
 
 	/**

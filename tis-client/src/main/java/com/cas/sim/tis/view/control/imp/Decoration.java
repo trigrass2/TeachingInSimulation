@@ -5,6 +5,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 import com.cas.sim.tis.Application;
+import com.cas.sim.tis.svg.SVGGlyph;
 import com.cas.sim.tis.util.MsgUtil;
 
 import javafx.application.Platform;
@@ -14,8 +15,8 @@ import javafx.geometry.Bounds;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.control.Button;
 import javafx.scene.control.Tooltip;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
+import javafx.scene.paint.Color;
 import javafx.stage.Screen;
 
 /**
@@ -71,14 +72,14 @@ public class Decoration extends HBox {
 			Application.getStage().setWidth(primaryScreenBounds.getWidth());
 			Application.getStage().setHeight(primaryScreenBounds.getHeight());
 			maximized = true;
-			max.setGraphic(new ImageView("/static/images/basic/revert.png"));
+			max.setGraphic(new SVGGlyph("iconfont.svg.revert", Color.web("#A2CBF3"), 10));
 			maxTip.setText(MsgUtil.getMessage("button.revert"));
 		} else {
 			Application.getStage().setWidth(original.getWidth());
 			Application.getStage().setHeight(original.getHeight());
 			Application.getScene().getWindow().centerOnScreen();
 			maximized = false;
-			max.setGraphic(new ImageView("/static/images/basic/max.png"));
+			max.setGraphic(new SVGGlyph("iconfont.svg.max", Color.web("#A2CBF3"), 10));
 			maxTip.setText(MsgUtil.getMessage("button.maximize"));
 		}
 	}

@@ -1,5 +1,6 @@
 package com.cas.sim.tis;
 
+import java.io.IOException;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
@@ -11,6 +12,7 @@ import com.cas.sim.tis.consts.SystemInfo;
 import com.cas.sim.tis.message.LoginMessage;
 import com.cas.sim.tis.message.handler.LoginMessageHandler;
 import com.cas.sim.tis.message.listener.ClientMessageListener;
+import com.cas.sim.tis.svg.SVGHelper;
 import com.cas.sim.tis.view.controller.LoginController;
 import com.cas.sim.tis.view.controller.NetworkController;
 import com.jme3.network.Network;
@@ -28,8 +30,10 @@ public class LoginApp extends javafx.application.Application {
 	private NetworkClient client;
 
 	public static void main(String[] args) {
+		initSVG();
+
 		jul2slf4j();
-		
+
 		launch(args);
 	}
 
@@ -47,12 +51,12 @@ public class LoginApp extends javafx.application.Application {
 		loader.setResources(ResourceBundle.getBundle("i18n/messages"));
 		Region settingView = loader.load(LoginApp.class.getResourceAsStream("/view/Network.fxml"));
 		NetworkController settingController = loader.getController();
-		
+
 		client = Network.createClient(SystemInfo.APP_NAME, SystemInfo.APP_VERSION);
 		client.addMessageListener(ClientMessageListener.INSTENCE);
 		LoginMessageHandler loginMessageHandler = new LoginMessageHandler();
 		ClientMessageListener.INSTENCE.registerMessageHandler(LoginMessage.class, loginMessageHandler);
-		
+
 //		手动注入
 //		
 		loginController.setClient(client);
@@ -81,11 +85,20 @@ public class LoginApp extends javafx.application.Application {
 		primaryStage.show();
 	}
 
+	private static void initSVG() {
+		try {
+			// 加载svg图标
+			SVGHelper.loadGlyphsFont(Application.class.getResource("/svg/iconfont.svg"));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
 	private static void jul2slf4j() {
 		LogManager.getLogManager().reset();
 		SLF4JBridgeHandler.removeHandlersForRootLogger();
 		Logger.getLogger("").setLevel(Level.FINEST);
 		SLF4JBridgeHandler.install();
 	}
-	
+
 }

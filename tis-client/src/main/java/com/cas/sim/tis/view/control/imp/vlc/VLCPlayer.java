@@ -2,6 +2,7 @@ package com.cas.sim.tis.view.control.imp.vlc;
 
 import java.nio.ByteBuffer;
 
+import com.cas.sim.tis.svg.SVGGlyph;
 import com.cas.sim.tis.view.control.IDistory;
 import com.sun.jna.Memory;
 import com.sun.jna.NativeLibrary;
@@ -27,6 +28,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.util.Duration;
 import uk.co.caprica.vlcj.component.DirectMediaPlayerComponent;
 import uk.co.caprica.vlcj.player.MediaPlayer;
@@ -119,34 +121,15 @@ public class VLCPlayer extends VBox implements IDistory {
 
 		this.getChildren().add(pane);
 
-		mediaPlayerComponent = new DirectMediaPlayerComponent(new DirectBufferFormatCallback()) {
-			@Override
-			public void playing(MediaPlayer mediaPlayer) {
-				Platform.runLater(() -> {
-					ObservableList<String> styleClass = playPauseButton.getStyleClass();
-					styleClass.remove("play");
-					styleClass.add("pause");
-				});
-			}
-
-			@Override
-			public void paused(MediaPlayer mediaPlayer) {
-				Platform.runLater(() -> {
-					ObservableList<String> styleClass = playPauseButton.getStyleClass();
-					styleClass.remove("pause");
-					styleClass.add("play");
-				});
-			}
-		};
-		mediaPlayerComponent.getMediaPlayer().setVolume(50);
-
 		timeline = new Timeline();
 		timeline.setCycleCount(Timeline.INDEFINITE);
 		double duration = 1000.0 / FPS;
 		timeline.getKeyFrames().add(new KeyFrame(Duration.millis(duration), nextFrameHandler));
 
+		SVGGlyph play = new SVGGlyph("iconfont.svg.play", Color.web("#19b0c6"), 32);
+		SVGGlyph pause = new SVGGlyph("iconfont.svg.pause", Color.web("#19b0c6"), 32);
 		playPauseButton = new Button();
-		playPauseButton.getStyleClass().add("play");
+		playPauseButton.setGraphic(play);
 		playPauseButton.getStyleClass().add("img-btn");
 		playPauseButton.setOnAction(e -> {
 			if (mediaPlayerComponent.getMediaPlayer().isPlaying()) {
@@ -184,18 +167,17 @@ public class VLCPlayer extends VBox implements IDistory {
 		});
 		HBox.setHgrow(playSlider, Priority.ALWAYS);
 
+		SVGGlyph volume = new SVGGlyph("iconfont.svg.volume", Color.web("#19b0c6"), 32);
+		SVGGlyph mute = new SVGGlyph("iconfont.svg.mute", Color.web("#c5c5c5"), 32);
 		volumeMuteButton = new Button();
-		volumeMuteButton.getStyleClass().add("volume");
+		volumeMuteButton.setGraphic(volume);
 		volumeMuteButton.getStyleClass().add("img-btn");
 		volumeMuteButton.setOnAction(e -> {
-			ObservableList<String> styleClass = volumeMuteButton.getStyleClass();
 			if (mediaPlayerComponent.getMediaPlayer().isMute()) {
-				styleClass.remove("mute");
-				styleClass.add("volume");
+				volumeMuteButton.setGraphic(volume);
 				mediaPlayerComponent.getMediaPlayer().mute(false);
 			} else {
-				styleClass.remove("volume");
-				styleClass.add("mute");
+				volumeMuteButton.setGraphic(mute);
 				mediaPlayerComponent.getMediaPlayer().mute(true);
 			}
 		});
@@ -213,6 +195,23 @@ public class VLCPlayer extends VBox implements IDistory {
 		controls.setStyle("-fx-background-color:#f0f0f0");
 		controls.getChildren().addAll(playPauseButton, playSlider, time, volumeMuteButton, volumeSlider);
 		this.getChildren().add(controls);
+
+		mediaPlayerComponent = new DirectMediaPlayerComponent(new DirectBufferFormatCallback()) {
+			@Override
+			public void playing(MediaPlayer mediaPlayer) {
+				Platform.runLater(() -> {
+					playPauseButton.setGraphic(pause);
+				});
+			}
+
+			@Override
+			public void paused(MediaPlayer mediaPlayer) {
+				Platform.runLater(() -> {
+					playPauseButton.setGraphic(play);
+				});
+			}
+		};
+		mediaPlayerComponent.getMediaPlayer().setVolume(50);
 	}
 
 	public void loadVideo(String videoPath) {

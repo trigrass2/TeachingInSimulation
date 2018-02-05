@@ -1,51 +1,56 @@
 package com.cas.sim.tis.consts;
 
+import javafx.scene.paint.Color;
+
 public enum ResourceType {
 	/**
 	 * 图片
 	 */
-	IMAGE(0, "static/images/resource/pic.png", new String[] { "*.png", "*.jpg" }, false),
+	IMAGE(0, "iconfont.svg.image", Color.web("#2bc9f7"), new String[] { "*.png", "*.jpg" }, false),
 	/**
 	 * 动画
 	 */
-	SWF(1, "static/images/resource/swf.png", new String[] { "*.swf" }, false),
+	SWF(1, "iconfont.svg.video", Color.web("#9760f1"), new String[] { "*.swf" }, false),
 	/**
 	 * 视频
 	 */
-	VIDEO(2, "static/images/resource/video.png", new String[] { "*.mp4", "*.flv", "*.wmv", "*.rmvb", "*.avi" }, false),
+	VIDEO(2, "iconfont.svg.video", Color.web("#1cabbb"), new String[] { "*.mp4", "*.flv", "*.wmv", "*.rmvb", "*.avi" }, false),
 	/**
 	 * 文本
 	 */
-	TXT(3, "static/images/resource/txt.png", new String[] { "*.txt" }, true),
+	TXT(3, "iconfont.svg.txt", Color.web("#eacb42"), new String[] { "*.txt" }, true),
 	/**
 	 * Word
 	 */
-	WORD(4, "static/images/resource/word.png", new String[] { "*.doc", "*.docx" }, true),
+	WORD(4, "iconfont.svg.word", Color.web("#2b73f7"), new String[] { "*.doc", "*.docx" }, true),
 	/**
 	 * Ppt
 	 */
-	PPT(5, "static/images/resource/ppt.png", new String[] { "*.ppt", "*.pptx" }, true),
+	PPT(5, "iconfont.svg.ppt", Color.web("#ff9e2c"), new String[] { "*.ppt", "*.pptx" }, true),
 	/**
 	 * Excel
 	 */
-	EXCEL(6, "static/images/resource/excel.png", new String[] { "*.xls", "*.xlsx" }, true),
+	EXCEL(6, "iconfont.svg.excel", Color.web("#9abd57"), new String[] { "*.xls", "*.xlsx" }, true),
 	/**
 	 * Pdf
 	 */
-	PDF(7, "static/images/resource/pdf.png", new String[] { "*.pdf" }, false);
+	PDF(7, "iconfont.svg.pdf", Color.web("#dd3a2e"), new String[] { "*.pdf" }, false);
 
 //	资源类型代号
 	private int type;
 //	资源图标
 	private String icon;
+//	图标颜色
+	private Color color;
 //	suffixs
 	private String[] suffixs;
 
 	private boolean convertable;
 
-	private ResourceType(int id, String icon, String[] suffixs, boolean convertable) {
+	private ResourceType(int id, String icon, Color color, String[] suffixs, boolean convertable) {
 		this.type = id;
 		this.icon = icon;
+		this.color = color;
 		this.suffixs = suffixs;
 		this.convertable = convertable;
 	}
@@ -60,6 +65,10 @@ public enum ResourceType {
 
 	public String getIcon() {
 		return icon;
+	}
+
+	public Color getColor() {
+		return color;
 	}
 
 	public boolean isConvertable() {
