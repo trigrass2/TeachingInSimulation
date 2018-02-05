@@ -33,15 +33,15 @@ public class LibraryList extends HBox implements IContent {
 	private static final Logger LOG = LoggerFactory.getLogger(LibraryList.class);
 
 	public enum LibraryMenuType {
-		ADMIN_MOCK(LibraryType.MOCK, true),//
+		ADMIN_MOCK(LibraryType.MOCK, true), //
 		ADMIN_OLD(LibraryType.OLD, true), //
-		
-		TEACHER_MOCK(LibraryType.MOCK, false),//
-		TEACHER_OLD(LibraryType.OLD, false),//
+
+		TEACHER_MOCK(LibraryType.MOCK, false), //
+		TEACHER_OLD(LibraryType.OLD, false), //
 		TEACHER_MINE(LibraryType.TEACHERS, true), //
-		
-		STUDENT_MOCK(LibraryType.MOCK, false),//
-		STUDENT_OLD(LibraryType.OLD, false),//
+
+		STUDENT_MOCK(LibraryType.MOCK, false), //
+		STUDENT_OLD(LibraryType.OLD, false), //
 		STUDENT_MINE(LibraryType.TEACHERS, false);
 
 		private LibraryType libraryType;
@@ -66,6 +66,8 @@ public class LibraryList extends HBox implements IContent {
 
 	@FXML
 	private Title title;
+	@FXML
+	private HBox option;
 	@FXML
 	private Table table;
 	@FXML
@@ -101,7 +103,8 @@ public class LibraryList extends HBox implements IContent {
 	 */
 	private void initialize() {
 		this.title.setTitle(menuType.getLibraryType().getKey());
-		
+		this.option.setVisible(menuType.isEditable());
+
 		createTable();
 	}
 
@@ -114,7 +117,7 @@ public class LibraryList extends HBox implements IContent {
 		primary.setPrimary(true);
 		primary.setVisible(false);
 		primary.setKey("id");
-		// 资源名称
+		// 题库名称
 		Column<String> name = new Column<>();
 		name.setAlignment(Pos.CENTER_LEFT);
 		name.setKey("name");
@@ -160,7 +163,7 @@ public class LibraryList extends HBox implements IContent {
 
 	@FXML
 	private void add() {
-		
+
 	}
 
 	@Override

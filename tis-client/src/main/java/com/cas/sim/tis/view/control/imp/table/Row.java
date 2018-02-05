@@ -81,8 +81,10 @@ public class Row extends HBox {
 	}
 
 	protected void entered() {
-		if (Util.notEmpty(hoverStyleClass)) {
-			getStyleClass().add(hoverStyleClass);
+		if (!isSelected()) {
+			if (Util.notEmpty(hoverStyleClass)) {
+				getStyleClass().add(hoverStyleClass);
+			}
 		}
 		if (editingProperty().get()) {
 			return;
@@ -98,8 +100,10 @@ public class Row extends HBox {
 	}
 
 	protected void exited() {
-		if (Util.notEmpty(hoverStyleClass)) {
-			getStyleClass().remove(hoverStyleClass);
+		if (!isSelected()) {
+			if (Util.notEmpty(hoverStyleClass)) {
+				getStyleClass().remove(hoverStyleClass);
+			}
 		}
 		if (editingProperty().get()) {
 			return;
@@ -144,6 +148,9 @@ public class Row extends HBox {
 	public final void pseudoClassStateChanged(boolean selected) {
 		if (selected) {
 			getStyleClass().add(selectedStyleClass);
+			if (Util.notEmpty(hoverStyleClass)) {
+				getStyleClass().remove(hoverStyleClass);
+			}
 		} else {
 			getStyleClass().remove(selectedStyleClass);
 		}
