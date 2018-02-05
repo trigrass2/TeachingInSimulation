@@ -28,7 +28,7 @@
 										<!-- <Image url="@../static/images/basic/back.png" /> -->
 										<!-- </image> -->
 										<!-- </ImageView> -->
-										<SVGGlyph name="iconfont.svg.back" size="20" fill="WHITE" />
+										<SVGGlyph name="iconfont.svg.back" size="16" fill="WHITE" />
 									</graphic>
 								</Button>
 								<HBox alignment="TOP_RIGHT" HBox.hgrow="ALWAYS">

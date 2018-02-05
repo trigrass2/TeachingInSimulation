@@ -27,10 +27,13 @@
 
 <fx:root style="-fx-background-color: #ffffff;" type="HBox" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
 	<children>
-		<VBox HBox.hgrow="ALWAYS">
+		<VBox HBox.hgrow="ALWAYS" spacing="10">
 			<children>
 				<HBox>
 					<Title fx:id="title" />
+				</HBox>
+				<HBox alignment="CENTER_RIGHT" HBox.hgrow="ALWAYS">
+					<Button text="%button.add" styleClass="blue-btn" onAction="#add" />
 				</HBox>
 				<VBox spacing="10.0" VBox.vgrow="ALWAYS">
 					<VBox VBox.vgrow="ALWAYS">
@@ -52,7 +55,8 @@
 			<children>
 				<VBox>
 					<children>
-					<!-- FIXME -->
+						<!-- FIXME -->
+						<Title title="%library.title.info" />
 					</children>
 				</VBox>
 			</children>
