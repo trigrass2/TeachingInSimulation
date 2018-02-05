@@ -31,14 +31,14 @@
 			<children>
 				<HBox>
 					<Title fx:id="title" />
-				</HBox>
-				<HBox alignment="CENTER_RIGHT" HBox.hgrow="ALWAYS">
-					<Button text="%button.add" styleClass="blue-btn" onAction="#add" />
+					<HBox fx:id="option" alignment="CENTER_RIGHT" HBox.hgrow="ALWAYS">
+						<Button text="%button.add" styleClass="blue-btn" onAction="#add" />
+					</HBox>
 				</HBox>
 				<VBox spacing="10.0" VBox.vgrow="ALWAYS">
 					<VBox VBox.vgrow="ALWAYS">
 						<children>
-							<Table fx:id="table" serial="true" rowHeight="45" spacing="10" separatorable="false" normalStyleClass="tab-row" hoverStyleClass="tab-row-hover" selectedStyleClass="tab-row-selected" />
+							<Table fx:id="table" serial="true" rowHeight="45" spacing="10" separatorable="false" normalStyleClass="table-row" hoverStyleClass="table-row-hover" selectedStyleClass="table-row-selected" />
 						</children>
 					</VBox>
 					<PaginationBar fx:id="pagination" />

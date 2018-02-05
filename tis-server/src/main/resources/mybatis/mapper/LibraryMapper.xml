@@ -6,8 +6,10 @@
 		<result column="NAME" jdbcType="VARCHAR" property="name" />
 		<result column="TYPE" jdbcType="INTEGER" property="type" />
 		<result column="NUM" jdbcType="INTEGER" property="num" />
-		<result column="CREATOR_ID" jdbcType="VARCHAR" property="creatorId" />
+		<result column="CREATOR" jdbcType="VARCHAR" property="creator" />
 		<result column="CREATE_DATE" jdbcType="VARCHAR" property="createDate" />
+		<result column="UPDATER" jdbcType="VARCHAR" property="updater" />
+		<result column="UPDATE_DATE" jdbcType="VARCHAR" property="updateDate" />
 		<result column="DEL" jdbcType="INTEGER" property="del" />
 	</resultMap>
 </mapper>
