@@ -251,6 +251,21 @@ public class Table extends VBox {
 		rowHeight.set(value);
 	}
 
+	// --- Indexable
+	private SimpleBooleanProperty serial = new SimpleBooleanProperty(false);
+
+	public final SimpleBooleanProperty serialProperty() {
+		return serial;
+	}
+
+	public final boolean getSerial() {
+		return serial.get();
+	}
+
+	public final void setSerial(boolean serial) {
+		this.serial.set(serial);
+	}
+
 	private void addHeader(Header header) {
 		header.setSpacing(10);
 		header.setAlignment(Pos.CENTER_LEFT);
@@ -359,6 +374,13 @@ public class Table extends VBox {
 				row = new Row(normalStyleClass, hoverStyleClass, selectedStyleClass);
 				row.setEditable(isEditable());
 				this.addRow(row);
+				if (getSerial()) {
+					Cell<String> index = new Cell<>(null);
+					index.setItem((i + 1) + ".");
+					index.setMinWidth(20);
+					index.setAlignment(Pos.CENTER_RIGHT);
+					row.addCell(index);
+				}
 				for (Column<?> column : getColumns()) {
 					String key = column.getKey();
 					Cell<Object> cell = ((Column<Object>) column).cellFactoryProperty().get().call((Column<Object>) column);

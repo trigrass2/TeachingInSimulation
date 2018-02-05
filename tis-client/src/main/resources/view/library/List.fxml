@@ -35,7 +35,7 @@
 				<VBox spacing="10.0" VBox.vgrow="ALWAYS">
 					<VBox VBox.vgrow="ALWAYS">
 						<children>
-							<Table fx:id="table" rowHeight="45" spacing="10" separatorable="false" normalStyleClass="tab-row" hoverStyleClass="tab-row-hover" selectedStyleClass="tab-row-selected" />
+							<Table fx:id="table" serial="true" rowHeight="45" spacing="10" separatorable="false" normalStyleClass="tab-row" hoverStyleClass="tab-row-hover" selectedStyleClass="tab-row-selected" />
 						</children>
 					</VBox>
 					<PaginationBar fx:id="pagination" />
