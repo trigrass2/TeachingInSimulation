@@ -1,7 +1,9 @@
 package com.cas.sim.tis.entity;
 
+import java.io.Serializable;
 import java.util.Date;
 
+import javax.persistence.Column;
 import javax.persistence.Id;
 
 import org.springframework.format.annotation.DateTimeFormat;
@@ -13,27 +15,36 @@ import org.springframework.format.annotation.DateTimeFormat;
  * -QCompletion:没有选择项 、有标准答案<br>
  */
 //问答题：只有问题描述与题目解析
-public class Question {
+public class Question implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 9159794086496717804L;
 	@Id
 	private Integer id;
-//	试题库类型：0-模拟题;1-真题;2-教师个人题库
-	private Integer type;
-//	所属题库
-	private Integer libraryId;
 //	问题描述
 	private String title;
 //	选项（选择题）
 	private String options;
 //	参考答案（非问答题）
-	private String refrence;
+	private String reference;
 //	题目解析
 	private String analysis;
+//	试题库类型：0-模拟题;1-真题;2-教师个人题库
+	private Integer type;
+//	所属题库
+	@Column(name = "RID")
+	private Integer relateId;
 //	替他信息
 //	所属教师
-	private Integer creatorId;
+	private Integer creator;
 //	创建时间
 	@DateTimeFormat(pattern = "yyyy-MM-dd hh:mm:ss")
 	private Date createDate;
+	private Integer updater;
+//	修改时间
+	@DateTimeFormat(pattern = "yyyy-MM-dd hh:mm:ss")
+	private Date updateDate;
 //	删除状态标记
 	private Boolean del = Boolean.FALSE;
 
@@ -43,14 +54,6 @@ public class Question {
 
 	public void setId(Integer id) {
 		this.id = id;
-	}
-
-	public Integer getLibraryId() {
-		return libraryId;
-	}
-
-	public void setLibraryId(Integer libraryId) {
-		this.libraryId = libraryId;
 	}
 
 	public String getTitle() {
@@ -69,22 +72,6 @@ public class Question {
 		this.analysis = analysis;
 	}
 
-	public Integer getCreatorId() {
-		return creatorId;
-	}
-
-	public void setCreatorId(Integer creatorId) {
-		this.creatorId = creatorId;
-	}
-
-	public Date getCreateDate() {
-		return createDate;
-	}
-
-	public void setCreateDate(Date createDate) {
-		this.createDate = createDate;
-	}
-
 	public String getOptions() {
 		return options;
 	}
@@ -93,20 +80,12 @@ public class Question {
 		this.options = options;
 	}
 
-	public String getRefrence() {
-		return refrence;
+	public String getReference() {
+		return reference;
 	}
 
-	public void setRefrence(String refrence) {
-		this.refrence = refrence;
-	}
-
-	public Boolean getDel() {
-		return del;
-	}
-
-	public void setDel(Boolean del) {
-		this.del = del;
+	public void setReference(String reference) {
+		this.reference = reference;
 	}
 
 	public Integer getType() {
@@ -117,4 +96,51 @@ public class Question {
 		this.type = type;
 	}
 
+	public Integer getRelateId() {
+		return relateId;
+	}
+
+	public void setRelateId(Integer relateId) {
+		this.relateId = relateId;
+	}
+
+	public Integer getCreator() {
+		return creator;
+	}
+
+	public void setCreator(Integer creator) {
+		this.creator = creator;
+	}
+
+	public Date getCreateDate() {
+		return createDate;
+	}
+
+	public void setCreateDate(Date createDate) {
+		this.createDate = createDate;
+	}
+
+	public Integer getUpdater() {
+		return updater;
+	}
+
+	public void setUpdater(Integer updater) {
+		this.updater = updater;
+	}
+
+	public Date getUpdateDate() {
+		return updateDate;
+	}
+
+	public void setUpdateDate(Date updateDate) {
+		this.updateDate = updateDate;
+	}
+
+	public Boolean getDel() {
+		return del;
+	}
+
+	public void setDel(Boolean del) {
+		this.del = del;
+	}
 }

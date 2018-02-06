@@ -21,6 +21,11 @@ public class LibraryAction {
 		return service.findLibraryByType(pageIndex, pageSize, type);
 	}
 	
+	public Library findLibraryByID(int id) {
+		LibraryService service = (LibraryService) libraryServiceFactory.getObject();
+		return service.findById(id);
+	}
+	
 	public void addLibrary(Library library) {
 		LibraryService service = (LibraryService) libraryServiceFactory.getObject();
 		library.setCreator(Session.get(Session.KEY_LOGIN_ID));

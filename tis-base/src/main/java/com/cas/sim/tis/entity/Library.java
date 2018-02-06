@@ -1,5 +1,6 @@
 package com.cas.sim.tis.entity;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.Id;
@@ -7,7 +8,11 @@ import javax.persistence.Id;
 import org.springframework.format.annotation.DateTimeFormat;
 
 //题库
-public class Library {
+public class Library implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -769102637940852815L;
 	@Id
 	private Integer id;
 	private String name;

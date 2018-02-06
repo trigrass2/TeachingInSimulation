@@ -21,6 +21,7 @@ public class LibraryServiceImpl extends AbstractService<Library> implements Libr
 		Condition condition = new Condition(Library.class);
 		Criteria criteria = condition.createCriteria();
 		criteria.andEqualTo("type", type);
+		criteria.andEqualTo("del", 0);
 
 		PageHelper.startPage(pageIndex, pageSize);
 		List<Library> result = findByCondition(condition);

@@ -11,6 +11,7 @@ import com.cas.sim.tis.services.BrowseHistoryService;
 import com.cas.sim.tis.services.CollectionService;
 import com.cas.sim.tis.services.ElecCompService;
 import com.cas.sim.tis.services.LibraryService;
+import com.cas.sim.tis.services.QuestionService;
 import com.cas.sim.tis.services.ResourceService;
 import com.cas.sim.tis.services.StudentService;
 import com.cas.sim.tis.services.TeacherService;
@@ -38,6 +39,8 @@ public class RMIConfig {
 	private ElecCompService elecCompService;
 	@Resource
 	private LibraryService libraryService;
+	@Resource
+	private QuestionService questionService;
 
 	@Value("${server.rmi.registry}")
 	private Integer registPort;
@@ -140,6 +143,23 @@ public class RMIConfig {
 		exporter.setServiceInterface(LibraryService.class);
 		exporter.setServiceName("libraryService");
 		exporter.setService(libraryService);
+		
+		if (servicePort != null) {
+			exporter.setServicePort(servicePort);
+		}
+//		RegistryPort端口默认为1099，用户客户端访问时用的，rmi://host:RegistryPort/serviceName
+		if (registPort != null) {
+			exporter.setRegistryPort(registPort);
+		}
+		return exporter;
+	}
+	
+	@Bean
+	public RmiServiceExporter questionServiceExporter() {
+		RmiServiceExporter exporter = new RmiServiceExporter();
+		exporter.setServiceInterface(QuestionService.class);
+		exporter.setServiceName("questionService");
+		exporter.setService(questionService);
 		
 		if (servicePort != null) {
 			exporter.setServicePort(servicePort);

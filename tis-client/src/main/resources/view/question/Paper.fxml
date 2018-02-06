@@ -10,6 +10,7 @@
 <?import javafx.scene.control.ToggleButton?>
 <?import javafx.scene.control.ToggleGroup?>
 <?import javafx.scene.control.Tooltip?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -19,32 +20,34 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
-
-<?import com.cas.sim.tis.view.control.imp.Title?>
-<?import com.cas.sim.tis.view.control.imp.table.Table?>
-<?import com.cas.sim.tis.view.control.imp.pagination.PaginationBar?>
+<?import javafx.scene.text.Text?>
 
 <fx:root style="-fx-background-color: #ffffff;" type="HBox" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
 	<children>
-		<VBox HBox.hgrow="ALWAYS" spacing="10">
+		<VBox HBox.hgrow="ALWAYS" spacing="20">
 			<children>
-				<HBox>
-					<Title fx:id="title" />
-					<HBox fx:id="option" alignment="CENTER_RIGHT" HBox.hgrow="ALWAYS">
-						<Button text="%button.add" styleClass="blue-btn" onAction="#add" />
-					</HBox>
+				<HBox fx:id="btns" alignment="CENTER_RIGHT" HBox.hgrow="ALWAYS" spacing="10">
+					<Button text="%button.template" styleClass="blue-btn" onAction="#template" fx:id="templateBtn"/>
+					<Button text="%button.import" styleClass="blue-btn" onAction="#importExcel" fx:id="importBtn" />
+					<Button text="%button.export" styleClass="blue-btn" onAction="#exportExcel" fx:id="exportBtn" />
+					<Button text="%button.rename" styleClass="blue-btn" onAction="#rename" fx:id="renameBtn" />
+					<Button text="%button.publish" styleClass="blue-btn" onAction="#publish" fx:id="publishBtn" />
+					<Button text="%button.practice" styleClass="blue-btn" onAction="#practice" fx:id="practiceBtn" />
 				</HBox>
-				<VBox spacing="10.0" VBox.vgrow="ALWAYS">
-					<VBox VBox.vgrow="ALWAYS">
-						<children>
-							<Table fx:id="table" serial="true" rowHeight="45" spacing="10" separatorable="false" normalStyleClass="table-row" hoverStyleClass="table-row-hover" selectedStyleClass="table-row-selected" />
-						</children>
-					</VBox>
-					<PaginationBar fx:id="pagination" />
+				<HBox alignment="CENTER" HBox.hgrow="ALWAYS" style="-fx-background-color:#f6f6f6;">
+					<Text fx:id="libName" styleClass="font16" />
+					<padding>
+						<Insets top="10" bottom="10" />
+					</padding>
+				</HBox>
+				<ScrollPane fitToWidth="true" hbarPolicy="NEVER">
+					<content>
+						<VBox fx:id="paper" spacing="20.0" VBox.vgrow="ALWAYS" />
+					</content>
 					<padding>
 						<Insets left="20.0" />
 					</padding>
-				</VBox>
+				</ScrollPane>
 			</children>
 			<padding>
 				<Insets bottom="20.0" right="20.0" top="20.0" />
@@ -55,7 +58,6 @@
 				<VBox>
 					<children>
 						<!-- FIXME -->
-						<Title title="%library.title.info" />
 					</children>
 				</VBox>
 			</children>

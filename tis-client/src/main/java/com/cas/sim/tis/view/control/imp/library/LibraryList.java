@@ -16,15 +16,22 @@ import com.cas.sim.tis.view.action.LibraryAction;
 import com.cas.sim.tis.view.control.IContent;
 import com.cas.sim.tis.view.control.imp.Title;
 import com.cas.sim.tis.view.control.imp.pagination.PaginationBar;
+import com.cas.sim.tis.view.control.imp.question.PreviewQuestionPaper;
 import com.cas.sim.tis.view.control.imp.table.BtnCell;
 import com.cas.sim.tis.view.control.imp.table.Column;
 import com.cas.sim.tis.view.control.imp.table.Table;
+import com.cas.sim.tis.view.controller.PageController;
+import com.cas.sim.tis.view.controller.PageController.PageLevel;
 import com.github.pagehelper.PageInfo;
 
+import de.felixroske.jfxsupport.GUIState;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonType;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
@@ -128,7 +135,8 @@ public class LibraryList extends HBox implements IContent {
 		// 查看按钮
 		Column<String> view = new Column<String>();
 		view.setCellFactory(BtnCell.forTableColumn(MsgUtil.getMessage("button.view"), Priority.ALWAYS, "blue-btn", id -> {
-			// FIXME
+			PageController controller = SpringUtil.getBean(PageController.class);
+			controller.loadContent(new PreviewQuestionPaper(menuType, (int) id), PageLevel.Level2);
 		}));
 		view.setAlignment(Pos.CENTER_RIGHT);
 		table.getColumns().add(view);
@@ -136,9 +144,18 @@ public class LibraryList extends HBox implements IContent {
 			// 删除按钮
 			Column<String> del = new Column<String>();
 			del.setCellFactory(BtnCell.forTableColumn(MsgUtil.getMessage("button.delete"), Priority.ALWAYS, "blue-btn", id -> {
-				// FIXME
+				Alert alert = new Alert(AlertType.CONFIRMATION, MsgUtil.getMessage("table.delete"), ButtonType.YES, ButtonType.NO);
+				alert.setHeaderText(null);
+				alert.initOwner(GUIState.getStage());
+				alert.showAndWait().ifPresent(response -> {
+					if (response == ButtonType.YES) {
+						SpringUtil.getBean(LibraryAction.class).deleteLibrary((int) id);
+						reload();
+					}
+				});
 			}));
 			del.setAlignment(Pos.CENTER_RIGHT);
+			del.setMaxWidth(58);
 			table.getColumns().add(del);
 		}
 	}

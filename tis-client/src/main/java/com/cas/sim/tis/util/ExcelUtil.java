@@ -5,12 +5,16 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.DateUtil;
+import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.util.WorkbookUtil;
@@ -18,6 +22,8 @@ import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
+import com.cas.util.Util;
 
 /**
  * 表格文件处理类
@@ -381,6 +387,56 @@ public final class ExcelUtil {
 		return result;
 	}
 
+	public static Object[][] readExcelSheet(String fiPath, String sheetName, int columnNum) {
+		Workbook wb = null;
+		FileInputStream fo = null;
+		try {
+			int rowNum = 1;
+
+			fo = new FileInputStream(fiPath);
+
+			try {
+				wb = new HSSFWorkbook(fo);
+			} catch (Exception e) {
+				try {
+					fo = new FileInputStream(fiPath);
+					wb = new XSSFWorkbook(fo);
+				} catch (Exception e2) {
+					e2.printStackTrace();
+				}
+			}
+
+			Sheet sheet = wb.getSheet(sheetName);
+
+			if (sheet == null) {
+				System.out.println("工作簿为空！");
+				return null;
+			}
+
+			while (sheet.getRow(rowNum) != null) {
+				rowNum++;
+			}
+			return readExcelSheet(fiPath, sheetName, rowNum, columnNum);
+			// -------------------------------------------------------------
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+			return null;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		} finally {
+			try {
+				if (fo != null) {
+					fo.close();
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			} finally {
+				fo = null;
+			}
+		}
+	}
+
 	/**
 	 * 读取excel文件某个sheet中的所有单元格数据
 	 * @param version
@@ -408,7 +464,7 @@ public final class ExcelUtil {
 
 			Sheet sheet = wb.getSheet(sheetName);
 
-			if (wb.getSheet(sheetName) == null) {
+			if (sheet == null) {
 				System.out.println("工作簿为空！");
 				return null;
 			}
@@ -491,6 +547,84 @@ public final class ExcelUtil {
 				}
 			} catch (IOException e) {
 				e.printStackTrace();
+			}
+		}
+	}
+
+	/**
+	 * @param inPath
+	 * @param outPath
+	 * @param datas
+	 * @param version
+	 */
+	public static void writeExcelByTemplate(String inPath, String outPath, String version, Map<String, Object[][]> datas, int startRow) {
+		Workbook wb = null;
+		FileInputStream in = null;
+		FileOutputStream out = null;
+		try {
+			// 读取模版
+			in = new FileInputStream(inPath);
+			if (version.equals(EXCEL_TYPE_2007)) {
+				wb = new XSSFWorkbook(in);
+			} else {
+				wb = new HSSFWorkbook(in);
+			}
+			in.close();
+			// 写入数据
+			for (Entry<String, Object[][]> data : datas.entrySet()) {
+				Object[][] objs = data.getValue();
+				Sheet sheet = wb.getSheet(data.getKey());
+				for (int i = 0; i < objs.length; i++) {
+					Row row = sheet.getRow(i + startRow);
+					if (row == null) {
+						row = sheet.createRow(i + startRow);
+					}
+					for (int j = 0; j < objs[i].length; j++) {
+						Object obj = objs[i][j];
+						if (obj == null) {
+							continue;
+						}
+						Cell cell = row.getCell(j);
+						if (cell == null) {
+							cell = row.createCell(j);
+						}
+						String value = String.valueOf(obj);
+						if (obj instanceof String) {
+							cell.setCellValue(value);
+						} else if (Util.isNumeric(value)) {
+							cell.setCellValue(Double.parseDouble(value));
+						}
+					}
+				}
+			}
+			// 保存到本地
+			out = new FileOutputStream(outPath);
+			wb.write(out);
+			out.flush();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+			throw new RuntimeException(e.getMessage());
+		} catch (IOException e) {
+			e.printStackTrace();
+			throw new RuntimeException(e.getMessage());
+		} finally {
+			if (in != null) {
+				try {
+					in.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				} finally {
+					in = null;
+				}
+			}
+			if (out != null) {
+				try {
+					out.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				} finally {
+					out = null;
+				}
 			}
 		}
 	}
