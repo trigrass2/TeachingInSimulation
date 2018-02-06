@@ -55,6 +55,7 @@ import javafx.scene.chart.PieChart.Data;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -249,7 +250,7 @@ public class ResourceList extends HBox implements IContent {
 		icon.setMaxWidth(25);
 		icon.getStyleClass().add("gray-label");
 		Function<Integer, SVGGlyph> converter = new Function<Integer, SVGGlyph>() {
-			
+
 			@Override
 			public SVGGlyph apply(Integer type) {
 				if (type == null) {
@@ -303,7 +304,15 @@ public class ResourceList extends HBox implements IContent {
 			// 删除按钮
 			Column<String> delete = new Column<String>();
 			delete.setCellFactory(BtnCell.forTableColumn(MsgUtil.getMessage("button.delete"), "blue-btn", rid -> {
-				SpringUtil.getBean(ResourceAction.class).detele((Integer) rid);
+				Alert alert = new Alert(AlertType.CONFIRMATION, MsgUtil.getMessage("table.delete"), ButtonType.YES, ButtonType.NO);
+				alert.setHeaderText(null);
+				alert.initOwner(GUIState.getStage());
+				alert.showAndWait().ifPresent(response -> {
+					if (response == ButtonType.YES) {
+						SpringUtil.getBean(ResourceAction.class).detele((Integer) rid);
+						reload();
+					}
+				});
 			}));
 			delete.setAlignment(Pos.CENTER_RIGHT);
 			delete.setMaxWidth(58);
