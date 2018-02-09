@@ -21,24 +21,26 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
+<?import com.cas.sim.tis.svg.SVGGlyph?>
+<?import com.cas.sim.tis.view.control.imp.Title?>
 
 <fx:root style="-fx-background-color: #ffffff;" type="HBox" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
 	<children>
 		<VBox HBox.hgrow="ALWAYS" spacing="20">
 			<children>
-				<HBox fx:id="btns" alignment="CENTER_RIGHT" HBox.hgrow="ALWAYS" spacing="10">
-					<Button text="%button.template" styleClass="blue-btn" onAction="#template" fx:id="templateBtn"/>
-					<Button text="%button.import" styleClass="blue-btn" onAction="#importExcel" fx:id="importBtn" />
-					<Button text="%button.export" styleClass="blue-btn" onAction="#exportExcel" fx:id="exportBtn" />
-					<Button text="%button.rename" styleClass="blue-btn" onAction="#rename" fx:id="renameBtn" />
-					<Button text="%button.publish" styleClass="blue-btn" onAction="#publish" fx:id="publishBtn" />
-					<Button text="%button.practice" styleClass="blue-btn" onAction="#practice" fx:id="practiceBtn" />
-				</HBox>
-				<HBox alignment="CENTER" HBox.hgrow="ALWAYS" style="-fx-background-color:#f6f6f6;">
-					<Text fx:id="libName" styleClass="font16" />
+				<Title title="%library.title.detail" />
+				<HBox alignment="CENTER_LEFT" HBox.hgrow="ALWAYS" style="-fx-background-color:#f6f6f6;">
+					<Label fx:id="libName" styleClass="font14">
+						<graphic>
+							<SVGGlyph name="iconfont.svg.right" fill="#bebebe" size="10" />
+						</graphic>
+					</Label>
 					<padding>
-						<Insets top="10" bottom="10" />
+						<Insets top="10" bottom="10" left="10" />
 					</padding>
+					<VBox.margin>
+						<Insets left="20" />
+					</VBox.margin>
 				</HBox>
 				<ScrollPane fitToWidth="true" hbarPolicy="NEVER">
 					<content>
@@ -55,11 +57,42 @@
 		</VBox>
 		<VBox prefWidth="435.0" style="-fx-background-color: #fbfbfb;">
 			<children>
-				<VBox>
+				<Title title="%resource.title.stats" />
+				<VBox alignment="TOP_CENTER">
 					<children>
-						<!-- FIXME -->
+						<StackPane prefHeight="200.0">
+							<children>
+								<PieChart fx:id="chart" prefHeight="200.0" prefWidth="200.0" labelsVisible="false" startAngle="90" />
+								<AnchorPane mouseTransparent="true">
+									<children>
+										<Label fx:id="tip" styleClass="tip" visible="false" />
+									</children>
+								</AnchorPane>
+							</children>
+						</StackPane>
 					</children>
+					<padding>
+						<Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+					</padding>
 				</VBox>
+
+				<Title title="%library.title.manage" />
+				<!-- FIXME -->
+				<HBox fx:id="options" VBox.vgrow="ALWAYS" alignment="TOP_CENTER" spacing="10">
+					<children>
+						<Button text="%button.template" styleClass="blue-btn" onAction="#template" fx:id="templateBtn" prefHeight="40.0" prefWidth="108.0" />
+						<Button text="%button.import" styleClass="blue-btn" onAction="#importExcel" fx:id="importBtn" prefHeight="40.0" prefWidth="108.0" />
+						<Button text="%button.export" styleClass="blue-btn" onAction="#exportExcel" fx:id="exportBtn" prefHeight="40.0" prefWidth="108.0" />
+						<Button text="%button.rename" styleClass="blue-btn" onAction="#rename" fx:id="renameBtn" prefHeight="40.0" prefWidth="108.0" />
+					</children>
+					<padding>
+						<Insets top="20" bottom="20" />
+					</padding>
+				</HBox>
+				<HBox fx:id="submits" alignment="BOTTOM_CENTER">
+					<Button text="%button.publish" styleClass="blue-btn" onAction="#publish" fx:id="publishBtn" prefHeight="40.0" prefWidth="390.0" />
+					<Button text="%button.practice" styleClass="blue-btn" onAction="#practice" fx:id="practiceBtn" prefHeight="40.0" prefWidth="390.0" />
+				</HBox>
 			</children>
 			<padding>
 				<Insets bottom="20.0" top="20.0" />

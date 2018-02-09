@@ -11,6 +11,8 @@ import java.util.ResourceBundle;
 
 import javax.swing.filechooser.FileSystemView;
 
+import org.springframework.util.StringUtils;
+
 import com.cas.sim.tis.consts.QuestionConsts;
 import com.cas.sim.tis.consts.QuestionType;
 import com.cas.sim.tis.consts.Session;
@@ -22,28 +24,35 @@ import com.cas.sim.tis.util.SpringUtil;
 import com.cas.sim.tis.view.action.LibraryAction;
 import com.cas.sim.tis.view.action.QuestionAction;
 import com.cas.sim.tis.view.control.IContent;
-import com.cas.sim.tis.view.control.imp.Title;
+import com.cas.sim.tis.view.control.imp.dialog.Dialog;
 import com.cas.sim.tis.view.control.imp.library.LibraryList.LibraryMenuType;
+import com.cas.sim.tis.view.control.imp.library.LibraryModifyDialog;
 import com.cas.util.FileUtil;
 import com.cas.util.Util;
 
 import de.felixroske.jfxsupport.GUIState;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
+import javafx.scene.chart.PieChart;
+import javafx.scene.chart.PieChart.Data;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 
 public class PreviewQuestionPaper extends HBox implements IContent {
 
 	@FXML
-	private HBox btns;
+	private HBox options;
+	@FXML
+	private HBox submits;
 	@FXML
 	private Button templateBtn;
 	@FXML
@@ -57,9 +66,13 @@ public class PreviewQuestionPaper extends HBox implements IContent {
 	@FXML
 	private Button practiceBtn;
 	@FXML
-	private Text libName;
+	private Label libName;
 	@FXML
 	private VBox paper;
+	@FXML
+	private PieChart chart;
+	@FXML
+	private Label tip;
 
 	private int rid;
 
@@ -97,10 +110,16 @@ public class PreviewQuestionPaper extends HBox implements IContent {
 		this.libName.setText(library.getName());
 
 		if (menuType.isEditable()) {
-			this.btns.getChildren().removeAll(practiceBtn);
+			this.submits.getChildren().removeAll(practiceBtn);
 		} else {
-			this.btns.getChildren().removeAll(templateBtn, importBtn, exportBtn, renameBtn, publishBtn);
+			this.options.getChildren().removeAll(templateBtn, importBtn, exportBtn, renameBtn);
+			this.submits.getChildren().remove(publishBtn);
 		}
+
+		chart.setOnMouseMoved(e -> {
+			tip.setTranslateX(e.getX());
+			tip.setTranslateY(e.getY());
+		});
 
 		checkImportOrExport();
 
@@ -110,37 +129,54 @@ public class PreviewQuestionPaper extends HBox implements IContent {
 	private void checkImportOrExport() {
 		boolean export = SpringUtil.getBean(QuestionAction.class).checkImportOrExport(rid);
 		if (export) {
-			this.btns.getChildren().remove(importBtn);
+			this.options.getChildren().remove(importBtn);
 		} else {
-			this.btns.getChildren().remove(exportBtn);
+			this.options.getChildren().remove(exportBtn);
 		}
 	}
 
 	private void loadQuestions() {
 		this.paper.getChildren().clear();
-		loadQuestionsByType(QuestionType.CHOICE);
-		loadQuestionsByType(QuestionType.JUDGMENT);
-		loadQuestionsByType(QuestionType.BLANK);
-		loadQuestionsByType(QuestionType.SUBJECTIVE);
-	}
-
-	private void loadQuestionsByType(QuestionType type) {
-		List<Question> questions = SpringUtil.getBean(QuestionAction.class).findQuestionsByLibraryAndQuestionType(rid, type.getType());
-		if (questions.size() == 0) {
-			return;
-		}
-		VBox box = new VBox(20);
-		this.paper.getChildren().add(box);
-
-		Title title = new Title();
-		title.setTitle(type.getTitle());
-		box.getChildren().add(title);
+		List<Question> choices = loadQuestionsByType(QuestionType.CHOICE);
+		List<Question> judgments = loadQuestionsByType(QuestionType.JUDGMENT);
+		List<Question> blanks = loadQuestionsByType(QuestionType.BLANK);
+		List<Question> subjectives = loadQuestionsByType(QuestionType.SUBJECTIVE);
+		List<Question> questions = new ArrayList<>();
+		questions.addAll(choices);
+		questions.addAll(judgments);
+		questions.addAll(blanks);
+		questions.addAll(subjectives);
 		for (int i = 0; i < questions.size(); i++) {
 			int index = i + 1;
 			Question question = questions.get(i);
-			PreviewQuestionItem item = new PreviewQuestionItem(index, type, question);
-			box.getChildren().add(item);
+			PreviewQuestionItem item = new PreviewQuestionItem(index, QuestionType.getQuestionType(question.getType()), question, menuType.isEditable());
+			paper.getChildren().add(item);
 		}
+		ObservableList<Data> datas = FXCollections.observableArrayList(//
+				new PieChart.Data(MsgUtil.getMessage("question.choice"), choices.size()), //
+				new PieChart.Data(MsgUtil.getMessage("question.judgment"), judgments.size()), //
+				new PieChart.Data(MsgUtil.getMessage("question.blank"), blanks.size()), //
+				new PieChart.Data(MsgUtil.getMessage("question.subjective"), subjectives.size())); //
+		chart.setData(datas);
+		for (final PieChart.Data data : chart.getData()) {
+			Node node = data.getNode();
+			node.setOnMouseEntered(e -> {
+				tip.setText(data.getName() + ":" + (int) data.getPieValue());
+				tip.setVisible(true);
+			});
+			node.setOnMouseExited(e -> {
+				tip.setVisible(false);
+
+			});
+		}
+	}
+
+	private List<Question> loadQuestionsByType(QuestionType type) {
+		List<Question> questions = SpringUtil.getBean(QuestionAction.class).findQuestionsByLibraryAndQuestionType(rid, type.getType());
+		if (questions.size() == 0) {
+			return new ArrayList<>();
+		}
+		return questions;
 	}
 
 	@FXML
@@ -169,7 +205,7 @@ public class PreviewQuestionPaper extends HBox implements IContent {
 		if (!loadChoice(source, questions) || !loadJudgment(source, questions) || !loadBlank(source, questions) || !loadSubjective(source, questions)) {
 			return;
 		}
-		SpringUtil.getBean(QuestionAction.class).addQuestions(questions);
+		SpringUtil.getBean(QuestionAction.class).addQuestions(rid, questions);
 	}
 
 	@FXML
@@ -198,7 +234,27 @@ public class PreviewQuestionPaper extends HBox implements IContent {
 
 	@FXML
 	private void rename() {
-
+		Dialog<String> dialog = new Dialog<>();
+		dialog.setDialogPane(new LibraryModifyDialog());
+		dialog.setTitle(MsgUtil.getMessage("library.name"));
+		dialog.setPrefSize(635, 320);
+		dialog.showAndWait().ifPresent(name -> {
+			if (StringUtils.isEmpty(name)) {
+				return;
+			}
+			try {
+				SpringUtil.getBean(LibraryAction.class).modifyLibrary(rid, name);
+				Alert alert = new Alert(AlertType.INFORMATION, MsgUtil.getMessage("data.update.success"));
+				alert.initOwner(GUIState.getStage());
+				alert.show();
+				this.libName.setText(name);
+			} catch (Exception e) {
+				e.printStackTrace();
+				Alert alert = new Alert(AlertType.ERROR, e.getMessage());
+				alert.initOwner(GUIState.getStage());
+				alert.show();
+			}
+		});
 	}
 
 	@FXML

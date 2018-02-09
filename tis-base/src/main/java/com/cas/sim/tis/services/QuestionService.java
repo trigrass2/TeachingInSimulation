@@ -9,9 +9,11 @@ public interface QuestionService extends BaseService<Question> {
 
 	PageInfo<Question> findQuestionsByLibrary(int pageIndex, int pageSize, int rid);
 
+	List<Question> findQuestionsByLibrary(int rid);
+
 	List<Question> findQuestionsByLibraryAndQuestionType(int rid, int type);
 
-	void addQuestions(List<Question> questions);
+	void addQuestions(int rid,List<Question> questions);
 
 	int countQuestionByLibrary(int rid);
 }

@@ -10,8 +10,11 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.remoting.rmi.RmiProxyFactoryBean;
 
 import com.cas.sim.tis.services.BrowseHistoryService;
+import com.cas.sim.tis.services.ClassService;
 import com.cas.sim.tis.services.CollectionService;
 import com.cas.sim.tis.services.ElecCompService;
+import com.cas.sim.tis.services.LibraryPublishService;
+import com.cas.sim.tis.services.LibraryRecordService;
 import com.cas.sim.tis.services.LibraryService;
 import com.cas.sim.tis.services.QuestionService;
 import com.cas.sim.tis.services.ResourceService;
@@ -37,6 +40,17 @@ public class RMIConfig {
 
 		LOG.info("远程访问路径：{}", bean.getServiceUrl());
 		bean.setServiceInterface(UserService.class);
+		return bean;
+	}
+	
+	@Bean
+	@Qualifier("classServiceFactory")
+	public RmiProxyFactoryBean buildClassServiceFactory() {
+		RmiProxyFactoryBean bean = new RmiProxyFactoryBean();
+		bean.setServiceUrl("rmi://" + host + ":" + port + "/classService");
+		
+		LOG.info("远程访问路径：{}", bean.getServiceUrl());
+		bean.setServiceInterface(ClassService.class);
 		return bean;
 	}
 
@@ -87,6 +101,26 @@ public class RMIConfig {
 		bean.setServiceUrl("rmi://" + host + ":" + port + "/questionService");
 		LOG.info("远程访问路径：{}", bean.getServiceUrl());
 		bean.setServiceInterface(QuestionService.class);
+		return bean;
+	}
+	
+	@Bean
+	@Qualifier("libraryPublishServiceFactory")
+	public RmiProxyFactoryBean buildLibraryPublishServiceFactory() {
+		RmiProxyFactoryBean bean = new RmiProxyFactoryBean();
+		bean.setServiceUrl("rmi://" + host + ":" + port + "/libraryPublishService");
+		LOG.info("远程访问路径：{}", bean.getServiceUrl());
+		bean.setServiceInterface(LibraryPublishService.class);
+		return bean;
+	}
+	
+	@Bean
+	@Qualifier("libraryRecordServiceFactory")
+	public RmiProxyFactoryBean buildLibraryRecordServiceFactory() {
+		RmiProxyFactoryBean bean = new RmiProxyFactoryBean();
+		bean.setServiceUrl("rmi://" + host + ":" + port + "/libraryRecordService");
+		LOG.info("远程访问路径：{}", bean.getServiceUrl());
+		bean.setServiceInterface(LibraryRecordService.class);
 		return bean;
 	}
 	

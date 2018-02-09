@@ -44,9 +44,9 @@ public class QuestionAction {
 	 * 批量添加试题
 	 * @param questions
 	 */
-	public void addQuestions(List<Question> questions) {
+	public void addQuestions(int rid, List<Question> questions) {
 		QuestionService service = (QuestionService) questionServiceFactory.getObject();
-		service.addQuestions(questions);
+		service.addQuestions(rid, questions);
 	}
 
 	/**

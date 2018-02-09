@@ -8,8 +8,11 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.remoting.rmi.RmiServiceExporter;
 
 import com.cas.sim.tis.services.BrowseHistoryService;
+import com.cas.sim.tis.services.ClassService;
 import com.cas.sim.tis.services.CollectionService;
 import com.cas.sim.tis.services.ElecCompService;
+import com.cas.sim.tis.services.LibraryPublishService;
+import com.cas.sim.tis.services.LibraryRecordService;
 import com.cas.sim.tis.services.LibraryService;
 import com.cas.sim.tis.services.QuestionService;
 import com.cas.sim.tis.services.ResourceService;
@@ -26,6 +29,8 @@ public class RMIConfig {
 	@Resource
 	private UserService userService;
 	@Resource
+	private ClassService classService;
+	@Resource
 	private ResourceService resourceService;
 	@Resource
 	private StudentService studentService;
@@ -41,6 +46,10 @@ public class RMIConfig {
 	private LibraryService libraryService;
 	@Resource
 	private QuestionService questionService;
+	@Resource
+	private LibraryPublishService libraryPublishService;
+	@Resource
+	private LibraryRecordService libraryRecordService;
 
 	@Value("${server.rmi.registry}")
 	private Integer registPort;
@@ -56,6 +65,18 @@ public class RMIConfig {
 
 		exporter.setServicePort(servicePort);
 //		RegistryPort端口默认为1099，用户客户端访问时用的，rmi://host:RegistryPort/serviceName
+		exporter.setRegistryPort(registPort);
+		return exporter;
+	}
+	
+	@Bean
+	public RmiServiceExporter classServiceExporter() {
+		RmiServiceExporter exporter = new RmiServiceExporter();
+		exporter.setServiceInterface(ClassService.class);
+		exporter.setServiceName("classService");
+		exporter.setService(classService);
+		
+		exporter.setServicePort(servicePort);
 		exporter.setRegistryPort(registPort);
 		return exporter;
 	}
@@ -171,4 +192,35 @@ public class RMIConfig {
 		return exporter;
 	}
 
+	@Bean
+	public RmiServiceExporter libraryPublishServiceExporter() {
+		RmiServiceExporter exporter = new RmiServiceExporter();
+		exporter.setServiceInterface(LibraryPublishService.class);
+		exporter.setServiceName("libraryPublishService");
+		exporter.setService(libraryPublishService);
+		
+		if (servicePort != null) {
+			exporter.setServicePort(servicePort);
+		}
+		if (registPort != null) {
+			exporter.setRegistryPort(registPort);
+		}
+		return exporter;
+	}
+	
+	@Bean
+	public RmiServiceExporter libraryRecordServiceExporter() {
+		RmiServiceExporter exporter = new RmiServiceExporter();
+		exporter.setServiceInterface(LibraryRecordService.class);
+		exporter.setServiceName("libraryRecordService");
+		exporter.setService(libraryRecordService);
+		
+		if (servicePort != null) {
+			exporter.setServicePort(servicePort);
+		}
+		if (registPort != null) {
+			exporter.setRegistryPort(registPort);
+		}
+		return exporter;
+	}
 }

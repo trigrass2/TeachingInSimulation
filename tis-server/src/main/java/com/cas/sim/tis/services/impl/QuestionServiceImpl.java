@@ -3,10 +3,19 @@ package com.cas.sim.tis.services.impl;
 import java.util.Date;
 import java.util.List;
 
-import org.springframework.stereotype.Service;
+import javax.annotation.Resource;
 
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.TransactionDefinition;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
+
+import com.cas.sim.tis.entity.Library;
 import com.cas.sim.tis.entity.Question;
+import com.cas.sim.tis.services.LibraryService;
 import com.cas.sim.tis.services.QuestionService;
+import com.cas.sim.tis.util.SpringUtil;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 
@@ -15,6 +24,9 @@ import tk.mybatis.mapper.entity.Example.Criteria;
 
 @Service
 public class QuestionServiceImpl extends AbstractService<Question> implements QuestionService {
+
+	@Resource
+	private LibraryService libraryService;
 
 	@Override
 	public PageInfo<Question> findQuestionsByLibrary(int pageIndex, int pageSize, int rid) {
@@ -29,6 +41,15 @@ public class QuestionServiceImpl extends AbstractService<Question> implements Qu
 	}
 
 	@Override
+	public List<Question> findQuestionsByLibrary(int rid) {
+		Condition condition = new Condition(Question.class);
+		Criteria criteria = condition.createCriteria();
+		criteria.andEqualTo("relateId", rid);
+		condition.orderBy("type").asc();
+		return findByCondition(condition);
+	}
+
+	@Override
 	public List<Question> findQuestionsByLibraryAndQuestionType(int rid, int type) {
 		Condition condition = new Condition(Question.class);
 		Criteria criteria = condition.createCriteria();
@@ -38,12 +59,33 @@ public class QuestionServiceImpl extends AbstractService<Question> implements Qu
 	}
 
 	@Override
-	public void addQuestions(List<Question> questions) {
-		Date createDate = new Date();
-		for (Question question : questions) {
-			question.setCreateDate(createDate);
+	public void addQuestions(int rid, List<Question> questions) {
+		// 1.获取事务控制管理器
+		DataSourceTransactionManager transactionManager = SpringUtil.getBean(DataSourceTransactionManager.class);
+		// 2.获取事务定义
+		DefaultTransactionDefinition def = new DefaultTransactionDefinition();
+		// 3.设置事务隔离级别，开启新事务
+		def.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW);
+		// 4.获得事务状态
+		TransactionStatus status = transactionManager.getTransaction(def);
+
+		try {
+			Date createDate = new Date();
+			for (Question question : questions) {
+				question.setCreateDate(createDate);
+			}
+			save(questions);
+
+			Library library = libraryService.findById(rid);
+			library.setNum(questions.size());
+
+			libraryService.update(library);
+		} catch (Exception e) {
+			e.printStackTrace();
+			transactionManager.rollback(status);
+		} finally {
+			transactionManager.commit(status);
 		}
-		save(questions);
 	}
 
 	@Override
@@ -53,6 +95,5 @@ public class QuestionServiceImpl extends AbstractService<Question> implements Qu
 		criteria.andEqualTo("relateId", rid);
 		return getTotalBy(condition);
 	}
-	
-	
+
 }

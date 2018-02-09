@@ -2,6 +2,7 @@ package com.cas.sim.tis.entity;
 
 import java.util.Date;
 
+import javax.persistence.Column;
 import javax.persistence.Id;
 
 import org.springframework.format.annotation.DateTimeFormat;
@@ -12,12 +13,16 @@ public class Class {
 	private Integer id;
 	private String name;
 //	班主任教师编号
-	private Integer tid;
+	@Column(name = "TID")
+	private Integer teacherId;
 //	创建人
-	private Integer creatorId;
+	private Integer creator;
 //	创建时间
 	@DateTimeFormat(pattern = "yyyy-MM-dd hh:mm:ss")
 	private Date createDate;
+	private Integer updater;
+	@DateTimeFormat(pattern = "yyyy-MM-dd hh:mm:ss")
+	private Date updateDate;
 //	默认是0
 	private Integer del = 0;
 
@@ -37,20 +42,20 @@ public class Class {
 		this.name = name;
 	}
 
-	public Integer getTid() {
-		return tid;
+	public Integer getTeacherId() {
+		return teacherId;
 	}
 
-	public void setTid(Integer tid) {
-		this.tid = tid;
+	public void setTeacherId(Integer teacherId) {
+		this.teacherId = teacherId;
 	}
 
-	public Integer getCreatorId() {
-		return creatorId;
+	public Integer getCreator() {
+		return creator;
 	}
 
-	public void setCreatorId(Integer creatorId) {
-		this.creatorId = creatorId;
+	public void setCreator(Integer creator) {
+		this.creator = creator;
 	}
 
 	public Date getCreateDate() {
@@ -59,6 +64,22 @@ public class Class {
 
 	public void setCreateDate(Date createDate) {
 		this.createDate = createDate;
+	}
+
+	public Integer getUpdater() {
+		return updater;
+	}
+
+	public void setUpdater(Integer updater) {
+		this.updater = updater;
+	}
+
+	public Date getUpdateDate() {
+		return updateDate;
+	}
+
+	public void setUpdateDate(Date updateDate) {
+		this.updateDate = updateDate;
 	}
 
 	public Integer getDel() {

@@ -15,10 +15,12 @@ import javafx.scene.text.Text;
 public class PreviewQuestionItem extends VBox {
 
 	private int index;
+	private boolean showReference;
 
-	public PreviewQuestionItem(int index, QuestionType type, Question question) {
+	public PreviewQuestionItem(int index, QuestionType type, Question question, boolean showReference) {
 		this.index = index;
-		this.setSpacing(20);
+		this.showReference = showReference;
+		this.getStyleClass().add("preview");
 		loadQuestion(type, question);
 	}
 
@@ -55,7 +57,7 @@ public class PreviewQuestionItem extends VBox {
 		for (String option : options) {
 			Text text = new Text(option);
 			text.setWrappingWidth(600);
-			if (reference.indexOf(option.substring(0, 1)) > -1) {
+			if (showReference && reference.indexOf(option.substring(0, 1)) > -1) {
 				text.getStyleClass().add("reference");
 			}
 			VBox.setVgrow(text, Priority.ALWAYS);
@@ -69,28 +71,38 @@ public class PreviewQuestionItem extends VBox {
 		this.getChildren().add(title);
 		VBox.setVgrow(title, Priority.ALWAYS);
 
-		Label reference = new Label(question.getReference());
-		reference.getStyleClass().add("reference");
-		this.getChildren().add(reference);
+		if (showReference) {
+			Label reference = new Label(question.getReference());
+			reference.getStyleClass().add("reference");
+			this.getChildren().add(reference);
+		}
 	}
 
 	private void loadBlankQuestion(Question question) {
-		List<String> titles = StringUtil.split(question.getTitle());
-		List<String> references = StringUtil.split(question.getReference());
-
-		FlowPane pane = new FlowPane();
-		pane.maxWidth(600);
-		this.getChildren().add(pane);
-		VBox.setVgrow(pane, Priority.ALWAYS);
-
-		pane.getChildren().add(new Label(index + ". "));
-		for (int i = 0; i < titles.size(); i++) {
-			Label title = new Label(titles.get(i));
-			pane.getChildren().add(title);
-			if (i < references.size()) {
-				Label reference = new Label(references.get(i));
-				reference.getStyleClass().add("reference");
-				pane.getChildren().add(reference);
+		String title = question.getTitle();
+		if (!showReference) {
+			title = title.replaceAll("\\|", "");
+			Text text = new Text(title);
+			text.setWrappingWidth(600);
+			this.getChildren().add(text);
+		}else {
+			List<String> titles = StringUtil.split(title);
+			List<String> references = StringUtil.split(question.getReference());
+			
+			FlowPane pane = new FlowPane();
+			pane.maxWidth(600);
+			this.getChildren().add(pane);
+			VBox.setVgrow(pane, Priority.ALWAYS);
+			
+			pane.getChildren().add(new Label(index + ". "));
+			for (int i = 0; i < titles.size(); i++) {
+				Label label = new Label(titles.get(i));
+				pane.getChildren().add(label);
+				if (i < references.size()) {
+					Label reference = new Label(references.get(i));
+					reference.getStyleClass().add("reference");
+					pane.getChildren().add(reference);
+				}
 			}
 		}
 	}
@@ -100,11 +112,5 @@ public class PreviewQuestionItem extends VBox {
 		title.setWrappingWidth(600);
 		this.getChildren().add(title);
 		VBox.setVgrow(title, Priority.ALWAYS);
-
-		Text reference = new Text(question.getReference());
-		reference.getStyleClass().add("reference");
-		reference.setWrappingWidth(600);
-		this.getChildren().add(reference);
-		VBox.setVgrow(reference, Priority.ALWAYS);
 	}
 }

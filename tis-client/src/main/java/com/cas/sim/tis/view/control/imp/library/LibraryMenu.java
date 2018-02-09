@@ -36,6 +36,9 @@ public class LibraryMenu extends LeftMenu {
 				PageController controller = SpringUtil.getBean(PageController.class);
 				controller.loadContent(new LibraryList(LibraryMenuType.TEACHER_MINE), PageLevel.Level1);
 			});
+			addMenuItem(MsgUtil.getMessage("library.menu.exam"), "iconfont.svg.record", e -> {
+				
+			});
 		} else if (RoleConst.STUDENT == role) {
 			addMenuItem(MsgUtil.getMessage("library.menu.mock"), "iconfont.svg.exam", e -> {
 				PageController controller = SpringUtil.getBean(PageController.class);

@@ -347,10 +347,11 @@
 .left-menu-btn{
 	-fx-background-color: #36a8a7;
 	-fx-background-radius: 0.0px;
-	-fx-max-width: 18.0px;
+	-fx-max-width: 15.0px;
 	-fx-max-height: 30.0px;
-	-fx-min-width: 18.0px;
+	-fx-min-width: 15.0px;
 	-fx-min-height: 30.0px;
+	-fx-padding: 10.0 5.0;
 }
 .left-menu-btn:hover>.hide{
 	-fx-background-color: #267473aa;
@@ -362,13 +363,11 @@
 }
 .left-menu-btn>.hide{
 	-fx-background-color: #267473;
-    -fx-padding: 0.375em 0.291em 0.375em 0.291em;
     -fx-shape: "M 0 0 L -13 7 L 0 13 z";
     -fx-scale-shape: true;
 }
 .left-menu-btn>.show{
 	-fx-background-color: #267473;
-    -fx-padding: 0.375em 0.291em 0.375em 0.291em;
     -fx-shape: "M 0 0 L 13 7 L 0 13 z";
     -fx-scale-shape: true;
 }
@@ -382,8 +381,9 @@
 }
 .left-cover{
 	-fx-background-color: #2c76a9aa;
-	-fx-border-color: #37a9a8;
-	-fx-border-width: 0.0 2.0 0.0 0.0;
+	-fx-background-insets: 0.0 1.0 0.0 0.0;
+/* 	-fx-border-color: #37a9a8;
+	-fx-border-width: 0.0 2.0 0.0 0.0; */
 	-fx-max-width: 230.0px;
 	-fx-min-width: 230.0px;
 	-fx-spacing: 25.0px;
@@ -550,3 +550,37 @@
  .recognize-btn:hover{
  	-fx-background-color: #31D6F2;
  }
+ /*******************************************************************************
+ *                                                                             *
+ * 试题列表样式                                                          *
+ *                                                                             *
+ ******************************************************************************/
+ .preview{
+ 	-fx-border-color: #c1c1c1;
+ 	-fx-border-style: dashed;
+ 	-fx-border-width: 2.0;
+ 	-fx-spacing: 20.0;
+ 	-fx-padding: 20.0;
+ }
+ .preview:hover{
+ 	-fx-border-color: #f6a23f;
+ 	-fx-border-style: solid;
+ }
+ /*******************************************************************************
+ *                                                                             *
+ * 自定义Dialog样式                                                          *
+ *                                                                             *
+ ******************************************************************************/
+ .dialog{
+ 	-fx-border-color:#E5E5E5;
+ }
+ .dialog>.header{
+ 	-fx-padding: 15.0px;
+    -fx-background-color:#ffffff;
+    -fx-border-color:#0090FF,#E5E5E5;
+    -fx-border-width: 3.0 0.0 0.0 0.0,0.0 0.0 1.0 0.0;
+ }
+ .dialog>.text-field{
+	-fx-border-radius: 0.0px;
+	-fx-background-radius: 0.0px;
+}

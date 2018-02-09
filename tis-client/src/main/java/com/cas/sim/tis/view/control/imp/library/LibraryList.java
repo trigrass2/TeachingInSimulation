@@ -15,6 +15,7 @@ import com.cas.sim.tis.util.SpringUtil;
 import com.cas.sim.tis.view.action.LibraryAction;
 import com.cas.sim.tis.view.control.IContent;
 import com.cas.sim.tis.view.control.imp.Title;
+import com.cas.sim.tis.view.control.imp.dialog.Dialog;
 import com.cas.sim.tis.view.control.imp.pagination.PaginationBar;
 import com.cas.sim.tis.view.control.imp.question.PreviewQuestionPaper;
 import com.cas.sim.tis.view.control.imp.table.BtnCell;
@@ -180,7 +181,27 @@ public class LibraryList extends HBox implements IContent {
 
 	@FXML
 	private void add() {
-
+		Dialog<Library> dialog = new Dialog<>();
+		dialog.setDialogPane(new LibraryAddDialog(menuType.getLibraryType()));
+		dialog.setTitle(MsgUtil.getMessage("library.name"));
+		dialog.setPrefSize(635, 320);
+		dialog.showAndWait().ifPresent(library -> {
+			if (library == null) {
+				return;
+			}
+			try {
+				SpringUtil.getBean(LibraryAction.class).addLibrary(library);
+				Alert alert = new Alert(AlertType.INFORMATION, MsgUtil.getMessage("data.add.success"));
+				alert.initOwner(GUIState.getStage());
+				alert.show();
+				reload();
+			} catch (Exception e) {
+				e.printStackTrace();
+				Alert alert = new Alert(AlertType.ERROR, e.getMessage());
+				alert.initOwner(GUIState.getStage());
+				alert.show();
+			}
+		});
 	}
 
 	@Override
