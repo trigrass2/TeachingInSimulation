@@ -187,11 +187,10 @@ public class ResourceServiceImpl extends AbstractService<Resource> implements Re
 			history.setCreator(userId);
 			history.setCreateDate(new Date());
 			browseHistoryService.save(history);
+			transactionManager.commit(status);
 		} catch (Exception e) {
 			e.printStackTrace();
 			transactionManager.rollback(status);
-		} finally {
-			transactionManager.commit(status);
 		}
 	}
 
@@ -224,11 +223,10 @@ public class ResourceServiceImpl extends AbstractService<Resource> implements Re
 				collection.setDel(1);
 				collectionService.update(collection);
 			}
+			transactionManager.commit(status);
 		} catch (Exception e) {
 			e.printStackTrace();
 			transactionManager.rollback(status);
-		} finally {
-			transactionManager.commit(status);
 		}
 	}
 
@@ -255,11 +253,10 @@ public class ResourceServiceImpl extends AbstractService<Resource> implements Re
 			collection.setCreator(userId);
 			collection.setCreateDate(new Date());
 			collectionService.save(collection);
+			transactionManager.commit(status);
 		} catch (Exception e) {
 			e.printStackTrace();
 			transactionManager.rollback(status);
-		} finally {
-			transactionManager.commit(status);
 		}
 	}
 

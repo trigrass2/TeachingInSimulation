@@ -80,11 +80,10 @@ public class QuestionServiceImpl extends AbstractService<Question> implements Qu
 			library.setNum(questions.size());
 
 			libraryService.update(library);
+			transactionManager.commit(status);
 		} catch (Exception e) {
 			e.printStackTrace();
 			transactionManager.rollback(status);
-		} finally {
-			transactionManager.commit(status);
 		}
 	}
 
