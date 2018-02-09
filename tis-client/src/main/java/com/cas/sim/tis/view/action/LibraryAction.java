@@ -32,10 +32,8 @@ public class LibraryAction {
 		service.addLibrary(library);
 	}
 	
-	public void modifyLibrary(int id, String name) {
+	public void modifyLibrary(Library library) {
 		LibraryService service = (LibraryService) libraryServiceFactory.getObject();
-		Library library = service.findById(id);
-		library.setName(name);
 		library.setUpdater(Session.get(Session.KEY_LOGIN_ID));
 		service.modifyLibrary(library);
 	}

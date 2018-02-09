@@ -142,6 +142,13 @@ public class LibraryList extends HBox implements IContent {
 		view.setAlignment(Pos.CENTER_RIGHT);
 		table.getColumns().add(view);
 		if (menuType.isEditable()) {
+			Column<String> modify = new Column<String>();
+			modify.setCellFactory(BtnCell.forTableColumn(MsgUtil.getMessage("button.modify"), Priority.ALWAYS, "blue-btn", id -> {
+				modify((int) id);
+			}));
+			modify.setAlignment(Pos.CENTER_RIGHT);
+			modify.setMaxWidth(58);
+			table.getColumns().add(modify);
 			// 删除按钮
 			Column<String> del = new Column<String>();
 			del.setCellFactory(BtnCell.forTableColumn(MsgUtil.getMessage("button.delete"), Priority.ALWAYS, "blue-btn", id -> {
@@ -192,6 +199,32 @@ public class LibraryList extends HBox implements IContent {
 			try {
 				SpringUtil.getBean(LibraryAction.class).addLibrary(library);
 				Alert alert = new Alert(AlertType.INFORMATION, MsgUtil.getMessage("data.add.success"));
+				alert.initOwner(GUIState.getStage());
+				alert.show();
+				reload();
+			} catch (Exception e) {
+				e.printStackTrace();
+				Alert alert = new Alert(AlertType.ERROR, e.getMessage());
+				alert.initOwner(GUIState.getStage());
+				alert.show();
+			}
+		});
+	}
+
+	private void modify(int id) {
+		Library library = SpringUtil.getBean(LibraryAction.class).findLibraryByID(id);
+
+		Dialog<Library> dialog = new Dialog<>();
+		dialog.setDialogPane(new LibraryModifyDialog(library));
+		dialog.setTitle(MsgUtil.getMessage("library.name"));
+		dialog.setPrefSize(635, 320);
+		dialog.showAndWait().ifPresent(lib -> {
+			if (lib == null) {
+				return;
+			}
+			try {
+				SpringUtil.getBean(LibraryAction.class).modifyLibrary(lib);
+				Alert alert = new Alert(AlertType.INFORMATION, MsgUtil.getMessage("data.update.success"));
 				alert.initOwner(GUIState.getStage());
 				alert.show();
 				reload();

@@ -33,10 +33,7 @@ public class LibraryPublish implements Serializable {
 	 */
 	private Integer type;
 	private Float average;
-	/**
-	 * 限定考核时间（单位：分钟）
-	 */
-	private Integer time;
+	
 	private Integer creator;
 	@DateTimeFormat(pattern = "yyyy-MM-dd hh:mm:ss")
 	private Date createDate;
@@ -79,14 +76,6 @@ public class LibraryPublish implements Serializable {
 
 	public void setAverage(Float average) {
 		this.average = average;
-	}
-
-	public Integer getTime() {
-		return time;
-	}
-
-	public void setTime(Integer time) {
-		this.time = time;
 	}
 
 	public Integer getCreator() {

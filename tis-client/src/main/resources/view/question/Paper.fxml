@@ -83,7 +83,7 @@
 						<Button text="%button.template" styleClass="blue-btn" onAction="#template" fx:id="templateBtn" prefHeight="40.0" prefWidth="108.0" />
 						<Button text="%button.import" styleClass="blue-btn" onAction="#importExcel" fx:id="importBtn" prefHeight="40.0" prefWidth="108.0" />
 						<Button text="%button.export" styleClass="blue-btn" onAction="#exportExcel" fx:id="exportBtn" prefHeight="40.0" prefWidth="108.0" />
-						<Button text="%button.rename" styleClass="blue-btn" onAction="#rename" fx:id="renameBtn" prefHeight="40.0" prefWidth="108.0" />
+<!-- 						<Button text="%button.rename" styleClass="blue-btn" onAction="#rename" fx:id="renameBtn" prefHeight="40.0" prefWidth="108.0" /> -->
 					</children>
 					<padding>
 						<Insets top="20" bottom="20" />

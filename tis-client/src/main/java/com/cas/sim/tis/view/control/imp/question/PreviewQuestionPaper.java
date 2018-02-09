@@ -11,8 +11,6 @@ import java.util.ResourceBundle;
 
 import javax.swing.filechooser.FileSystemView;
 
-import org.springframework.util.StringUtils;
-
 import com.cas.sim.tis.consts.QuestionConsts;
 import com.cas.sim.tis.consts.QuestionType;
 import com.cas.sim.tis.consts.Session;
@@ -24,9 +22,7 @@ import com.cas.sim.tis.util.SpringUtil;
 import com.cas.sim.tis.view.action.LibraryAction;
 import com.cas.sim.tis.view.action.QuestionAction;
 import com.cas.sim.tis.view.control.IContent;
-import com.cas.sim.tis.view.control.imp.dialog.Dialog;
 import com.cas.sim.tis.view.control.imp.library.LibraryList.LibraryMenuType;
-import com.cas.sim.tis.view.control.imp.library.LibraryModifyDialog;
 import com.cas.util.FileUtil;
 import com.cas.util.Util;
 
@@ -59,8 +55,6 @@ public class PreviewQuestionPaper extends HBox implements IContent {
 	private Button importBtn;
 	@FXML
 	private Button exportBtn;
-	@FXML
-	private Button renameBtn;
 	@FXML
 	private Button publishBtn;
 	@FXML
@@ -112,7 +106,7 @@ public class PreviewQuestionPaper extends HBox implements IContent {
 		if (menuType.isEditable()) {
 			this.submits.getChildren().removeAll(practiceBtn);
 		} else {
-			this.options.getChildren().removeAll(templateBtn, importBtn, exportBtn, renameBtn);
+			this.options.getChildren().removeAll(templateBtn, importBtn, exportBtn);
 			this.submits.getChildren().remove(publishBtn);
 		}
 
@@ -233,31 +227,6 @@ public class PreviewQuestionPaper extends HBox implements IContent {
 	}
 
 	@FXML
-	private void rename() {
-		Dialog<String> dialog = new Dialog<>();
-		dialog.setDialogPane(new LibraryModifyDialog());
-		dialog.setTitle(MsgUtil.getMessage("library.name"));
-		dialog.setPrefSize(635, 320);
-		dialog.showAndWait().ifPresent(name -> {
-			if (StringUtils.isEmpty(name)) {
-				return;
-			}
-			try {
-				SpringUtil.getBean(LibraryAction.class).modifyLibrary(rid, name);
-				Alert alert = new Alert(AlertType.INFORMATION, MsgUtil.getMessage("data.update.success"));
-				alert.initOwner(GUIState.getStage());
-				alert.show();
-				this.libName.setText(name);
-			} catch (Exception e) {
-				e.printStackTrace();
-				Alert alert = new Alert(AlertType.ERROR, e.getMessage());
-				alert.initOwner(GUIState.getStage());
-				alert.show();
-			}
-		});
-	}
-
-	@FXML
 	private void publish() {
 
 	}
@@ -336,7 +305,7 @@ public class PreviewQuestionPaper extends HBox implements IContent {
 				showAlert(AlertType.WARNING, reason);
 				return false;
 			}
-			String options = String.valueOf(optionsObj).replace("\r\n", "\\|").replace("\n", "\\|").trim();
+			String options = String.valueOf(optionsObj).replace("\r\n", "|").replace("\n", "|").trim();
 			if (options.length() > 250) {
 				String reason = MsgUtil.getMessage("excel.over.length", MsgUtil.getMessage("question.option"), String.valueOf(250));
 				showAlert(AlertType.WARNING, reason);
@@ -355,11 +324,6 @@ public class PreviewQuestionPaper extends HBox implements IContent {
 				return false;
 			}
 			Object analysisObj = result[i][3];
-			if (Util.isEmpty(analysisObj)) {
-				String reason = MsgUtil.getMessage("excel.cant.null", MsgUtil.getMessage("question.analysis"));
-				showAlert(AlertType.WARNING, reason);
-				return false;
-			}
 			String analysis = String.valueOf(analysisObj).trim();
 			if (analysis.length() > 250) {
 				String reason = MsgUtil.getMessage("excel.over.length", MsgUtil.getMessage("question.analysis"), String.valueOf(250));
@@ -407,11 +371,6 @@ public class PreviewQuestionPaper extends HBox implements IContent {
 				return false;
 			}
 			Object analysisObj = result[i][2];
-			if (Util.isEmpty(analysisObj)) {
-				String reason = MsgUtil.getMessage("excel.cant.null", MsgUtil.getMessage("question.analysis"));
-				showAlert(AlertType.WARNING, reason);
-				return false;
-			}
 			String analysis = String.valueOf(analysisObj).trim();
 			if (analysis.length() > 250) {
 				String reason = MsgUtil.getMessage("excel.over.length", MsgUtil.getMessage("question.analysis"), String.valueOf(250));
@@ -458,11 +417,6 @@ public class PreviewQuestionPaper extends HBox implements IContent {
 				return false;
 			}
 			Object analysisObj = result[i][2];
-			if (Util.isEmpty(analysisObj)) {
-				String reason = MsgUtil.getMessage("excel.cant.null", MsgUtil.getMessage("question.analysis"));
-				showAlert(AlertType.WARNING, reason);
-				return false;
-			}
 			String analysis = String.valueOf(analysisObj).trim();
 			if (analysis.length() > 250) {
 				String reason = MsgUtil.getMessage("excel.over.length", MsgUtil.getMessage("question.analysis"), String.valueOf(250));
@@ -497,11 +451,6 @@ public class PreviewQuestionPaper extends HBox implements IContent {
 				return false;
 			}
 			Object analysisObj = result[i][1];
-			if (Util.isEmpty(analysisObj)) {
-				String reason = MsgUtil.getMessage("excel.cant.null", MsgUtil.getMessage("question.analysis"));
-				showAlert(AlertType.WARNING, reason);
-				return false;
-			}
 			String analysis = String.valueOf(analysisObj).trim();
 			if (analysis.length() > 250) {
 				String reason = MsgUtil.getMessage("excel.over.length", MsgUtil.getMessage("question.analysis"), String.valueOf(250));

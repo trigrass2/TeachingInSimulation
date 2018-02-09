@@ -7,7 +7,6 @@
 		<result column="CID" jdbcType="INTEGER" property="classId" />
 		<result column="TYPE" jdbcType="INTEGER" property="type" />
 		<result column="AVERAGE" jdbcType="FLOAT" property="average" />
-		<result column="TIME" jdbcType="INTEGER" property="time" />
 		<result column="CREATOR" jdbcType="VARCHAR" property="creator" />
 		<result column="CREATE_DATE" jdbcType="VARCHAR" property="createDate" />
 	</resultMap>
@@ -15,7 +14,7 @@
 		<id column="ID" jdbcType="INTEGER" property="id" />
 		<result column="NAME" jdbcType="VARCHAR" property="name" />
 		<result column="AVERAGE" jdbcType="FLOAT" property="average" />
-		<result column="TIME" jdbcType="INTEGER" property="time" />
+		<result column="CNAME" jdbcType="VARCHAR" property="className" />
 	</resultMap>
 	<resultMap id="ForStudentMap" type="com.cas.sim.tis.vo.LibraryPublishForStudent">
 		<id column="ID" jdbcType="INTEGER" property="id" />
@@ -25,7 +24,7 @@
 	</resultMap>
 	<select id="findPublishForTeacher" resultMap="ForTeacherMap">
 		select
-			p.id,l.name,c.name,p.average
+			p.id,l.name,c.name as cname,p.average
 		from
 			library_publish p,library l,class c 
 		where 

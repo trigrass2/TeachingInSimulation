@@ -16,6 +16,10 @@ public class Library implements Serializable {
 	@Id
 	private Integer id;
 	private String name;
+	/**
+	 * 限定考核时间（单位：分钟）
+	 */
+	private Integer time;
 //	试题库类型：0-模拟题;1-真题;2-教师个人题库
 	private Integer type;
 //	题目数量（脏数据，为了提高查询效率）
@@ -46,6 +50,14 @@ public class Library implements Serializable {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public Integer getTime() {
+		return time;
+	}
+
+	public void setTime(Integer time) {
+		this.time = time;
 	}
 
 	public Integer getType() {
