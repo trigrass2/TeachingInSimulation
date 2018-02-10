@@ -17,8 +17,6 @@ public class DialogPane<R>extends VBox {
 	private Label title;
 
 	protected Dialog<R> dialog;
-	private double x;
-	private double y;
 	private double xOffset;
 	private double yOffset;
 
