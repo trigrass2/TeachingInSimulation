@@ -199,7 +199,16 @@ public class PreviewQuestionPaper extends HBox implements IContent {
 		if (!loadChoice(source, questions) || !loadJudgment(source, questions) || !loadBlank(source, questions) || !loadSubjective(source, questions)) {
 			return;
 		}
-		SpringUtil.getBean(QuestionAction.class).addQuestions(rid, questions);
+		try {
+			SpringUtil.getBean(QuestionAction.class).addQuestions(rid, questions);
+			loadQuestions();
+			this.options.getChildren().remove(importBtn);
+			this.options.getChildren().add(exportBtn);
+			showAlert(AlertType.INFORMATION, MsgUtil.getMessage("excel.import.success"));
+		} catch (Exception e) {
+			e.printStackTrace();
+			showAlert(AlertType.ERROR, e.getMessage());
+		}
 	}
 
 	@FXML

@@ -14,6 +14,8 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xwpf.extractor.XWPFWordExtractor;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 
+import com.cas.sim.tis.consts.QuestionConsts;
+
 /**
  * @功能 word内容转到EXCEL中
  * @作者 CaoWJ
@@ -28,113 +30,149 @@ public class ExcelConverter {
 		File dir = new File("G:\\Workspace\\TeachingInSimulation\\TeachingInSimulation\\tis-client\\src\\test\\resources\\维修电工（初级）单选题");
 		File dir2 = new File("G:\\Workspace\\TeachingInSimulation\\TeachingInSimulation\\tis-client\\src\\test\\resources\\维修电工（初级）多选题");
 
-		StringBuffer data = new StringBuffer();
-		data.append(loadDoc(dir));
-		data.append(loadDoc(dir2));
+		writeExcel1(dir);
+		writeExcel1(dir2);
 
-		File excel = new File("C:\\Users\\Administrator\\Desktop\\维修电工（初级）.xls");
-		// 读取模版
-		FileInputStream in = new FileInputStream(excel);
-		Workbook wb = new HSSFWorkbook(in);
-		in.close();
+	}
 
-		Sheet sheet = wb.getSheetAt(0);
-		int index = 0;
-		for (String d : data.toString().split("\r\n")) {
-			for (String string : d.split("\n")) {
-//					if (index >= 32767) {
-//						break;
-//					}
-				System.out.println(index);
-				if (string.startsWith("维修电工（初级）")) {
-					continue;
-				}
-				if (string.matches("[0-9]+.*")) {
-					row = sheet.createRow(index);
-					Cell cell = row.createCell(0);
-					int i = string.indexOf("．");
-					cell.setCellValue(string.substring(i + 1));
-				} else if (string.startsWith("（")) {
-					Cell cell = row.getCell(1);
-					if (cell == null) {
-						cell = row.createCell(1);
+	/**
+	 * @param data
+	 * @throws FileNotFoundException
+	 * @throws IOException
+	 */
+	private static void writeExcel1(File dir) throws FileNotFoundException, IOException {
+		File[] files = dir.listFiles();
+		for (File file : files) {
+			String data = loadDoc(file);
+			System.out.println("读取" + file.getName() + "完成");
+
+			File excel = new File(QuestionConsts.QUESTION_TEMPLATE);
+			File target = new File("C:\\Users\\Administrator\\Desktop\\Excel\\" + file.getName().replaceAll("docx", "xls"));
+
+			// 读取模版
+			FileInputStream in = new FileInputStream(excel);
+			Workbook wb = new HSSFWorkbook(in);
+			in.close();
+
+			removeOther(wb, 1);  
+			removeOther(wb, 2);  
+			removeOther(wb, 3);  
+			
+			Sheet sheet = wb.getSheetAt(0);
+			int index = 2;
+			for (String d : data.split("\r\n")) {
+				for (String string : d.split("\n")) {
+					System.out.println(index);
+					if (string.startsWith("维修电工（初级）")||string.matches("[1-9]\\d*")) {
+						continue;
+					}
+					if (string.matches("[0-9]+.*")) {
+						row = sheet.createRow(index);
+						Cell cell = row.createCell(0);
+						int i = string.indexOf("．");
+						cell.setCellValue(string.substring(i + 1));
+					} else if (string.startsWith("（")) {
+						Cell cell = row.getCell(1);
+						if (cell == null) {
+							cell = row.createCell(1);
+							cell.setCellValue(string);
+						} else {
+							cell.setCellValue(cell.getStringCellValue() + "\r\n" + string);
+						}
+					} else if (string.startsWith("答案：")) {
+						Cell cell2 = row.createCell(2);
+						cell2.setCellValue(string.replaceAll("答案：", ""));
+					} else if (string.startsWith("难度：")) {
+						Cell cell = row.getCell(3);
+						if (cell == null) {
+							cell = row.createCell(3);
+						}
 						cell.setCellValue(string);
-					} else {
+					} else if (string.startsWith("知识点：")) {
+						Cell cell = row.getCell(3);
+						if (cell == null) {
+							cell = row.createCell(3);
+						}
 						cell.setCellValue(cell.getStringCellValue() + "\r\n" + string);
+						index++;
 					}
-				} else if (string.startsWith("答案：")) {
-					Cell cell2 = row.createCell(2);
-					cell2.setCellValue(string.replaceAll("答案：", ""));
-				} else if (string.startsWith("难度：")) {
-					Cell cell = row.getCell(3);
-					if (cell == null) {
-						cell = row.createCell(3);
-					}
-					cell.setCellValue(string);
-				} else if (string.startsWith("知识点：")) {
-					Cell cell = row.getCell(3);
-					if (cell == null) {
-						cell = row.createCell(3);
-					}
-					cell.setCellValue(cell.getStringCellValue() + "\r\n" + string);
-					index++;
 				}
 			}
+			// 保存到本地
+			FileOutputStream out = new FileOutputStream(target);
+			wb.write(out);
+			out.flush();
+			System.out.println("写入" + target.getAbsolutePath() + "完成");
 		}
-		// 保存到本地
-		FileOutputStream out = new FileOutputStream(excel);
-		wb.write(out);
-		out.flush();
-		System.out.println("写入" + excel.getAbsolutePath() + "完成");
+	}
+
+	/**
+	 * @param wb
+	 * @param sheetIndex 
+	 */
+	private static void removeOther(Workbook wb, int sheetIndex) {
+		Sheet sheet= wb.getSheetAt(sheetIndex);
+		Row row = sheet.getRow(2);
+		sheet.removeRow(row);
 	}
 
 	public static void excelConverter2() throws Exception {
 		File dir = new File("G:\\Workspace\\TeachingInSimulation\\TeachingInSimulation\\tis-client\\src\\test\\resources\\维修电工（初级）判断题");
-		StringBuffer data = new StringBuffer();
-		data.append(loadDoc(dir));
-		File excel = new File("C:\\Users\\Administrator\\Desktop\\维修电工（初级）.xls");
-		// 读取模版
-		FileInputStream in = new FileInputStream(excel);
-		Workbook wb = new HSSFWorkbook(in);
-		in.close();
+		File[] files = dir.listFiles();
+		for (File file : files) {
+			String data = loadDoc(file);
+			System.out.println("读取" + file.getName() + "完成");
 
-		Sheet sheet = wb.getSheetAt(1);
-		int index = 0;
-		for (String d : data.toString().split("\r\n")) {
-			for (String string : d.split("\n")) {
-				System.out.println(index);
-				if (string.startsWith("维修电工（初级）")) {
-					continue;
-				}
-				if (string.matches("[0-9]+.*")) {
-					row = sheet.createRow(index);
-					Cell cell = row.createCell(0);
-					int i = string.indexOf("．");
-					cell.setCellValue(string.substring(i + 1));
-				} else if (string.startsWith("答案：")) {
-					Cell cell2 = row.createCell(1);
-					cell2.setCellValue(string.replaceAll("答案：", ""));
-				} else if (string.startsWith("难度：")) {
-					Cell cell = row.getCell(2);
-					if (cell == null) {
-						cell = row.createCell(2);
+			File excel = new File(QuestionConsts.QUESTION_TEMPLATE);
+			File target = new File("C:\\Users\\Administrator\\Desktop\\Excel\\" + file.getName().replaceAll("docx", "xls"));
+
+			// 读取模版
+			FileInputStream in = new FileInputStream(excel);
+			Workbook wb = new HSSFWorkbook(in);
+			in.close();
+			
+			removeOther(wb, 0);  
+			removeOther(wb, 2);  
+			removeOther(wb, 3);  
+			
+			Sheet sheet = wb.getSheetAt(1);
+			int index = 2;
+			for (String d : data.split("\r\n")) {
+				for (String string : d.split("\n")) {
+					System.out.println(index);
+					if (string.startsWith("维修电工（初级）")||string.matches("[1-9]\\d*")) {
+						continue;
 					}
-					cell.setCellValue(string);
-				} else if (string.startsWith("知识点：")) {
-					Cell cell = row.getCell(2);
-					if (cell == null) {
-						cell = row.createCell(2);
+					if (string.matches("[0-9]+.*")) {
+						row = sheet.createRow(index);
+						Cell cell = row.createCell(0);
+						int i = string.indexOf("．");
+						cell.setCellValue(string.substring(i + 1));
+					} else if (string.startsWith("答案：")) {
+						Cell cell2 = row.createCell(1);
+						cell2.setCellValue(string.replaceAll("答案：", "").replaceAll("×", "错误").replaceAll("√", "正确"));
+					} else if (string.startsWith("难度：")) {
+						Cell cell = row.getCell(2);
+						if (cell == null) {
+							cell = row.createCell(2);
+						}
+						cell.setCellValue(string);
+					} else if (string.startsWith("知识点：")) {
+						Cell cell = row.getCell(2);
+						if (cell == null) {
+							cell = row.createCell(2);
+						}
+						cell.setCellValue(cell.getStringCellValue() + "\r\n" + string);
+						index++;
 					}
-					cell.setCellValue(cell.getStringCellValue() + "\r\n" + string);
-					index++;
 				}
 			}
+			// 保存到本地
+			FileOutputStream out = new FileOutputStream(target);
+			wb.write(out);
+			out.flush();
+			System.out.println("写入" + target.getAbsolutePath() + "完成");
 		}
-		// 保存到本地
-		FileOutputStream out = new FileOutputStream(excel);
-		wb.write(out);
-		out.flush();
-		System.out.println("写入" + excel.getAbsolutePath() + "完成");
 	}
 
 	/**
@@ -143,18 +181,11 @@ public class ExcelConverter {
 	 * @throws FileNotFoundException
 	 * @throws IOException
 	 */
-	private static StringBuffer loadDoc(File dir) throws FileNotFoundException, IOException {
-		File[] files = dir.listFiles();
-		StringBuffer data = new StringBuffer();
-		for (File file : files) {
-			FileInputStream fis = new FileInputStream(file);
-			XWPFDocument xdoc = new XWPFDocument(fis);
-			XWPFWordExtractor extractor = new XWPFWordExtractor(xdoc);
-			String doc = extractor.getText();
-			data.append(doc);
-			System.out.println("读取" + file.getName() + "完成");
-		}
-		return data;
+	private static String loadDoc(File file) throws FileNotFoundException, IOException {
+		FileInputStream fis = new FileInputStream(file);
+		XWPFDocument xdoc = new XWPFDocument(fis);
+		XWPFWordExtractor extractor = new XWPFWordExtractor(xdoc);
+		return extractor.getText();
 	}
 
 	public static void main(String[] args) {

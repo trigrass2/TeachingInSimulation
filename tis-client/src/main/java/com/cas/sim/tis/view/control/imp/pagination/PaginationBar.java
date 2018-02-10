@@ -1,5 +1,7 @@
 package com.cas.sim.tis.view.control.imp.pagination;
 
+import java.util.function.Consumer;
+
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.geometry.Pos;
@@ -19,7 +21,25 @@ public class PaginationBar extends HBox {
 	/**
 	 * 当前页
 	 */
-	private IntegerProperty pageIndex = new SimpleIntegerProperty(0);
+	private IntegerProperty pageIndex = new SimpleIntegerProperty(0) {
+		public void set(int newValue) {
+			if (refresh) {
+				return;
+			}
+			next.setDisable(false);
+			prev.setDisable(false);
+			if (newValue >= getPageCount() - 1) {
+				next.setDisable(true);
+				newValue = getPageCount() - 1;
+			}
+			if (newValue <= 0) {
+				prev.setDisable(true);
+				newValue = 0;
+			}
+			super.set(newValue);
+			refrash();
+		};
+	};
 	/**
 	 * 总页数
 	 */
@@ -30,10 +50,13 @@ public class PaginationBar extends HBox {
 				return;
 			} else {
 				super.set(newValue);
-				refrash();
+				setPageIndex(0);
 			}
 		};
 	};
+
+	// 返回当前页
+	private Consumer<Integer> content;
 
 	private Button prev = new Button();
 	private Button next = new Button();
@@ -44,7 +67,7 @@ public class PaginationBar extends HBox {
 	private ToggleButton last = new ToggleButton();
 	private Label etc1 = new Label("...");
 	private Label etc2 = new Label("...");
-	private boolean refresh;
+	private Boolean refresh;
 
 	public PaginationBar() {
 		setAlignment(Pos.CENTER);
@@ -54,7 +77,7 @@ public class PaginationBar extends HBox {
 		prev.getStyleClass().add("prev");
 		prev.setDisable(true);
 		prev.setOnAction(e -> {
-			prev();
+			setPageIndex(getPageIndex() - 1);
 		});
 		Region prevIcon = new Region();
 		prevIcon.getStyleClass().add("prev-arrow");
@@ -63,7 +86,7 @@ public class PaginationBar extends HBox {
 		next.getStyleClass().add("next");
 		next.setDisable(true);
 		next.setOnAction(e -> {
-			next();
+			setPageIndex(getPageIndex() + 1);
 		});
 		Region nextIcon = new Region();
 		nextIcon.getStyleClass().add("next-arrow");
@@ -71,40 +94,13 @@ public class PaginationBar extends HBox {
 
 		first.setUserData(0);
 		first.getStyleClass().add("page");
+
 		last.getStyleClass().add("page");
+
 		etc1.getStyleClass().add("etc");
 		etc2.getStyleClass().add("etc");
 
 		refrash();
-		pageIndex.addListener((b, o, n) -> {
-			if (n.intValue() == o.intValue()) {
-				refrash();
-			} else if (n.intValue() > o.intValue()) {
-				next();
-			} else {
-				prev();
-			}
-		});
-		pageBtn.selectedToggleProperty().addListener((b, o, n) -> {
-			if (refresh) {
-				if (n == null) {
-					pageBtn.selectToggle(o);
-				} else {
-					refresh = false;
-				}
-				return;
-			}
-			if (n == null) {
-				if (pageBtn.getToggles().size() > 0) {
-					pageBtn.selectToggle(o);
-				}
-				return;
-			}
-			Object userDate = n.getUserData();
-			if (userDate instanceof Integer) {
-				setPageIndex((int) userDate);
-			}
-		});
 		pageBtn.getToggles().get(0).setSelected(true);
 	}
 
@@ -117,6 +113,9 @@ public class PaginationBar extends HBox {
 		pageBtn.getToggles().clear();
 
 		first.setDisable(false);
+		first.setOnAction(e -> {
+			setPageIndex(0);
+		});
 		pages.getChildren().add(first);
 		pageBtn.getToggles().add(first);
 		if (getPageCount() == 0) {
@@ -139,12 +138,19 @@ public class PaginationBar extends HBox {
 		}
 		last.setUserData(getPageCount() - 1);
 		last.setText(String.valueOf(getPageCount()));
+		last.setOnAction(e -> {
+			setPageIndex((int) last.getUserData());
+		});
 		pages.getChildren().add(last);
 		pageBtn.getToggles().add(last);
 		for (Toggle toggle : pageBtn.getToggles()) {
 			if (getPageIndex() == (int) toggle.getUserData()) {
 				toggle.setSelected(true);
 			}
+		}
+		refresh = false;
+		if (content != null) {
+			content.accept(getPageIndex());
 		}
 	}
 
@@ -154,20 +160,23 @@ public class PaginationBar extends HBox {
 			ToggleButton middle = new ToggleButton(String.valueOf(no));
 			middle.getStyleClass().add("page");
 			middle.setUserData(no - 1);
+			middle.setOnAction(e -> {
+				setPageIndex(no - 1);
+			});
 			pages.getChildren().add(middle);
 			pageBtn.getToggles().add(middle);
 		}
 	}
 
-	public void setPageIndex(int value) {
+	private void setPageIndex(int value) {
 		pageIndexProperty().set(value);
 	}
 
-	public int getPageIndex() {
+	private int getPageIndex() {
 		return pageIndex == null ? 0 : pageIndex.get();
 	}
 
-	public IntegerProperty pageIndexProperty() {
+	private IntegerProperty pageIndexProperty() {
 		if (pageIndex == null) {
 			pageIndex = new SimpleIntegerProperty(this, "pageIndex", 0);
 		}
@@ -178,42 +187,22 @@ public class PaginationBar extends HBox {
 		pageCountProperty().set(value);
 	}
 
-	public int getPageCount() {
+	private int getPageCount() {
 		return pageCount == null ? 10 : pageCount.get();
 	}
 
-	public IntegerProperty pageCountProperty() {
+	private IntegerProperty pageCountProperty() {
 		if (pageCount == null) {
 			pageCount = new SimpleIntegerProperty(this, "pageCount", 10);
 		}
 		return pageCount;
 	}
 
-	/**
-	 * 向前一页
-	 */
-	private void prev() {
-		if (getPageIndex() == 0) {
-			prev.setDisable(true);
-		} else {
-			prev.setDisable(false);
-		}
-		refrash();
+	public void reload() {
+		setPageIndex(0);
 	}
 
-	/**
-	 * 向后一页
-	 */
-	private void next() {
-		if (getPageIndex() + 1 == getPageCount()) {
-			next.setDisable(true);
-		} else {
-			next.setDisable(false);
-		}
-		refrash();
-	}
-
-	public ToggleGroup getPageBtn() {
-		return pageBtn;
+	public void setContent(Consumer<Integer> content) {
+		this.content = content;
 	}
 }

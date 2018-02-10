@@ -112,7 +112,9 @@ public class LibraryList extends HBox implements IContent {
 	private void initialize() {
 		this.title.setTitle(menuType.getLibraryType().getKey());
 		this.option.setVisible(menuType.isEditable());
-
+		this.pagination.setContent(pageIndex -> {
+			reload(pageIndex);
+		});
 		createTable();
 	}
 
@@ -130,7 +132,7 @@ public class LibraryList extends HBox implements IContent {
 		name.setAlignment(Pos.CENTER_LEFT);
 		name.setKey("name");
 		name.setText(MsgUtil.getMessage("library.name"));
-		name.setMaxWidth(250);
+		name.setPrefWidth(250);
 		name.getStyleClass().add("gray-label");
 		table.getColumns().addAll(primary, name);
 		// 查看按钮
@@ -148,6 +150,7 @@ public class LibraryList extends HBox implements IContent {
 			}));
 			modify.setAlignment(Pos.CENTER_RIGHT);
 			modify.setMaxWidth(58);
+			modify.setMinWidth(58);
 			table.getColumns().add(modify);
 			// 删除按钮
 			Column<String> del = new Column<String>();
@@ -158,21 +161,21 @@ public class LibraryList extends HBox implements IContent {
 				alert.showAndWait().ifPresent(response -> {
 					if (response == ButtonType.YES) {
 						SpringUtil.getBean(LibraryAction.class).deleteLibrary((int) id);
-						reload();
+						pagination.reload();
 					}
 				});
 			}));
 			del.setAlignment(Pos.CENTER_RIGHT);
 			del.setMaxWidth(58);
+			del.setMinWidth(58);
 			table.getColumns().add(del);
 		}
 	}
 
-	private void reload() {
-		int pageIndex = pagination.getPageIndex() + 1;
+	private void reload(Integer pageIndex) {
 		int pageSize = 10;
 
-		PageInfo<Library> pageInfo = SpringUtil.getBean(LibraryAction.class).findLibraryByType(pageIndex, pageSize, menuType.getLibraryType().getType());
+		PageInfo<Library> pageInfo = SpringUtil.getBean(LibraryAction.class).findLibraryByType(pageIndex + 1, pageSize, menuType.getLibraryType().getType());
 		if (pageInfo == null) {
 			pagination.setPageCount(0);
 			table.setItems(null);
@@ -201,7 +204,7 @@ public class LibraryList extends HBox implements IContent {
 				Alert alert = new Alert(AlertType.INFORMATION, MsgUtil.getMessage("data.add.success"));
 				alert.initOwner(GUIState.getStage());
 				alert.show();
-				reload();
+				pagination.reload();
 			} catch (Exception e) {
 				e.printStackTrace();
 				Alert alert = new Alert(AlertType.ERROR, e.getMessage());
@@ -227,7 +230,7 @@ public class LibraryList extends HBox implements IContent {
 				Alert alert = new Alert(AlertType.INFORMATION, MsgUtil.getMessage("data.update.success"));
 				alert.initOwner(GUIState.getStage());
 				alert.show();
-				reload();
+				pagination.reload();
 			} catch (Exception e) {
 				e.printStackTrace();
 				Alert alert = new Alert(AlertType.ERROR, e.getMessage());
@@ -244,7 +247,7 @@ public class LibraryList extends HBox implements IContent {
 
 	@Override
 	public Node[] getContent() {
-		reload();
+		pagination.reload();
 		return new Region[] { this };
 	}
 

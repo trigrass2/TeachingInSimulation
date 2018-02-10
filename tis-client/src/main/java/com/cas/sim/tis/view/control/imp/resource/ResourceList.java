@@ -227,12 +227,11 @@ public class ResourceList extends HBox implements IContent {
 		});
 		search.setOnKeyPressed(event -> {
 			if (event.getCode() == KeyCode.ENTER) {
-				pagination.setPageIndex(0);
-				reload();
+				pagination.reload();
 			}
 		});
-		pagination.pageIndexProperty().addListener((b, o, n) -> {
-			reload();
+		pagination.setContent(pageIndex -> {
+			reload(pageIndex);
 		});
 	}
 
@@ -310,7 +309,7 @@ public class ResourceList extends HBox implements IContent {
 				alert.showAndWait().ifPresent(response -> {
 					if (response == ButtonType.YES) {
 						SpringUtil.getBean(ResourceAction.class).detele((Integer) rid);
-						reload();
+						pagination.reload();
 					}
 				});
 			}));
@@ -323,8 +322,8 @@ public class ResourceList extends HBox implements IContent {
 	/**
 	 * 加载资源
 	 */
-	private void loadResources() {
-		int curr = pagination.getPageIndex() + 1;
+	private void loadResources(Integer pageIndex) {
+		int curr = pageIndex + 1;
 		int pageSize = 10;
 
 		String keyword = search.getText();
@@ -424,14 +423,12 @@ public class ResourceList extends HBox implements IContent {
 
 	@FXML
 	private void typeFilter() {
-		pagination.setPageIndex(0);
-		reload();
+		pagination.reload();
 	}
 
 	@FXML
 	private void orderBy() {
-		pagination.setPageIndex(0);
-		reload();
+		pagination.reload();
 	}
 
 	@FXML
@@ -503,7 +500,7 @@ public class ResourceList extends HBox implements IContent {
 		// 启用上传按钮
 		((Button) event.getSource()).setDisable(false);
 		clear();
-		reload();
+		pagination.reload();
 	}
 
 	private void clear() {
@@ -528,15 +525,15 @@ public class ResourceList extends HBox implements IContent {
 		uploadTip.setText(null);
 	}
 
-	private void reload() {
-		loadResources();
+	private void reload(Integer pageIndex) {
+		loadResources(pageIndex);
 		loadPieChart();
 	}
 
 	@Override
 	public Region[] getContent() {
 		clear();
-		reload();
+		pagination.reload();
 		return new Region[] { this };
 	}
 
