@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import com.sun.javafx.event.BasicEventDispatcher?>
+<?import com.cas.sim.tis.svg.SVGGlyph?>
+
+<VBox pickOnBounds="false" xmlns:fx="http://javafx.com/fxml/1"  fx:controller="com.cas.sim.tis.view.control.imp.jme.TypicalCaseBtnController">
+	<VBox VBox.vgrow="ALWAYS" mouseTransparent="true" />
+
+	<HBox prefHeight="50" spacing="20">
+		<HBox spacing="10">
+			<CheckBox  fx:id="intro" text="%rec.ckb.intro" styleClass="recognize-btn" />
+			<CheckBox fx:id="explode" text="%rec.ckb.explode" styleClass="recognize-btn" />
+			<CheckBox fx:id="transparent" text="%rec.ckb.transparent" styleClass="recognize-btn" />
+			<CheckBox fx:id="showName" text="%rec.ckb.showName" styleClass="recognize-btn" />
+			<CheckBox fx:id="autoRoate" text="%rec.ckb.autoRoate" styleClass="recognize-btn" />
+		</HBox>
+		<HBox spacing="10">
+			<Label fx:id="center" text="%rec.lbl.center" styleClass="recognize-btn">
+				<graphic>
+					<SVGGlyph  name="iconfont.svg.image" size="16" fill="WHITE" />
+				</graphic>
+			</Label>
+			<Label fx:id="move" text="%rec.lbl.move" styleClass="recognize-btn">
+				<graphic>
+					<SVGGlyph name="iconfont.svg.image" size="16" fill="WHITE" />
+				</graphic>
+			</Label>
+			<Label fx:id="rotate" text="%rec.lbl.rotate" styleClass="recognize-btn">
+				<graphic>
+					<SVGGlyph name="iconfont.svg.image" size="16" fill="WHITE" />
+				</graphic>
+			</Label>
+			<Label fx:id="zoomIn" text="%rec.lbl.zoom.in" styleClass="recognize-btn"><!-- 放大 -->
+				<graphic>
+					<SVGGlyph name="iconfont.svg.image" size="16" fill="WHITE" />
+				</graphic>
+			</Label>
+			<Label fx:id="zoomOut" text="%rec.lbl.zoom.out" styleClass="recognize-btn"><!-- 缩小 -->
+				<graphic>
+					<SVGGlyph name="iconfont.svg.image" size="16" fill="WHITE" />
+				</graphic>
+			</Label>
+		</HBox>
+	</HBox>
+</VBox>

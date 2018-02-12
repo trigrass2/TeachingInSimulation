@@ -8,16 +8,26 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import com.cas.sim.tis.util.JmeUtil;
+import com.jme3.bounding.BoundingSphere;
 import com.jme3.collision.CollisionResult;
+import com.jme3.environment.EnvironmentCamera;
+import com.jme3.environment.LightProbeFactory;
 import com.jme3.input.ChaseCamera;
 import com.jme3.input.MouseInput;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.MouseButtonTrigger;
 import com.jme3.light.DirectionalLight;
+import com.jme3.light.LightProbe;
+import com.jme3.math.ColorRGBA;
+import com.jme3.math.Vector3f;
+import com.jme3.post.FilterPostProcessor;
+import com.jme3.post.filters.ToneMapFilter;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.Spatial.CullHint;
+import com.jme3.util.SkyFactory;
+import com.jme3.util.mikktspace.MikktspaceTangentGenerator;
 
 public class ElecCompState extends BaseState {
 
@@ -37,6 +47,8 @@ public class ElecCompState extends BaseState {
 
 	private boolean autoRotate;
 
+	private float scale = 1;
+
 	@Override
 	protected void initializeLocal() {
 		app.getFlyByCamera().setEnabled(false);
@@ -45,9 +57,24 @@ public class ElecCompState extends BaseState {
 		LOG.debug("创建元器件状态机的根节点{}", root.getName());
 		rootNode.attachChild(root);
 
-		root.addLight(new DirectionalLight());
+		DirectionalLight dl = new DirectionalLight();
+		dl.setDirection(new Vector3f(-1, -1, -1).normalizeLocal());
+		rootNode.addLight(dl);
+		dl.setColor(ColorRGBA.White);
+
+		FilterPostProcessor fpp = new FilterPostProcessor(assetManager);
+//      fpp.addFilter(new FXAAFilter());
+		fpp.addFilter(new ToneMapFilter(Vector3f.UNIT_XYZ.mult(4.0f)));
+//      fpp.addFilter(new SSAOFilter(0.5f, 3, 0.2f, 0.2f));
+		app.getViewPort().addProcessor(fpp);
 
 		chaseCamera = new ChaseCamera(cam, root, inputManager);
+
+		app.enqueue(() -> {
+			final LightProbe probe = LightProbeFactory.makeProbe(stateManager.getState(EnvironmentCamera.class), rootNode);
+			((BoundingSphere) probe.getBounds()).setRadius(100);
+			rootNode.addLight(probe);
+		});
 
 //		添加鼠标监听
 		addMapping("pick", new MouseButtonTrigger(MouseInput.BUTTON_LEFT));
@@ -61,6 +88,7 @@ public class ElecCompState extends BaseState {
 				}
 			}
 		}, "pick");
+
 	}
 
 	/**
@@ -181,13 +209,13 @@ public class ElecCompState extends BaseState {
 	}
 
 	public void zoomIn() {
-		// TODO Auto-generated method stub
-		System.out.println("ElecCompState.zoomIn()");
+		scale *= 1.1;
+		root.setLocalScale(scale);
 	}
 
 	public void zoomOut() {
-		// TODO Auto-generated method stub
-		System.out.println("ElecCompState.zoomOut()");
+		scale /= 1.1;
+		root.setLocalScale(scale);
 	}
 
 }

@@ -1,12 +1,15 @@
 package com.cas.circuit.po;
 
 public class ElecCompPO {
+	@XmlAttribute
 	private String id;
 //	元器件模型名称
+	@XmlAttribute
 	private String mdlName;
 //	元器件标签名
+	@XmlAttribute
 	private String tagName;
-
+	
 	@Deprecated
 	private String compRef;
 //	元器件额外信息

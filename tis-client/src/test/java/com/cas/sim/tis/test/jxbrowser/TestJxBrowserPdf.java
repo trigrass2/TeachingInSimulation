@@ -1,6 +1,12 @@
 package com.cas.sim.tis.test.jxbrowser;
 
 import com.teamdev.jxbrowser.chromium.Browser;
+import com.teamdev.jxbrowser.chromium.BrowserType;
+import com.teamdev.jxbrowser.chromium.DownloadHandler;
+import com.teamdev.jxbrowser.chromium.DownloadItem;
+import com.teamdev.jxbrowser.chromium.PrintHandler;
+import com.teamdev.jxbrowser.chromium.PrintJob;
+import com.teamdev.jxbrowser.chromium.PrintStatus;
 import com.teamdev.jxbrowser.chromium.Refine;
 import com.teamdev.jxbrowser.chromium.javafx.BrowserView;
 
@@ -18,11 +24,20 @@ public class TestJxBrowserPdf extends Application {
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
-		primaryStage.initStyle(StageStyle.DECORATED);
-		Browser browser = new Browser();
+		primaryStage.initStyle(StageStyle.TRANSPARENT);
+		Browser browser = new Browser(BrowserType.LIGHTWEIGHT);
 		BrowserView view = new BrowserView(browser);
 		primaryStage.setScene(new Scene(view));
 		browser.loadURL("http://192.168.1.19:8082/Test/Fanuc0i参数说明书.pdf");
+		// browser.executeJavaScript("var child=document.getElementById(\\\"download\\\");child.parentNode.removeChild(child);");
+//		browser.executeJavaScript("alert(document.getElementById('download'))");
+		browser.setDownloadHandler(new DownloadHandler() {
+			@Override
+			public boolean allowDownload(DownloadItem download) {
+				System.out.println(download.getURL());
+				return false;
+			}
+		});
 		primaryStage.show();
 	}
 }

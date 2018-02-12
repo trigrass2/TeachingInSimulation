@@ -96,13 +96,13 @@ public class SVGGlyph extends Pane {
 //		this(-1, "UNNAMED", svgPathContent, fill);
 //	}
 
-	/**
-	 * Constructs SVGGlyph node for a specified svg content and color <b>Note:</b> name and glyphId is not needed when creating a single SVG image, they have been used in {@link SVGHelper} to load icomoon svg font.
-	 * @param glyphId integer represents the glyph id
-	 * @param name glyph name
-	 * @param svgPathContent svg content
-	 * @param fill svg color
-	 */
+//	/**
+//	 * Constructs SVGGlyph node for a specified svg content and color <b>Note:</b> name and glyphId is not needed when creating a single SVG image, they have been used in {@link SVGHelper} to load icomoon svg font.
+//	 * @param glyphId integer represents the glyph id
+//	 * @param name glyph name
+//	 * @param svgPathContent svg content
+//	 * @param fill svg color
+//	 */
 //	public SVGGlyph(int glyphId, String name, String svgPathContent, Paint fill) {
 //		this.glyphId = glyphId;
 //		this.name.set(name);

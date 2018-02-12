@@ -1,6 +1,9 @@
 package com.cas.sim.tis.test.jxbrowser;
 
 import com.teamdev.jxbrowser.chromium.Browser;
+import com.teamdev.jxbrowser.chromium.BrowserType;
+import com.teamdev.jxbrowser.chromium.ContextMenuHandler;
+import com.teamdev.jxbrowser.chromium.ContextMenuParams;
 import com.teamdev.jxbrowser.chromium.Refine;
 import com.teamdev.jxbrowser.chromium.javafx.BrowserView;
 
@@ -18,11 +21,19 @@ public class TestJxBrowserJfx extends Application {
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		primaryStage.initStyle(StageStyle.DECORATED);
-		Browser browser = new Browser();
+		Browser browser = new Browser(BrowserType.LIGHTWEIGHT);
 		BrowserView view = new BrowserView(browser);
 		primaryStage.setScene(new Scene(view));
 		
-		browser.loadURL("http://www.wxcas.com/");
+		browser.loadURL("http://file.keking.cn/");
+//		browser.loadURL("http://58.214.15.134:8945/DigitalCampus_v3.0_nj/loginInit!init.action");
+//		browser.setContextMenuHandler(new ContextMenuHandler() {
+//			@Override
+//			public void showContextMenu(ContextMenuParams params) {
+//				System.out.println(params.getPageURL());
+//			}
+//		});
+
 		primaryStage.show();
 	}
 }

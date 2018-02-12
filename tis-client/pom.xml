@@ -8,15 +8,6 @@
 	<artifactId>tis-client</artifactId>
 	<dependencies>
 		<dependency>
-			<groupId>javafx.embed.swt</groupId>
-			<artifactId>jfxswt</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.eclipse.swt</groupId>
-			<artifactId>org.eclipse.swt.win32.win32.x86_64</artifactId>
-		</dependency>
-
-		<dependency>
 			<groupId>com.cas.sim</groupId>
 			<artifactId>cas-util</artifactId>
 		</dependency>
@@ -25,8 +16,16 @@
 			<artifactId>tis-base</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>com.cas.sim</groupId>
+			<artifactId>tis-circuit</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>org.jmonkeyengine</groupId>
 			<artifactId>jme3-desktop</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.jmonkeyengine</groupId>
+			<artifactId>jme3-effects</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.jmonkeyengine</groupId>
@@ -49,10 +48,6 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 		</dependency>
 
-		<dependency>
-			<groupId>uk.co.caprica</groupId>
-			<artifactId>vlcj</artifactId>
-		</dependency>
 		<dependency>
 			<groupId>uk.co.caprica</groupId>
 			<artifactId>vlcj</artifactId>
@@ -80,7 +75,6 @@
 			<groupId>org.apache.poi</groupId>
 			<artifactId>poi-ooxml</artifactId>
 		</dependency>
-
 	</dependencies>
 
 	<build>

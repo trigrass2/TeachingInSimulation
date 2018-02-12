@@ -140,7 +140,12 @@ public class ResourceViewer extends VBox implements IContent {
 	public void createImageViewer() {
 		HTTPUtils utils = SpringUtil.getBean(HTTPUtils.class);
 //		Image image = new Image("http://192.168.1.19:8082/Test/1516772514400.png");
-		Image image = new Image(utils.getHttpUrl(ResourceConsts.FTP_RES_PATH + resource.getPath()));
+		String url = utils.getHttpUrl(resource.getPath());
+		if (url == null) {
+			return;
+		}
+
+		Image image = new Image(url);
 		ImageView imageView = new ImageView(image);
 
 		HBox box = new HBox(imageView);
@@ -182,12 +187,13 @@ public class ResourceViewer extends VBox implements IContent {
 	 * 创建文档文件查看器
 	 */
 	private void createOfficeViewer() {
-		Refine.init();
-		Browser browser = new Browser(BrowserType.LIGHTWEIGHT);
 		String officeName = resource.getPath();
 		String pdfName = officeName.substring(0, officeName.lastIndexOf(".")) + ".pdf";
 		String pdfPath = SpringUtil.getBean(HTTPUtils.class).getHttpUrl(ResourceConsts.FTP_CONVERT_PATH + pdfName);
-		// FIXME
+		if (pdfPath == null) {
+			return;
+		}
+		Browser browser = new Browser(BrowserType.LIGHTWEIGHT);
 		browser.loadURL(pdfPath);
 		BrowserView view = new BrowserView(browser);
 		viewer.getChildren().add(view);
@@ -197,11 +203,16 @@ public class ResourceViewer extends VBox implements IContent {
 	 * 创建视频查看器
 	 */
 	private void createVLCViewer() {
-		VLCPlayer player = new VLCPlayer();
-		viewer.getChildren().add(player);
 		HTTPUtils utils = SpringUtil.getBean(HTTPUtils.class);
-//		player.loadVideo(utils.getHttpUrl(ResourceConsts.FTP_RES_PATH + resource.getPath()));
-		player.loadVideo("http://192.168.1.19:8082/Test/Mux140928003405.avi");
+		String url = utils.getHttpUrl(resource.getPath());
+		if (url == null) {
+			return;
+		}
+
+		VLCPlayer player = new VLCPlayer();
+		player.loadVideo(url);
+		viewer.getChildren().add(player);
+//		player.loadVideo("http://192.168.1.19:8082/Test/Mux140928003405.avi");
 //		player.loadVideo("http://192.168.1.19:8082/resources/4dae3b67-1d55-4125-a577-4086585464c1.mp4");
 	}
 
@@ -209,11 +220,15 @@ public class ResourceViewer extends VBox implements IContent {
 	 * 创建PDF查看器
 	 */
 	private void createPDFViewer() {
-		Refine.init();
+		HTTPUtils utils = SpringUtil.getBean(HTTPUtils.class);
+		String url = utils.getHttpUrl(resource.getPath());
+		if (url == null) {
+			return;
+		}
+
 		Browser browser = new Browser(BrowserType.LIGHTWEIGHT);
 		// FIXME
-		HTTPUtils utils = SpringUtil.getBean(HTTPUtils.class);
-		browser.loadURL(utils.getHttpUrl(ResourceConsts.FTP_RES_PATH + resource.getPath()));
+		browser.loadURL(url);
 //		browser.loadURL("http://192.168.1.19:8082/Test/Fanuc0i参数说明书.pdf");
 		BrowserView view = new BrowserView(browser);
 		viewer.getChildren().add(view);
@@ -223,11 +238,15 @@ public class ResourceViewer extends VBox implements IContent {
 	 * 创建FLASH查看器
 	 */
 	private void createSWFViewer() {
-		Refine.init();
+		HTTPUtils utils = SpringUtil.getBean(HTTPUtils.class);
+		String url = utils.getHttpUrl(resource.getPath());
+		if (url == null) {
+			return;
+		}
+
 		SWFBrowser browser = new SWFBrowser(BrowserType.LIGHTWEIGHT);
 		// FIXME
-		HTTPUtils utils = SpringUtil.getBean(HTTPUtils.class);
-		browser.loadHTML(utils.getHttpUrl(ResourceConsts.FTP_RES_PATH + resource.getPath()));
+		browser.loadHTML(url);
 //		browser.loadHTML("http://192.168.1.19:8082/Test/teachResources.swf");
 		BrowserView view = new BrowserView(browser);
 		viewer.getChildren().add(view);

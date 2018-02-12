@@ -1,19 +1,13 @@
 package com.cas.sim.tis.test.jxbrowser;
 
-import java.util.TimerTask;
-
-import javax.swing.Timer;
-
 import com.teamdev.jxbrowser.chromium.Browser;
 import com.teamdev.jxbrowser.chromium.Refine;
 import com.teamdev.jxbrowser.chromium.javafx.BrowserView;
 
-import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import javafx.util.Duration;
 
 public class TestJxBrowserSwf extends Application {
 	private static final String HTML_SWF_HEAD = //
@@ -51,14 +45,7 @@ public class TestJxBrowserSwf extends Application {
 		Browser browser = new Browser();
 		BrowserView view = new BrowserView(browser);
 		primaryStage.setScene(new Scene(view));
-
+		browser.loadHTML(HTML_SWF_HEAD + "http://192.168.1.19:8082/Test/teachResources.swf" + HTML_SWF_END);
 		primaryStage.show();
-
-		Timer t = new Timer(3000, (e)-> {
-			browser.loadHTML(HTML_SWF_HEAD + "http://192.168.1.19:8082/Test/teachResources.swf" + HTML_SWF_END);
-		});
-		
-		t.start();
-		
 	}
 }

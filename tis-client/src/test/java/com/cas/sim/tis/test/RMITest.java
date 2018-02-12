@@ -11,6 +11,7 @@ import org.springframework.remoting.rmi.RmiProxyFactoryBean;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.cas.sim.tis.Application;
+import com.cas.sim.tis.services.ElecCompService;
 import com.cas.sim.tis.services.ResourceService;
 import com.cas.sim.tis.services.UserService;
 
@@ -24,14 +25,22 @@ public class RMITest {
 	@Resource
 	@Qualifier("resourceServiceFactory")
 	private RmiProxyFactoryBean resourceServiceFactory;
+	@Resource
+	@Qualifier("elecCompServiceFactory")
+	private RmiProxyFactoryBean elecCompServiceFactory;
 
 	@Test
 	public void testGetObject() throws Exception {
-		UserService service = (UserService) userServiceFactory.getObject();
-		service.findAll().forEach(System.out::println);
-		Assert.assertNotNull(service);
+		UserService userService = (UserService) userServiceFactory.getObject();
+		Assert.assertNotNull(userService);
+		userService.findAll().forEach(System.out::println);
+		
 		ResourceService resourceService = (ResourceService) resourceServiceFactory.getObject();
+		Assert.assertNotNull(resourceService);
 		resourceService.findAll().forEach(System.out::println);
-		Assert.assertNotNull(service);
+		
+		ElecCompService elecCompService = (ElecCompService) elecCompServiceFactory.getObject();
+		Assert.assertNotNull(elecCompService);
+		elecCompService.findAll().forEach(System.out::println);
 	}
 }

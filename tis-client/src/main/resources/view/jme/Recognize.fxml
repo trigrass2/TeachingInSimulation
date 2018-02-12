@@ -8,6 +8,7 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.image.Image?>
 <?import com.sun.javafx.event.BasicEventDispatcher?>
+<?import com.cas.sim.tis.svg.SVGGlyph?>
 
 <VBox pickOnBounds="false" xmlns:fx="http://javafx.com/fxml/1"  fx:controller="com.cas.sim.tis.view.control.imp.jme.RecongnizeBtnController">
 	<VBox VBox.vgrow="ALWAYS" mouseTransparent="true" />
@@ -23,37 +24,27 @@
 		<HBox spacing="10">
 			<Label fx:id="center" text="%rec.lbl.center" styleClass="recognize-btn">
 				<graphic>
-					<ImageView fitHeight="20" fitWidth="20" pickOnBounds="true" preserveRatio="true">
-						<Image url="/static/images/basic/close.png" />
-					</ImageView>
+					<SVGGlyph  name="iconfont.svg.image" size="16" fill="WHITE" />
 				</graphic>
 			</Label>
 			<Label fx:id="move" text="%rec.lbl.move" styleClass="recognize-btn">
 				<graphic>
-					<ImageView fitHeight="20" fitWidth="20" pickOnBounds="true" preserveRatio="true">
-						<Image url="/static/images/basic/close.png" />
-					</ImageView>
+					<SVGGlyph name="iconfont.svg.image" size="16" fill="WHITE" />
 				</graphic>
 			</Label>
 			<Label fx:id="rotate" text="%rec.lbl.rotate" styleClass="recognize-btn">
 				<graphic>
-					<ImageView fitHeight="20" fitWidth="20" pickOnBounds="true" preserveRatio="true">
-						<Image url="/static/images/basic/close.png" />
-					</ImageView>
+					<SVGGlyph name="iconfont.svg.image" size="16" fill="WHITE" />
 				</graphic>
 			</Label>
 			<Label fx:id="zoomIn" text="%rec.lbl.zoom.in" styleClass="recognize-btn"><!-- 放大 -->
 				<graphic>
-					<ImageView fitHeight="20" fitWidth="20" pickOnBounds="true" preserveRatio="true">
-						<Image url="/static/images/basic/close.png" />
-					</ImageView>
+					<SVGGlyph name="iconfont.svg.image" size="16" fill="WHITE" />
 				</graphic>
 			</Label>
 			<Label fx:id="zoomOut" text="%rec.lbl.zoom.out" styleClass="recognize-btn"><!-- 缩小 -->
 				<graphic>
-					<ImageView fitHeight="20" fitWidth="20" pickOnBounds="true" preserveRatio="true">
-						<Image url="/static/images/basic/close.png" />
-					</ImageView>
+					<SVGGlyph name="iconfont.svg.image" size="16" fill="WHITE" />
 				</graphic>
 			</Label>
 		</HBox>

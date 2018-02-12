@@ -18,6 +18,7 @@ import com.cas.sim.tis.services.QuestionService;
 import com.cas.sim.tis.services.ResourceService;
 import com.cas.sim.tis.services.StudentService;
 import com.cas.sim.tis.services.TeacherService;
+import com.cas.sim.tis.services.TypicalCaseService;
 import com.cas.sim.tis.services.UserService;
 
 /**
@@ -42,6 +43,8 @@ public class RMIConfig {
 	private BrowseHistoryService browseHistoryService;
 	@Resource
 	private ElecCompService elecCompService;
+	@Resource
+	private TypicalCaseService typicalCaseService;
 	@Resource
 	private LibraryService libraryService;
 	@Resource
@@ -136,6 +139,18 @@ public class RMIConfig {
 		exporter.setServiceName("elecCompService");
 		exporter.setService(elecCompService);
 
+		exporter.setServicePort(servicePort);
+		exporter.setRegistryPort(registPort);
+		return exporter;
+	}
+	
+	@Bean
+	public RmiServiceExporter typicalCaseServiceExporter() {
+		RmiServiceExporter exporter = new RmiServiceExporter();
+		exporter.setServiceInterface(TypicalCaseService.class);
+		exporter.setServiceName("typicalCaseService");
+		exporter.setService(typicalCaseService);
+		
 		exporter.setServicePort(servicePort);
 		exporter.setRegistryPort(registPort);
 		return exporter;

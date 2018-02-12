@@ -17,17 +17,18 @@ public class TestSvg extends Application {
 		SVGHelper.loadGlyphsFont(TestSvg.class.getResource("/svg/iconfont.svg"));
 		SVGHelper.getAllGlyphsIDs().forEach(System.out::println);
 //		
-		SVGGlyph svgGlyph = SVGHelper.getGlyph("iconfont.svg.excel");
+		SVGGlyph svgGlyph = null;
+
+		svgGlyph = new SVGGlyph("iconfont.svg.excel", Color.RED, 64);
 		svgGlyph.setSizeForWidth(64);
-		svgGlyph.setFill(Color.RED);
 		Button btn1 = new Button("文字1", svgGlyph);
 //		
-		svgGlyph = SVGHelper.getGlyph("iconfont.svg.excelwenjian");
+		svgGlyph = new SVGGlyph("iconfont.svg.excelwenjian",Color.AQUA,  32);
 		svgGlyph.setSizeForWidth(32);
 		svgGlyph.setRotate(45);
 		Button btn2 = new Button("文字2", svgGlyph);
 //		
-		svgGlyph = SVGHelper.getGlyph("iconfont.svg.wui-f-excel");
+		svgGlyph = new SVGGlyph("iconfont.svg.wui-f-excel",Color.BLANCHEDALMOND,  16);
 		svgGlyph.setSizeForWidth(16);
 		Button btn3 = new Button("文字3", svgGlyph);
 

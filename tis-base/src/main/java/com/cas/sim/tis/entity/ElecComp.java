@@ -10,10 +10,10 @@ import javax.persistence.Id;
  */
 public class ElecComp implements Serializable {
 	/**
-		 * 
-		 */
-	private static final long serialVersionUID = 3752718132675421709L;
-//	
+	 * 
+	 */
+	private static final long serialVersionUID = -2680718661511929185L;
+	//
 	@Id
 	private Integer id;
 //	元器件类型
@@ -24,6 +24,8 @@ public class ElecComp implements Serializable {
 	private String model;
 
 	private String mdlPath;
+
+	private String cfgPath;
 
 	public Integer getId() {
 		return id;
@@ -63,6 +65,19 @@ public class ElecComp implements Serializable {
 
 	public void setMdlPath(String mdlPath) {
 		this.mdlPath = mdlPath;
+	}
+
+	public String getCfgPath() {
+		return cfgPath;
+	}
+
+	public void setCfgPath(String cfgPath) {
+		this.cfgPath = cfgPath;
+	}
+
+	@Override
+	public String toString() {
+		return "ElecComp [id=" + id + "\r\n type=" + type + "\r\n name=" + name + "\r\n model=" + model + "\r\n mdlPath=" + mdlPath + "\r\n cfgPath=" + cfgPath + "]";
 	}
 
 }

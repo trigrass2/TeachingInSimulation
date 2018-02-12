@@ -15,6 +15,7 @@ import org.springframework.util.StringUtils;
 
 import com.cas.sim.tis.Application;
 import com.cas.sim.tis.entity.User;
+import com.cas.sim.tis.mapper.ElecCompMapper;
 import com.cas.sim.tis.mapper.IMapper;
 import com.cas.sim.tis.mapper.UserMapper;
 import com.cas.sim.tis.util.SpringUtil;
@@ -28,30 +29,37 @@ public class DBTest {
 
 	@Resource
 	private UserMapper userMapper;
-	
+
+	@Resource
+	private ElecCompMapper elecCompMapper;
+
+	@Test
+	public void testElecComp() throws Exception {
+		elecCompMapper.selectAll().forEach(System.out::println);
+	}
+	@Test
+	public void testUserMapper() throws Exception {
+		userMapper.selectAll().forEach(System.out::println);
+	}
+
 	@Test
 	public void testAdminLogin() throws Exception {
 		Condition condition = new Condition(User.class);
 		Criteria criteria = condition.createCriteria();
 		criteria.andEqualTo("code", "admin");
 		criteria.andEqualTo("password", "123456");
-		try {
-			List<User> users = userMapper.selectByCondition(condition);
-			Assert.assertEquals(1, users.size());
-			users.forEach(System.out::println);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		List<User> users = userMapper.selectByCondition(condition);
+		Assert.assertEquals(1, users.size());
 	}
-	
+
 	@Test
 	public void testShow() {
 		File file = new File("src/main/java/com/cas/sim/tis/mapper");
-		Arrays.asList(file.listFiles()).stream().filter(f->!"IMapper.java".equals(f.getName())).forEach(f->{
+		Arrays.asList(file.listFiles()).stream().filter(f -> !"IMapper.java".equals(f.getName())).forEach(f -> {
 			try {
 				String name = f.getName().substring(0, f.getName().lastIndexOf(".java"));
-				System.out.println("DBTest.testShow()" +name);
-				IMapper mapper = (IMapper) SpringUtil.getBean(StringUtils.uncapitalize(name) ,Class.forName("com.cas.sim.tis.mapper." + name));
+				System.out.println("DBTest.testShow()" + name);
+				IMapper mapper = (IMapper) SpringUtil.getBean(StringUtils.uncapitalize(name), Class.forName("com.cas.sim.tis.mapper." + name));
 				mapper.selectAll();
 			} catch (ClassNotFoundException e) {
 				e.printStackTrace();

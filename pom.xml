@@ -7,9 +7,8 @@
 	<modules>
 		<module>tis-base</module>
 		<module>tis-server</module>
+		<module>tis-circuit</module>
 		<module>tis-client</module>
-		<!-- <module>tis-circuit</module> -->
-
 	</modules>
 	<name>仿真教学项目</name>
 	<properties>
@@ -80,20 +79,6 @@
 				<scope>system</scope>
 				<systemPath>${env.JAVA_HOME}\lib\tools.jar</systemPath>
 			</dependency>
-			<dependency>
-				<groupId>javafx.embed.swt</groupId>
-				<artifactId>jfxswt</artifactId>
-				<version>1.0</version>
-				<scope>system</scope>
-				<systemPath>${env.JAVA_HOME}\jre\lib\jfxswt.jar</systemPath>
-			</dependency>
-
-			<!-- https://mvnrepository.com/artifact/org.eclipse.swt/org.eclipse.swt.win32.win32.x86_64 -->
-			<dependency>
-				<groupId>org.eclipse.swt</groupId>
-				<artifactId>org.eclipse.swt.win32.win32.x86_64</artifactId>
-				<version>4.3</version>
-			</dependency>
 
 			<dependency>
 				<groupId>com.cas.sim</groupId>
@@ -148,7 +133,7 @@
 				<artifactId>poi</artifactId>
 				<version>3.17</version>
 			</dependency>
-	
+
 			<!-- https://mvnrepository.com/artifact/org.apache.poi/poi-ooxml -->
 			<dependency>
 				<groupId>org.apache.poi</groupId>
@@ -187,6 +172,11 @@
 			<dependency>
 				<groupId>com.cas.sim</groupId>
 				<artifactId>tis-base</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.cas.sim</groupId>
+				<artifactId>tis-circuit</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
@@ -240,6 +230,12 @@
 			<dependency>
 				<groupId>org.jmonkeyengine</groupId>
 				<artifactId>jme3-lwjgl3</artifactId>
+				<version>${engine.version}</version>
+			</dependency>
+			<!-- https://mvnrepository.com/artifact/org.jmonkeyengine/jme3-effects -->
+			<dependency>
+				<groupId>org.jmonkeyengine</groupId>
+				<artifactId>jme3-effects</artifactId>
 				<version>${engine.version}</version>
 			</dependency>
 			<!-- https://mvnrepository.com/artifact/org.jmonkeyengine/jme3-networking -->

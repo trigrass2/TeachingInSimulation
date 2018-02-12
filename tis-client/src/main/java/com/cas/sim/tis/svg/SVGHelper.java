@@ -33,11 +33,11 @@ public class SVGHelper {
 		return glyphsMap.get(name);
 	}
 
-	/**
-	 * will retrieve icons from the glyphs map for a certain glyphName
-	 * @param glyphName the glyph name
-	 * @return SVGGlyph node
-	 */
+//	/**
+//	 * will retrieve icons from the glyphs map for a certain glyphName
+//	 * @param glyphName the glyph name
+//	 * @return SVGGlyph node
+//	 */
 //	public static SVG getIcoMoonGlyph(String glyphName) throws Exception {
 //		SVGBuilder builder = glyphsMap.get(glyphName);
 //		if (builder == null) throw new Exception("Glyph '" + glyphName + "' not found!");
@@ -132,12 +132,12 @@ public class SVGHelper {
 		}
 	}
 
-	/**
-	 * load a single svg icon from a file
-	 * @param url of the svg icon
-	 * @return SVGGLyph node
-	 * @throws IOException
-	 */
+//	/**
+//	 * load a single svg icon from a file
+//	 * @param url of the svg icon
+//	 * @return SVGGLyph node
+//	 * @throws IOException
+//	 */
 //	public static SVGGlyph loadGlyph(URL url) throws IOException {
 //		String urlString = url.toString();
 //		String filename = urlString.substring(urlString.lastIndexOf('/') + 1);

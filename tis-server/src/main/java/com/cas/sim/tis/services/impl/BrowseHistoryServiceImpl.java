@@ -9,11 +9,5 @@ import com.cas.sim.tis.services.BrowseHistoryService;
 
 @Service("browseHistoryService")
 public class BrowseHistoryServiceImpl extends AbstractService<BrowseHistory> implements BrowseHistoryService {
-
-	@Override
-	public void addBrowseHistory(BrowseHistory browseHistory) {
-		browseHistory.setCreateDate(new Date());
-		save(browseHistory);
-	}
-
+	
 }

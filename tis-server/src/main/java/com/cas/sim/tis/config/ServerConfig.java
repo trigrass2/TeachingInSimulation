@@ -90,6 +90,7 @@ public class ServerConfig {
 		server.addConnectionListener(new ConnectionListener() {
 			@Override
 			public void connectionAdded(Server server, HostedConnection conn) {
+				LOG.info("用户{}已连接", conn);
 			}
 
 			@Override

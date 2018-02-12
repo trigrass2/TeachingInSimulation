@@ -18,6 +18,7 @@ import com.cas.sim.tis.services.LibraryRecordService;
 import com.cas.sim.tis.services.LibraryService;
 import com.cas.sim.tis.services.QuestionService;
 import com.cas.sim.tis.services.ResourceService;
+import com.cas.sim.tis.services.TypicalCaseService;
 import com.cas.sim.tis.services.UserService;
 
 @Configuration
@@ -42,13 +43,13 @@ public class RMIConfig {
 		bean.setServiceInterface(UserService.class);
 		return bean;
 	}
-	
+
 	@Bean
 	@Qualifier("classServiceFactory")
 	public RmiProxyFactoryBean buildClassServiceFactory() {
 		RmiProxyFactoryBean bean = new RmiProxyFactoryBean();
 		bean.setServiceUrl("rmi://" + host + ":" + port + "/classService");
-		
+
 		LOG.info("远程访问路径：{}", bean.getServiceUrl());
 		bean.setServiceInterface(ClassService.class);
 		return bean;
@@ -63,7 +64,7 @@ public class RMIConfig {
 		bean.setServiceInterface(ResourceService.class);
 		return bean;
 	}
-	
+
 	@Bean
 	@Qualifier("collectionServiceFactory")
 	public RmiProxyFactoryBean buildCollectionServiceFactory() {
@@ -73,7 +74,7 @@ public class RMIConfig {
 		bean.setServiceInterface(CollectionService.class);
 		return bean;
 	}
-	
+
 	@Bean
 	@Qualifier("browseHistoryServiceFactory")
 	public RmiProxyFactoryBean buildBrowseHistoryServiceFactory() {
@@ -83,7 +84,7 @@ public class RMIConfig {
 		bean.setServiceInterface(BrowseHistoryService.class);
 		return bean;
 	}
-	
+
 	@Bean
 	@Qualifier("libraryServiceFactory")
 	public RmiProxyFactoryBean buildLibraryServiceFactory() {
@@ -93,7 +94,7 @@ public class RMIConfig {
 		bean.setServiceInterface(LibraryService.class);
 		return bean;
 	}
-	
+
 	@Bean
 	@Qualifier("questionServiceFactory")
 	public RmiProxyFactoryBean buildQuestionServiceFactory() {
@@ -103,7 +104,7 @@ public class RMIConfig {
 		bean.setServiceInterface(QuestionService.class);
 		return bean;
 	}
-	
+
 	@Bean
 	@Qualifier("libraryPublishServiceFactory")
 	public RmiProxyFactoryBean buildLibraryPublishServiceFactory() {
@@ -113,7 +114,7 @@ public class RMIConfig {
 		bean.setServiceInterface(LibraryPublishService.class);
 		return bean;
 	}
-	
+
 	@Bean
 	@Qualifier("libraryRecordServiceFactory")
 	public RmiProxyFactoryBean buildLibraryRecordServiceFactory() {
@@ -123,7 +124,7 @@ public class RMIConfig {
 		bean.setServiceInterface(LibraryRecordService.class);
 		return bean;
 	}
-	
+
 	@Bean
 	@Qualifier("elecCompServiceFactory")
 	public RmiProxyFactoryBean buildElecCompServiceFactory() {
@@ -131,6 +132,16 @@ public class RMIConfig {
 		bean.setServiceUrl("rmi://" + host + ":" + port + "/elecCompService");
 		LOG.info("远程访问路径：{}", bean.getServiceUrl());
 		bean.setServiceInterface(ElecCompService.class);
+		return bean;
+	}
+
+	@Bean
+	@Qualifier("typicalCaseServiceFactory")
+	public RmiProxyFactoryBean buildTypicalCaseServiceFactory() {
+		RmiProxyFactoryBean bean = new RmiProxyFactoryBean();
+		bean.setServiceUrl("rmi://" + host + ":" + port + "/typicalCaseService");
+		LOG.info("远程访问路径：{}", bean.getServiceUrl());
+		bean.setServiceInterface(TypicalCaseService.class);
 		return bean;
 	}
 }

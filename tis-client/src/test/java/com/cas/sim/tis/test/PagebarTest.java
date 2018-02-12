@@ -16,7 +16,7 @@ public class PagebarTest extends Application{
 		primaryStage.setScene(scene);
 		primaryStage.show();
 		
-		pagination.getPageBtn().getToggles().get(0).setSelected(true);
+//		pagination.getPageBtn().getToggles().get(0).setSelected(true);
 	}
 
 	public static void main(String[] args) {
