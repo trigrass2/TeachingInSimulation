@@ -23,9 +23,6 @@ public class PaginationBar extends HBox {
 	 */
 	private IntegerProperty pageIndex = new SimpleIntegerProperty(0) {
 		public void set(int newValue) {
-			if (refresh) {
-				return;
-			}
 			next.setDisable(false);
 			prev.setDisable(false);
 			if (newValue >= getPageCount() - 1) {
@@ -67,7 +64,6 @@ public class PaginationBar extends HBox {
 	private ToggleButton last = new ToggleButton();
 	private Label etc1 = new Label("...");
 	private Label etc2 = new Label("...");
-	private Boolean refresh;
 
 	public PaginationBar() {
 		setAlignment(Pos.CENTER);
@@ -108,7 +104,10 @@ public class PaginationBar extends HBox {
 	 * 创建除首页、末页以外的中间页
 	 */
 	private void refrash() {
-		refresh = true;
+		if (content != null) {
+			content.accept(getPageIndex());
+		}
+		
 		pages.getChildren().clear();
 		pageBtn.getToggles().clear();
 
@@ -147,10 +146,6 @@ public class PaginationBar extends HBox {
 			if (getPageIndex() == (int) toggle.getUserData()) {
 				toggle.setSelected(true);
 			}
-		}
-		refresh = false;
-		if (content != null) {
-			content.accept(getPageIndex());
 		}
 	}
 
