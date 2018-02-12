@@ -1,7 +1,7 @@
 package com.cas.circuit.control;
 
 import com.cas.circuit.logic.Encoder;
-import com.cas.robot.common.util.UDUtil;
+import com.cas.circuit.util.UDUtil;
 import com.jme3.math.FastMath;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;

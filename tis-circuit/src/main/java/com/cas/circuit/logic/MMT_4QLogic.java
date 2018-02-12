@@ -6,7 +6,6 @@ import com.cas.circuit.util.MesureResult;
 import com.cas.circuit.util.R;
 import com.cas.circuit.vo.ElecCompDef;
 import com.cas.circuit.vo.Terminal;
-import com.jme3.scene.Node;
 
 public class MMT_4QLogic extends BaseElectricCompLogic {
 
@@ -23,21 +22,20 @@ public class MMT_4QLogic extends BaseElectricCompLogic {
 	private Terminal out2;
 
 	@Override
-	public void initialize(Node elecCompMdl) {
-		super.initialize(elecCompMdl);
+	public void initialize() {
+		super.initialize();
 
-		ElecCompDef def = elecComp.getDef();
-		dcin1 = def.getTerminal("DCIN+");
-		dcin2 = def.getTerminal("DCIN-");
+		dcin1 = elecComp.getTerminal("DCIN+");
+		dcin2 = elecComp.getTerminal("DCIN-");
 
-		en = def.getTerminal("EN");
-		com1 = def.getTerminal("COM1");
+		en = elecComp.getTerminal("EN");
+		com1 = elecComp.getTerminal("COM1");
 
-		dir = def.getTerminal("DIR");
-		com2 = def.getTerminal("COM2");
+		dir = elecComp.getTerminal("DIR");
+		com2 = elecComp.getTerminal("COM2");
 
-		out1 = def.getTerminal("OUT+");
-		out2 = def.getTerminal("OUT-");
+		out1 = elecComp.getTerminal("OUT+");
+		out2 = elecComp.getTerminal("OUT-");
 	}
 
 	@Override

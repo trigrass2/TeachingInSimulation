@@ -16,7 +16,6 @@
 	<format id="Encoder" turns="5" mdlRef="" />
 
 	<format id="X4" turns="9" mdlRef="Models/Jack_X4.j3o" />
-
 	<format id="X6" turns="5" mdlRef="Models/Jack_X6.j3o" />
 
 	<format id="15PIN" turns="15" mdlRef="Models/Zjb-chatou.j3o" />

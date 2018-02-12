@@ -12,26 +12,28 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.stream.Collectors;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import org.apache.log4j.Logger;
 
-import com.cas.circuit.ILinker;
 import com.cas.circuit.SignalVolt;
 import com.cas.circuit.Voltage;
 import com.cas.circuit.vo.CR;
 import com.cas.circuit.vo.ElecCompDef;
 import com.cas.circuit.vo.IP;
-import com.cas.circuit.vo.Jack;
 import com.cas.circuit.vo.ResisRelation;
 import com.cas.circuit.vo.Terminal;
 import com.cas.circuit.vo.Wire;
+import com.cas.util.Util;
 import com.jme3.math.FastMath;
 
 /**
  * @author 张振宇 Aug 18, 2015 8:09:12 PM
  */
 public class R {
+	public static final ExecutorService SERVICE = Executors.newCachedThreadPool();
+
 	private static final Map<String, R> cache = new HashMap<String, R>();
 	private static final String[] envx = new String[] { "u", "v", "w", "uv", "vw", "wu" };
 
@@ -367,58 +369,56 @@ public class R {
 	}
 
 	public void shareVoltage() {
-		synchronized (this) {
-//			记录当前电路中涉及的连接头lastCircuitTerminal
-			List<Terminal> lastCircuitTerminal = new ArrayList<Terminal>();
-			for (IP ip : allIsopoList) {
-				addNonRepeatListAll(lastCircuitTerminal, ip.getTerminals());
-//				lastCircuitTerminal.addAll(ip.getTerminals());
-			}
+//		记录当前电路中涉及的连接头lastCircuitTerminal
+		List<Terminal> lastCircuitTerminal = new ArrayList<Terminal>();
+		for (IP ip : allIsopoList) {
+			addNonRepeatListAll(lastCircuitTerminal, ip.getTerminals());
+//			lastCircuitTerminal.addAll(ip.getTerminals());
+		}
 
-			int count = 0;
-//			真实的分压操作
-			while (shareVoltageLocal()) {
-				count++;
-				if (count > 10) {
-//					防止死循环
-					System.out.println("死循环啦");
-					break;
-				}
+		int count = 0;
+//		真实的分压操作
+		while (shareVoltageLocal()) {
+			count++;
+			if (count > 10) {
+//				防止死循环
+				System.out.println("死循环啦");
+				break;
 			}
-			if (startIP == null || endIP == null) {
-				return;
-			}
+		}
+		if (startIP == null || endIP == null) {
+			return;
+		}
 
-//			找出分压后当前电路中的连接头thisCircuitTerminal
-			List<ElecCompDef> elecCompList = new ArrayList<ElecCompDef>();
-			List<Terminal> thisCircuitTerminal = new ArrayList<Terminal>();
-			for (IP ip : allIsopoList) {
-				addNonRepeatListAll(thisCircuitTerminal, ip.getTerminals());
-//				thisCircuitTerminal.addAll(ip.getTerminals());
-//				找出所走到的连接头所属元器件,因为有些元器件如:开关电源,可算是一个电源的,当满足输入电压后,将输出电压
-				findElecComp(elecCompList, ip.getTerminals(), true);
-			}
-//			过滤出电路没有走到的连接头,这些lastCircuitTerminal连接头即将清除电压
-			lastCircuitTerminal.removeAll(thisCircuitTerminal); // 剩余的连接头则是没有接入电路的，找出这些连接头。
-//			找出要被清理电压的连接头所属的元器件,因为有些元器件如:开关电源,可算是一个电源的将无法输出电压
-			findElecComp(elecCompList, lastCircuitTerminal, false);
-//			System.out.println("shareVoltage这些连接头 本次电路中没有走到" + lastCircuitTerminal);
-//			即将清除电压
-			IP ip = null;
-			for (Terminal terminal : lastCircuitTerminal) {
-//				当前电源的两个输出端,及与输出端子处于同电位的,【不】清除电压
-				if (!startIP.hasTerminal(terminal) && !endIP.hasTerminal(terminal)) {
-					ip = terminal.getIsopotential(voltage.getEnv());
-					if (ip != null) {
-						ip.detory();
-					}
-					terminal.removeVolt(voltage.getEnv());
+//		找出分压后当前电路中的连接头thisCircuitTerminal
+		List<ElecCompDef> elecCompList = new ArrayList<ElecCompDef>();
+		List<Terminal> thisCircuitTerminal = new ArrayList<Terminal>();
+		for (IP ip : allIsopoList) {
+			addNonRepeatListAll(thisCircuitTerminal, ip.getTerminals());
+//			thisCircuitTerminal.addAll(ip.getTerminals());
+//			找出所走到的连接头所属元器件,因为有些元器件如:开关电源,可算是一个电源的,当满足输入电压后,将输出电压
+			findElecComp(elecCompList, ip.getTerminals(), true);
+		}
+//		过滤出电路没有走到的连接头,这些lastCircuitTerminal连接头即将清除电压
+		lastCircuitTerminal.removeAll(thisCircuitTerminal);
+//		找出要被清理电压的连接头所属的元器件,因为有些元器件如:开关电源,可算是一个电源的将无法输出电压
+		findElecComp(elecCompList, lastCircuitTerminal, false);
+//		System.out.println("shareVoltage这些连接头 本次电路中没有走到" + lastCircuitTerminal);
+//		即将清除电压
+		IP ip = null;
+		for (Terminal terminal : lastCircuitTerminal) {
+//			当前电源的两个输出端,及与输出端子处于同电位的,【不】清除电压
+			if (!startIP.hasTerminal(terminal) && !endIP.hasTerminal(terminal)) {
+				ip = terminal.getIsopotential(voltage.getEnv());
+				if (ip != null) {
+					ip.detory();
 				}
+				terminal.removeVolt(voltage.getEnv());
 			}
-			for (ElecCompDef elecCompDef : elecCompList) {
-				if (elecCompDef != null) {
-					elecCompDef.doMagnetism();
-				}
+		}
+		for (ElecCompDef elecCompDef : elecCompList) {
+			if (elecCompDef != null) {
+				elecCompDef.doMagnetism();
 			}
 		}
 	}
@@ -456,9 +456,9 @@ public class R {
 //			System.out.println("电压已经清除了");
 			return false;
 		}
-//		记录本次电路中参与的元器件
+//		记录所走到元器件
 		List<ElecCompDef> elecCompList = new ArrayList<ElecCompDef>();
-//		记录本次电路中参与的连接头
+//		找出本次电路中参与的连接头
 		List<Terminal> thisCircuitTerminal = new ArrayList<Terminal>();
 		for (IP ip : allIsopoList) {
 //			thisCircuitTerminal.addAll(ip.getTerminals());
@@ -542,46 +542,32 @@ public class R {
 		endIP = null;
 	}
 
-	/**
-	 * @param elecCompList
-	 * @param terminals
-	 * @param considerEVN
-	 */
 	private void findElecComp(List<ElecCompDef> elecCompList, List<Terminal> terminals, boolean considerEVN) {
 		if (voltage instanceof SignalVolt) {
 			return;
 		}
-		if (terminals.size() == 0) {
-			return;
-		}
 
-		ElecCompDef toRemove = null;
-		Iterator<Terminal> it = terminals.iterator();
-		while (it.hasNext()) {
-			Terminal terminal = it.next();
+//		ElecCompDef toRemove = null;
 
-			if (!considerEVN || terminal.getResidualVolt().containsKey(voltage.getEnv())) {
-//				连接头所在元器件
-				ElecCompDef comp = terminal.getElecComp();
-				if (terminal == startTerminal || terminal == endTerminal) {
+		terminals.forEach(t -> {
+			ElecCompDef comp = t.getElecComp();
 
-				}
-
+			if (!considerEVN || t.getResidualVolt().containsKey(voltage.getEnv())) {
 				if (comp == null) {
-					if (terminal.getParent() != null && terminal.getParent() instanceof Jack) {
-						if (terminal == startTerminal || terminal == endTerminal) {
-							toRemove = (ElecCompDef) terminal.getParent().getParent(); // 针脚的parent是插孔Jack,插孔的parent是ElecCompDef
-						}
-					}
+//					if (t.getParent() != null && t.getParent() instanceof Jack) {
+//						if (t == startTerminal || t == endTerminal) {
+//							toRemove = (ElecCompDef) t.getParent().getParent(); // 针脚的parent是插孔Jack,插孔的parent是ElecCompDef
+//						}
+//					}
 				}
 				if (comp != null && !elecCompList.contains(comp)) {
 					elecCompList.add(comp);
 				}
 			}
-		}
-		if (toRemove != null) {
-			elecCompList.remove(toRemove);
-		}
+		});
+//		if (toRemove != null) {
+//			elecCompList.remove(toRemove);
+//		}
 //		System.out.println(voltage.getEnv() + "-" +elecCompList);
 	}
 
@@ -635,8 +621,10 @@ public class R {
 		Set<String> env1 = startTerminal.getResidualVolt().keySet();
 		Set<String> env2 = endTerminal.getResidualVolt().keySet();
 
+		Set<String> all = new HashSet<String>();
+
 //		获取交集
-		Set<String> all = env1.stream().filter(item -> env2.contains(item)).collect(Collectors.toSet());
+		Util.intersection(all, env1, env2);
 
 		MultiPower.filters(all, condition);
 
@@ -735,7 +723,8 @@ public class R {
 
 		if (startIP.getCRList().size() > 1 || endIP.getCRList().size() > 1) {
 			// startip或endIP外侧需要丢弃n坨
-			List<CR> commonCR = startIP.getCRList().stream().filter(item -> endIP.getCRList().contains(item)).collect(Collectors.toList());
+			List<CR> commonCR = new ArrayList<CR>();
+			Util.intersection(commonCR, startIP.getCRList(), endIP.getCRList());
 
 			List<CR> startTempCRs = new ArrayList<CR>();
 			startTempCRs.addAll(startIP.getCRList());
@@ -948,16 +937,18 @@ public class R {
 		}
 		List<CR> crList = ip.getCRList();
 		if (crList.size() >= 2) {
+			IP anotherIsopo = null;
 			List<CR> runCRList = new ArrayList<CR>();
 			runCRList.addAll(crList);
 			for (CR cr : runCRList) {
-				IP anotherIsopo = cr.getAnotherIP(ip);
+				anotherIsopo = cr.getAnotherIP(ip);
 				if (passedIP.contains(anotherIsopo)) {
 					continue;
 				}
 
 				if (anotherIsopo != null) {
-					List<CR> parallelCR = ip.getCRList().stream().filter(item -> anotherIsopo.getCRList().contains(item)).collect(Collectors.toList());
+					List<CR> parallelCR = new ArrayList<CR>();
+					Util.intersection(parallelCR, ip.getCRList(), anotherIsopo.getCRList());
 					if (parallelCR.size() > 1) {
 						CR one = new CR(this);
 						one.setType(CR.PARALLEL);
@@ -980,11 +971,8 @@ public class R {
 		}
 //		遍历所有和ref关联的导线
 		List<Terminal> wireAnotherTerms = new ArrayList<Terminal>();
-		List<Wire> wires = ref.getWires();
-		Wire wire = null;
-		for (Wire linker : wires) {
-			wire = (Wire) linker;
-			if (!linker.isBothBinded()) {
+		for (Wire wire : ref.getWires()) {
+			if (!wire.isBothBinded()) {
 //				toRemove.add(linker);
 				continue;
 			}
@@ -1061,12 +1049,9 @@ public class R {
 		}
 //		遍历所有和ref关联的导线
 		List<Terminal> wireAnotherTerms = new ArrayList<Terminal>();
-		List<Wire> wires = ref.getWires();
-		Wire wire = null;
 //		List<ILinker> toRemove = new ArrayList<ILinker>();
-		for (Wire linker : wires) {
-			wire = (Wire) linker;
-			if (!linker.isBothBinded()) {
+		for (Wire wire : ref.getWires()) {
+			if (!wire.isBothBinded()) {
 //				toRemove.add(linker);
 				continue;
 			}
@@ -1173,11 +1158,11 @@ public class R {
 	}
 
 	private static <T> void addNonRepeatListAll(List<T> list, List<T> toAdd) {
-		toAdd.stream().forEach(t -> {
+		for (T t : toAdd) {
 			if (list.indexOf(t) == -1) {
 				list.add(t);
 			}
-		});
+		}
 	}
 
 	public static float mesureResistence(Terminal term1, Terminal term2) {

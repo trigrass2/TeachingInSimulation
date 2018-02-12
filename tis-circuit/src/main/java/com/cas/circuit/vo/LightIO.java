@@ -5,12 +5,12 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-import com.cas.sim.tis.xml.adapter.ColorRGBAAdapter;
+import com.cas.circuit.xml.adapter.ColorRGBAAdapter;
 import com.jme3.math.ColorRGBA;
 import com.jme3.scene.Spatial;
 
 @XmlAccessorType(XmlAccessType.NONE)
-public class LightIO {
+public class LightIO {// extends BaseVO<LightIOPO> {
 	@XmlAttribute
 	private String name;
 	@XmlAttribute
@@ -19,23 +19,7 @@ public class LightIO {
 	@XmlJavaTypeAdapter(ColorRGBAAdapter.class)
 	private ColorRGBA glowColor;
 
-	private Spatial model;
-
-	public String getName() {
-		return name;
-	}
-
-	public String getMdlName() {
-		return mdlName;
-	}
-
-	public ColorRGBA getGlowColor() {
-		return glowColor;
-	}
-
-	public void setModel(Spatial model) {
-		this.model = model;
-	}
+	private Spatial spatial;
 
 	public void openLight() {
 //		JmeUtil.setSpatialHighLight(model, glowColor);
@@ -43,5 +27,20 @@ public class LightIO {
 
 	public void closeLight() {
 //		JmeUtil.setSpatialHighLight(model, ColorRGBA.BlackNoAlpha);
+	}
+
+	public void setSpatial(Spatial spatial) {
+//		if (model == null) {
+//			log.error("没有找到指示灯名为" + po.getName() + "的模型");
+//		}
+		this.spatial = spatial;
+	}
+
+	public Spatial getSpatial() {
+		return spatial;
+	}
+
+	public String getMdlName() {
+		return mdlName;
 	}
 }

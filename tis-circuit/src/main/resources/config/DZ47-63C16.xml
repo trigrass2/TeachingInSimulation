@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ElecCompDef model="DZ47-63C16" name="自动空气断路器" desc="自动空气断路器集控制和多种保护功能于一身，一般由触头系统、灭弧系统、操作机构、脱扣器、外壳等构成，除了能完成接触和分断电路外，尚能对电路或电气设备发生的短路、严重过载及欠电压等进行保护，同时也可以用于不频繁地启动电动机。">
+	<Terminal id="r0" name="1L1" mdlName="1" direction="y+" team="in" />
+	<Terminal id="s0" name="3L2" mdlName="2" direction="y+" team="in" />
+	<Terminal id="t0" name="5L3" mdlName="3" direction="y+" team="in" />
+	<Terminal id="r1" name="2T1" mdlName="4" direction="y-" team="out" />
+	<Terminal id="s1" name="4T2" mdlName="5" direction="y-" team="out" />
+	<Terminal id="t1" name="6T3" mdlName="6" direction="y-" team="out" />
+	<Magnetism>
+		<ControlIO type="input" interact="click" name="开关" mdlName="SanJ06" motion="rotate" switchIn="off|on" motionParams="0|-120" axis="z">
+			<Param key="sound" value="me/Interface/sound/control/press.wav" />
+		</ControlIO>
+	</Magnetism>
+	<ResisState id="off" isDef="1">
+	</ResisState>
+	<ResisState id="on">
+		<ResisRelation term1Id="r0" term2Id="r1" value="0" />
+		<ResisRelation term1Id="s0" term2Id="s1" value="0" />
+		<ResisRelation term1Id="t0" term2Id="t1" value="0" />
+	</ResisState>
+</ElecCompDef>

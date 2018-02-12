@@ -2,6 +2,7 @@ package com.cas.sim.tis.xml.util;
 
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.net.URL;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
@@ -14,7 +15,6 @@ public class JaxbUtil {
 
 	/**
 	 * JavaBean转换成xml 默认编码UTF-8
-	 * 
 	 * @param obj
 	 * @param writer
 	 * @return
@@ -25,7 +25,6 @@ public class JaxbUtil {
 
 	/**
 	 * JavaBean转换成xml
-	 * 
 	 * @param obj
 	 * @param encoding
 	 * @return
@@ -49,7 +48,26 @@ public class JaxbUtil {
 
 	/**
 	 * xml转换成JavaBean
-	 * 
+	 * @param xml
+	 * @param c
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	public static <T> T converyToJavaBean(URL url, Class<T> c) {
+		T t = null;
+		try {
+			JAXBContext context = JAXBContext.newInstance(c);
+			Unmarshaller unmarshaller = context.createUnmarshaller();
+			t = (T) unmarshaller.unmarshal(url);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return t;
+	}
+
+	/**
+	 * xml转换成JavaBean
 	 * @param xml
 	 * @param c
 	 * @return

@@ -7,10 +7,10 @@ import com.cas.circuit.BaseElectricCompLogic;
 import com.cas.circuit.Voltage;
 import com.cas.circuit.util.MesureResult;
 import com.cas.circuit.util.R;
+import com.cas.circuit.vo.ElecCompDef;
 import com.cas.circuit.vo.Jack;
 import com.cas.circuit.vo.Terminal;
 import com.cas.util.Util;
-import com.jme3.scene.Node;
 
 /**
  * 变频器
@@ -62,25 +62,25 @@ public class Inverter extends BaseElectricCompLogic {
 	}
 
 	@Override
-	public void initialize(Node elecCompMdl) {
-		super.initialize(elecCompMdl);
+	public void initialize() {
+		super.initialize();
 
 		assist = new InvertorAssist(this);
 		controlVoltEnv = "Invertor_" + hashCode() + "_ControlVoltage";
 
-		_r = elecComp.getDef().getTerminal("R");
-		_s = elecComp.getDef().getTerminal("S");
-		_t = elecComp.getDef().getTerminal("T");
+		_r = elecComp.getTerminal("R");
+		_s = elecComp.getTerminal("S");
+		_t = elecComp.getTerminal("T");
 
-		_u = elecComp.getDef().getTerminal("U");
-		_v = elecComp.getDef().getTerminal("V");
-		_w = elecComp.getDef().getTerminal("W");
+		_u = elecComp.getTerminal("U");
+		_v = elecComp.getTerminal("V");
+		_w = elecComp.getTerminal("W");
 
-		Jack jack_pu = elecComp.getDef().getJackMap().get("PU");
-		_rda = jack_pu.getStitch().get("3");
-		_rdb = jack_pu.getStitch().get("4");
-		_sda = jack_pu.getStitch().get("1");
-		_sdb = jack_pu.getStitch().get("2");
+		Jack jack_pu = elecComp.getJackMap().get("PU");
+		_rda = jack_pu.getStitch(3);
+		_rdb = jack_pu.getStitch(4);
+		_sda = jack_pu.getStitch(1);
+		_sdb = jack_pu.getStitch(2);
 	}
 
 	@Override

@@ -1,12 +1,12 @@
 package com.cas.circuit;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.cas.circuit.vo.Cable;
 import com.cas.circuit.vo.Format;
 import com.cas.circuit.vo.Jack;
-import com.cas.circuit.vo.Terminal;
+import com.cas.circuit.vo.Stitch;
 
 public class Plug {
 
@@ -16,19 +16,15 @@ public class Plug {
 	private Format format;
 
 //	Key: index，对应插孔中的针脚号
-	private Map<String, Terminal> terminals = new HashMap<String, Terminal>();
+	private List<Stitch> stitchList = new ArrayList<>();
 
 	public Plug(Cable cable) {
 		super();
 		this.cable = cable;
 	}
 
-	public Map<String, Terminal> getTerminals() {
-		return terminals;
-	}
-
-	public void addTerminal(Terminal term1) {
-		terminals.put(term1.getPO().getIndex(), term1);
+	public void addTerminal(Stitch term1) {
+		stitchList.add(term1.getIndex(), term1);
 	}
 
 	public boolean isInserted() {
@@ -62,5 +58,8 @@ public class Plug {
 
 	public void setJack(Jack jack) {
 		this.jack = jack;
+	}
+	public List<Stitch> getStitchList() {
+		return stitchList;
 	}
 }

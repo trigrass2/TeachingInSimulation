@@ -9,7 +9,6 @@ import com.cas.circuit.util.MesureResult;
 import com.cas.circuit.util.R;
 import com.cas.circuit.vo.ResisRelation;
 import com.cas.circuit.vo.Terminal;
-import com.cas.robot.common.util.Pool;
 import com.cas.util.MathUtil;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
@@ -36,21 +35,22 @@ public class Encoder extends BaseElectricCompLogic {
 	private int dir; // 物体旋转的方向
 
 	@Override
-	public void initialize(Node elecCompMdl) {
-		super.initialize(elecCompMdl);
-		_24v = elecComp.getDef().getTerminal("24V");
-		_0v = elecComp.getDef().getTerminal("0V");
+	public void initialize() {
+		super.initialize();
+		_24v = elecComp.getTerminal("24V");
+		_0v = elecComp.getTerminal("0V");
 
-		_A = elecComp.getDef().getTerminal("A");
-		_B = elecComp.getDef().getTerminal("B");
-		_Z = elecComp.getDef().getTerminal("Z");
+		_A = elecComp.getTerminal("A");
+		_B = elecComp.getTerminal("B");
+		_Z = elecComp.getTerminal("Z");
 
-		resolution = MathUtil.parseInt(elecComp.getProperty("resolution"), resolution);
+		resolution = MathUtil.parseInt(elecComp.getParam("resolution"), resolution);
 
 		degPerPulse = 360f / resolution;
 
+		Node elecCompMdl = elecComp.getSpatial();
 //		检测的物体
-		Spatial detection = elecCompMdl.getParent().getChild(elecComp.getProperty("detection"));
+		Spatial detection = elecCompMdl.getParent().getChild(elecComp.getParam("detection"));
 		elecCompMdl.addControl(encoderControl = new EncoderControl(this, detection));
 		encoderControl.setEnabled(false);
 	}
@@ -78,61 +78,57 @@ public class Encoder extends BaseElectricCompLogic {
 	 */
 	public void setDegPerMillis(float deg) {
 		this.degPerMillis = deg;
-		System.out.println("Encoder.setDegPerMillis("+degPerMillis+")");
+		System.out.println("Encoder.setDegPerMillis(" + degPerMillis + ")");
 	}
 
 	public void onTargetStart() {
 //		System.out.println("Encoder.onTargetStart()");
-		Pool.getCircuitPool().execute(new Runnable() {
-			public void run() {
-//				设置abz与0v接通
-				ResisRelation resis = new ResisRelation(_0v, _A, 0f, true);
-				_A.getResisRelationMap().put(_0v, resis);
-				_0v.getResisRelationMap().put(_A, resis);
-				resis.setActivated(true);
+		R.SERVICE.execute(() -> {
+//			设置abz与0v接通
+			ResisRelation resis = new ResisRelation(_0v, _A, 0f, true);
+			_A.getResisRelationMap().put(_0v, resis);
+			_0v.getResisRelationMap().put(_A, resis);
+			resis.setActivated(true);
 
-				resis = new ResisRelation(_0v, _B, 0f, true);
-				_B.getResisRelationMap().put(_0v, resis);
-				_0v.getResisRelationMap().put(_B, resis);
-				resis.setActivated(true);
+			resis = new ResisRelation(_0v, _B, 0f, true);
+			_B.getResisRelationMap().put(_0v, resis);
+			_0v.getResisRelationMap().put(_B, resis);
+			resis.setActivated(true);
 
-				Set<String> envs = _0v.getResidualVolt().keySet();
-				R r = null;
-				for (String env : envs) {
-					r = R.getR(env);
-					r.getVoltage().putData("PulsePerMillis", String.valueOf(degPerMillis / degPerPulse));
-					r.getVoltage().putData("PulseDir", String.valueOf(dir));
-					r.shareVoltage();
-				}
+			Set<String> envs = _0v.getResidualVolt().keySet();
+			R r = null;
+			for (String env : envs) {
+				r = R.getR(env);
+				r.getVoltage().putData("PulsePerMillis", String.valueOf(degPerMillis / degPerPulse));
+				r.getVoltage().putData("PulseDir", String.valueOf(dir));
+				r.shareVoltage();
 			}
 		});
 	}
 
 	public void onTargetStop() {
 //		System.out.println("Encoder.onTargetStop()");
-		Pool.getCircuitPool().execute(new Runnable() {
-			public void run() {
-//				设置abz与0v接通
-				ResisRelation resis = _A.getResisRelationMap().remove(_0v);
-				_0v.getResisRelationMap().remove(_A);
-				if (resis != null) {
-					resis.setActivated(false);
-				}
+		R.SERVICE.execute(() -> {
+//			设置abz与0v接通
+			ResisRelation resis = _A.getResisRelationMap().remove(_0v);
+			_0v.getResisRelationMap().remove(_A);
+			if (resis != null) {
+				resis.setActivated(false);
+			}
 
-				resis = _B.getResisRelationMap().remove(_0v);
-				_0v.getResisRelationMap().remove(_B);
-				if (resis != null) {
-					resis.setActivated(false);
-				}
+			resis = _B.getResisRelationMap().remove(_0v);
+			_0v.getResisRelationMap().remove(_B);
+			if (resis != null) {
+				resis.setActivated(false);
+			}
 
-				Set<String> envs = _0v.getResidualVolt().keySet();
-				R r = null;
-				for (String env : envs) {
-					r = R.getR(env);
-					r.getVoltage().putData("PulsePerMillis", null);
-					r.getVoltage().putData("PulseDir", null);
-					r.shareVoltage();
-				}
+			Set<String> envs = _0v.getResidualVolt().keySet();
+			R r = null;
+			for (String env : envs) {
+				r = R.getR(env);
+				r.getVoltage().putData("PulsePerMillis", null);
+				r.getVoltage().putData("PulseDir", null);
+				r.shareVoltage();
 			}
 		});
 	}

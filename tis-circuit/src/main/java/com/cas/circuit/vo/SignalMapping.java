@@ -13,19 +13,12 @@ public class SignalMapping {
 
 	private Jack jack;
 
-	public SignalMapping() {
-	}
-
 	public void setJack(Jack jack) {
 		this.jack = jack;
 	}
 
 	public String getStitchName() {
 		return jack.getName() + "-" + stitch;
-	}
-
-	public String getAddress() {
-		return address;
 	}
 
 }

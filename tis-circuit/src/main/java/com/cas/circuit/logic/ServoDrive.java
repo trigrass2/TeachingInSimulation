@@ -6,12 +6,12 @@ import com.cas.circuit.BaseElectricCompLogic;
 import com.cas.circuit.Voltage;
 import com.cas.circuit.util.MesureResult;
 import com.cas.circuit.util.R;
+import com.cas.circuit.vo.ElecCompDef;
 import com.cas.circuit.vo.Jack;
 import com.cas.circuit.vo.ResisRelation;
 import com.cas.circuit.vo.Terminal;
 import com.cas.util.MathUtil;
 import com.cas.util.Util;
-import com.jme3.scene.Node;
 
 /**
  * 伺服驱动器
@@ -66,47 +66,47 @@ public class ServoDrive extends BaseElectricCompLogic {
 	private Terminal _E_Z_;
 
 	@Override
-	public void initialize(Node elecCompMdl) {
-		super.initialize(elecCompMdl);
-		rate = MathUtil.parseFloat(elecComp.getProperty("rate"), rate);
+	public void initialize() {
+		super.initialize();
+		rate = MathUtil.parseFloat(elecComp.getParam("rate"), rate);
 
 		controlVoltEnv = "ServoControlVoltage" + hashCode();
 		encoderEnv = "ServoEncoderVoltage" + hashCode();
 
-		_L1C = elecComp.getDef().getTerminal("L1C");
-		_L2C = elecComp.getDef().getTerminal("L2C");
+		_L1C = elecComp.getTerminal("L1C");
+		_L2C = elecComp.getTerminal("L2C");
 //		
-		_L1 = elecComp.getDef().getTerminal("L1");
-		_L2 = elecComp.getDef().getTerminal("L2");
-		_L3 = elecComp.getDef().getTerminal("L3");
+		_L1 = elecComp.getTerminal("L1");
+		_L2 = elecComp.getTerminal("L2");
+		_L3 = elecComp.getTerminal("L3");
 //		
-		_U = elecComp.getDef().getTerminal("U");
-		_V = elecComp.getDef().getTerminal("V");
-		_W = elecComp.getDef().getTerminal("W");
+		_U = elecComp.getTerminal("U");
+		_V = elecComp.getTerminal("V");
+		_W = elecComp.getTerminal("W");
 
-		Jack x4 = elecComp.getDef().getJackMap().get("X4");
-		_OPC1 = x4.getStitch().get("1");
-		_PULS2 = x4.getStitch().get("2");
-		_OPC2 = x4.getStitch().get("3");
-		_SIGN2 = x4.getStitch().get("4");
+		Jack x4 = elecComp.getJackMap().get("X4");
+		_OPC1 = x4.getStitch(1);
+		_PULS2 = x4.getStitch(2);
+		_OPC2 = x4.getStitch(3);
+		_SIGN2 = x4.getStitch(4);
 //		
 
-		_POT = x4.getStitch().get("5");
-		_NOT = x4.getStitch().get("6");
-		_SERV_ON = x4.getStitch().get("10");
+		_POT = x4.getStitch(5);
+		_NOT = x4.getStitch(6);
+		_SERV_ON = x4.getStitch(10);
 
-		_COM = x4.getStitch().get("9");
+		_COM = x4.getStitch(9);
 
-		_ALM = x4.getStitch().get("7");
-		_ALM_ = x4.getStitch().get("11");
+		_ALM = x4.getStitch(7);
+		_ALM_ = x4.getStitch(11);
 		resis = new ResisRelation(_ALM, _ALM_, 0f, true);
 
-		Jack x6 = elecComp.getDef().getJackMap().get("X6");
-		_E_24V = x6.getStitch().get("1");
-		_E_0V = x6.getStitch().get("2");
-		_E_A_ = x6.getStitch().get("3");
-		_E_B_ = x6.getStitch().get("4");
-		_E_Z_ = x6.getStitch().get("5");
+		Jack x6 = elecComp.getJackMap().get("X6");
+		_E_24V = x6.getStitch(1);
+		_E_0V = x6.getStitch(2);
+		_E_A_ = x6.getStitch(3);
+		_E_B_ = x6.getStitch(4);
+		_E_Z_ = x6.getStitch(5);
 	}
 
 	@Override

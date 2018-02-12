@@ -8,7 +8,6 @@ import com.cas.circuit.util.MultiPower;
 import com.cas.circuit.util.R;
 import com.cas.circuit.vo.ElecCompDef;
 import com.cas.circuit.vo.Jack;
-import com.cas.circuit.vo.LightIO;
 import com.cas.circuit.vo.Terminal;
 
 public abstract class ElecCompCPU extends BaseElectricCompLogic {
@@ -32,7 +31,7 @@ public abstract class ElecCompCPU extends BaseElectricCompLogic {
 	protected List<String> cop_evn_names = new ArrayList<String>();
 	protected List<Jack> jfr_jacks = new ArrayList<Jack>();
 	protected List<String> jfr_evn_names = new ArrayList<String>();
-	protected String[][] jfrEnvEnds = new String[][] { { "1", "11" }, { "3", "13" }, { "5", "15" } };
+	protected int[][] jfrEnvEnds = new int[][] { { 1, 11 }, { 3, 13 }, { 5, 15 } };
 
 	public ElecCompCPU() {
 		EVN_NAME_PRE = String.valueOf(hashCode());
@@ -69,13 +68,6 @@ public abstract class ElecCompCPU extends BaseElectricCompLogic {
 	 * @param terminal
 	 */
 	public final void onPulse(Terminal terminal) {
-//		FIXME
-//		if (terminal.getParent() instanceof Jack) {
-//			Jack jack = (Jack) terminal.getParent();
-//			if (CfgConst.BROKEN_STATE_BREAK.equals(jack.getBrokenState())) {
-//				return;
-//			}
-//		}
 		TermTeam team = terminal.getTermTeam();
 		team.signIn(terminal);
 		if (!team.resetIfReady()) {
@@ -91,12 +83,16 @@ public abstract class ElecCompCPU extends BaseElectricCompLogic {
 
 	}
 
+	public Map<String, Jack> getJackMap() {
+		return getElecComp().getJackMap();
+	}
+
 	/**
 	 * @param jackNm 信号发生的插孔名称
 	 * @param index 具体的针脚号
 	 */
-	public Terminal getStitch(String jackName, String index) {
-		Jack jack = elecComp.getJackMap().get(jackName);
+	public Terminal getStitch(String jackName, int index) {
+		Jack jack = getJackMap().get(jackName);
 		if (jack == null) {
 			System.err.println("没有找到名称为: " + jackName + "的插孔");
 		}
@@ -113,15 +109,14 @@ public abstract class ElecCompCPU extends BaseElectricCompLogic {
 	 * @param endIndex 具体的针脚号
 	 * @param sign 电压对象
 	 */
-	public void sendSignal(String jackNm, String startIndex, String endIndex, CommandSignal sign) {
+	public void sendSignal(String jackNm, int startIndex, int endIndex, CommandSignal sign) {
 		synchronized (this) {
 			// 判断当前插口是否允许发送指令
-			Jack jack = elecComp.getJackMap().get(jackNm);
-//			FIXME
-//			if (jack.isStopSend()) {
-//				log.warn("无法发送信号!![" + jackNm + "]");
-//				return;
-//			}
+			Jack jack = getJackMap().get(jackNm);
+			if (jack.isStopSend()) {
+				log.warn("无法发送信号!![" + jackNm + "]");
+				return;
+			}
 			Terminal startTerminal = getStitch(jackNm, startIndex);
 			Terminal endTerminal = getStitch(jackNm, endIndex);
 			String env = EVN_NAME_PRE + jackNm;
@@ -142,11 +137,9 @@ public abstract class ElecCompCPU extends BaseElectricCompLogic {
 	 * 产生信号电<br>
 	 */
 	protected void elecCompStart() {
-//		log.info("开始启动" + elecComp.getTagName());
+		log.info("开始启动" + elecComp.getTagName());
 //		System.err.println(this.getClass().getCanonicalName() + ".elecCompStart(start...)");
-		for (LightIO lightIO : elecComp.getLightIOs()) {
-			lightIO.openLight();
-		}
+		getElecComp().getLightIOList().forEach(l -> l.openLight());
 //		信号电压起源
 		R r = null;
 		Terminal ipHigher = null;
@@ -156,8 +149,8 @@ public abstract class ElecCompCPU extends BaseElectricCompLogic {
 			for (int i = 0; i < cb_evn_names.size(); i++) {
 				r = R.getR(cb_evn_names.get(i));
 				if (r == null) {
-					ipLower = cbx_jacks.get(i).getStitch("1");
-					ipHigher = cbx_jacks.get(i).getStitch("2");
+					ipLower = cbx_jacks.get(i).getStitch(1);
+					ipHigher = cbx_jacks.get(i).getStitch(2);
 					if (ipHigher == null || ipLower == null) {
 //						System.err.println(getClass() + cbx_jacks.get(i).getId() + "中找不到1 或 2号针脚");
 						continue;
@@ -172,8 +165,8 @@ public abstract class ElecCompCPU extends BaseElectricCompLogic {
 			for (int i = 0; i < jf_evn_names.size(); i++) {
 				r = R.getR(jf_evn_names.get(i));
 				if (r == null) {
-					ipHigher = jf_jacks.get(i).getStitch("3");
-					ipLower = jf_jacks.get(i).getStitch("13");
+					ipHigher = jf_jacks.get(i).getStitch(3);
+					ipLower = jf_jacks.get(i).getStitch(13);
 					if (ipHigher == null || ipLower == null) {
 //						System.err.println(getClass() + jf_jacks.get(i).getId() + "中找不到3 或 13号针脚");
 						continue;
@@ -188,8 +181,8 @@ public abstract class ElecCompCPU extends BaseElectricCompLogic {
 			for (int i = 0; i < cop_evn_names.size(); i++) {
 				r = R.getR(cop_evn_names.get(i));
 				if (r == null) {
-					ipHigher = cop_jacks.get(i).getStitch("1");
-					ipLower = cop_jacks.get(i).getStitch("3");
+					ipHigher = cop_jacks.get(i).getStitch(1);
+					ipLower = cop_jacks.get(i).getStitch(3);
 					if (ipHigher == null || ipLower == null) {
 						System.err.println(getClass() + cop_jacks.get(i).getId() + "中找不到1 或 3号针脚");
 						continue;
@@ -220,7 +213,7 @@ public abstract class ElecCompCPU extends BaseElectricCompLogic {
 			}
 		}
 //		System.err.println(this.getClass().getCanonicalName() + ".elecCompStart(end...)");
-//		log.info(elecComp.getTagName() + "启动完成!");
+		log.info(elecComp.getTagName() + "启动完成!");
 	}
 
 	/**
@@ -228,11 +221,9 @@ public abstract class ElecCompCPU extends BaseElectricCompLogic {
 	 * 关闭信号电<br>
 	 */
 	protected void elecCompEnd() {
-//		log.info("shutdown " + elecComp.getTagName());
+		log.info("shutdown " + elecComp.getTagName());
 //		System.out.println(this.getClass().getCanonicalName() + ".elecCompEnd(start...)");
-		for (LightIO lightIO : elecComp.getLightIOs()) {
-			lightIO.closeLight();
-		}
+		getElecComp().getLightIOList().forEach(l -> l.closeLight());
 
 		R r = null;
 		if (cb_evn_names != null) {
@@ -271,7 +262,7 @@ public abstract class ElecCompCPU extends BaseElectricCompLogic {
 				}
 			}
 		}
-//		log.info("shutdown done " + elecComp.getTagName());
+		log.info("shutdown done " + elecComp.getTagName());
 //		System.out.println(this.getClass().getCanonicalName() + ".elecCompEnd(end...)");
 	}
 }

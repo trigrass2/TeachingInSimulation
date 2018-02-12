@@ -115,6 +115,18 @@ public class IP {
 		return passedResis;
 	}
 
+////	处在同一电势的连接头
+//	private List<Terminal> terminalList = new ArrayList<Terminal>();
+////	处在同一电势是电阻一端的连接头
+//	private List<Terminal> resisTerminalList = new ArrayList<Terminal>();
+////	处在同一电势的所有电阻
+//	private List<ResisRelation> resisRelationList = new ArrayList<ResisRelation>();
+//
+//	private List<CR> compositeResistanceList = new ArrayList<CR>();
+//
+//	Set<Wire> passedWires = new HashSet<Wire>();
+//	Set<Terminal> passedContacted = new HashSet<Terminal>();
+//	Set<Terminal> passedResis = new HashSet<Terminal>();
 
 	public void detory() {
 		for (Terminal terminal : terminalList) {
@@ -148,7 +160,7 @@ public class IP {
 		terminalList.remove(terminal);
 		passedWires.removeAll(terminal.getWires());
 		passedContacted.remove(terminal);
-//		FIXME 
+//		FIXME
 //		passedResis.removeAll(terminal.getResisRelationMap().values());
 	}
 

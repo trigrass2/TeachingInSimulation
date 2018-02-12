@@ -6,11 +6,12 @@ import java.util.concurrent.ConcurrentHashMap;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-
+import com.cas.circuit.xml.adapter.SignalFormatAdapter;
+import com.cas.util.Util;
 @XmlAccessorType(XmlAccessType.NONE)
 public class Signal {
-
 	public static final Map<String, Signal> AMAP = new ConcurrentHashMap<String, Signal>();
 	public static final Map<String, Signal> GMAP = new ConcurrentHashMap<String, Signal>();
 	public static final Map<String, Signal> YMAP = new ConcurrentHashMap<String, Signal>();
@@ -26,6 +27,7 @@ public class Signal {
 
 //	信号地址
 	@XmlAttribute
+	@XmlJavaTypeAdapter(SignalFormatAdapter.class)
 	private String addr;
 //	信号注释
 	@XmlAttribute
@@ -42,7 +44,7 @@ public class Signal {
 //  信号激活条件,上升沿,下降沿
 	@XmlAttribute
 	private String active;
-	
+
 	public static final Signal getSignal(String head, int no, int index) {
 		head = head.toUpperCase();
 		String addr = head + no + "." + index;
@@ -83,13 +85,10 @@ public class Signal {
 	}
 
 	public static String formatSignal(String addr, int bit) {
-		if (addr == null) {
+		if (Util.isEmpty(addr)) {
 			return null;
 		}
 		addr = addr.trim();
-		if ("".equals(addr)) {
-			return null;
-		}
 		addr = addr.replace(" ", "");
 		while (addr.charAt(0) == 65279) {
 			addr = addr.substring(1);
@@ -129,7 +128,6 @@ public class Signal {
 		return addr;
 	}
 
-
 //	@Override
 //	protected void toValueObject() {
 //		super.toValueObject();
@@ -147,23 +145,18 @@ public class Signal {
 //		}
 //	}
 
-	/**
-	 * 如 X0000.0 或 X0000
-	 */
-
-	public String getState() {
-		if(active == null) {
-			return STATE_BT;
-		}
-		return active;
-	}
-
 	public String getAddr() {
 		return addr;
 	}
 
-	public void setAddr(String addr) {
-		this.addr = addr;
+	/**
+	 * 如 X0000.0 或 X0000
+	 */
+	public String getState() {
+		if (active == null) {
+			return STATE_BT;
+		}
+		return active;
 	}
 
 }

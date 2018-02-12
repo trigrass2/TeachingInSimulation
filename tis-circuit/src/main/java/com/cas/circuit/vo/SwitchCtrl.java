@@ -7,16 +7,14 @@ import java.util.Set;
 
 import com.cas.circuit.consts.IOType;
 import com.cas.circuit.util.R;
-import com.cas.gas.util.G;
-import com.cas.gas.vo.BlockRelation;
-import com.cas.gas.vo.BlockState;
+import com.cas.util.Util;
 
-public class SwitchCtrl<T> {
+public class SwitchCtrl {// extends BaseVO<T> {
 	protected ElecCompDef elecComp;
 	protected List<String> resisStateIds = new ArrayList<String>();
 	protected int switchIndex = 0;
 
-	protected IOType ioType;
+	protected String ioType;
 	// 禁止切换电路、气路
 	private boolean disable;
 
@@ -37,42 +35,20 @@ public class SwitchCtrl<T> {
 		}
 //		Terminal terminal = null;
 
-		Set<String> tmpEnvs = null;
-		
 		// 关灯
-		ResisState oldState = elecComp.getResisState(resisStateIds.get(switchIndex));
+		ResisState oldState = elecComp.getResisStatesMap().get(resisStateIds.get(switchIndex));
 //		if (oldState.getLightIO() != null) {
 //			oldState.getLightIO().closeLight();
 //		}
 		if (oldState != null) {
 			// 把原来的state控制的relation删除
 			List<ResisRelation> oldRelationList = oldState.getResisRelationList();
-			for (ResisRelation resisRelation : oldRelationList) {
-				elecComp.resisRelationRemoved((ResisRelation) resisRelation);
+			oldRelationList.forEach(r -> {
+				elecComp.resisRelationRemoved(r);
 //				找出两个连接头上所有的电源环境,用来通知对应的电源电路发生了变化,重新计算电路
-				tmpEnvs = R.findEnvsOn(((ResisRelation) resisRelation).getTerm1(), ((ResisRelation) resisRelation).getTerm2());
-//				terminal = ((ResisRelation) baseVO).getTerm1();
-//				tmpEnvs.addAll(terminal.getResidualVolt().keySet());
-//				terminal = ((ResisRelation) baseVO).getTerm2();
-//				tmpEnvs.addAll(terminal.getResidualVolt().keySet());
-				envs.addAll(tmpEnvs);
-			}
+				envs.addAll(R.findEnvsOn(r.getTerm1(), r.getTerm2()));
+			});
 		}
-
-//		FIXME 
-//		BlockState oldBlock = elecComp.getBlockStatesMap().get(resisStateIds.get(switchIndex));
-//		if (oldBlock != null) {
-//			System.out.println(this);
-//			List<BaseVO<?>> oldBlockList = oldBlock.getChildren();
-//			for (BaseVO<?> baseVO : oldBlockList) {
-//				if (baseVO instanceof BlockRelation) {
-//					BlockRelation relation = (BlockRelation) baseVO;
-//					elecComp.blockRelationRemoved(relation);
-////				TODO 调用气路逻辑， 重新分配气压
-//					G.g().refreshGasPressure();
-//				}
-//			}
-//		}
 
 		if (index == null) {
 			changeStateIndex(index);
@@ -81,7 +57,7 @@ public class SwitchCtrl<T> {
 		}
 		try {
 			for (String env : envs) {
-				if (env == null || "".equals(env)) {
+				if (Util.isEmpty(env)) {
 					continue;
 				}
 				R r = R.getR(env);
@@ -101,66 +77,38 @@ public class SwitchCtrl<T> {
 		if (resisStateIds.size() == 0) {
 			return;
 		}
-		Terminal terminal = null;
-
-		Set<String> tmpEnvs = null;
 		// 开灯
-		ResisState newState = elecComp.getResisState(resisStateIds.get(switchIndex));
+		ResisState newState = elecComp.getResisStatesMap().get(resisStateIds.get(switchIndex));
 		Set<String> envs = new HashSet<String>();
-//		if (newState.getLightIO() != null) {
-//			newState.getLightIO().openLight();
-//		}
 		if (newState != null) {
 			// 把当前的state控制的relation增加
 			List<ResisRelation> newRelationList = newState.getResisRelationList();
-			R tmpR = null;
-			List<Terminal> terminalsInIP = null;
 
-			for (ResisRelation baseVO : newRelationList) {
-				elecComp.resisRelationAdded((ResisRelation) baseVO);
+			newRelationList.forEach(r -> {
+				elecComp.resisRelationAdded(r);
 //				找出两个连接头上所有的电源环境,用来通知对应的电源电路发生了变化,重新计算电路
-				tmpEnvs = new HashSet<String>();
-				terminal = ((ResisRelation) baseVO).getTerm1();
-				tmpEnvs.addAll(terminal.getResidualVolt().keySet());
-				terminal = ((ResisRelation) baseVO).getTerm2();
-				tmpEnvs.addAll(terminal.getResidualVolt().keySet());
+				HashSet<String> tmpEnvs = new HashSet<String>();
+				tmpEnvs.addAll(r.getTerm1().getResidualVolt().keySet());
+				tmpEnvs.addAll(r.getTerm2().getResidualVolt().keySet());
 
 //				如果这两个连接头上都没有找到电源环境,则有可能是两端都有电阻,所以电没有到达这两个连接头,但是闭合这两个连接头后会通路。
-//				if (tmpEnvs.size() == 0) {
-				tmpR = new R("Tmp_REMOVE", ((ResisRelation) baseVO).getTerm1(), ((ResisRelation) baseVO).getTerm2());
+				R tmpR = new R("Tmp_REMOVE", r.getTerm1(), r.getTerm2());
+
 				R.findAllIsopotential(tmpR.getStartTerminal(), tmpR, true);
 				R.findAllIsopotential(tmpR.getEndTerminal(), tmpR, true);
 				List<IP> allIP = tmpR.getAllIsopoList();
 				for (IP ip : allIP) {
-					terminalsInIP = ip.getTerminals();
-					for (Terminal terminal2 : terminalsInIP) {
-						tmpEnvs.addAll(terminal2.getIsopotential().keySet());
-					}
+					ip.getTerminals().forEach(t -> tmpEnvs.addAll(t.getIsopotential().keySet()));
 				}
 				tmpEnvs.remove("Tmp_REMOVE");
 				tmpR.shutPowerDown();
-//				}
 				envs.addAll(tmpEnvs);
-			}
+			});
 		}
-
-//		FIXME
-//		BlockState newBlock = elecComp.getBlockStatesMap().get(resisStateIds.get(switchIndex));
-//		if (newBlock != null) {
-//			List<BaseVO<?>> newBlockList = newBlock.getChildren();
-//			for (BaseVO<?> baseVO : newBlockList) {
-//				if (baseVO instanceof BlockRelation) {
-//					BlockRelation relation = (BlockRelation) baseVO;
-//					elecComp.blockRelationAdded(relation);
-////				TODO 调用气路逻辑， 重新分配气压
-//					G.g().refreshGasPressure();
-//				}
-//			}
-//		}
 
 		try {
 			for (String env : envs) {
-				if (env == null || "".equals(env)) {
+				if (Util.isEmpty(env)) {
 					continue;
 				}
 				R r = R.getR(env);
@@ -189,41 +137,19 @@ public class SwitchCtrl<T> {
 
 		Set<String> envs = new HashSet<String>();
 
-		Terminal terminal = null;
-		Set<String> tmpEnvs = null;
 		if (resisStateIds.size() > 0) {
 //			System.err.println(elecComp.getResisStatesMap() + " :: " + resisStateIds +" , " + resisStateIds.get(switchIndex));
-			ResisState oldState = elecComp.getResisState(resisStateIds.get(switchIndex));
+			ResisState oldState = elecComp.getResisStatesMap().get(resisStateIds.get(switchIndex));
 			if (oldState != null) {
 				// 把原来的state控制的relation删除
 				List<ResisRelation> oldRelationList = oldState.getResisRelationList();
-				for (ResisRelation baseVO : oldRelationList) {
-					elecComp.resisRelationRemoved((ResisRelation) baseVO);
+				oldRelationList.forEach(r -> {
+					elecComp.resisRelationRemoved(r);
 //					找出两个连接头上所有的电源环境,用来通知对应的电源电路发生了变化,重新计算电路
-					tmpEnvs = new HashSet<String>();
-					terminal = ((ResisRelation) baseVO).getTerm1();
-					tmpEnvs.addAll(terminal.getResidualVolt().keySet());
-					terminal = ((ResisRelation) baseVO).getTerm2();
-					tmpEnvs.addAll(terminal.getResidualVolt().keySet());
-
-					envs.addAll(tmpEnvs);
-				}
+					envs.addAll(r.getTerm1().getResidualVolt().keySet());
+					envs.addAll(r.getTerm2().getResidualVolt().keySet());
+				});
 			}
-
-//			FIXME
-//			BlockState oldBlock = elecComp.getBlockStatesMap().get(resisStateIds.get(switchIndex));
-//			if (oldBlock != null) {
-//				List<BaseVO<?>> oldBlockList = oldBlock.getChildren();
-//				for (BaseVO<?> baseVO : oldBlockList) {
-//					if (baseVO instanceof BlockRelation) {
-//						BlockRelation relation = (BlockRelation) baseVO;
-//						elecComp.blockRelationRemoved(relation);
-//
-////					TODO 调用气路逻辑， 重新分配气压
-//						G.g().refreshGasPressure();
-//					}
-//				}
-//			}
 		}
 		if (index == null) {
 			changeStateIndex(index);
@@ -232,61 +158,32 @@ public class SwitchCtrl<T> {
 		}
 		if (resisStateIds.size() > 0) {
 			// 开灯
-			ResisState newState = elecComp.getResisState(resisStateIds.get(switchIndex));
+			ResisState newState = elecComp.getResisStatesMap().get(resisStateIds.get(switchIndex));
 			if (newState != null) {
 				// 把当前的state控制的relation增加
 				List<ResisRelation> newRelationList = newState.getResisRelationList();
-				R tmpR = null;
-				List<Terminal> terminalsInIP = null;
 
-				for (ResisRelation baseVO : newRelationList) {
-					if (baseVO instanceof ResisRelation) {
-						elecComp.resisRelationAdded((ResisRelation) baseVO);
-//						找出两个连接头上所有的电源环境,用来通知对应的电源电路发生了变化,重新计算电路
-						tmpEnvs = new HashSet<String>();
-						terminal = ((ResisRelation) baseVO).getTerm1();
-						tmpEnvs.addAll(terminal.getResidualVolt().keySet());
-						terminal = ((ResisRelation) baseVO).getTerm2();
-						tmpEnvs.addAll(terminal.getResidualVolt().keySet());
-
-//						如果这两个连接头上都没有找到电源环境,则有可能是两端都有电阻,所以电没有到达这两个连接头,但是闭合这两个连接头后会通路。
-//						if (tmpEnvs.size() == 0) {
-						tmpR = new R("Tmp_REMOVE", ((ResisRelation) baseVO).getTerm1(), ((ResisRelation) baseVO).getTerm2());
-						R.findAllIsopotential(tmpR.getStartTerminal(), tmpR, true);
-						R.findAllIsopotential(tmpR.getEndTerminal(), tmpR, true);
-						List<IP> allIP = tmpR.getAllIsopoList();
-						for (IP ip : allIP) {
-							terminalsInIP = ip.getTerminals();
-							for (Terminal terminal2 : terminalsInIP) {
-								tmpEnvs.addAll(terminal2.getIsopotential().keySet());
-							}
-						}
-						tmpEnvs.remove("Tmp_REMOVE");
-						tmpR.shutPowerDown();
-//						}
-						envs.addAll(tmpEnvs);
-					}
-				}
+				newRelationList.forEach(r -> {
+					elecComp.resisRelationAdded(r);
+//					找出两个连接头上所有的电源环境,用来通知对应的电源电路发生了变化,重新计算电路
+					envs.addAll(r.getTerm1().getResidualVolt().keySet());
+					envs.addAll(r.getTerm2().getResidualVolt().keySet());
+//					如果这两个连接头上都没有找到电源环境,则有可能是两端都有电阻,所以电没有到达这两个连接头,但是闭合这两个连接头后会通路。
+					R tmpR = new R("Tmp_REMOVE", r.getTerm1(), r.getTerm2());
+					R.findAllIsopotential(tmpR.getStartTerminal(), tmpR, true);
+					R.findAllIsopotential(tmpR.getEndTerminal(), tmpR, true);
+					tmpR.getAllIsopoList().forEach(ip -> {
+						ip.getTerminals().forEach(t -> envs.addAll(t.getIsopotential().keySet()));
+					});
+					envs.remove("Tmp_REMOVE");
+					tmpR.shutPowerDown();
+				});
 			}
-
-//			FIXME
-//			BlockState newBlock = elecComp.getBlockStatesMap().get(resisStateIds.get(switchIndex));
-//			if (newBlock != null) {
-//				List<BaseVO<?>> newBlockList = newBlock.getChildren();
-//				for (BaseVO<?> baseVO : newBlockList) {
-//					if (baseVO instanceof BlockRelation) {
-//						BlockRelation relation = (BlockRelation) baseVO;
-//						elecComp.blockRelationAdded(relation);
-////				TODO 调用气路逻辑， 重新分配气压
-//						G.g().refreshGasPressure();
-//					}
-//				}
-//			}
 		}
 //		System.out.println("SwitchCtrl.doSwitch() -----------shareVoltage-----------");
 		try {
 			for (String env : envs) {
-				if (env == null || "".equals(env)) {
+				if (Util.isEmpty(env)) {
 					continue;
 				}
 				R r = R.getR(env);
@@ -311,25 +208,12 @@ public class SwitchCtrl<T> {
 		return elecComp;
 	}
 
-	public IOType getIoType() {
+	public String getIoType() {
 		return ioType;
 	}
 
 	protected void changeStateIndex(Integer index) {
 	}
-
-//	/*
-//	 * (non-Javadoc)
-//	 * @see com.cas.cfg.vo.BaseVO#cleanUp()
-//	 */
-//	@Override
-//	protected void cleanUp() {
-//		super.cleanUp();
-//		elecComp = null;
-//		switchIndex = 0;
-//		ioType = null;
-//		resisStateIds = new ArrayList<String>();
-//	}
 
 	public int getSwitchIndex() {
 		return switchIndex;

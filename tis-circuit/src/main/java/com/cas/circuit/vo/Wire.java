@@ -13,8 +13,8 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import com.cas.circuit.util.R;
-import com.cas.sim.tis.xml.adapter.ColorRGBAAdapter;
-import com.cas.sim.tis.xml.adapter.TerminalAdapter;
+import com.cas.circuit.xml.adapter.ColorRGBAAdapter;
+import com.cas.util.Util;
 import com.jme3.math.ColorRGBA;
 import com.jme3.scene.Spatial;
 
@@ -24,11 +24,11 @@ import com.jme3.scene.Spatial;
  */
 @XmlAccessorType(XmlAccessType.NONE)
 public class Wire {
-	@XmlAttribute(name = "stitch1")
-	@XmlJavaTypeAdapter(TerminalAdapter.class)
-	private Terminal term1;
-	@XmlAttribute(name = "stitch2")
-	private Terminal term2;
+	@XmlAttribute
+//	导线的两个连接头
+	private int stitch1;
+	@XmlAttribute
+	private int stitch2;
 	@XmlAttribute
 	private String mark;
 
@@ -38,6 +38,10 @@ public class Wire {
 	@XmlJavaTypeAdapter(ColorRGBAAdapter.class)
 	private ColorRGBA color;
 
+	private Terminal term1;
+	private Terminal term2;
+
+//	导线模型，用List是因为可能存在两段线在不同的节点中
 	private Map<Spatial, Terminal> models = new HashMap<>();
 
 	private boolean brokenBreak = false;
@@ -53,22 +57,30 @@ public class Wire {
 	}
 
 	public void build() {
-		bind(term1);
-		bind(term2);
+//		需要手动创建,这里的terminal是线缆插头上的针孔.
+		parseStitch(stitch1);
+		parseStitch(stitch2);
+	}
+
+	private void parseStitch(int stitchNo) {
+		if (Util.isEmpty(stitchNo)) {
+			return;
+		}
+		bind(new Stitch(stitchNo));
 	}
 
 	/**
 	 * 将导线绑到连接头上
 	 */
 	public void bind(Terminal term) {
-		if (term == null || isBothBinded()) {
+		if (isBothBinded() || term == null) {
 			return;
 		}
 //		System.out.println(this + "Wire.bind()" +  term);
 		if (term1 == null) {
-			term1 = (Terminal) term;
+			term1 = term;
 		} else if (term2 == null) {
-			term2 = (Terminal) term;
+			term2 = term;
 		}
 
 		List<Wire> linkers = term.getWires();
@@ -120,7 +132,7 @@ public class Wire {
 
 		unbind(term1);
 		unbind(term2);
-		models = new HashMap<Spatial, Terminal>();
+//		models = new HashMap<Spatial, ILinkTarget>();
 	}
 
 	public Terminal getAnother(Terminal term) {
@@ -170,8 +182,16 @@ public class Wire {
 		return term1 != null && term2 != null;
 	}
 
+	public Terminal getTerm1() {
+		return term1;
+	}
+
+	public Terminal getTerm2() {
+		return term2;
+	}
+
 	public List<Spatial> getLinkMdlByTarget(Terminal target) {
-		List<Spatial> linkMdls = new ArrayList<>();
+		List<Spatial> linkMdls = new ArrayList<Spatial>();
 		for (Entry<Spatial, Terminal> model : models.entrySet()) {
 			if (model.getValue().equals(target)) {
 				linkMdls.add(model.getKey());
@@ -180,14 +200,39 @@ public class Wire {
 		return linkMdls;
 	}
 
-	public void setBrokenBreak(boolean brokenBreak) {
-		this.brokenBreak = brokenBreak;
-		shareTerm(term1);
-		shareTerm(term2);
+	public float getWidth() {
+		return width;
+	}
+
+	public String getWireNum() {
+		return wireNum;
+	}
+
+	public void setWireNum(String wireNum) {
+		this.wireNum = wireNum;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see com.cas.circuit.ILinker#getModel()
+	 */
+	public Map<Spatial, Terminal> getModels() {
+		return models;
+	}
+
+	@Override
+	public String toString() {
+		return "Wire [term1=" + term1 + ", term2=" + term2 + "]" + hashCode();
 	}
 
 	public boolean isBrokenBreak() {
 		return brokenBreak;
+	}
+
+	public void setBrokenBreak(boolean brokenBreak) {
+		this.brokenBreak = brokenBreak;
+		shareTerm(term1);
+		shareTerm(term2);
 	}
 
 	private void shareTerm(Terminal term) {

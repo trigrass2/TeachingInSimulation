@@ -1,16 +1,20 @@
 
 package com.cas.circuit.vo;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlList;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
+import com.cas.circuit.CfgConst;
 import com.cas.circuit.consts.IOType;
-import com.cas.sim.tis.xml.adapter.FloatArrayAdapter;
+import com.cas.circuit.xml.adapter.FloatArrayAdapter;
+import com.cas.circuit.xml.adapter.StringArrayAdapter;
+import com.jme3.math.Vector3f;
 import com.jme3.scene.Spatial;
 import com.sun.tools.internal.xjc.runtime.ZeroOneBooleanAdapter;
 
@@ -18,8 +22,7 @@ import com.sun.tools.internal.xjc.runtime.ZeroOneBooleanAdapter;
  * 包括:按钮(button) 和 旋钮(switch)
  */
 @XmlAccessorType(XmlAccessType.NONE)
-public class ControlIO {// extends SwitchCtrl<ControlIOPO> {
-
+public class ControlIO extends SwitchCtrl {
 	public static final String INTERACT_UNIDIR = "unidir";
 	public static final String INTERACT_CLICK = "click";
 	public static final String INTERACT_PRESS = "press";
@@ -37,8 +40,9 @@ public class ControlIO {// extends SwitchCtrl<ControlIOPO> {
 	private String interact;
 	@XmlAttribute
 	private Integer defSwitch;
-	@XmlList
-	private List<String> switchIn;
+	@XmlAttribute
+	@XmlJavaTypeAdapter(StringArrayAdapter.class)
+	private String[] switchIn;
 	@XmlAttribute
 	private String motion;
 	@XmlAttribute
@@ -51,9 +55,17 @@ public class ControlIO {// extends SwitchCtrl<ControlIOPO> {
 	@XmlAttribute
 	@XmlJavaTypeAdapter(ZeroOneBooleanAdapter.class)
 	private Boolean smooth;
+	@XmlElement(name = "Param")
+	private List<Param> params = new ArrayList<>();
 
-	public String getInteract() {
-		return interact;
+	private Spatial spatial;
+
+	private Vector3f zeroIndexLocation;
+
+	private int motionIndex = 0;
+
+	public String getMdlName() {
+		return mdlName;
 	}
 
 	public String getType() {
@@ -63,81 +75,62 @@ public class ControlIO {// extends SwitchCtrl<ControlIOPO> {
 		return type;
 	}
 
-//	private String elementText;
-//	
-//	
-////	ReadOnly
-//	private List<Float> motionParams = new ArrayList<Float>();
-
-	private Spatial model;
-
-//
-//	private Vector3f zeroIndexLocation;
-//
-//	private int motionIndex = 0;
-//
-//	private Map<String, String> properties;
-//
-	public String getName() {
-		return name;
+	public String getInteract() {
+		return interact;
 	}
 
-	public String getMdlName() {
-		return mdlName;
+	@Override
+	protected void changeStateIndex(Integer index) {
+		switchIndex = 1 - switchIndex;
 	}
 
-	public float getSpeed() {
-		return speed;
-	}
-
-//	@Override
-//	protected void toValueObject() {
-//		super.toValueObject();
-//		this.properties = getStringMap(po.getElementText());
-//		if (Util.isInteger(po.getDefSwitch())) {
-//			int defIndex = Integer.parseInt(po.getDefSwitch());
-//			switchIndex = defIndex;
-//			motionIndex = defIndex;
-//		}
-//	}
-//
-//	@Override
-//	protected void changeStateIndex(Integer index) {
-//		switchIndex = 1 - switchIndex;
-//	}
-//
-////	@Override
-////	public void doSwitch(Integer index) {
-////		super.doSwitch(index);
-////	}
-//
-//	/**
-//	 * 对ROTATE类型：index 0：向上滚， 1：向下滚. 对非ROTATE类型：index 为null
-//	 */
-//	public void switchStateChanged(final Integer wheel, final MouseEvent e) {
-//		switchStart(1 - switchIndex);
-//	}
-//
-//	//FIXME
-//	/**
-//	 * 对ROTATE类型：index 0：向上滚， 1：向下滚. 对非ROTATE类型：index 0：弹起， 1：按下
-//	 */
-//	public void playMotion(/* AssetManager assetManager, */MouseEvent e) {
-//		if (CfgConst.BUTTON_MOTION_ROTATE.equals(po.getMotion())) {
-//			// 迅速动
-//			ModelMotionUtil.rotateModel(model, po.getAxis(), motionParams.get(1 - motionIndex) - motionParams.get(motionIndex));
-//			switchEnd();
-//		} else if (CfgConst.BUTTON_MOTION_MOVE.equals(po.getMotion())) {
-//			if (smooth) {
-//			} else if (motionIndex == 0) {// 如果是从
-//				zeroIndexLocation = model.getLocalTranslation();
-//			} else {
-//				model.setLocalTranslation(zeroIndexLocation);
+	/**
+	 * 对ROTATE类型：index 0：向上滚， 1：向下滚. 对非ROTATE类型：index 为null
+	 */
+	public void switchStateChanged(final Integer wheel) {
+//		if (INTERACT_CLICK.equals(po.getInteract())) {
+//			switchStart(1 - switchIndex);
+//		} else if (INTERACT_PRESS.equals(po.getInteract())) {
+//			if (switchIndex == 0 || (switchIndex == 1 && !((Magnetism) parent).isEffect())) {
+//				switchStart(1 - switchIndex);
 //			}
-//
-//			float dist = motionParams.get(1 - motionIndex) - motionParams.get(motionIndex);
+////		} else if (INTERACT_UNIDIR.equals(po.getInteract())) {
+////			if (switchIndex == 1) {
+////				switchStart(0);
+////				// 磁生力
+////				for (ControlIO otherButton : ((Magnetism) parent).getControlIOs()) {
+////					if (otherButton != ControlIO.this && otherButton.getPO().getType().contains(CfgConst.SWITCH_CTRL_OUTPUT)) {
+////						otherButton.doSwitch(1);
+////					}
+////				}
+////			}
+//		}
+////		}
+//		
+		switchStart(1 - switchIndex);
+	}
+
+//	FIXME
+	/**
+	 * 对ROTATE类型：index 0：向上滚， 1：向下滚. 对非ROTATE类型：index 0：弹起， 1：按下
+	 */
+	public void playMotion() {
+		if (CfgConst.BUTTON_MOTION_ROTATE.equals(motion)) {
+//			// 迅速动
+//			ModelMotionUtil.rotateModel(model, axis, motionParams[1 - motionIndex] - motionParams[motionIndex]);
+			switchEnd();
+		} else if (CfgConst.BUTTON_MOTION_MOVE.equals(motion)) {
+			if (smooth) {
+			} else if (motionIndex == 0) {// 如果是从
+				zeroIndexLocation = spatial.getLocalTranslation();
+			} else {
+				spatial.setLocalTranslation(zeroIndexLocation);
+			}
+
+//			FIXME
+//			float dist = motionParams[1 - motionIndex] - motionParams[motionIndex];
 //			if (smooth) {
-//				ModelMotionUtil.moveModelSmooth(model, po.getAxis(), dist, speed, new Runnable() {
+//				ModelMotionUtil.moveModelSmooth(model, axis, dist, speed, new Runnable() {
 //					@Override
 //					public void run() {
 //						Pool.getCircuitPool().submit(new Runnable() {
@@ -153,41 +146,18 @@ public class ControlIO {// extends SwitchCtrl<ControlIOPO> {
 //					}
 //				}, null);
 //			} else {
-//				ModelMotionUtil.moveModel(model, po.getAxis(), dist);
-//				switchEnd();
+//				ModelMotionUtil.moveModel(model, axis, dist);
+			switchEnd();
 //			}
-//		}
-//		motionIndex = 1 - motionIndex;
-//	}
-
-	public void setModel(Spatial model) {
-		if (model == null) {
-//			log.error("没有找到按钮名为" + po.getName() + "的模型");
 		}
-		this.model = model;
+		motionIndex = 1 - motionIndex;
 	}
 
-//	/*
-//	 * (non-Javadoc)
-//	 * @see com.cas.cfg.vo.BaseVO#cleanUp()
-//	 */
-//	@Override
-//	protected void cleanUp() {
-//		model = null;
-//		motionParams = new ArrayList<Float>();
-//	}
-//
-//	public Map<String, String> getProperties() {
-//		return properties;
-//	}
-//
-//	public List<Float> getMotionParams() {
-//		return motionParams;
-//	}
-//
-//	@Override
-//	public String toString() {
-//		return "ControlIO []";
-//	}
+	public void setSpatial(Spatial spatial) {
+//		if (model == null) {
+//			log.error("没有找到按钮名为" + po.getName() + "的模型");
+//		}
+		this.spatial = spatial;
+	}
 
 }
