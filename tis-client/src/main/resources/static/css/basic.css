@@ -22,12 +22,17 @@
 .font18{
 	-fx-font-size:18.0px;
 }
-.error{
+.red{
+	-fx-fill: #ff5656;
 	-fx-text-fill:#ff5656;
 }
-.reference{
+.green{
 	-fx-fill: #83ad1c;
 	-fx-text-fill:#83ad1c;
+}
+.orange{
+	-fx-fill: #e89029;
+	-fx-text-fill:#e89029;
 }
 /*******************************************************************************
  *                                                                             *
@@ -566,7 +571,7 @@
  	-fx-border-color: #f6a23f;
  	-fx-border-style: solid;
  }
- /*******************************************************************************
+/*******************************************************************************
  *                                                                             *
  * 自定义Dialog样式                                                          *
  *                                                                             *
@@ -583,4 +588,88 @@
  .dialog>.text-field{
 	-fx-border-radius: 0.0px;
 	-fx-background-radius: 0.0px;
+}
+/*******************************************************************************
+ *                                                                             *
+ * 班级选择样式                                                          *
+ *                                                                             *
+ ******************************************************************************/
+ .class-select-item{
+ 	-fx-text-fill: #ffffff;
+ 	-fx-background-color: #296b99;
+ 	-fx-border-color: #97ccff;
+ 	-fx-border-width: 2.0px;
+ 	-fx-pref-width: 132.0px;
+ 	-fx-pref-height: 90.0px;
+ }
+ .class-select-item:hover{
+ 	-fx-background-color: #26739e;
+ }
+ .class-select-item:selected{
+ 	-fx-border-color: #ffb400;
+ }
+ /*******************************************************************************
+ *                                                                             *
+ * 答题卡选项样式                                                          *
+ *                                                                             *
+ ******************************************************************************/
+ .undo{
+ 	-fx-pref-height: 30.0px;
+ 	-fx-pref-width: 30.0px;
+ 	-fx-border-color:#999999;
+ 	-fx-background-color: transparent;
+ }
+ .done{
+ 	-fx-pref-height: 30.0px;
+ 	-fx-pref-width: 30.0px;
+ 	-fx-border-color:#f6a23f;
+ 	-fx-background-color: #f6a23f;
+ }
+ .right{
+ 	-fx-pref-height: 30.0px;
+ 	-fx-pref-width: 30.0px;
+ 	-fx-border-color:#83ad1c;
+ 	-fx-background-color: #83ad1c;
+ }
+ .wrong{
+ 	-fx-pref-height: 30.0px;
+ 	-fx-pref-width: 30.0px;
+ 	-fx-border-color:#ff5656;
+ 	-fx-background-color: #ff5656;
+ }
+ .undo:selected,
+ .done:selected,
+ .right:selected,
+ .wrong:selected{
+ 	-fx-border-insets: 1.0;
+ 	-fx-background-insets: 1.0;
+ }
+ .option{
+ 	-fx-border-color:#c3c3c3;
+ 	-fx-alignment: center-right ;
+ 	-fx-padding: 25.0;
+ }
+ .option:selected{
+ 	-fx-border-color:#f6a23f;
+ }
+ .option > .box,
+ .option > .radio{
+	-fx-background-color: transparent;
+    -fx-padding: 0.0;
+ }
+ .option > .box > .mark,
+ .option > .radio > .dot {
+    -fx-background-insets: 1.0 0.0 -1.0 0.0, 0.0;
+    -fx-shape: "M0,4H2L3,6L6,0H8L4,8H2Z";
+ }
+ .option:selected > .box > .mark,
+ .option:selected > .radio > .dot {
+    -fx-background-color: #f6a23f;
+ }
+.option-text>.text-field{
+	-fx-border-color:#c3c3c3;
+	-fx-padding: 25.0;
+}
+.option-text>.text-field:focused{
+	-fx-border-color:#f6a23f;
 }
