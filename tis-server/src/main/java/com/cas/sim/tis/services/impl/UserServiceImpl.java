@@ -9,6 +9,8 @@ import com.cas.sim.tis.entity.User;
 import com.cas.sim.tis.services.UserService;
 import com.cas.sim.tis.services.exception.ServerException;
 import com.cas.sim.tis.services.exception.ServiceException;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 
 import tk.mybatis.mapper.entity.Condition;
 import tk.mybatis.mapper.entity.Example.Criteria;
@@ -35,5 +37,19 @@ public class UserServiceImpl extends AbstractService<User> implements UserServic
 		} else {
 			throw new TooManyResultsException();
 		}
+	}
+
+	@Override
+	public PageInfo<User> findUsersByRole(int pageIndex, int pageSize, int role) {
+		Condition condition = new Condition(User.class);
+		Criteria criteria = condition.createCriteria();
+		criteria.andEqualTo("role", role);
+		criteria.andEqualTo("del", 0);
+		condition.orderBy("createDate").desc();
+		PageHelper.startPage(pageIndex, pageSize);
+		List<User> result = findByCondition(condition);
+		PageInfo<User> page = new PageInfo<>(result);
+		LOG.info("成功查找到{}条资源,当前页码{},每页{}条资源,共{}页", result.size(), pageIndex, pageSize, page.getPages());
+		return page;
 	}
 }

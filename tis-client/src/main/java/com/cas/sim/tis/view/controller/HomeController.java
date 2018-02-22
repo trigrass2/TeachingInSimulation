@@ -41,7 +41,8 @@ public class HomeController implements Initializable {
 		// 判断当前登录人角色，加载对应菜单
 		int role = Session.get(Session.KEY_LOGIN_ROLE);
 		if (RoleConst.ADMIN == role) {
-//			学生特有的菜单
+//			管理员特有的菜单
+			buildMenu(MenuEnum.Information);
 		} else if (RoleConst.TEACHER == role) {
 //			学生特有的菜单
 		} else if (RoleConst.STUDENT == role) {

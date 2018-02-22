@@ -4,6 +4,7 @@ import org.apache.ibatis.exceptions.TooManyResultsException;
 
 import com.cas.sim.tis.entity.User;
 import com.cas.sim.tis.services.exception.ServiceException;
+import com.github.pagehelper.PageInfo;
 
 public interface UserService extends BaseService<User> {
 	/**
@@ -15,4 +16,7 @@ public interface UserService extends BaseService<User> {
 	 * @throws TooManyResultsException
 	 */
 	User login(String usercode, String password) throws ServiceException, TooManyResultsException;
+
+	PageInfo<User> findUsersByRole(int pageIndex, int pageSize, int role);
+
 }

@@ -3,6 +3,7 @@ package com.cas.sim.tis.consts;
 import com.cas.sim.tis.Application;
 import com.cas.sim.tis.util.SpringUtil;
 import com.cas.sim.tis.view.PageView;
+import com.cas.sim.tis.view.control.imp.info.InformationMenu;
 import com.cas.sim.tis.view.control.imp.library.LibraryMenu;
 import com.cas.sim.tis.view.control.imp.resource.ResourceMenu;
 import com.cas.sim.tis.view.controller.PageController;
@@ -37,6 +38,18 @@ public enum MenuEnum implements EventHandler<MouseEvent> {
 		public void handle(MouseEvent event) {
 
 		}
+	},
+	Information("main.menu.info", "static/images/menu/class.png") {
+
+		@Override
+		public void handle(MouseEvent event) {
+			Application.showView(PageView.class);
+			PageController controller = SpringUtil.getBean(PageController.class);
+			InformationMenu menu = new InformationMenu();
+			controller.loadLeftMenu(menu);
+			controller.loadContent(null, null);
+		}
+
 	};
 
 	private String msgKey;
