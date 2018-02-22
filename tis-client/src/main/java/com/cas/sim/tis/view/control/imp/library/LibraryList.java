@@ -133,7 +133,6 @@ public class LibraryList extends HBox implements IContent {
 		name.setKey("name");
 		name.setText(MsgUtil.getMessage("library.name"));
 		name.setPrefWidth(250);
-		name.getStyleClass().add("gray-label");
 		table.getColumns().addAll(primary, name);
 		// 查看按钮
 		Column<String> view = new Column<String>();
@@ -201,15 +200,11 @@ public class LibraryList extends HBox implements IContent {
 			}
 			try {
 				SpringUtil.getBean(LibraryAction.class).addLibrary(library);
-				Alert alert = new Alert(AlertType.INFORMATION, MsgUtil.getMessage("data.add.success"));
-				alert.initOwner(GUIState.getStage());
-				alert.show();
+				showAlert(AlertType.INFORMATION, MsgUtil.getMessage("data.add.success"));
 				pagination.reload();
 			} catch (Exception e) {
 				e.printStackTrace();
-				Alert alert = new Alert(AlertType.ERROR, e.getMessage());
-				alert.initOwner(GUIState.getStage());
-				alert.show();
+				showAlert(AlertType.ERROR, e.getMessage());
 			}
 		});
 	}
@@ -227,15 +222,11 @@ public class LibraryList extends HBox implements IContent {
 			}
 			try {
 				SpringUtil.getBean(LibraryAction.class).modifyLibrary(lib);
-				Alert alert = new Alert(AlertType.INFORMATION, MsgUtil.getMessage("data.update.success"));
-				alert.initOwner(GUIState.getStage());
-				alert.show();
+				showAlert(AlertType.INFORMATION, MsgUtil.getMessage("data.update.success"));
 				pagination.reload();
 			} catch (Exception e) {
 				e.printStackTrace();
-				Alert alert = new Alert(AlertType.ERROR, e.getMessage());
-				alert.initOwner(GUIState.getStage());
-				alert.show();
+				showAlert(AlertType.ERROR, e.getMessage());
 			}
 		});
 	}

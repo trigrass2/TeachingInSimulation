@@ -13,15 +13,21 @@ import javax.swing.filechooser.FileSystemView;
 
 import com.cas.sim.tis.consts.QuestionConsts;
 import com.cas.sim.tis.consts.QuestionType;
+import com.cas.sim.tis.consts.RoleConst;
 import com.cas.sim.tis.consts.Session;
+import com.cas.sim.tis.entity.Class;
 import com.cas.sim.tis.entity.Library;
 import com.cas.sim.tis.entity.Question;
 import com.cas.sim.tis.util.ExcelUtil;
 import com.cas.sim.tis.util.MsgUtil;
 import com.cas.sim.tis.util.SpringUtil;
+import com.cas.sim.tis.view.action.ClassAction;
 import com.cas.sim.tis.view.action.LibraryAction;
+import com.cas.sim.tis.view.action.LibraryPublishAction;
 import com.cas.sim.tis.view.action.QuestionAction;
 import com.cas.sim.tis.view.control.IContent;
+import com.cas.sim.tis.view.control.imp.classes.ClassSelectDialog;
+import com.cas.sim.tis.view.control.imp.dialog.Dialog;
 import com.cas.sim.tis.view.control.imp.library.LibraryList.LibraryMenuType;
 import com.cas.util.FileUtil;
 import com.cas.util.Util;
@@ -34,7 +40,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.chart.PieChart;
 import javafx.scene.chart.PieChart.Data;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -103,11 +108,16 @@ public class PreviewQuestionPaper extends HBox implements IContent {
 		Library library = SpringUtil.getBean(LibraryAction.class).findLibraryByID(rid);
 		this.libName.setText(library.getName());
 
-		if (menuType.isEditable()) {
-			this.submits.getChildren().removeAll(practiceBtn);
-		} else {
+		if (!menuType.isEditable()) {
 			this.options.getChildren().removeAll(templateBtn, importBtn, exportBtn);
-			this.submits.getChildren().remove(publishBtn);
+		}
+		int role = Session.get(Session.KEY_LOGIN_ROLE);
+		if (RoleConst.ADMIN == role) {
+			this.submits.getChildren().removeAll(practiceBtn, publishBtn);
+		} else if (RoleConst.TEACHER == role) {
+			this.submits.getChildren().removeAll(practiceBtn);
+		} else if (RoleConst.STUDENT == role) {
+			this.submits.getChildren().removeAll(publishBtn);
 		}
 
 		chart.setOnMouseMoved(e -> {
@@ -237,7 +247,18 @@ public class PreviewQuestionPaper extends HBox implements IContent {
 
 	@FXML
 	private void publish() {
+		List<Class> classes = SpringUtil.getBean(ClassAction.class).findClassesByTeacher(Session.get(Session.KEY_LOGIN_ID));
 
+		Dialog<Integer> dialog = new Dialog<>();
+		dialog.setDialogPane(new ClassSelectDialog(classes));
+		dialog.setTitle(MsgUtil.getMessage("class.dialog.select"));
+		dialog.setPrefSize(635, 320);
+		dialog.showAndWait().ifPresent(cid -> {
+			if (cid == null) {
+				return;
+			}
+			SpringUtil.getBean(LibraryPublishAction.class).publishLibraryToClass(rid,cid);
+		});
 	}
 
 	@FXML
@@ -475,13 +496,6 @@ public class PreviewQuestionPaper extends HBox implements IContent {
 			questions.add(question);
 		}
 		return true;
-	}
-
-	private void showAlert(AlertType type, String reason) {
-		Alert alert = new Alert(type, reason);
-		alert.initOwner(GUIState.getStage());
-		alert.setHeaderText(null);
-		alert.showAndWait();
 	}
 
 	@Override
