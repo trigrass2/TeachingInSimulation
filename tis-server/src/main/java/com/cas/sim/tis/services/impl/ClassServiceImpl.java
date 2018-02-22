@@ -1,6 +1,5 @@
 package com.cas.sim.tis.services.impl;
 
-import java.util.Date;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -29,18 +28,13 @@ public class ClassServiceImpl extends AbstractService<Class> implements ClassSer
 	}
 
 	@Override
-	public void addClasses(List<Class> classes) {
-		Date createDate = new Date();
-		for (Class clazz : classes) {
-			clazz.setCreateDate(createDate);
-		}
-		save(classes);
-	}
-
-	@Override
-	public void modifyClass(Class clazz) {
-		clazz.setUpdateDate(new Date());
-		update(clazz);
+	public List<Class> findClassesByTeacher(int teacherId) {
+		Condition condition = new Condition(Class.class);
+		condition.orderBy("createDate").desc();
+		Criteria criteria = condition.createCriteria();
+		criteria.andEqualTo("teacherId", teacherId);
+		criteria.andEqualTo("del", 0);
+		return findByCondition(condition);
 	}
 
 }

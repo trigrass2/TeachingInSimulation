@@ -73,10 +73,6 @@ public class Schematic {
 		return createDate;
 	}
 
-	public void setCreateDate(Date createDate) {
-		this.createDate = createDate;
-	}
-
 	public Boolean getDel() {
 		return del;
 	}

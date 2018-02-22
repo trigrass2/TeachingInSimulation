@@ -81,10 +81,6 @@ public class LessonResource {
 		return createDate;
 	}
 
-	public void setCreateDate(Date createDate) {
-		this.createDate = createDate;
-	}
-
 	public Integer getDel() {
 		return del;
 	}

@@ -111,10 +111,6 @@ public class Resource implements Serializable {
 		return createDate;
 	}
 
-	public void setCreateDate(Date createDate) {
-		this.createDate = createDate;
-	}
-
 	public Boolean getShare() {
 		return share;
 	}

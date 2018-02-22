@@ -116,10 +116,6 @@ public class Question implements Serializable {
 		return createDate;
 	}
 
-	public void setCreateDate(Date createDate) {
-		this.createDate = createDate;
-	}
-
 	public Integer getUpdater() {
 		return updater;
 	}
@@ -130,10 +126,6 @@ public class Question implements Serializable {
 
 	public Date getUpdateDate() {
 		return updateDate;
-	}
-
-	public void setUpdateDate(Date updateDate) {
-		this.updateDate = updateDate;
 	}
 
 	public Boolean getDel() {

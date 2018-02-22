@@ -21,6 +21,21 @@ public class LibraryPublish implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = -90069710975023747L;
+
+	public enum LibraryPublishType {
+		PRACTICE(0), EXAM(1);
+		
+		private int type;
+
+		private LibraryPublishType(int type) {
+			this.type = type;
+		}
+		
+		public int getType() {
+			return type;
+		}
+	}
+
 	@Id
 	private Integer id;
 	@Column(name = "LID")
@@ -33,11 +48,13 @@ public class LibraryPublish implements Serializable {
 	 */
 	private Integer type;
 	private Float average;
-	
+
 	private Integer creator;
 	@DateTimeFormat(pattern = "yyyy-MM-dd hh:mm:ss")
 	private Date createDate;
-
+	
+	private Library library;
+	
 	public Integer getId() {
 		return id;
 	}
@@ -90,7 +107,11 @@ public class LibraryPublish implements Serializable {
 		return createDate;
 	}
 
-	public void setCreateDate(Date createDate) {
-		this.createDate = createDate;
+	public Library getLibrary() {
+		return library;
+	}
+
+	public void setLibrary(Library library) {
+		this.library = library;
 	}
 }

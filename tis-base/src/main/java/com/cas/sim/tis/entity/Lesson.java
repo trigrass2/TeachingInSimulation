@@ -58,10 +58,6 @@ public class Lesson {
 		return createDate;
 	}
 
-	public void setCreateDate(Date createDate) {
-		this.createDate = createDate;
-	}
-
 	public Integer getCreatorId() {
 		return creatorId;
 	}
@@ -72,10 +68,6 @@ public class Lesson {
 
 	public Date getUpdateDate() {
 		return updateDate;
-	}
-
-	public void setUpdateDate(Date updateDate) {
-		this.updateDate = updateDate;
 	}
 
 	public Integer getDel() {

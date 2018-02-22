@@ -2,6 +2,7 @@ package com.cas.sim.tis.entity;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Id;
 
@@ -36,6 +37,8 @@ public class Library implements Serializable {
 	
 	private Integer del = 0;
 
+	private List<Question> questions;
+	
 	public Integer getId() {
 		return id;
 	}
@@ -114,6 +117,14 @@ public class Library implements Serializable {
 
 	public void setDel(Integer del) {
 		this.del = del;
+	}
+
+	public List<Question> getQuestions() {
+		return questions;
+	}
+
+	public void setQuestions(List<Question> questions) {
+		this.questions = questions;
 	}
 
 }

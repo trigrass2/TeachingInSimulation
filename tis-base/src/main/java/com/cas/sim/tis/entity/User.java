@@ -25,8 +25,10 @@ public class User implements Serializable {
 	@Column(name="TID")
 	private Integer teacherId;
 	private Integer role;
+	private Integer creator;
 	@DateTimeFormat(pattern = "yyyy/MM/dd")
 	private Date createDate;
+	private Integer updater;
 	@DateTimeFormat(pattern = "yyyy-MM-dd hh:mm:ss")
 	private Date updateDate;
 	private Boolean del;
@@ -89,20 +91,28 @@ public class User implements Serializable {
 		this.teacherId = teacherId;
 	}
 
+	public Integer getCreator() {
+		return creator;
+	}
+
+	public void setCreator(Integer creator) {
+		this.creator = creator;
+	}
+
 	public Date getCreateDate() {
 		return createDate;
 	}
 
-	public void setCreateDate(Date createDate) {
-		this.createDate = createDate;
+	public Integer getUpdater() {
+		return updater;
+	}
+
+	public void setUpdater(Integer updater) {
+		this.updater = updater;
 	}
 
 	public Date getUpdateDate() {
 		return updateDate;
-	}
-
-	public void setUpdateDate(Date updateDate) {
-		this.updateDate = updateDate;
 	}
 
 	public Integer getRole() {

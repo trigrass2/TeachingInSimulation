@@ -1,6 +1,5 @@
 package com.cas.sim.tis.services.impl;
 
-import java.util.Date;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -70,10 +69,6 @@ public class QuestionServiceImpl extends AbstractService<Question> implements Qu
 		TransactionStatus status = transactionManager.getTransaction(def);
 
 		try {
-			Date createDate = new Date();
-			for (Question question : questions) {
-				question.setCreateDate(createDate);
-			}
 			save(questions);
 
 			Library library = libraryService.findById(rid);

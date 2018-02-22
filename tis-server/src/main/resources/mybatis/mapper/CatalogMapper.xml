@@ -9,8 +9,8 @@
 		<result column="CREATOR_ID" jdbcType="INTEGER" property="creatorId" />
 		<result column="LESSONS" jdbcType="INTEGER" property="lessons" />
 		<result column="INDEX" jdbcType="FLOAT" property="index" />
-		<result column="CREATE_DATE" jdbcType="VARCHAR" property="createDate" />
-		<result column="UPDATE_DATE" jdbcType="VARCHAR" property="updateDate" />
+		<result column="CREATE_DATE" jdbcType="TIMESTAMP" property="createDate" />
+		<result column="UPDATE_DATE" jdbcType="TIMESTAMP" property="updateDate" />
 		<result column="DEL" jdbcType="INTEGER" property="del" />
 	</resultMap>
 </mapper>

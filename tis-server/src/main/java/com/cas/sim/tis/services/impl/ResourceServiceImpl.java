@@ -1,7 +1,6 @@
 package com.cas.sim.tis.services.impl;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
@@ -149,7 +148,6 @@ public class ResourceServiceImpl extends AbstractService<Resource> implements Re
 		if (type.isConvertable()) {
 			converter.resourceConverter(resource.getPath());
 		}
-		resource.setCreateDate(new Date());
 		save(resource);
 		return true;
 	}
@@ -185,7 +183,6 @@ public class ResourceServiceImpl extends AbstractService<Resource> implements Re
 			BrowseHistory history = new BrowseHistory();
 			history.setResourceId(id);
 			history.setCreator(userId);
-			history.setCreateDate(new Date());
 			browseHistoryService.save(history);
 			transactionManager.commit(status);
 		} catch (Exception e) {
@@ -251,7 +248,6 @@ public class ResourceServiceImpl extends AbstractService<Resource> implements Re
 			Collection collection = new Collection();
 			collection.setResourceId(id);
 			collection.setCreator(userId);
-			collection.setCreateDate(new Date());
 			collectionService.save(collection);
 			transactionManager.commit(status);
 		} catch (Exception e) {

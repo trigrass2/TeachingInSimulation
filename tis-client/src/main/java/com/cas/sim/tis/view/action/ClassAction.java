@@ -24,9 +24,14 @@ public class ClassAction {
 		return service.findClasses(pageIndex, pageSize);
 	}
 
+	public List<Class> findClassesByTeacher(int teacherId) {
+		ClassService service = (ClassService) classServiceFactory.getObject();
+		return service.findClassesByTeacher(teacherId);
+	}
+
 	public void addClasses(List<Class> classes) {
 		ClassService service = (ClassService) classServiceFactory.getObject();
-		service.addClasses(classes);
+		service.save(classes);
 	}
 
 	public void deleteClass(int id) {
@@ -34,6 +39,6 @@ public class ClassAction {
 		Class clazz = service.findById(id);
 		clazz.setDel(1);
 		clazz.setUpdater(Session.get(Session.KEY_LOGIN_ID));
-		service.modifyClass(clazz);
+		service.update(clazz);
 	}
 }

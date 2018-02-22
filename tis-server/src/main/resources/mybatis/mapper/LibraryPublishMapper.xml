@@ -8,7 +8,28 @@
 		<result column="TYPE" jdbcType="INTEGER" property="type" />
 		<result column="AVERAGE" jdbcType="FLOAT" property="average" />
 		<result column="CREATOR" jdbcType="VARCHAR" property="creator" />
-		<result column="CREATE_DATE" jdbcType="VARCHAR" property="createDate" />
+		<result column="CREATE_DATE" jdbcType="TIMESTAMP" property="createDate" />
+	</resultMap>
+	<resultMap id="BaseResultExtMap" type="com.cas.sim.tis.entity.LibraryPublish" extends="BaseResultMap">
+		<id column="ID" jdbcType="INTEGER" property="id" />
+		<result column="CID" jdbcType="INTEGER" property="classId" />
+		<result column="TYPE" jdbcType="INTEGER" property="type" />
+		<result column="AVERAGE" jdbcType="FLOAT" property="average" />
+		<association property="library" javaType="com.cas.sim.tis.entity.Library">
+			<id column="LID" jdbcType="INTEGER" property="id" />
+			<result column="LNAME" jdbcType="VARCHAR" property="name" />
+			<result column="TIME" jdbcType="INTEGER" property="time" />
+			<result column="LTYPE" jdbcType="INTEGER" property="type" />
+			<result column="NUM" jdbcType="INTEGER" property="num" />
+			<collection property="questions" ofType="com.cas.sim.tis.entity.Question">
+				<id column="QID" jdbcType="INTEGER" property="id" />
+				<result column="TITLE" jdbcType="VARCHAR" property="title" />
+				<result column="OPTIONS" jdbcType="VARCHAR" property="options" />
+				<result column="REFERENCE" jdbcType="VARCHAR" property="reference" />
+				<result column="ANALYSIS" jdbcType="VARCHAR" property="analysis" />
+				<result column="QTYPE" jdbcType="INTEGER" property="type" />
+			</collection>
+		</association>
 	</resultMap>
 	<resultMap id="ForTeacherMap" type="com.cas.sim.tis.vo.LibraryPublishForTeacher">
 		<id column="ID" jdbcType="INTEGER" property="id" />
@@ -22,22 +43,32 @@
 		<result column="SCORE" jdbcType="INTEGER" property="score" />
 		<result column="COST" jdbcType="BIGINT" property="cost" />
 	</resultMap>
+	<select id="findPublishById" resultMap="BaseResultExtMap">
+		select
+		p.id,p.cid,p.type,p.average,
+		l.id as lid,l.name as lname,l.time,l.type as ltype,l.num as lnum,
+		q.id as qid,q.title,q.options,q.reference,q.analysis,q.type as qtype 
+		from
+		library_publish p,library l,question q
+		where
+		p.lid=l.id and l.id=q.rid and p.id=#{id}
+	</select>
 	<select id="findPublishForTeacher" resultMap="ForTeacherMap">
 		select
-			p.id,l.name,c.name as cname,p.average
+		p.id,l.name,c.name as cname,p.average
 		from
-			library_publish p,library l,class c 
-		where 
-			p.lid=l.id and p.cid=c.id and p.creator=#{creator}
+		library_publish p,library l,class c
+		where
+		p.lid=l.id and p.cid=c.id and p.creator=#{creator}
 		order by p.create_date desc
 	</select>
 	<select id="findPublishForStudent" resultMap="ForStudentMap">
-		select 
-			r.id,l.name,r.score,r.cost
-		from 
-			library_publish p,library l,library_record r
-		where 
-			p.lid=l.id and p.id=r.pid and p.type=#{type} and r.creator=#{creator} 
+		select
+		r.id,l.name,r.score,r.cost
+		from
+		library_publish p,library l,library_record r
+		where
+		p.lid=l.id and p.id=r.pid and p.type=#{type} and r.creator=#{creator}
 		order by p.create_date desc
 	</select>
 </mapper>

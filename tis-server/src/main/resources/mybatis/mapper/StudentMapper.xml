@@ -8,9 +8,9 @@
 		<result column="PASSWORD" jdbcType="VARCHAR" property="password" />
 		<result column="CID" jdbcType="INTEGER" property="clsId" />
 		<!-- <result column="CREATOR" jdbcType="INTEGER" property="creator" /> -->
-		<result column="CREATE_DATE" jdbcType="VARCHAR" property="createDate" />
+		<result column="CREATE_DATE" jdbcType="TIMESTAMP" property="createDate" />
 		<!-- <result column="UPDATER" jdbcType="INTEGER" property="updater" /> -->
-		<result column="UPDATE_DATE" jdbcType="VARCHAR" property="updateDate" />
+		<result column="UPDATE_DATE" jdbcType="TIMESTAMP" property="updateDate" />
 		<result column="DEL" jdbcType="INTEGER" property="del" />
 	</resultMap>
 </mapper>
