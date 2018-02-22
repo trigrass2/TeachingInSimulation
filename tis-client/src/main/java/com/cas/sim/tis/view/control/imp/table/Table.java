@@ -335,6 +335,12 @@ public class Table extends VBox {
 	private void loadHeader() {
 		Header header = new Header();
 		this.addHeader(header);
+		if (getSerial()) {
+			Cell<String> index = new Cell<>(null);
+			index.setMinWidth(20);
+			index.setAlignment(Pos.CENTER_RIGHT);
+			header.addHeaderCell(index);
+		}
 		for (Column<?> column : getColumns()) {
 			String key = column.getKey();
 			Object value = column.getText();
