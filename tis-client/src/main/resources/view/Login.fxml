@@ -27,7 +27,7 @@
 					<children>
 						<TextField fx:id="userId" promptText="%login.account" />
 						<PasswordField fx:id="password" promptText="%login.password" />
-						<Label fx:id="errorMessage" styleClass="error" />
+						<Label fx:id="errorMessage" styleClass="red" />
 						<Button fx:id="loginBtn" mnemonicParsing="false" defaultButton="true" onAction="#processLogin" prefHeight="29.0" prefWidth="230.0" styleClass="blue-btn" text="%login.action" />
 					</children>
 					<padding>
