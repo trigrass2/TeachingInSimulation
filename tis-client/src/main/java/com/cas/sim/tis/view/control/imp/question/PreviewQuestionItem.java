@@ -58,7 +58,7 @@ public class PreviewQuestionItem extends VBox {
 			Text text = new Text(option);
 			text.setWrappingWidth(600);
 			if (showReference && reference.indexOf(option.substring(0, 1)) > -1) {
-				text.getStyleClass().add("reference");
+				text.getStyleClass().add("green");
 			}
 			VBox.setVgrow(text, Priority.ALWAYS);
 			box.getChildren().add(text);
@@ -73,7 +73,7 @@ public class PreviewQuestionItem extends VBox {
 
 		if (showReference) {
 			Label reference = new Label(question.getReference());
-			reference.getStyleClass().add("reference");
+			reference.getStyleClass().add("green");
 			this.getChildren().add(reference);
 		}
 	}
@@ -100,7 +100,7 @@ public class PreviewQuestionItem extends VBox {
 				pane.getChildren().add(label);
 				if (i < references.size()) {
 					Label reference = new Label(references.get(i));
-					reference.getStyleClass().add("reference");
+					reference.getStyleClass().add("green");
 					pane.getChildren().add(reference);
 				}
 			}
