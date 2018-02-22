@@ -37,6 +37,8 @@ import com.jme3.network.serializing.Serializer;
 public class ServerConfig {
 	private final static Logger LOG = LoggerFactory.getLogger(ServerConfig.class);
 
+	private Server server;
+
 	private List<HostedConnection> clients = new ArrayList<>();
 
 	private Map<Class<? extends Message>, ServerHandler<Message>> messageHandlerClass = new HashMap<>();
@@ -50,7 +52,7 @@ public class ServerConfig {
 
 	@Resource
 	private UserManager userManager;
-	
+
 	@Bean
 	public UserManager initUserManager() {
 //		设置用户控制中心
@@ -82,7 +84,6 @@ public class ServerConfig {
 
 	@Bean
 	public Server createDataServer() throws IOException {
-		Server server = null;
 		server = Network.createServer(SystemInfo.APP_NAME, SystemInfo.APP_VERSION, port, port);
 		LOG.info("主服务器地址：{}", InetAddress.getLocalHost());
 		LOG.info("主服务器监听在{}端口上", port);
@@ -130,6 +131,10 @@ public class ServerConfig {
 		messageHandlerClass.put(msgClass, (ServerHandler<Message>) handler);
 	}
 
+	public Server getServer() {
+		return server;
+	}
+	
 	public List<HostedConnection> getClients() {
 		return clients;
 	}
