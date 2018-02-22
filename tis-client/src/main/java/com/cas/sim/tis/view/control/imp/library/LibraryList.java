@@ -25,12 +25,10 @@ import com.cas.sim.tis.view.controller.PageController;
 import com.cas.sim.tis.view.controller.PageController.PageLevel;
 import com.github.pagehelper.PageInfo;
 
-import de.felixroske.jfxsupport.GUIState;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
 import javafx.scene.layout.HBox;
@@ -154,10 +152,7 @@ public class LibraryList extends HBox implements IContent {
 			// 删除按钮
 			Column<String> del = new Column<String>();
 			del.setCellFactory(BtnCell.forTableColumn(MsgUtil.getMessage("button.delete"), Priority.ALWAYS, "blue-btn", id -> {
-				Alert alert = new Alert(AlertType.CONFIRMATION, MsgUtil.getMessage("table.delete"), ButtonType.YES, ButtonType.NO);
-				alert.setHeaderText(null);
-				alert.initOwner(GUIState.getStage());
-				alert.showAndWait().ifPresent(response -> {
+				showConfirm(MsgUtil.getMessage("table.delete"), response -> {
 					if (response == ButtonType.YES) {
 						SpringUtil.getBean(LibraryAction.class).deleteLibrary((int) id);
 						pagination.reload();

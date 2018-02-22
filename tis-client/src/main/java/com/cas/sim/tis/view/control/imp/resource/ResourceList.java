@@ -52,7 +52,6 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.chart.PieChart;
 import javafx.scene.chart.PieChart.Data;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
@@ -247,7 +246,6 @@ public class ResourceList extends HBox implements IContent {
 		icon.setKey("type");
 		icon.setText("");
 		icon.setMaxWidth(25);
-		icon.getStyleClass().add("gray-label");
 		Function<Integer, SVGGlyph> converter = new Function<Integer, SVGGlyph>() {
 
 			@Override
@@ -266,14 +264,12 @@ public class ResourceList extends HBox implements IContent {
 		name.setKey("name");
 		name.setText(MsgUtil.getMessage("resource.name"));
 		name.setMaxWidth(250);
-		name.getStyleClass().add("gray-label");
 		// 日期
 		Column<Date> date = new Column<>();
 		date.setAlignment(Pos.CENTER);
 		date.setKey("createDate");
 		date.setText(type.getDateLabel());
 		date.setMaxWidth(160);
-		date.getStyleClass().add("gray-label");
 		date.setCellFactory(Cell.forTableColumn(new StringConverter<Date>() {
 
 			@Override
@@ -303,10 +299,7 @@ public class ResourceList extends HBox implements IContent {
 			// 删除按钮
 			Column<String> delete = new Column<String>();
 			delete.setCellFactory(BtnCell.forTableColumn(MsgUtil.getMessage("button.delete"), "blue-btn", rid -> {
-				Alert alert = new Alert(AlertType.CONFIRMATION, MsgUtil.getMessage("table.delete"), ButtonType.YES, ButtonType.NO);
-				alert.setHeaderText(null);
-				alert.initOwner(GUIState.getStage());
-				alert.showAndWait().ifPresent(response -> {
+				showConfirm(MsgUtil.getMessage("table.delete"), response -> {
 					if (response == ButtonType.YES) {
 						SpringUtil.getBean(ResourceAction.class).detele((Integer) rid);
 						pagination.reload();
@@ -467,9 +460,7 @@ public class ResourceList extends HBox implements IContent {
 		uploadTip.setText(MsgUtil.getMessage("ftp.upload.waiting"));
 		boolean uploaded = SpringUtil.getBean(FTPUtils.class).uploadFile(ResourceConsts.FTP_RES_PATH, uploadFile, rename);
 		if (!uploaded) {
-			Alert alert = new Alert(AlertType.ERROR, MsgUtil.getMessage("ftp.upload.failure"));
-			alert.initOwner(GUIState.getStage());
-			alert.show();
+			showAlert(AlertType.ERROR, MsgUtil.getMessage("ftp.upload.failure"));
 			// 启用上传按钮
 			((Button) event.getSource()).setDisable(false);
 			return;
@@ -489,13 +480,9 @@ public class ResourceList extends HBox implements IContent {
 		// 记录到数据库
 		boolean converter = action.addResource(resource);
 		if (converter) {
-			Alert alert = new Alert(AlertType.INFORMATION, MsgUtil.getMessage("ftp.upload.success"));
-			alert.initOwner(GUIState.getStage());
-			alert.show();
+			showAlert(AlertType.INFORMATION, MsgUtil.getMessage("ftp.upload.success"));
 		} else {
-			Alert alert = new Alert(AlertType.ERROR, MsgUtil.getMessage("ftp.upload.converter.failure"));
-			alert.initOwner(GUIState.getStage());
-			alert.show();
+			showAlert(AlertType.ERROR, MsgUtil.getMessage("ftp.upload.converter.failure"));
 		}
 		// 启用上传按钮
 		((Button) event.getSource()).setDisable(false);
