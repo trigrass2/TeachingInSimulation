@@ -1,5 +1,6 @@
 package com.cas.sim.tis.entity;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -8,7 +9,11 @@ import javax.persistence.Id;
 import org.springframework.format.annotation.DateTimeFormat;
 
 //班级类
-public class Class {
+public class Class implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3789608723768522104L;
 	@Id
 	private Integer id;
 	private String name;
@@ -25,6 +30,8 @@ public class Class {
 	private Date updateDate;
 //	默认是0
 	private Integer del = 0;
+	
+	private User teacher;
 
 	public Integer getId() {
 		return id;
@@ -82,4 +89,11 @@ public class Class {
 		this.del = del;
 	}
 
+	public User getTeacher() {
+		return teacher;
+	}
+
+	public void setTeacher(User teacher) {
+		this.teacher = teacher;
+	}
 }

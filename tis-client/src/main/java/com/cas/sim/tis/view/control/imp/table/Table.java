@@ -392,7 +392,13 @@ public class Table extends VBox {
 					Cell<Object> cell = ((Column<Object>) column).cellFactoryProperty().get().call((Column<Object>) column);
 					if (Util.notEmpty(key)) {
 						cell.setUserData(key);
-						cell.setItem(object.get(key));
+						if (key.indexOf(".") > -1) {
+							String[] keys = key.split("\\.");
+							JSONObject jsonObject = object.getJSONObject(keys[0]);
+							cell.setItem(jsonObject.get(keys[1]));
+						} else {
+							cell.setItem(object.get(key));
+						}
 					}
 					if (getRowHeight() != -1) {
 						cell.setPrefHeight(getRowHeight());

@@ -85,7 +85,7 @@ public class LibraryAddDialog extends DialogPane<Library> {
 		box.getChildren().add(grid);
 		
 		Label error = new Label();
-		error.getStyleClass().add("error");
+		error.getStyleClass().add("red");
 		box.getChildren().add(error);
 		
 		Button ok = new Button(MsgUtil.getMessage("button.ok"));

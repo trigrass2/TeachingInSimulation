@@ -24,10 +24,6 @@ public class InformationMenu extends LeftMenu  {
 			PageController controller = SpringUtil.getBean(PageController.class);
 			controller.loadContent(new ClassList(), PageLevel.Level1);
 		});
-		addMenuItem(MsgUtil.getMessage("information.menu.student"), "iconfont.svg.student", e -> {
-			PageController controller = SpringUtil.getBean(PageController.class);
-			controller.loadContent(new StudentList(), PageLevel.Level1);
-		});
 	}
 
 }

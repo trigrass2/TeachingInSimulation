@@ -3,7 +3,6 @@
 <mapper namespace="com.cas.sim.tis.mapper.ClassMapper">
 	<resultMap id="BaseResultMap" type="com.cas.sim.tis.entity.Class">
 		<id column="ID" jdbcType="INTEGER" property="id" />
-		<result column="CODE" jdbcType="VARCHAR" property="code" />
 		<result column="NAME" jdbcType="VARCHAR" property="name" />
 		<result column="TID" jdbcType="VARCHAR" property="teacherId" />
 		<result column="CREATOR" jdbcType="INTEGER" property="creator" />
@@ -11,5 +10,27 @@
 		<result column="UPDATER" jdbcType="INTEGER" property="updater" />
 		<result column="UPDATE_DATE" jdbcType="TIMESTAMP" property="updateDate" />
 		<result column="DEL" jdbcType="INTEGER" property="del" />
+		<association property="teacher" javaType="com.cas.sim.tis.entity.User">
+			<id column="TID" jdbcType="INTEGER" property="id" />
+			<result column="CODE" jdbcType="VARCHAR" property="code" />
+			<result column="TNAME" jdbcType="VARCHAR" property="name" />
+		</association>
 	</resultMap>
+
+	<select id="findClasses" resultMap="BaseResultMap">
+		select c.*,u.code,u.name as tname
+		from class c,user u
+		where u.id=c.tid and c.del=0
+		order by create_date desc
+	</select>
+
+	<insert id="insertClasses" parameterType="java.util.List">
+		insert into class (name, tid, creator)
+		values
+		<foreach collection="infos" item="item" index="index" separator=",">
+			(#{item.name},
+			(select id from user u where u.code=#{item.teacherCode} and u.del=0 and u.role=2),
+			#{creator})
+		</foreach>
+	</insert>
 </mapper>

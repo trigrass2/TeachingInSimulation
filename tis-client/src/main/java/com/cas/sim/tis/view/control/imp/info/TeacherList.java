@@ -14,16 +14,16 @@ import org.slf4j.LoggerFactory;
 
 import com.alibaba.fastjson.JSONArray;
 import com.cas.sim.tis.consts.QuestionConsts;
-import com.cas.sim.tis.consts.QuestionType;
 import com.cas.sim.tis.consts.RoleConst;
+import com.cas.sim.tis.consts.Session;
 import com.cas.sim.tis.entity.User;
 import com.cas.sim.tis.util.ExcelUtil;
 import com.cas.sim.tis.util.MsgUtil;
 import com.cas.sim.tis.util.SpringUtil;
-import com.cas.sim.tis.view.action.LibraryAction;
 import com.cas.sim.tis.view.action.UserAction;
 import com.cas.sim.tis.view.control.IContent;
 import com.cas.sim.tis.view.control.imp.Title;
+import com.cas.sim.tis.view.control.imp.dialog.Dialog;
 import com.cas.sim.tis.view.control.imp.pagination.PaginationBar;
 import com.cas.sim.tis.view.control.imp.table.BtnCell;
 import com.cas.sim.tis.view.control.imp.table.Column;
@@ -124,7 +124,7 @@ public class TeacherList extends HBox implements IContent {
 		del.setCellFactory(BtnCell.forTableColumn(MsgUtil.getMessage("button.delete"), Priority.ALWAYS, "blue-btn", id -> {
 			showConfirm(MsgUtil.getMessage("table.delete"), response -> {
 				if (response == ButtonType.YES) {
-					SpringUtil.getBean(LibraryAction.class).deleteLibrary((int) id);
+					SpringUtil.getBean(UserAction.class).deleteUser((int) id);
 					pagination.reload();
 				}
 			});
@@ -138,7 +138,7 @@ public class TeacherList extends HBox implements IContent {
 	private void reload(Integer pageIndex) {
 		int pageSize = 10;
 
-		PageInfo<User> pageInfo = SpringUtil.getBean(UserAction.class).findUsersByRole(pageIndex + 1, pageSize, RoleConst.TEACHER);
+		PageInfo<User> pageInfo = SpringUtil.getBean(UserAction.class).findTeachers(pageIndex + 1, pageSize);
 		if (pageInfo == null) {
 			pagination.setPageCount(0);
 			table.setItems(null);
@@ -162,29 +162,29 @@ public class TeacherList extends HBox implements IContent {
 			return;
 		}
 		List<User> users = new ArrayList<User>();
-		Object[][] result = ExcelUtil.readExcelSheet(source.getAbsolutePath(), QuestionType.CHOICE.getSheetName(), 4);
+		Object[][] result = ExcelUtil.readExcelSheet(source.getAbsolutePath(), "Sheet1", 2);
 		for (int i = 2; i < result.length; i++) {
 			Object codeObj = result[i][0];
 			if (Util.isEmpty(codeObj)) {
-				String reason = MsgUtil.getMessage("excel.cant.null", MsgUtil.getMessage("teacher.code"));
+				String reason = MsgUtil.getMessage("check.cant.null", MsgUtil.getMessage("teacher.code"));
 				showAlert(AlertType.WARNING, reason);
 				return;
 			}
 			String code = String.valueOf(codeObj).trim();
 			if (code.length() > 20) {
-				String reason = MsgUtil.getMessage("excel.over.length", MsgUtil.getMessage("teacher.code"), String.valueOf(20));
+				String reason = MsgUtil.getMessage("check.over.length", MsgUtil.getMessage("teacher.code"), String.valueOf(20));
 				showAlert(AlertType.WARNING, reason);
 				return;
 			}
 			Object nameObj = result[i][1];
 			if (Util.isEmpty(nameObj)) {
-				String reason = MsgUtil.getMessage("excel.cant.null", MsgUtil.getMessage("teacher.name"));
+				String reason = MsgUtil.getMessage("check.cant.null", MsgUtil.getMessage("teacher.name"));
 				showAlert(AlertType.WARNING, reason);
 				return;
 			}
 			String name = String.valueOf(nameObj).trim();
 			if (name.length() > 20) {
-				String reason = MsgUtil.getMessage("excel.over.length", MsgUtil.getMessage("teacher.name"), String.valueOf(20));
+				String reason = MsgUtil.getMessage("check.over.length", MsgUtil.getMessage("teacher.name"), String.valueOf(20));
 				showAlert(AlertType.WARNING, reason);
 				return;
 			}
@@ -192,9 +192,17 @@ public class TeacherList extends HBox implements IContent {
 			user.setCode(code);
 			user.setName(name);
 			user.setRole(RoleConst.TEACHER);
+			user.setCreator(Session.get(Session.KEY_LOGIN_ID));
 			users.add(user);
 		}
-		SpringUtil.getBean(UserAction.class).addUsers(users);
+		try {
+			SpringUtil.getBean(UserAction.class).addUsers(users);
+			showAlert(AlertType.INFORMATION, MsgUtil.getMessage("excel.import.success"));
+			pagination.reload();
+		} catch (Exception e) {
+			showAlert(AlertType.ERROR, e.getMessage());
+			e.printStackTrace();
+		}
 	}
 
 	@FXML
@@ -208,35 +216,31 @@ public class TeacherList extends HBox implements IContent {
 			return;
 		}
 		FileUtil.copyFile(QuestionConsts.TEACHER_TEMPLATE, target.getAbsolutePath(), true);
-		showAlert(AlertType.INFORMATION, MsgUtil.getMessage("excel.import.success"));
+		showAlert(AlertType.INFORMATION, MsgUtil.getMessage("excel.export.success"));
 	}
 
 	private void modify(int id) {
-//		Library library = SpringUtil.getBean(LibraryAction.class).findLibraryByID(id);
-//
-//		Dialog<Library> dialog = new Dialog<>();
-//		dialog.setDialogPane(new LibraryModifyDialog(library));
-//		dialog.setTitle(MsgUtil.getMessage("library.name"));
-//		dialog.setPrefSize(635, 320);
-//		dialog.showAndWait().ifPresent(lib -> {
-//			if (lib == null) {
-//				return;
-//			}
-//			try {
-//				SpringUtil.getBean(LibraryAction.class).modifyLibrary(lib);
-//				Alert alert = new Alert(AlertType.INFORMATION, MsgUtil.getMessage("data.update.success"));
-//				alert.initOwner(GUIState.getStage());
-//				alert.show();
-//				pagination.reload();
-//			} catch (Exception e) {
-//				e.printStackTrace();
-//				Alert alert = new Alert(AlertType.ERROR, e.getMessage());
-//				alert.initOwner(GUIState.getStage());
-//				alert.show();
-//			}
-//		});
+		User teacher = SpringUtil.getBean(UserAction.class).findUserByID(id);
+
+		Dialog<User> dialog = new Dialog<>();
+		dialog.setDialogPane(new TeacherModifyDialog(teacher));
+		dialog.setTitle(MsgUtil.getMessage("teacher.modify"));
+		dialog.setPrefSize(635, 320);
+		dialog.showAndWait().ifPresent(user -> {
+			if (user == null) {
+				return;
+			}
+			try {
+				SpringUtil.getBean(UserAction.class).modifyUser(user);
+				showAlert(AlertType.INFORMATION, MsgUtil.getMessage("data.update.success"));
+				pagination.reload();
+			} catch (Exception e) {
+				e.printStackTrace();
+				showAlert(AlertType.ERROR, e.getMessage());
+			}
+		});
 	}
-	
+
 	@Override
 	public void distroy() {
 

@@ -19,10 +19,10 @@ public class User implements Serializable {
 	private String name;
 //	账号（用户登录）
 	private String code;
-	private String password;
-	@Column(name="CID")
+	private String password = "123456";
+	@Column(name = "CID")
 	private Integer classId;
-	@Column(name="TID")
+	@Column(name = "TID")
 	private Integer teacherId;
 	private Integer role;
 	private Integer creator;
@@ -31,7 +31,7 @@ public class User implements Serializable {
 	private Integer updater;
 	@DateTimeFormat(pattern = "yyyy-MM-dd hh:mm:ss")
 	private Date updateDate;
-	private Boolean del;
+	private Boolean del = false;
 
 	public Integer getId() {
 		return id;
@@ -72,8 +72,6 @@ public class User implements Serializable {
 	public void setName(String name) {
 		this.name = name;
 	}
-
-	
 
 	public Integer getClassId() {
 		return classId;

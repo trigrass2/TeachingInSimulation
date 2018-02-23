@@ -17,6 +17,8 @@ public interface UserService extends BaseService<User> {
 	 */
 	User login(String usercode, String password) throws ServiceException, TooManyResultsException;
 
-	PageInfo<User> findUsersByRole(int pageIndex, int pageSize, int role);
+	PageInfo<User> findTeachers(int pageIndex, int pageSize);
+
+	PageInfo<User> findStudents(int pageIndex, int pageSize, int classId);
 
 }

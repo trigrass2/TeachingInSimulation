@@ -1,33 +1,48 @@
 package com.cas.sim.tis.view.control.imp.info;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
+
+import javax.swing.filechooser.FileSystemView;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.alibaba.fastjson.JSONArray;
+import com.cas.sim.tis.consts.QuestionConsts;
 import com.cas.sim.tis.consts.RoleConst;
+import com.cas.sim.tis.consts.Session;
 import com.cas.sim.tis.entity.User;
+import com.cas.sim.tis.util.ExcelUtil;
 import com.cas.sim.tis.util.MsgUtil;
 import com.cas.sim.tis.util.SpringUtil;
 import com.cas.sim.tis.view.action.UserAction;
 import com.cas.sim.tis.view.control.IContent;
 import com.cas.sim.tis.view.control.imp.Title;
+import com.cas.sim.tis.view.control.imp.dialog.Dialog;
 import com.cas.sim.tis.view.control.imp.pagination.PaginationBar;
 import com.cas.sim.tis.view.control.imp.table.BtnCell;
 import com.cas.sim.tis.view.control.imp.table.Column;
 import com.cas.sim.tis.view.control.imp.table.Table;
+import com.cas.util.FileUtil;
+import com.cas.util.Util;
 import com.github.pagehelper.PageInfo;
 
+import de.felixroske.jfxsupport.GUIState;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonType;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
+import javafx.stage.FileChooser;
 
 public class StudentList extends HBox implements IContent {
 	private static final Logger LOG = LoggerFactory.getLogger(StudentList.class);
@@ -35,11 +50,17 @@ public class StudentList extends HBox implements IContent {
 	@FXML
 	private Title title;
 	@FXML
+	private Title manage;
+	@FXML
 	private Table table;
 	@FXML
 	private PaginationBar pagination;
-	
-	public StudentList() {
+
+	private int classId;
+
+	public StudentList(int classId) {
+		this.classId = classId;
+
 		loadFXML();
 
 		initialize();
@@ -67,6 +88,7 @@ public class StudentList extends HBox implements IContent {
 	 */
 	private void initialize() {
 		title.setTitle(MsgUtil.getMessage("student.title.list"));
+		manage.setTitle(MsgUtil.getMessage("student.title.manage"));
 		this.pagination.setContent(pageIndex -> {
 			reload(pageIndex);
 		});
@@ -84,16 +106,16 @@ public class StudentList extends HBox implements IContent {
 		primary.setKey("id");
 		// 学生学号
 		Column<String> code = new Column<>();
-		code.setAlignment(Pos.CENTER_LEFT);
+		code.setAlignment(Pos.CENTER);
 		code.setKey("code");
 		code.setText(MsgUtil.getMessage("student.code"));
-		code.setPrefWidth(250);
+		code.setPrefWidth(150);
 		// 学生名称
 		Column<String> name = new Column<>();
-		name.setAlignment(Pos.CENTER_LEFT);
+		name.setAlignment(Pos.CENTER);
 		name.setKey("name");
 		name.setText(MsgUtil.getMessage("student.name"));
-		name.setPrefWidth(250);
+		name.setPrefWidth(100);
 		table.getColumns().addAll(primary, code, name);
 		Column<String> modify = new Column<String>();
 		modify.setCellFactory(BtnCell.forTableColumn(MsgUtil.getMessage("button.modify"), Priority.ALWAYS, "blue-btn", id -> {
@@ -101,12 +123,26 @@ public class StudentList extends HBox implements IContent {
 		}));
 		modify.setAlignment(Pos.CENTER_RIGHT);
 		table.getColumns().add(modify);
+		// 删除按钮
+		Column<String> del = new Column<String>();
+		del.setCellFactory(BtnCell.forTableColumn(MsgUtil.getMessage("button.delete"), Priority.ALWAYS, "blue-btn", id -> {
+			showConfirm(MsgUtil.getMessage("table.delete"), response -> {
+				if (response == ButtonType.YES) {
+					SpringUtil.getBean(UserAction.class).deleteUser((int) id);
+					pagination.reload();
+				}
+			});
+		}));
+		del.setAlignment(Pos.CENTER_RIGHT);
+		del.setMaxWidth(58);
+		del.setMinWidth(58);
+		table.getColumns().add(del);
 	}
 
 	private void reload(Integer pageIndex) {
 		int pageSize = 10;
 
-		PageInfo<User> pageInfo = SpringUtil.getBean(UserAction.class).findUsersByRole(pageIndex + 1, pageSize, RoleConst.STUDENT);
+		PageInfo<User> pageInfo = SpringUtil.getBean(UserAction.class).findStudents(pageIndex + 1, pageSize, classId);
 		if (pageInfo == null) {
 			pagination.setPageCount(0);
 			table.setItems(null);
@@ -121,53 +157,93 @@ public class StudentList extends HBox implements IContent {
 	}
 
 	@FXML
-	private void add() {
-//		Dialog<Library> dialog = new Dialog<>();
-////		dialog.setDialogPane(new LibraryAddDialog(menuType.getLibraryType()));
-//		dialog.setPrefSize(635, 320);
-//		dialog.showAndWait().ifPresent(library -> {
-//			if (library == null) {
-//				return;
-//			}
-//			try {
-//				SpringUtil.getBean(LibraryAction.class).addLibrary(library);
-//				Alert alert = new Alert(AlertType.INFORMATION, MsgUtil.getMessage("data.add.success"));
-//				alert.initOwner(GUIState.getStage());
-//				alert.show();
-//				pagination.reload();
-//			} catch (Exception e) {
-//				e.printStackTrace();
-//				Alert alert = new Alert(AlertType.ERROR, e.getMessage());
-//				alert.initOwner(GUIState.getStage());
-//				alert.show();
-//			}
-//		});
+	private void importExcel() {
+		FileChooser chooser = new FileChooser();
+		chooser.setInitialDirectory(FileSystemView.getFileSystemView().getHomeDirectory());
+		chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter(MsgUtil.getMessage("resource.excel"), "*.xls"));
+		File source = chooser.showOpenDialog(GUIState.getStage());
+		if (source == null) {
+			return;
+		}
+		List<User> users = new ArrayList<User>();
+		Object[][] result = ExcelUtil.readExcelSheet(source.getAbsolutePath(), "Sheet1", 2);
+		for (int i = 2; i < result.length; i++) {
+			Object codeObj = result[i][0];
+			if (Util.isEmpty(codeObj)) {
+				String reason = MsgUtil.getMessage("check.cant.null", MsgUtil.getMessage("student.code"));
+				showAlert(AlertType.WARNING, reason);
+				return;
+			}
+			String code = String.valueOf(codeObj).trim();
+			if (code.length() > 20) {
+				String reason = MsgUtil.getMessage("check.over.length", MsgUtil.getMessage("student.code"), String.valueOf(20));
+				showAlert(AlertType.WARNING, reason);
+				return;
+			}
+			Object nameObj = result[i][1];
+			if (Util.isEmpty(nameObj)) {
+				String reason = MsgUtil.getMessage("check.cant.null", MsgUtil.getMessage("student.name"));
+				showAlert(AlertType.WARNING, reason);
+				return;
+			}
+			String name = String.valueOf(nameObj).trim();
+			if (name.length() > 20) {
+				String reason = MsgUtil.getMessage("check.over.length", MsgUtil.getMessage("student.name"), String.valueOf(20));
+				showAlert(AlertType.WARNING, reason);
+				return;
+			}
+			User user = new User();
+			user.setCode(code);
+			user.setName(name);
+			user.setClassId(classId);
+			user.setRole(RoleConst.STUDENT);
+			user.setCreator(Session.get(Session.KEY_LOGIN_ID));
+			users.add(user);
+		}
+		try {
+			SpringUtil.getBean(UserAction.class).addUsers(users);
+			showAlert(AlertType.INFORMATION, MsgUtil.getMessage("excel.import.success"));
+			pagination.reload();
+		} catch (Exception e) {
+			showAlert(AlertType.ERROR, e.getMessage());
+			e.printStackTrace();
+		}
+	}
+
+	@FXML
+	private void template() {
+		FileChooser chooser = new FileChooser();
+		chooser.setInitialDirectory(FileSystemView.getFileSystemView().getHomeDirectory());
+		chooser.setInitialFileName("学生信息模版.xls");
+		chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter(MsgUtil.getMessage("resource.excel"), "*.xls"));
+		File target = chooser.showSaveDialog(GUIState.getStage());
+		if (target == null) {
+			return;
+		}
+		FileUtil.copyFile(QuestionConsts.STUDENT_TEMPLATE, target.getAbsolutePath(), true);
+		showAlert(AlertType.INFORMATION, MsgUtil.getMessage("excel.export.success"));
 	}
 
 	private void modify(int id) {
-//		Library library = SpringUtil.getBean(LibraryAction.class).findLibraryByID(id);
-//
-//		Dialog<Library> dialog = new Dialog<>();
-//		dialog.setDialogPane(new LibraryModifyDialog(library));
-//		dialog.setTitle(MsgUtil.getMessage("library.name"));
-//		dialog.setPrefSize(635, 320);
-//		dialog.showAndWait().ifPresent(lib -> {
-//			if (lib == null) {
-//				return;
-//			}
-//			try {
-//				SpringUtil.getBean(LibraryAction.class).modifyLibrary(lib);
-//				Alert alert = new Alert(AlertType.INFORMATION, MsgUtil.getMessage("data.update.success"));
-//				alert.initOwner(GUIState.getStage());
-//				alert.show();
-//				pagination.reload();
-//			} catch (Exception e) {
-//				e.printStackTrace();
-//				Alert alert = new Alert(AlertType.ERROR, e.getMessage());
-//				alert.initOwner(GUIState.getStage());
-//				alert.show();
-//			}
-//		});
+		User student = SpringUtil.getBean(UserAction.class).findUserByID(id);
+
+		Dialog<User> dialog = new Dialog<>();
+		dialog.setDialogPane(new TeacherModifyDialog(student));
+		dialog.setTitle(MsgUtil.getMessage("student.modify"));
+		dialog.setPrefSize(635, 320);
+		dialog.showAndWait().ifPresent(user -> {
+			if (user == null) {
+				return;
+			}
+			try {
+				SpringUtil.getBean(UserAction.class).modifyUser(user);
+				showAlert(AlertType.INFORMATION, MsgUtil.getMessage("data.update.success"));
+				pagination.reload();
+			} catch (Exception e) {
+				e.printStackTrace();
+				showAlert(AlertType.ERROR, e.getMessage());
+			}
+		});
 	}
 
 	@Override

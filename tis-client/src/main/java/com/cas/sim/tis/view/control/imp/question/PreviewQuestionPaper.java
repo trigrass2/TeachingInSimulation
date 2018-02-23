@@ -319,44 +319,44 @@ public class PreviewQuestionPaper extends HBox implements IContent {
 		for (int i = 2; i < result.length; i++) {
 			Object descObj = result[i][0];
 			if (Util.isEmpty(descObj)) {
-				String reason = MsgUtil.getMessage("excel.cant.null", MsgUtil.getMessage("question.stem"));
+				String reason = MsgUtil.getMessage("check.cant.null", MsgUtil.getMessage("question.stem"));
 				showAlert(AlertType.WARNING, reason);
 				return false;
 			}
 			String title = String.valueOf(descObj).replaceAll("\\(", "（").replaceAll("\\)", "）").trim();
 			if (title.length() > 250) {
-				String reason = MsgUtil.getMessage("excel.over.length", MsgUtil.getMessage("question.stem"), String.valueOf(250));
+				String reason = MsgUtil.getMessage("check.over.length", MsgUtil.getMessage("question.stem"), String.valueOf(250));
 				showAlert(AlertType.WARNING, reason);
 				return false;
 			}
 			Object optionsObj = result[i][1];
 			if (Util.isEmpty(optionsObj)) {
-				String reason = MsgUtil.getMessage("excel.cant.null", MsgUtil.getMessage("question.option"));
+				String reason = MsgUtil.getMessage("check.cant.null", MsgUtil.getMessage("question.option"));
 				showAlert(AlertType.WARNING, reason);
 				return false;
 			}
 			String options = String.valueOf(optionsObj).replace("\r\n", "|").replace("\n", "|").trim();
 			if (options.length() > 250) {
-				String reason = MsgUtil.getMessage("excel.over.length", MsgUtil.getMessage("question.option"), String.valueOf(250));
+				String reason = MsgUtil.getMessage("check.over.length", MsgUtil.getMessage("question.option"), String.valueOf(250));
 				showAlert(AlertType.WARNING, reason);
 				return false;
 			}
 			Object referenceObj = result[i][2];
 			if (Util.isEmpty(referenceObj)) {
-				String reason = MsgUtil.getMessage("excel.cant.null", MsgUtil.getMessage("question.reference"));
+				String reason = MsgUtil.getMessage("check.cant.null", MsgUtil.getMessage("question.reference"));
 				showAlert(AlertType.WARNING, reason);
 				return false;
 			}
 			String reference = String.valueOf(referenceObj).trim();
 			if (reference.length() > 10) {
-				String reason = MsgUtil.getMessage("excel.over.length", MsgUtil.getMessage("question.reference"), String.valueOf(10));
+				String reason = MsgUtil.getMessage("check.over.length", MsgUtil.getMessage("question.reference"), String.valueOf(10));
 				showAlert(AlertType.WARNING, reason);
 				return false;
 			}
 			Object analysisObj = result[i][3];
 			String analysis = String.valueOf(analysisObj).trim();
 			if (analysis.length() > 250) {
-				String reason = MsgUtil.getMessage("excel.over.length", MsgUtil.getMessage("question.analysis"), String.valueOf(250));
+				String reason = MsgUtil.getMessage("check.over.length", MsgUtil.getMessage("question.analysis"), String.valueOf(250));
 				showAlert(AlertType.WARNING, reason);
 				return false;
 			}
@@ -378,32 +378,32 @@ public class PreviewQuestionPaper extends HBox implements IContent {
 		for (int i = 2; i < result.length; i++) {
 			Object descObj = result[i][0];
 			if (Util.isEmpty(descObj)) {
-				String reason = MsgUtil.getMessage("excel.cant.null", MsgUtil.getMessage("question.stem"));
+				String reason = MsgUtil.getMessage("check.cant.null", MsgUtil.getMessage("question.stem"));
 				showAlert(AlertType.WARNING, reason);
 				return false;
 			}
 			String title = String.valueOf(descObj).replaceAll("\\(", "（").replaceAll("\\)", "）").trim();
 			if (title.length() > 250) {
-				String reason = MsgUtil.getMessage("excel.over.length", MsgUtil.getMessage("question.stem"), String.valueOf(250));
+				String reason = MsgUtil.getMessage("check.over.length", MsgUtil.getMessage("question.stem"), String.valueOf(250));
 				showAlert(AlertType.WARNING, reason);
 				return false;
 			}
 			Object referenceObj = result[i][1];
 			if (Util.isEmpty(referenceObj)) {
-				String reason = MsgUtil.getMessage("excel.cant.null", MsgUtil.getMessage("question.reference"));
+				String reason = MsgUtil.getMessage("check.cant.null", MsgUtil.getMessage("question.reference"));
 				showAlert(AlertType.WARNING, reason);
 				return false;
 			}
 			String reference = String.valueOf(referenceObj).trim();
 			if (reference.length() > 10) {
-				String reason = MsgUtil.getMessage("excel.over.length", MsgUtil.getMessage("question.reference"), String.valueOf(10));
+				String reason = MsgUtil.getMessage("check.over.length", MsgUtil.getMessage("question.reference"), String.valueOf(10));
 				showAlert(AlertType.WARNING, reason);
 				return false;
 			}
 			Object analysisObj = result[i][2];
 			String analysis = String.valueOf(analysisObj).trim();
 			if (analysis.length() > 250) {
-				String reason = MsgUtil.getMessage("excel.over.length", MsgUtil.getMessage("question.analysis"), String.valueOf(250));
+				String reason = MsgUtil.getMessage("check.over.length", MsgUtil.getMessage("question.analysis"), String.valueOf(250));
 				showAlert(AlertType.WARNING, reason);
 				return false;
 			}
@@ -424,32 +424,32 @@ public class PreviewQuestionPaper extends HBox implements IContent {
 		for (int i = 2; i < result.length; i++) {
 			Object descObj = result[i][0];
 			if (Util.isEmpty(descObj)) {
-				String reason = MsgUtil.getMessage("excel.cant.null", MsgUtil.getMessage("question.stem"));
+				String reason = MsgUtil.getMessage("check.cant.null", MsgUtil.getMessage("question.stem"));
 				showAlert(AlertType.WARNING, reason);
 				return false;
 			}
 			String title = String.valueOf(descObj).replaceAll("\\(", "（").replaceAll("\\)", "）").replaceAll("（）", "（|）").trim();
 			if (title.length() > 250) {
-				String reason = MsgUtil.getMessage("excel.over.length", MsgUtil.getMessage("question.stem"), String.valueOf(250));
+				String reason = MsgUtil.getMessage("check.over.length", MsgUtil.getMessage("question.stem"), String.valueOf(250));
 				showAlert(AlertType.WARNING, reason);
 				return false;
 			}
 			Object referenceObj = result[i][1];
 			if (Util.isEmpty(referenceObj)) {
-				String reason = MsgUtil.getMessage("excel.cant.null", MsgUtil.getMessage("question.reference"));
+				String reason = MsgUtil.getMessage("check.cant.null", MsgUtil.getMessage("question.reference"));
 				showAlert(AlertType.WARNING, reason);
 				return false;
 			}
 			String reference = String.valueOf(referenceObj).replace("\r\n", "|").replace("\n", "|").trim();
 			if (reference.length() > 250) {
-				String reason = MsgUtil.getMessage("excel.over.length", MsgUtil.getMessage("question.reference"), String.valueOf(250));
+				String reason = MsgUtil.getMessage("check.over.length", MsgUtil.getMessage("question.reference"), String.valueOf(250));
 				showAlert(AlertType.WARNING, reason);
 				return false;
 			}
 			Object analysisObj = result[i][2];
 			String analysis = String.valueOf(analysisObj).trim();
 			if (analysis.length() > 250) {
-				String reason = MsgUtil.getMessage("excel.over.length", MsgUtil.getMessage("question.analysis"), String.valueOf(250));
+				String reason = MsgUtil.getMessage("check.over.length", MsgUtil.getMessage("question.analysis"), String.valueOf(250));
 				showAlert(AlertType.WARNING, reason);
 				return false;
 			}
@@ -470,20 +470,20 @@ public class PreviewQuestionPaper extends HBox implements IContent {
 		for (int i = 2; i < result.length; i++) {
 			Object descObj = result[i][0];
 			if (Util.isEmpty(descObj)) {
-				String reason = MsgUtil.getMessage("excel.cant.null", MsgUtil.getMessage("question.stem"));
+				String reason = MsgUtil.getMessage("check.cant.null", MsgUtil.getMessage("question.stem"));
 				showAlert(AlertType.WARNING, reason);
 				return false;
 			}
 			String title = String.valueOf(descObj).replaceAll("\\(", "（").replaceAll("\\)", "）").trim();
 			if (title.length() > 250) {
-				String reason = MsgUtil.getMessage("excel.over.length", MsgUtil.getMessage("question.stem"), String.valueOf(250));
+				String reason = MsgUtil.getMessage("check.over.length", MsgUtil.getMessage("question.stem"), String.valueOf(250));
 				showAlert(AlertType.WARNING, reason);
 				return false;
 			}
 			Object analysisObj = result[i][1];
 			String analysis = String.valueOf(analysisObj).trim();
 			if (analysis.length() > 250) {
-				String reason = MsgUtil.getMessage("excel.over.length", MsgUtil.getMessage("question.analysis"), String.valueOf(250));
+				String reason = MsgUtil.getMessage("check.over.length", MsgUtil.getMessage("question.analysis"), String.valueOf(250));
 				showAlert(AlertType.WARNING, reason);
 				return false;
 			}

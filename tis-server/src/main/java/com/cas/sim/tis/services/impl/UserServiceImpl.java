@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.ibatis.exceptions.TooManyResultsException;
 import org.springframework.stereotype.Service;
 
+import com.cas.sim.tis.consts.RoleConst;
 import com.cas.sim.tis.entity.User;
 import com.cas.sim.tis.services.UserService;
 import com.cas.sim.tis.services.exception.ServerException;
@@ -40,10 +41,25 @@ public class UserServiceImpl extends AbstractService<User> implements UserServic
 	}
 
 	@Override
-	public PageInfo<User> findUsersByRole(int pageIndex, int pageSize, int role) {
+	public PageInfo<User> findTeachers(int pageIndex, int pageSize) {
 		Condition condition = new Condition(User.class);
 		Criteria criteria = condition.createCriteria();
-		criteria.andEqualTo("role", role);
+		criteria.andEqualTo("role", RoleConst.TEACHER);
+		criteria.andEqualTo("del", 0);
+		condition.orderBy("createDate").desc();
+		PageHelper.startPage(pageIndex, pageSize);
+		List<User> result = findByCondition(condition);
+		PageInfo<User> page = new PageInfo<>(result);
+		LOG.info("成功查找到{}条资源,当前页码{},每页{}条资源,共{}页", result.size(), pageIndex, pageSize, page.getPages());
+		return page;
+	}
+
+	@Override
+	public PageInfo<User> findStudents(int pageIndex, int pageSize, int classId) {
+		Condition condition = new Condition(User.class);
+		Criteria criteria = condition.createCriteria();
+		criteria.andEqualTo("role", RoleConst.STUDENT);
+		criteria.andEqualTo("classId", classId);
 		criteria.andEqualTo("del", 0);
 		condition.orderBy("createDate").desc();
 		PageHelper.startPage(pageIndex, pageSize);

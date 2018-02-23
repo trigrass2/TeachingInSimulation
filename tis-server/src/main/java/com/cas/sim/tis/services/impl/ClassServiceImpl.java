@@ -5,7 +5,9 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.cas.sim.tis.entity.Class;
+import com.cas.sim.tis.mapper.ClassMapper;
 import com.cas.sim.tis.services.ClassService;
+import com.cas.sim.tis.vo.ClassInfo;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 
@@ -17,11 +19,9 @@ public class ClassServiceImpl extends AbstractService<Class> implements ClassSer
 
 	@Override
 	public PageInfo<Class> findClasses(int pageIndex, int pageSize) {
-		Condition condition = new Condition(Class.class);
-		Criteria criteria = condition.createCriteria();
-		criteria.andEqualTo("del", 0);
-		PageHelper.startPage(pageIndex, pageSize, "CREATE_DATE DESC");
-		List<Class> result = findByCondition(condition);
+		ClassMapper classMapper = (ClassMapper) mapper;
+		PageHelper.startPage(pageIndex, pageSize);
+		List<Class> result = classMapper.findClasses();
 		PageInfo<Class> page = new PageInfo<>(result);
 		LOG.info("成功查找到{}条资源,当前页码{},每页{}条资源,共{}页", page.getTotal(), pageIndex, pageSize, page.getPages());
 		return page;
@@ -35,6 +35,13 @@ public class ClassServiceImpl extends AbstractService<Class> implements ClassSer
 		criteria.andEqualTo("teacherId", teacherId);
 		criteria.andEqualTo("del", 0);
 		return findByCondition(condition);
+	}
+
+	@Override
+	public void saveClasses(List<ClassInfo> infos, Integer creator) {
+		ClassMapper classMapper = (ClassMapper) mapper;
+		classMapper.insertClasses(infos, creator);
+
 	}
 
 }

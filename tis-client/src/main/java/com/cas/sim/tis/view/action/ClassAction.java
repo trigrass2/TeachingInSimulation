@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 import com.cas.sim.tis.consts.Session;
 import com.cas.sim.tis.entity.Class;
 import com.cas.sim.tis.services.ClassService;
+import com.cas.sim.tis.vo.ClassInfo;
 import com.github.pagehelper.PageInfo;
 
 @Component
@@ -29,9 +30,9 @@ public class ClassAction {
 		return service.findClassesByTeacher(teacherId);
 	}
 
-	public void addClasses(List<Class> classes) {
+	public void addClasses(List<ClassInfo> infos) {
 		ClassService service = (ClassService) classServiceFactory.getObject();
-		service.save(classes);
+		service.saveClasses(infos, Session.get(Session.KEY_LOGIN_ID));
 	}
 
 	public void deleteClass(int id) {

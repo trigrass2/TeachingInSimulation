@@ -1,11 +1,10 @@
-package com.cas.sim.tis.view.control.imp.library;
+package com.cas.sim.tis.view.control.imp.info;
 
 import org.springframework.util.StringUtils;
 
-import com.cas.sim.tis.entity.Library;
+import com.cas.sim.tis.entity.User;
 import com.cas.sim.tis.util.MsgUtil;
 import com.cas.sim.tis.view.control.imp.dialog.DialogPane;
-import com.cas.util.Util;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -19,9 +18,9 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.RowConstraints;
 import javafx.scene.layout.VBox;
 
-public class LibraryModifyDialog extends DialogPane<Library> {
+public class StudentModifyDialog extends DialogPane<User> {
+	public StudentModifyDialog(User student) {
 
-	public LibraryModifyDialog(Library library) {
 		super();
 
 		VBox box = new VBox(25);
@@ -45,44 +44,25 @@ public class LibraryModifyDialog extends DialogPane<Library> {
 		grid.getColumnConstraints().add(col1); // 25 percent
 		grid.getColumnConstraints().add(col2); // 50 percent
 
-		Label nameLabel = new Label(MsgUtil.getMessage("library.name"));
-		GridPane.setConstraints(nameLabel, 0, 0);
+		Label codeLabel = new Label(MsgUtil.getMessage("student.code"));
+		GridPane.setConstraints(codeLabel, 0, 0);
 
-		TextField libName = new TextField();
-		libName.setPromptText(MsgUtil.getMessage("library.name.prompt"));
-		libName.setMaxSize(380, 40);
-		libName.setMinSize(380, 40);
-		libName.setText(library.getName());
-		GridPane.setConstraints(libName, 1, 0);
+		TextField code = new TextField();
+		code.setMaxSize(380, 40);
+		code.setMinSize(380, 40);
+		code.setText(student.getCode());
+		GridPane.setConstraints(code, 1, 0);
 
-		Label timeLabel = new Label(MsgUtil.getMessage("library.time"));
-		GridPane.setConstraints(timeLabel, 0, 1);
+		Label nameLabel = new Label(MsgUtil.getMessage("student.name"));
+		GridPane.setConstraints(nameLabel, 0, 1);
 
-		TextField timeText = new TextField();
-		timeText.setPromptText(MsgUtil.getMessage("library.time.prompt"));
-		timeText.setMaxSize(380, 40);
-		timeText.setMinSize(380, 40);
-		timeText.setText(String.valueOf(library.getTime()));
-		timeText.textProperty().addListener((b, o, n) -> {
-			if (Util.isEmpty(n)) {
-				return;
-			}
-			if (!Util.isInteger(n)) {
-				timeText.setText(o);
-				return;
-			}
-			int val = Integer.parseInt(n);
-			if (val > 999) {
-				timeText.setText("999");
-			} else if (val <= 0) {
-				timeText.setText("1");
-			} else {
-				timeText.setText(String.valueOf(val));
-			}
-		});
-		GridPane.setConstraints(timeText, 1, 1);
+		TextField name = new TextField();
+		name.setMaxSize(380, 40);
+		name.setMinSize(380, 40);
+		name.setText(student.getName());
+		GridPane.setConstraints(name, 1, 1);
 
-		grid.getChildren().addAll(nameLabel, libName, timeLabel, timeText);
+		grid.getChildren().addAll(codeLabel, code, nameLabel, name);
 		box.getChildren().add(grid);
 
 		Label error = new Label();
@@ -93,19 +73,19 @@ public class LibraryModifyDialog extends DialogPane<Library> {
 		ok.getStyleClass().add("blue-btn");
 		ok.setPrefSize(100, 40);
 		ok.setOnAction(e -> {
-			String name = libName.getText();
-			if (StringUtils.isEmpty(name)) {
-				error.setText(MsgUtil.getMessage("library.name.prompt"));
+			String codeText = code.getText();
+			if (StringUtils.isEmpty(codeText)) {
+				error.setText(MsgUtil.getMessage("check.cant.null", MsgUtil.getMessage("student.code")));
 				return;
 			}
-			String time = timeText.getText();
-			if (StringUtils.isEmpty(time)) {
-				error.setText(MsgUtil.getMessage("library.time.prompt"));
+			String nameText = name.getText();
+			if (StringUtils.isEmpty(nameText)) {
+				error.setText(MsgUtil.getMessage("check.cant.null", MsgUtil.getMessage("student.name")));
 				return;
 			}
-			library.setName(name);
-			library.setTime(Integer.valueOf(time));
-			dialog.setResult(library);
+			student.setCode(codeText);
+			student.setName(nameText);
+			dialog.setResult(student);
 		});
 
 		Button cancel = new Button(MsgUtil.getMessage("button.cancel"));
