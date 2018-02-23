@@ -234,8 +234,9 @@ public final class ExcelUtil {
 						result[i][j] = null;
 						continue;
 					} else if (cellType == CELL_TYPE_NUM) {
-						// 数值型
-						cellValue = cell.getNumericCellValue();
+						// 数值型，避免科学计数法
+						DecimalFormat df = new DecimalFormat("0");  
+                        cellValue = df.format(cell.getNumericCellValue());
 					} else if (cellType == CEll_TYPE_STRING) {
 						// 字符串型
 						cellValue = cell.getStringCellValue();
