@@ -13,7 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.alibaba.fastjson.JSONArray;
-import com.cas.sim.tis.consts.QuestionConsts;
+import com.cas.sim.tis.consts.TemplateConsts;
 import com.cas.sim.tis.consts.RoleConst;
 import com.cas.sim.tis.consts.Session;
 import com.cas.sim.tis.entity.User;
@@ -220,7 +220,7 @@ public class StudentList extends HBox implements IContent {
 		if (target == null) {
 			return;
 		}
-		FileUtil.copyFile(QuestionConsts.STUDENT_TEMPLATE, target.getAbsolutePath(), true);
+		FileUtil.copyFile(TemplateConsts.STUDENT_TEMPLATE, target.getAbsolutePath(), true);
 		showAlert(AlertType.INFORMATION, MsgUtil.getMessage("excel.export.success"));
 	}
 
@@ -229,7 +229,7 @@ public class StudentList extends HBox implements IContent {
 
 		Dialog<User> dialog = new Dialog<>();
 		dialog.setDialogPane(new TeacherModifyDialog(student));
-		dialog.setTitle(MsgUtil.getMessage("student.modify"));
+		dialog.setTitle(MsgUtil.getMessage("student.dialog.modify"));
 		dialog.setPrefSize(635, 320);
 		dialog.showAndWait().ifPresent(user -> {
 			if (user == null) {

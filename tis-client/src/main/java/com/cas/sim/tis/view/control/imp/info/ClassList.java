@@ -13,7 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.alibaba.fastjson.JSONArray;
-import com.cas.sim.tis.consts.QuestionConsts;
+import com.cas.sim.tis.consts.TemplateConsts;
 import com.cas.sim.tis.entity.Class;
 import com.cas.sim.tis.util.ExcelUtil;
 import com.cas.sim.tis.util.MsgUtil;
@@ -21,6 +21,7 @@ import com.cas.sim.tis.util.SpringUtil;
 import com.cas.sim.tis.view.action.ClassAction;
 import com.cas.sim.tis.view.control.IContent;
 import com.cas.sim.tis.view.control.imp.Title;
+import com.cas.sim.tis.view.control.imp.dialog.Dialog;
 import com.cas.sim.tis.view.control.imp.pagination.PaginationBar;
 import com.cas.sim.tis.view.control.imp.table.BtnCell;
 import com.cas.sim.tis.view.control.imp.table.Column;
@@ -224,34 +225,30 @@ public class ClassList extends HBox implements IContent {
 		if (target == null) {
 			return;
 		}
-		FileUtil.copyFile(QuestionConsts.CLASS_TEMPLATE, target.getAbsolutePath(), true);
+		FileUtil.copyFile(TemplateConsts.CLASS_TEMPLATE, target.getAbsolutePath(), true);
 		showAlert(AlertType.INFORMATION, MsgUtil.getMessage("excel.export.success"));
 	}
 
 	private void modify(int id) {
-//		Library library = SpringUtil.getBean(LibraryAction.class).findLibraryByID(id);
-//
-//		Dialog<Library> dialog = new Dialog<>();
-//		dialog.setDialogPane(new LibraryModifyDialog(library));
-//		dialog.setTitle(MsgUtil.getMessage("library.name"));
-//		dialog.setPrefSize(635, 320);
-//		dialog.showAndWait().ifPresent(lib -> {
-//			if (lib == null) {
-//				return;
-//			}
-//			try {
-//				SpringUtil.getBean(LibraryAction.class).modifyLibrary(lib);
-//				Alert alert = new Alert(AlertType.INFORMATION, MsgUtil.getMessage("data.update.success"));
-//				alert.initOwner(GUIState.getStage());
-//				alert.show();
-//				pagination.reload();
-//			} catch (Exception e) {
-//				e.printStackTrace();
-//				Alert alert = new Alert(AlertType.ERROR, e.getMessage());
-//				alert.initOwner(GUIState.getStage());
-//				alert.show();
-//			}
-//		});
+		Class clazz = SpringUtil.getBean(ClassAction.class).findClass(id);
+
+		Dialog<Class> dialog = new Dialog<>();
+		dialog.setDialogPane(new ClassModifyDialog(clazz));
+		dialog.setTitle(MsgUtil.getMessage("class.dialog.modify"));
+		dialog.setPrefSize(635, 320);
+		dialog.showAndWait().ifPresent(obj -> {
+			if (obj == null) {
+				return;
+			}
+			try {
+				SpringUtil.getBean(ClassAction.class).modifyClass(obj);
+				showAlert(AlertType.INFORMATION, MsgUtil.getMessage("data.update.success"));
+				pagination.reload();
+			} catch (Exception e) {
+				e.printStackTrace();
+				showAlert(AlertType.ERROR, e.getMessage());
+			}
+		});
 	}
 
 	@Override
