@@ -20,6 +20,11 @@ public class ClassAction {
 	@Qualifier("classServiceFactory")
 	private RmiProxyFactoryBean classServiceFactory;
 
+	public Class findClass(int id) {
+		ClassService service = (ClassService) classServiceFactory.getObject();
+		return service.findById(id);
+	}
+
 	public PageInfo<Class> findClasses(int pageIndex, int pageSize) {
 		ClassService service = (ClassService) classServiceFactory.getObject();
 		return service.findClasses(pageIndex, pageSize);
@@ -33,6 +38,12 @@ public class ClassAction {
 	public void addClasses(List<ClassInfo> infos) {
 		ClassService service = (ClassService) classServiceFactory.getObject();
 		service.saveClasses(infos, Session.get(Session.KEY_LOGIN_ID));
+	}
+
+	public void modifyClass(Class clazz) {
+		ClassService service = (ClassService) classServiceFactory.getObject();
+		clazz.setUpdater(Session.get(Session.KEY_LOGIN_ID));
+		service.update(clazz);
 	}
 
 	public void deleteClass(int id) {

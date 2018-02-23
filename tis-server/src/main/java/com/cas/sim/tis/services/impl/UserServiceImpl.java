@@ -41,6 +41,16 @@ public class UserServiceImpl extends AbstractService<User> implements UserServic
 	}
 
 	@Override
+	public List<User> findTeachers() {
+		Condition condition = new Condition(User.class);
+		Criteria criteria = condition.createCriteria();
+		criteria.andEqualTo("role", RoleConst.TEACHER);
+		criteria.andEqualTo("del", 0);
+		condition.orderBy("createDate").desc();
+		return findByCondition(condition);
+	}
+
+	@Override
 	public PageInfo<User> findTeachers(int pageIndex, int pageSize) {
 		Condition condition = new Condition(User.class);
 		Criteria criteria = condition.createCriteria();

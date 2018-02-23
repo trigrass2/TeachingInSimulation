@@ -30,6 +30,11 @@ public class UserAction {
 		return service.findById(id);
 	}
 
+	public List<User> findTeachers() {
+		UserService service = (UserService) userServiceFactory.getObject();
+		return service.findTeachers();
+	}
+
 	public PageInfo<User> findTeachers(int pageIndex, int pageSize) {
 		UserService service = (UserService) userServiceFactory.getObject();
 		return service.findTeachers(pageIndex, pageSize);

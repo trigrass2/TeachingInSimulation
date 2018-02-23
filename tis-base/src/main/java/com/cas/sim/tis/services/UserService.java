@@ -1,5 +1,7 @@
 package com.cas.sim.tis.services;
 
+import java.util.List;
+
 import org.apache.ibatis.exceptions.TooManyResultsException;
 
 import com.cas.sim.tis.entity.User;
@@ -16,6 +18,8 @@ public interface UserService extends BaseService<User> {
 	 * @throws TooManyResultsException
 	 */
 	User login(String usercode, String password) throws ServiceException, TooManyResultsException;
+
+	List<User> findTeachers();
 
 	PageInfo<User> findTeachers(int pageIndex, int pageSize);
 
