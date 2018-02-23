@@ -11,7 +11,7 @@ public interface BaseService<T> {
 
 	int getTotalBy(Condition condition);
 
-	void save(T model);// 持久化
+	int save(T model);// 持久化
 
 	void save(List<T> models);// 批量持久化
 
