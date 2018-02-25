@@ -1,5 +1,6 @@
 package com.cas.sim.tis.app.state;
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -7,21 +8,19 @@ import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
 
-import org.springframework.remoting.rmi.RmiProxyFactoryBean;
-
 import com.cas.circuit.vo.Archive;
 import com.cas.circuit.vo.ElecCompDef;
 import com.cas.circuit.vo.Terminal;
 import com.cas.circuit.vo.Wire;
-import com.cas.sim.tis.app.event.MouseEventState;
 import com.cas.sim.tis.app.listener.TypicalCaseCompListener;
 import com.cas.sim.tis.app.listener.TypicalCaseDesktopListener;
 import com.cas.sim.tis.app.listener.TypicalCaseTermianlListener;
 import com.cas.sim.tis.entity.ElecComp;
 import com.cas.sim.tis.entity.TypicalCase;
-import com.cas.sim.tis.services.ElecCompService;
 import com.cas.sim.tis.util.HTTPUtils;
 import com.cas.sim.tis.util.SpringUtil;
+import com.cas.sim.tis.view.action.ElecCompAction;
+import com.cas.sim.tis.view.controller.PageController;
 import com.cas.sim.tis.xml.util.JaxbUtil;
 import com.jme3.input.MouseInput;
 import com.jme3.input.controls.AnalogListener;
@@ -33,6 +32,7 @@ import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Line;
 
+import javafx.application.Platform;
 import jme3tools.optimize.GeometryBatchFactory;
 
 public class TypicalCaseState extends BaseState implements TypicalCaseOperating {
@@ -56,11 +56,12 @@ public class TypicalCaseState extends BaseState implements TypicalCaseOperating 
 		arrangementScene();
 
 //		二、事件
-		MouseEventState eventState = stateManager.getState(MouseEventState.class);
-		bindEvents(eventState);
+		bindEvents();
+
+		Platform.runLater(() -> SpringUtil.getBean(PageController.class).hideLoading());
 	}
 
-	private void bindEvents(MouseEventState eventState) {
+	private void bindEvents() {
 //		鼠标滚动事件
 		String[] rotateMapping = new String[] { MAP_ROTATE_LEFT, MAP_ROTATE_RIGHT };
 		addMapping(MAP_ROTATE_LEFT, new MouseAxisTrigger(MouseInput.AXIS_WHEEL, true));
@@ -77,35 +78,34 @@ public class TypicalCaseState extends BaseState implements TypicalCaseOperating 
 		}, rotateMapping);
 
 //		给电路板添加监听
-		eventState.addCandidate(desktop, new TypicalCaseDesktopListener());
+		addListener(desktop, new TypicalCaseDesktopListener());
 //		给元器件模型加上监听
 		taggedCompMap.values().forEach(comp -> {
-			eventState.addCandidate(comp.getSpatial(), new TypicalCaseCompListener(comp));
+			addListener(comp.getSpatial(), new TypicalCaseCompListener(comp));
 //			给元器件中的连接头模型添加监听
-			comp.getTerminalList().forEach(t -> eventState.addCandidate(t.getSpatial(), new TypicalCaseTermianlListener(t)));
+			comp.getTerminalList().forEach(t -> addListener(t.getSpatial(), new TypicalCaseTermianlListener(t)));
 		});
 	}
 
 	private void arrangementScene() {
 //		1、加载桌子
-		assetManager.loadModel("");
-
+		desktop = assetManager.loadModel("Model/Desktop/desktop.j3o");
 	}
 
 	public void setupCase(TypicalCase typicalCase) {
 //		获取存档文件url
-		String url = SpringUtil.getBean(HTTPUtils.class).getHttpUrl(typicalCase.getArchivePath());
+		URL url = SpringUtil.getBean(HTTPUtils.class).getUrl(typicalCase.getArchivePath());
 //		解析出存档对象
+		LOG.debug("解析元器件配置文件{}", url);
 		Archive archive = JaxbUtil.converyToJavaBean(url, Archive.class);
 
-		RmiProxyFactoryBean elecCompServiceFactory = SpringUtil.getBean("elecCompServiceFactory", RmiProxyFactoryBean.class);
-		ElecCompService elecCompService = (ElecCompService) elecCompServiceFactory.getObject();
+		ElecCompAction action = SpringUtil.getBean(ElecCompAction.class);
 
 //		一、开始加载元器件
 		archive.getCompList().forEach(c -> {
 //			1、根据元器件型号（model字段），查找数据库中的元器件实体对象
-			ElecComp elecComp = elecCompService.findBy("model", c.getModel());
-//			2、加载模型
+			ElecComp elecComp = action.getElecComp(c.getModel());
+//			2、加载模型，同时设置好坐标与旋转
 			Future<Node> task = app.enqueue((Callable<Node>) () -> {
 				Spatial elecCompMdl = assetManager.loadModel(elecComp.getMdlPath());
 //				设置transform信息：location、rotation
@@ -124,7 +124,7 @@ public class TypicalCaseState extends BaseState implements TypicalCaseOperating 
 			}
 //			3、初始化元器件逻辑对象
 			HTTPUtils httpUtil = SpringUtil.getBean(HTTPUtils.class);
-			String cfgPath = httpUtil.getHttpUrl(elecComp.getCfgPath());
+			URL cfgPath = httpUtil.getUrl(elecComp.getCfgPath());
 			ElecCompDef def = JaxbUtil.converyToJavaBean(cfgPath, ElecCompDef.class);
 //			构建元器件逻辑类
 			def.build(load, c.getTagName());

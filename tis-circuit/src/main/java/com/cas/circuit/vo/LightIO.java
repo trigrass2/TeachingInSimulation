@@ -5,12 +5,16 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.cas.circuit.xml.adapter.ColorRGBAAdapter;
 import com.jme3.math.ColorRGBA;
 import com.jme3.scene.Spatial;
 
 @XmlAccessorType(XmlAccessType.NONE)
 public class LightIO {// extends BaseVO<LightIOPO> {
+	private static final Logger LOG = LoggerFactory.getLogger(Terminal.class);
 	@XmlAttribute
 	private String name;
 	@XmlAttribute
@@ -30,9 +34,9 @@ public class LightIO {// extends BaseVO<LightIOPO> {
 	}
 
 	public void setSpatial(Spatial spatial) {
-//		if (model == null) {
-//			log.error("没有找到指示灯名为" + po.getName() + "的模型");
-//		}
+		if (spatial == null) {
+			LOG.error("没有找到LightIO::name为{}的模型{}", name, mdlName);
+		}
 		this.spatial = spatial;
 	}
 
@@ -42,5 +46,9 @@ public class LightIO {// extends BaseVO<LightIOPO> {
 
 	public String getMdlName() {
 		return mdlName;
+	}
+
+	public String getName() {
+		return name;
 	}
 }
