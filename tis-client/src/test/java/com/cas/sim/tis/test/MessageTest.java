@@ -28,6 +28,6 @@ public class MessageTest {
 
 	@Test
 	public void testResourceAvaliable() throws Exception {
-		resourceService.findAll().forEach(r -> httpUtils.getHttpUrl(r.getPath()));
+		resourceService.findAll().forEach(r -> httpUtils.getFullPath(r.getPath()));
 	}
 }

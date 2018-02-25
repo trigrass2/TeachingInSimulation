@@ -1,10 +1,16 @@
 package com.cas.sim.tis.test;
 
+import static org.junit.Assert.*;
+
+import java.io.File;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 import com.cas.circuit.vo.ElecCompDef;
@@ -29,5 +35,19 @@ public class BasicTest {
 //		URL url = new URL("file:///C:/Users/Administrator/Documents/New%20folder/Accontactor/CJX2-1210.xml");
 		ElecCompDef eleccomp = JaxbUtil.converyToJavaBean(url, ElecCompDef.class);
 		System.out.println(eleccomp);
+	}
+
+	@Test
+	public void testFile() throws Exception {
+//		File file = new File("C:\\dd\\dd.txt");
+//		Assert.assertTrue(Files.exists(Paths.get("C:\\dd\\dd.txt")));
+		
+		// "ja","va","java"
+		String str2 = new StringBuilder("ja").append("va").toString();
+		Assert.assertFalse(str2 == "java"); //
+		Assert.assertFalse(str2 == str2.intern());
+
+		Assert.assertTrue(str2.intern() == "java");
+		Assert.assertTrue(str2.intern() == str2.intern());
 	}
 }
