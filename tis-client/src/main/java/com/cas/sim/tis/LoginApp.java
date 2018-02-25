@@ -1,6 +1,7 @@
 package com.cas.sim.tis;
 
 import java.io.IOException;
+import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
@@ -8,15 +9,9 @@ import java.util.logging.Logger;
 
 import org.slf4j.bridge.SLF4JBridgeHandler;
 
-import com.cas.sim.tis.consts.SystemInfo;
-import com.cas.sim.tis.message.LoginMessage;
-import com.cas.sim.tis.message.handler.LoginMessageHandler;
-import com.cas.sim.tis.message.listener.ClientMessageListener;
 import com.cas.sim.tis.svg.SVGHelper;
 import com.cas.sim.tis.view.controller.LoginController;
 import com.cas.sim.tis.view.controller.NetworkController;
-import com.jme3.network.Network;
-import com.jme3.network.NetworkClient;
 
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -27,9 +22,10 @@ import javafx.stage.StageStyle;
 public class LoginApp extends javafx.application.Application {
 	private double xOffset;
 	private double yOffset;
-	private NetworkClient client;
 
 	public static void main(String[] args) {
+		Locale.setDefault(Locale.CHINA);
+		
 		initSVG();
 
 		jul2slf4j();
@@ -52,18 +48,7 @@ public class LoginApp extends javafx.application.Application {
 		Region settingView = loader.load(LoginApp.class.getResourceAsStream("/view/Network.fxml"));
 		NetworkController settingController = loader.getController();
 
-		client = Network.createClient(SystemInfo.APP_NAME, SystemInfo.APP_VERSION);
-		client.addMessageListener(ClientMessageListener.INSTENCE);
-		LoginMessageHandler loginMessageHandler = new LoginMessageHandler();
-		ClientMessageListener.INSTENCE.registerMessageHandler(LoginMessage.class, loginMessageHandler);
-
 //		手动注入
-//		
-		loginController.setClient(client);
-//		
-		loginMessageHandler.setLoginUIController(loginController);
-		loginMessageHandler.setResourceBundle(ResourceBundle.getBundle("i18n/messages"));
-//		
 		settingController.setLoginView(loginView);
 //		
 		loginController.setSettingView(settingView);

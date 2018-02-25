@@ -31,7 +31,7 @@ public enum ClientMessageListener implements MessageListener<Client> {
 				LOG.warn("消息处理失败", e);
 			}
 		} else {
-			LOG.error("无法处理消息{}，缺少相应的处理类，Eg:public class {} implements ClientHandler\\{\\}", m.getClass(), m.getClass().getSimpleName());
+			LOG.error("无法处理消息{}，缺少相应的处理类，Eg:public class {}Handler implements ClientHandler\\{\\}", m.getClass(), m.getClass().getSimpleName());
 		}
 	}
 

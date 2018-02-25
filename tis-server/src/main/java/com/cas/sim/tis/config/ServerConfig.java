@@ -84,14 +84,14 @@ public class ServerConfig {
 
 	@Bean
 	public Server createDataServer() throws IOException {
-		server = Network.createServer(SystemInfo.APP_NAME, SystemInfo.APP_VERSION, port, port);
+		server = Network.createServer(SystemInfo.APP_NAME, SystemInfo.APP_VERSION, port, -1);
 		LOG.info("主服务器地址：{}", InetAddress.getLocalHost());
 		LOG.info("主服务器监听在{}端口上", port);
 
 		server.addConnectionListener(new ConnectionListener() {
 			@Override
 			public void connectionAdded(Server server, HostedConnection conn) {
-				LOG.info("用户{}已连接", conn);
+				LOG.info("用户{}已连接", conn.getAddress());
 			}
 
 			@Override

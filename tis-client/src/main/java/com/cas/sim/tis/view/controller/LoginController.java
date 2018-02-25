@@ -15,9 +15,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
 
+import com.cas.sim.tis.consts.SystemInfo;
 import com.cas.sim.tis.message.LoginMessage;
+import com.cas.sim.tis.message.handler.LoginMessageHandler;
+import com.cas.sim.tis.message.handler.SerializerRegistrationsMessageHandler;
+import com.cas.sim.tis.message.listener.ClientMessageListener;
+import com.cas.sim.tis.util.SocketUtil;
 import com.cas.sim.tis.view.control.imp.LoginDecoration;
+import com.jme3.network.Client;
+import com.jme3.network.Network;
 import com.jme3.network.NetworkClient;
+import com.jme3.network.message.SerializerRegistrationsMessage;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -36,8 +44,6 @@ public class LoginController implements Initializable {
 	protected double yOffset;
 
 	public static int USER_ROLE = -1;
-
-	private NetworkClient client;
 
 	private ResourceBundle resources;
 
@@ -82,31 +88,41 @@ public class LoginController implements Initializable {
 			return;
 		}
 
-		if (!client.isConnected()) {
-			String address = null;
-			int port = 0;
-//			1、尝试与服务器连接
-			try {
-				Properties prop = new Properties();
-				prop.load(new FileInputStream("cfg.properties"));
-				address = prop.getProperty("server.base.address", "127.0.0.1");
-				port = Integer.parseInt(prop.getProperty("server.base.port", "9000"));
-				client.connectToServer(address, port, port);
-			} catch (IOException e) {
-				LOG.error("连接服务器失败{}:{}", address, port);
-				setErrorMsg(resources.getString("server.connect.failure"));
-				return;
-			}
-//			2、启动客户端
-			client.start();
+		String address = null;
+		int port = 0;
+		Properties prop = new Properties();
+		try {
+			prop.load(new FileInputStream("cfg.properties"));
+			address = prop.getProperty("server.base.address");
+			port = Integer.parseInt(prop.getProperty("server.base.port"));
+		} catch (FileNotFoundException e) {
+			LOG.error("文件cfg.properties不存在");
+		} catch (IOException e) {
+			LOG.error("文件cfg.properties读取失败");
 		}
-		loginBtn.setDisable(true);
 
-//		3、项服务器发送登录消息
-		LoginMessage msg = new LoginMessage();
-		msg.setUserCode(userId.getText());
-		msg.setUserPwd(password.getText());
-		client.send(msg);
+		boolean success = SocketUtil.INSTENCE.connect(address, port);
+		if (success) {
+			loginBtn.setDisable(true);
+//			注册消息及消息处理类
+			LoginMessageHandler loginMessageHandler = new LoginMessageHandler();
+			ClientMessageListener.INSTENCE.registerMessageHandler(LoginMessage.class, loginMessageHandler);
+			loginMessageHandler.setLoginUIController(this);
+			loginMessageHandler.setResourceBundle(ResourceBundle.getBundle("i18n/messages"));
+
+			ClientMessageListener.INSTENCE.registerMessageHandler(SerializerRegistrationsMessage.class, new SerializerRegistrationsMessageHandler());
+
+			SocketUtil.INSTENCE.start();
+
+//			3、项服务器发送登录消息
+			LoginMessage msg = new LoginMessage();
+			msg.setUserCode(userId.getText());
+			msg.setUserPwd(password.getText());
+			SocketUtil.INSTENCE.send(msg);
+		} else {
+			loginBtn.setDisable(false);
+			setErrorMsg(resources.getString("server.connect.failure"));
+		}
 	}
 
 	public void setErrorMsg(String msg) {
@@ -117,14 +133,10 @@ public class LoginController implements Initializable {
 		this.loginDecoration.setSettingView(settingView);
 	}
 
-	public void setClient(NetworkClient client) {
-		this.client = client;
-	}
-
 	public void enableLoginButton() {
 		loginBtn.setDisable(false);
 	}
-	
+
 	public void close() {
 		loginView.getScene().getWindow().hide();
 	}
