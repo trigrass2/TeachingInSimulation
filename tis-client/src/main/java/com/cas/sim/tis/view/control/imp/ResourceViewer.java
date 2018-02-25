@@ -140,7 +140,7 @@ public class ResourceViewer extends VBox implements IContent {
 	public void createImageViewer() {
 		HTTPUtils utils = SpringUtil.getBean(HTTPUtils.class);
 //		Image image = new Image("http://192.168.1.19:8082/Test/1516772514400.png");
-		String url = utils.getHttpUrl(resource.getPath());
+		String url = utils.getFullPath(resource.getPath());
 		if (url == null) {
 			return;
 		}
@@ -189,7 +189,7 @@ public class ResourceViewer extends VBox implements IContent {
 	private void createOfficeViewer() {
 		String officeName = resource.getPath();
 		String pdfName = officeName.substring(0, officeName.lastIndexOf(".")) + ".pdf";
-		String pdfPath = SpringUtil.getBean(HTTPUtils.class).getHttpUrl(ResourceConsts.FTP_CONVERT_PATH + pdfName);
+		String pdfPath = SpringUtil.getBean(HTTPUtils.class).getFullPath(ResourceConsts.FTP_CONVERT_PATH + pdfName);
 		if (pdfPath == null) {
 			return;
 		}
@@ -204,7 +204,7 @@ public class ResourceViewer extends VBox implements IContent {
 	 */
 	private void createVLCViewer() {
 		HTTPUtils utils = SpringUtil.getBean(HTTPUtils.class);
-		String url = utils.getHttpUrl(resource.getPath());
+		String url = utils.getFullPath(resource.getPath());
 		if (url == null) {
 			return;
 		}
@@ -221,7 +221,7 @@ public class ResourceViewer extends VBox implements IContent {
 	 */
 	private void createPDFViewer() {
 		HTTPUtils utils = SpringUtil.getBean(HTTPUtils.class);
-		String url = utils.getHttpUrl(resource.getPath());
+		String url = utils.getFullPath(resource.getPath());
 		if (url == null) {
 			return;
 		}
@@ -239,7 +239,7 @@ public class ResourceViewer extends VBox implements IContent {
 	 */
 	private void createSWFViewer() {
 		HTTPUtils utils = SpringUtil.getBean(HTTPUtils.class);
-		String url = utils.getHttpUrl(resource.getPath());
+		String url = utils.getFullPath(resource.getPath());
 		if (url == null) {
 			return;
 		}

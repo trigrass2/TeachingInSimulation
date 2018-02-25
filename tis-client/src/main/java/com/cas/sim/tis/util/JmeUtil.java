@@ -6,6 +6,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import com.cas.util.StringUtil;
+import com.jme3.asset.AssetManager;
 import com.jme3.collision.CollisionResult;
 import com.jme3.collision.CollisionResults;
 import com.jme3.input.InputManager;
@@ -23,6 +24,7 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.Spatial.CullHint;
+import com.jme3.scene.shape.Sphere;
 
 public final class JmeUtil {
 
@@ -191,13 +193,16 @@ public final class JmeUtil {
 	@Nullable
 	public static CollisionResult getCollisionFromScreenPos(@NotNull final Spatial spatial, @NotNull final Camera camera, final float screenX, final float screenY) {
 
-		final Vector2f cursor = new Vector2f(screenX, screenY);
-		final Vector3f click3d = camera.getWorldCoordinates(cursor, 0f);
-		final Vector3f dir = camera.getWorldCoordinates(cursor, 1f).subtractLocal(click3d).normalizeLocal();
-
+		final Vector2f point = new Vector2f(screenX, screenY);
+//		final Vector3f click3d = camera.getWorldCoordinates(point, 0f);
+//		final Vector3f dir = camera.getWorldCoordinates(point, 1f).subtract(click3d).normalize();
+        Vector3f origin    = camera.getWorldCoordinates(point, 0.0f);
+        Vector3f direction = camera.getWorldCoordinates(point, 0.3f);
+        direction.subtractLocal(origin).normalizeLocal();
+        
 		final Ray ray = new Ray();
-		ray.setOrigin(click3d);
-		ray.setDirection(dir);
+		ray.setOrigin(origin);
+		ray.setDirection(direction);
 
 		final CollisionResults results = new CollisionResults();
 
@@ -370,6 +375,20 @@ public final class JmeUtil {
 			return null;
 		}
 		return node;
+	}
+	/**
+	 * 创建球体
+	 */
+	public static Geometry getSphere(AssetManager assetManager, int sample, float radius, ColorRGBA color) {
+		Geometry ballMod = new Geometry("ball", new Sphere(sample, sample, radius));
+
+		Material ballMat = new Material(assetManager, "Common/MatDefs/Light/Lighting.j3md");
+		ballMat.setColor("Diffuse", color);
+		ballMat.setFloat("Shininess", 10f);
+		ballMat.setColor("Specular", ColorRGBA.White);
+		ballMat.setBoolean("UseMaterialColors", true);
+		ballMod.setMaterial(ballMat);
+		return ballMod;
 	}
 
 }
