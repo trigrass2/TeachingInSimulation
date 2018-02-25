@@ -22,7 +22,7 @@
 		<!-- 引擎版本号 -->
 		<engine.version>3.2.1-stable</engine.version>
 		<!-- 引擎与javafx集成版本号 -->
-		<jme3-jfx.version>1.7.1</jme3-jfx.version>
+		<jme3-jfx.version>1.7.4</jme3-jfx.version>
 		<!-- SpringBoot版本 -->
 		<springboot.version>2.0.0.M6</springboot.version>
 		<!-- Spring版本 -->
