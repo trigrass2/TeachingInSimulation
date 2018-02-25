@@ -50,7 +50,7 @@ public class RecongnizeMenu implements ILeftContent {
 				lbl.setTextAlignment(TextAlignment.LEFT);
 //				lbl.setFont(Font.font(10));
 				lbl.setOnMouseClicked(event -> {
-					recongnize3D.setModelPath(e.getMdlPath());
+					recongnize3D.setElecComp(e);
 				});
 				content.getChildren().add(lbl);
 			});

@@ -3,6 +3,7 @@ package com.cas.sim.tis.view.action;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.Nullable;
 import javax.annotation.Resource;
 
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -34,6 +35,11 @@ public class ElecCompAction {
 		ElecCompService compService = (ElecCompService) elecCompServiceFactory.getObject();
 
 		return compService.findElecCompGroupByType();
+	}
+
+	@Nullable public ElecComp getElecComp(String model) {
+		ElecCompService compService = (ElecCompService) elecCompServiceFactory.getObject();
+		return compService.findElecCompByModel(model);
 	}
 
 }

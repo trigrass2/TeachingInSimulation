@@ -22,19 +22,9 @@
 			<CheckBox fx:id="autoRoate" text="%rec.ckb.autoRoate" styleClass="recognize-btn" />
 		</HBox>
 		<HBox spacing="10">
-			<Label fx:id="center" text="%rec.lbl.center" styleClass="recognize-btn">
+			<Label fx:id="reset" text="%rec.lbl.reset" styleClass="recognize-btn">
 				<graphic>
 					<SVGGlyph  name="iconfont.svg.image" size="16" fill="WHITE" />
-				</graphic>
-			</Label>
-			<Label fx:id="move" text="%rec.lbl.move" styleClass="recognize-btn">
-				<graphic>
-					<SVGGlyph name="iconfont.svg.image" size="16" fill="WHITE" />
-				</graphic>
-			</Label>
-			<Label fx:id="rotate" text="%rec.lbl.rotate" styleClass="recognize-btn">
-				<graphic>
-					<SVGGlyph name="iconfont.svg.image" size="16" fill="WHITE" />
 				</graphic>
 			</Label>
 			<Label fx:id="zoomIn" text="%rec.lbl.zoom.in" styleClass="recognize-btn"><!-- 放大 -->

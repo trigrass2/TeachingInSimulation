@@ -22,7 +22,7 @@ public class RecongnizeBtnController implements Initializable {
 	@FXML
 	private CheckBox autoRoate;
 	@FXML
-	private Control center;
+	private Control reset;
 	@FXML
 	private Control move;
 	@FXML
@@ -50,14 +50,8 @@ public class RecongnizeBtnController implements Initializable {
 		autoRoate.selectedProperty().addListener((s, o, n) -> {
 			compState.autoRotate(n);
 		});
-		center.setOnMousePressed(e -> {
-			compState.center();
-		});
-		rotate.setOnMousePressed(e -> {
-			compState.rotate();
-		});
-		move.setOnMousePressed(e -> {
-			compState.move();
+		reset.setOnMousePressed(e -> {
+			compState.reset();
 		});
 		zoomIn.setOnMousePressed(e -> {
 			compState.zoomIn();
@@ -69,6 +63,10 @@ public class RecongnizeBtnController implements Initializable {
 
 	public void setState(ElecCompState compState) {
 		this.compState = compState;
+	}
+
+	public CheckBox getShowName() {
+		return showName;
 	}
 
 }
