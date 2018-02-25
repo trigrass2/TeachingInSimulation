@@ -37,7 +37,7 @@ public class MouseEventState extends BaseState {
 
 //	private static final String[] MapNames = { MOUSE_BUTTON, MOUSE_AXIS_LEFT, MOUSE_AXIS_RIGHT, MOUSE_AXIS_UP, MOUSE_AXIS_DOWN };
 
-	private List<Spatial> candidates = new ArrayList<>();
+	private List<Spatial> candidateList = new ArrayList<>();
 
 	private Map<Spatial, List<MouseEventListener>> eventMap = new HashMap<>();
 
@@ -115,7 +115,7 @@ public class MouseEventState extends BaseState {
 
 	@Override
 	public void cleanup() {
-		candidates.clear();
+		candidateList.clear();
 
 		super.cleanup();
 	}
@@ -124,19 +124,19 @@ public class MouseEventState extends BaseState {
 		if (spatial == null) {
 			throw new NullPointerException();
 		}
-		synchronized (candidates) {
+		synchronized (candidateList) {
 //			获取节点的鼠鼠标监听
 			List<MouseEventListener> listeners = getListenerList(spatial);
 			if (!listeners.contains(listener)) {
 				listeners.add(listener);
 			}
 
-			if (candidates.indexOf(spatial) == -1) {
+			if (candidateList.indexOf(spatial) == -1) {
 				Spatial candidate = null;
 //				默认添加到集合末尾
-				int insertIndex = candidates.size();
-				for (int i = 0; i < candidates.size(); i++) {
-					candidate = candidates.get(i);
+				int insertIndex = candidateList.size();
+				for (int i = 0; i < candidateList.size(); i++) {
+					candidate = candidateList.get(i);
 //					查找集合中是否有node的父节点,如果有,则插入第一个父节点的前面
 					if (candidate instanceof Node) {
 						if (((Node) candidate).hasChild(spatial)) {
@@ -145,14 +145,14 @@ public class MouseEventState extends BaseState {
 						}
 					}
 				}
-				candidates.add(insertIndex, spatial);
+				candidateList.add(insertIndex, spatial);
 			}
 		}
 	}
 
 	public void removeCandidate(Spatial node) {
 		eventMap.remove(node);
-		candidates.remove(node);
+		candidateList.remove(node);
 	}
 
 	public void removeListener(Spatial node, MouseEventListener eventListener) {
@@ -286,8 +286,8 @@ public class MouseEventState extends BaseState {
 	}
 
 	public List<Spatial> getCandidates() {
-		synchronized (candidates) {
-			return candidates;
+		synchronized (candidateList) {
+			return candidateList;
 		}
 	}
 
