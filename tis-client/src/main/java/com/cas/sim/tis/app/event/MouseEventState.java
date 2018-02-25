@@ -22,6 +22,11 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 
+/**
+ * 注意：在使用ChaseCamera时候，要调用chaser.setHideCursorOnRotate(false);否则会影响本类的运行
+ * @author Administrator
+ *
+ */
 public class MouseEventState extends BaseState {
 	private static final String TO_MOUSE_VISIBLE = "ToMouseVisible";
 
@@ -57,14 +62,10 @@ public class MouseEventState extends BaseState {
 		addListener(new ActionListener() {
 			@Override
 			public void onAction(String name, boolean isPressed, float tpf) {
-				if (!MOUSE_BUTTON.equals(name)) {
-					return;
-				}
-
 				mouseButtonPressed = isPressed;
 
-				pickModel();
 				if (isPressed) {
+					pickModel();
 					axis_distance = 0;
 //					记录当前鼠标按下时，所选中模型
 					pressed = picked;
@@ -74,6 +75,7 @@ public class MouseEventState extends BaseState {
 						notifyEventTrigged(e);
 					}
 				} else {
+					pickModel();
 //					鼠标松开
 					Spatial oldPressed = pressed;
 					pressed = null;
@@ -175,11 +177,11 @@ public class MouseEventState extends BaseState {
 		Vector3f contactPoint = null;
 		Vector3f contactNormal = null;
 
+		this.picked = null;
+		this.e = null;
+
 		rootNode.collideWith(getRay(), results);
 		int resultsize = results.size();
-		if (resultsize == 0) {
-			return;
-		}
 		Geometry geometry = null;
 		CollisionResult collision = null;
 		for (int i = 0; i < resultsize; i++) {
@@ -190,6 +192,10 @@ public class MouseEventState extends BaseState {
 			if (valiedate(geometry)) {
 				break;
 			}
+		}
+		if (geometry == null) {
+//			记录本次选中的模型
+			return;
 		}
 		List<Spatial> candicates = getCandidates();
 		for (Spatial node : candicates) {
@@ -208,7 +214,7 @@ public class MouseEventState extends BaseState {
 		}
 //		记录本次选中的模型
 		this.picked = tmpPicked;
-		e = new MouseEvent(picked, contactPoint, contactNormal);
+		this.e = new MouseEvent(picked, contactPoint, contactNormal);
 	}
 
 	protected boolean valiedate(Geometry geometry) {

@@ -102,6 +102,7 @@ public class ElecCompState extends BaseState {
 		app.getFlyByCamera().setEnabled(false);
 //		2、启动跟随视角
 		chaser = new ChaseCamera(cam, root, inputManager);
+		chaser.setHideCursorOnRotate(false);
 //		3、设置垂直翻转
 		chaser.setInvertVerticalAxis(true);
 //		4、设置最大和最小仰角
@@ -121,22 +122,22 @@ public class ElecCompState extends BaseState {
 		addMapping("BTN_MOVE", new MouseButtonTrigger(MouseInput.BUTTON_RIGHT));
 		addListener((ActionListener) (name, isPressed, tpf) -> {
 			moveable = isPressed;
-//			if (isPressed) {
+			if (isPressed) {
 //				@Nullable
 //				Geometry picked = JmeUtil.getGeometryFromCursor(root, cam, inputManager);
 //				moveable = picked != null;
 //
 ////				XXX for test
-////				@Nullable
-////				Vector3f point = JmeUtil.getContactPointFromCursor(root, cam, inputManager);
-////				if (point != null) {
-////					Geometry ball = JmeUtil.getSphere(assetManager, 32, 0.1f, ColorRGBA.Red);
-////					root.attachChild(ball);
-////					ball.setLocalTranslation(point);
-////				}
+//				@Nullable
+				Vector3f point = JmeUtil.getContactPointFromCursor(root, cam, inputManager);
+				if (point != null) {
+					Spatial ball = JmeUtil.getSphere(assetManager, 32, 0.1f, ColorRGBA.Red);
+					root.attachChild(ball);
+					ball.setLocalTranslation(point);
+				}
 //			} else {
 //				moveable = false;
-//			}
+			}
 		}, "BTN_MOVE");
 
 //		鼠标拖拽的四个方向
@@ -188,6 +189,7 @@ public class ElecCompState extends BaseState {
 				if (!pickEnable) {
 					return;
 				}
+				System.out.println("ElecCompState.setElecComp(...).new MouseEventAdapter() {...}.mouseClicked()");
 				Vector3f point = cam.getScreenCoordinates(evt.getContactPoint());
 				Platform.runLater(() -> ui.showName(e.getValue(), point.getX(), point.getY()));
 			}
@@ -292,7 +294,6 @@ public class ElecCompState extends BaseState {
 		}
 		pointLight.setPosition(cam.getLocation());
 		root.setLocalScale(scale);
-
 		super.update(tpf);
 	}
 
