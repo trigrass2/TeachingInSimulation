@@ -4,14 +4,17 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 import com.cas.sim.tis.Application;
+import com.cas.sim.tis.anno.FxThread;
 import com.cas.sim.tis.view.HomeView;
 import com.cas.sim.tis.view.control.IContent;
+import com.cas.sim.tis.view.control.IDistory;
 import com.cas.sim.tis.view.control.ILeftContent;
 
 import de.felixroske.jfxsupport.FXMLController;
 import de.felixroske.jfxsupport.GUIState;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.ProgressIndicator;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
@@ -39,7 +42,16 @@ public class PageController implements Initializable {
 
 	@FXML
 	private Region arrow;
-
+	@FXML
+	private Pane loadingLayer;
+	@FXML
+	private StackPane container;
+	
+	private ILeftContent left;
+	@FXML
+	private Pane loadingLayer;
+	@FXML
+	private StackPane container;
 	/**
 	 * 上一层内容
 	 */
@@ -54,6 +66,8 @@ public class PageController implements Initializable {
 	private double xOffset;
 
 	private double yOffset;
+
+	private ProgressIndicator progressIndicator;
 
 	public enum PageLevel {
 		Level1, Level2;
@@ -99,9 +113,14 @@ public class PageController implements Initializable {
 
 	public void loadLeftMenu(ILeftContent leftMenu) {
 		this.leftContent.getChildren().clear();
-		if (leftMenu != null) {
-			this.leftContent.getChildren().add(leftMenu.getLeftContent());
+		if (leftMenu == null) {
+			return;
 		}
+		if (this.left instanceof IDistory) {
+			((IDistory) this.left).distroy();
+		}
+		this.leftContent.getChildren().add(leftMenu.getLeftContent());
+		this.left = leftMenu;
 	}
 
 	public void loadContent(IContent content, PageLevel level) {
@@ -160,4 +179,33 @@ public class PageController implements Initializable {
 		this.content.getChildren().clear();
 		this.leftContent.getChildren().clear();
 	}
+
+	/**
+	 * Show the loading process.
+	 */
+	@FxThread
+	public void showLoading() {
+		loadingLayer.setVisible(true);
+		loadingLayer.toFront();
+
+		progressIndicator = new ProgressIndicator(ProgressIndicator.INDETERMINATE_PROGRESS);
+		progressIndicator.setPrefSize(50, 50);
+//        progressIndicator.setId(CssIds.EDITOR_LOADING_PROGRESS);
+		loadingLayer.getChildren().add(progressIndicator);
+		container.setDisable(true);
+	}
+
+	/**
+	 * Hide the loading process.
+	 */
+	@FxThread
+	public void hideLoading() {
+		loadingLayer.setVisible(false);
+		loadingLayer.getChildren().clear();
+
+		progressIndicator = null;
+
+		container.setDisable(false);
+	}
+
 }
