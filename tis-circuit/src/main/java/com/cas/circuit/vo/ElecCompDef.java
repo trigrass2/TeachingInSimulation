@@ -15,6 +15,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
@@ -31,6 +32,8 @@ import com.sun.tools.internal.xjc.runtime.ZeroOneBooleanAdapter;
 @XmlAccessorType(XmlAccessType.NONE)
 @XmlRootElement(name = "ElecCompDef")
 public class ElecCompDef {// extends BaseVO<ElecCompDefPO> {
+	public static final String PARAM_KEY_SHELL = "shell";
+
 	@XmlAttribute
 	private String id;
 	@XmlAttribute
@@ -52,6 +55,7 @@ public class ElecCompDef {// extends BaseVO<ElecCompDefPO> {
 	@XmlJavaTypeAdapter(CompLogicAdapter.class)
 	private BaseElectricCompLogic logic;
 	@XmlElement(name = "Param")
+	@XmlElementWrapper(name="Params")
 	private List<Param> params = new ArrayList<>();
 	@XmlJavaTypeAdapter(ZeroOneBooleanAdapter.class)
 	@XmlAttribute
@@ -368,6 +372,10 @@ public class ElecCompDef {// extends BaseVO<ElecCompDefPO> {
 		return terminalList;
 	}
 
+	public List<Jack> getJackList() {
+		return jackList;
+	}
+
 	/**
 	 * @return the createdEnv
 	 */
@@ -448,8 +456,9 @@ public class ElecCompDef {// extends BaseVO<ElecCompDefPO> {
 		this.tagName = tagName;
 	}
 
-	public void build(Node spatial, String tabName) {
+	public void build(Node spatial, String tagName) {
 		this.spatial = spatial;
 		this.tagName = tagName;
 	}
+
 }

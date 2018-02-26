@@ -22,12 +22,12 @@ public class ElecCompProxy {
 //	摆放位置
 	@XmlAttribute
 	@XmlJavaTypeAdapter(value = Vector3fAdapter.class)
-	private Vector3f location;
+	private Vector3f location = Vector3f.ZERO;
 
 //	旋转量
 	@XmlAttribute
 	@XmlJavaTypeAdapter(value = QuaternionAdapter.class)
-	private Quaternion rotation;
+	private Quaternion rotation = Quaternion.ZERO;
 
 	public String getModel() {
 		return model;

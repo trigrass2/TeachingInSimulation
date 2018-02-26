@@ -10,7 +10,11 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.cas.circuit.CfgConst;
 import com.cas.circuit.Plug;
@@ -26,6 +30,7 @@ import com.sun.tools.internal.xjc.runtime.ZeroOneBooleanAdapter;
  */
 @XmlAccessorType(XmlAccessType.NONE)
 public class Jack {
+	private static final Logger LOG = LoggerFactory.getLogger(Jack.class);
 	@XmlAttribute
 	private String id;
 //	/**
@@ -61,6 +66,7 @@ public class Jack {
 	@XmlElement(name = "Terminal")
 	private List<Stitch> stitchList = new ArrayList<>();
 	@XmlElement(name = "Param")
+	@XmlElementWrapper(name="Params")
 	private List<Param> params = new ArrayList<>();
 
 //	------------------------------
@@ -126,14 +132,9 @@ public class Jack {
 	}
 
 	public void setSpatial(Spatial spatial) {
-//		FIXME
-//		if (model == null) {
-//			ElecCompDef def = (ElecCompDef) parent;
-//			if (!def.isCable()) {
-//				log.error("元器件" + parent + "没有找到插口ID为" + po.getId() + "的模型");
-////				throw new RuntimeException("元器件" + parent + "没有找到插口ID为" + po.getId() + "的模型");
-//			}
-//		}
+		if (spatial == null) {
+			LOG.error("没有找到Jack::ID为{}的模型{}", getId(), mdlName);
+		}
 		this.spatial = spatial;
 	}
 

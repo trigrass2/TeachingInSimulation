@@ -13,7 +13,7 @@ import com.cas.circuit.vo.archive.ElecCompProxy;
 import com.cas.circuit.vo.archive.WireProxy;
 
 @XmlAccessorType(XmlAccessType.NONE)
-@XmlRootElement
+@XmlRootElement(name="Archive")
 public class Archive {
 
 	@XmlElement(name = "Layout")

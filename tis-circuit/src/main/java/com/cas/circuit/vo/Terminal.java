@@ -10,6 +10,9 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.cas.circuit.BaseElectricCompLogic;
 import com.cas.circuit.CfgConst;
 import com.cas.circuit.ElecCompCPU;
@@ -21,6 +24,7 @@ import com.jme3.scene.Spatial;
 
 @XmlAccessorType(XmlAccessType.NONE)
 public class Terminal extends SwitchCtrl {// <TerminalPO> implements Savable, ILinkTarget {
+	private static final Logger LOG = LoggerFactory.getLogger(Terminal.class);
 	@XmlAttribute
 	private String id;
 	@XmlAttribute
@@ -116,7 +120,7 @@ public class Terminal extends SwitchCtrl {// <TerminalPO> implements Savable, IL
 
 	public void setSpatial(Spatial spatial) {
 		if (spatial == null) {
-//			log.error("元器件" + parent + "没有找到连接头ID为" + getId() + "的模型");
+			LOG.error("没有找到Terminal::ID为{}的模型{}", getId(), mdlName);
 		}
 		this.spatial = spatial;
 

@@ -8,7 +8,11 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.cas.circuit.CfgConst;
 import com.cas.circuit.consts.IOType;
@@ -23,6 +27,8 @@ import com.sun.tools.internal.xjc.runtime.ZeroOneBooleanAdapter;
  */
 @XmlAccessorType(XmlAccessType.NONE)
 public class ControlIO extends SwitchCtrl {
+	private static final Logger LOG = LoggerFactory.getLogger(Terminal.class);
+
 	public static final String INTERACT_UNIDIR = "unidir";
 	public static final String INTERACT_CLICK = "click";
 	public static final String INTERACT_PRESS = "press";
@@ -56,6 +62,7 @@ public class ControlIO extends SwitchCtrl {
 	@XmlJavaTypeAdapter(ZeroOneBooleanAdapter.class)
 	private Boolean smooth;
 	@XmlElement(name = "Param")
+	@XmlElementWrapper(name="Params")
 	private List<Param> params = new ArrayList<>();
 
 	private Spatial spatial;
@@ -154,10 +161,17 @@ public class ControlIO extends SwitchCtrl {
 	}
 
 	public void setSpatial(Spatial spatial) {
-//		if (model == null) {
-//			log.error("没有找到按钮名为" + po.getName() + "的模型");
-//		}
+		if (spatial == null) {
+			LOG.error("没有找到ControlIO::name为{}的模型{}", name, mdlName);
+		}
 		this.spatial = spatial;
 	}
 
+	public Spatial getSpatial() {
+		return spatial;
+	}
+	
+	public String getName() {
+		return name;
+	}
 }

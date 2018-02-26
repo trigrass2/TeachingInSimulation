@@ -8,10 +8,14 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * Jaxb2工具类
  */
 public class JaxbUtil {
+	private static final Logger LOG = LoggerFactory.getLogger(JaxbUtil.class);
 
 	/**
 	 * JavaBean转换成xml 默认编码UTF-8
@@ -54,6 +58,7 @@ public class JaxbUtil {
 	 */
 	@SuppressWarnings("unchecked")
 	public static <T> T converyToJavaBean(URL url, Class<T> c) {
+		LOG.info("解析文件路径{}, 目标对象类型{}", url, c);
 		T t = null;
 		try {
 			JAXBContext context = JAXBContext.newInstance(c);
@@ -74,6 +79,7 @@ public class JaxbUtil {
 	 */
 	@SuppressWarnings("unchecked")
 	public static <T> T converyToJavaBean(String xml, Class<T> c) {
+		LOG.info("解析文件内容\r\n{}, \r\n目标对象类型{}", xml, c);
 		T t = null;
 		try {
 			JAXBContext context = JAXBContext.newInstance(c);
