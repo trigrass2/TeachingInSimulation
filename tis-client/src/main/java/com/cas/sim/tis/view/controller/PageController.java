@@ -48,10 +48,6 @@ public class PageController implements Initializable {
 	private StackPane container;
 	
 	private ILeftContent left;
-	@FXML
-	private Pane loadingLayer;
-	@FXML
-	private StackPane container;
 	/**
 	 * 上一层内容
 	 */
