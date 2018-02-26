@@ -17,6 +17,7 @@ import com.cas.sim.tis.consts.TemplateConsts;
 import com.cas.sim.tis.consts.RoleConst;
 import com.cas.sim.tis.consts.Session;
 import com.cas.sim.tis.entity.User;
+import com.cas.sim.tis.util.AlertUtil;
 import com.cas.sim.tis.util.ExcelUtil;
 import com.cas.sim.tis.util.MsgUtil;
 import com.cas.sim.tis.util.SpringUtil;
@@ -126,7 +127,7 @@ public class StudentList extends HBox implements IContent {
 		// 删除按钮
 		Column<String> del = new Column<String>();
 		del.setCellFactory(BtnCell.forTableColumn(MsgUtil.getMessage("button.delete"), Priority.ALWAYS, "blue-btn", id -> {
-			showConfirm(MsgUtil.getMessage("table.delete"), response -> {
+			AlertUtil.showConfirm(MsgUtil.getMessage("table.delete"), response -> {
 				if (response == ButtonType.YES) {
 					SpringUtil.getBean(UserAction.class).deleteUser((int) id);
 					pagination.reload();
@@ -170,26 +171,26 @@ public class StudentList extends HBox implements IContent {
 		for (int i = 2; i < result.length; i++) {
 			Object codeObj = result[i][0];
 			if (Util.isEmpty(codeObj)) {
-				String reason = MsgUtil.getMessage("check.cant.null", MsgUtil.getMessage("student.code"));
-				showAlert(AlertType.WARNING, reason);
+				String reason = MsgUtil.getMessage("alert.warning.cant.null", MsgUtil.getMessage("student.code"));
+				AlertUtil.showAlert(AlertType.WARNING, reason);
 				return;
 			}
 			String code = String.valueOf(codeObj).trim();
 			if (code.length() > 20) {
-				String reason = MsgUtil.getMessage("check.over.length", MsgUtil.getMessage("student.code"), String.valueOf(20));
-				showAlert(AlertType.WARNING, reason);
+				String reason = MsgUtil.getMessage("alert.warning.over.length", MsgUtil.getMessage("student.code"), String.valueOf(20));
+				AlertUtil.showAlert(AlertType.WARNING, reason);
 				return;
 			}
 			Object nameObj = result[i][1];
 			if (Util.isEmpty(nameObj)) {
-				String reason = MsgUtil.getMessage("check.cant.null", MsgUtil.getMessage("student.name"));
-				showAlert(AlertType.WARNING, reason);
+				String reason = MsgUtil.getMessage("alert.warning.cant.null", MsgUtil.getMessage("student.name"));
+				AlertUtil.showAlert(AlertType.WARNING, reason);
 				return;
 			}
 			String name = String.valueOf(nameObj).trim();
 			if (name.length() > 20) {
-				String reason = MsgUtil.getMessage("check.over.length", MsgUtil.getMessage("student.name"), String.valueOf(20));
-				showAlert(AlertType.WARNING, reason);
+				String reason = MsgUtil.getMessage("alert.warning.over.length", MsgUtil.getMessage("student.name"), String.valueOf(20));
+				AlertUtil.showAlert(AlertType.WARNING, reason);
 				return;
 			}
 			User user = new User();
@@ -202,10 +203,10 @@ public class StudentList extends HBox implements IContent {
 		}
 		try {
 			SpringUtil.getBean(UserAction.class).addUsers(users);
-			showAlert(AlertType.INFORMATION, MsgUtil.getMessage("excel.import.success"));
+			AlertUtil.showAlert(AlertType.INFORMATION, MsgUtil.getMessage("excel.import.success"));
 			pagination.reload();
 		} catch (Exception e) {
-			showAlert(AlertType.ERROR, e.getMessage());
+			AlertUtil.showAlert(AlertType.ERROR, e.getMessage());
 			e.printStackTrace();
 		}
 	}
@@ -221,7 +222,7 @@ public class StudentList extends HBox implements IContent {
 			return;
 		}
 		FileUtil.copyFile(TemplateConsts.STUDENT_TEMPLATE, target.getAbsolutePath(), true);
-		showAlert(AlertType.INFORMATION, MsgUtil.getMessage("excel.export.success"));
+		AlertUtil.showAlert(AlertType.INFORMATION, MsgUtil.getMessage("excel.export.success"));
 	}
 
 	private void modify(int id) {
@@ -237,11 +238,11 @@ public class StudentList extends HBox implements IContent {
 			}
 			try {
 				SpringUtil.getBean(UserAction.class).modifyUser(user);
-				showAlert(AlertType.INFORMATION, MsgUtil.getMessage("data.update.success"));
+				AlertUtil.showAlert(AlertType.INFORMATION, MsgUtil.getMessage("data.update.success"));
 				pagination.reload();
 			} catch (Exception e) {
 				e.printStackTrace();
-				showAlert(AlertType.ERROR, e.getMessage());
+				AlertUtil.showAlert(AlertType.ERROR, e.getMessage());
 			}
 		});
 	}

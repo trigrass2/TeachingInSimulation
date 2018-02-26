@@ -13,8 +13,7 @@ public class HTTPUtils {
 
 	private Integer port;
 
-	@Nullable
-	public String getHttpUrl(String path) {
+	public URL getUrl(String path) {
 		path = path.replaceAll("//", "/");
 		if (path.startsWith("/")) {
 			path = path.substring(1);
@@ -23,7 +22,7 @@ public class HTTPUtils {
 			URL url = new URL("http://" + host + ":" + port + "/" + path);
 			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 			if (HttpURLConnection.HTTP_OK == conn.getResponseCode()) {
-				return url.toString();
+				return url;
 			} else if (HttpURLConnection.HTTP_NOT_FOUND == conn.getResponseCode()) {
 				LoggerFactory.getLogger(HTTPUtils.class).warn("资源不存在:{}", url.toString());
 			}
@@ -31,6 +30,15 @@ public class HTTPUtils {
 			String msg = "无效的地址:" + path;
 			LoggerFactory.getLogger(HTTPUtils.class).warn(msg, e);
 //			throw new RuntimeException(msg, e);
+		}
+		return null;
+	}
+
+	@Nullable
+	public String getFullPath(String path) {
+		URL url = getUrl(path);
+		if (url != null) {
+			return url.toString();
 		}
 		return null;
 	}

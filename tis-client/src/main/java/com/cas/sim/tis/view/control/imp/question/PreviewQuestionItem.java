@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.cas.sim.tis.consts.QuestionType;
 import com.cas.sim.tis.entity.Question;
+import com.cas.sim.tis.util.MsgUtil;
 import com.cas.util.StringUtil;
 
 import javafx.scene.control.Label;
@@ -44,7 +45,7 @@ public class PreviewQuestionItem extends VBox {
 	}
 
 	private void loadChoiceQuestion(Question question) {
-		Text title = new Text(index + ". " + question.getTitle());
+		Text title = new Text(index + ". " + question.getTitle() + MsgUtil.getMessage("question.point", question.getPoint()));
 		title.setWrappingWidth(600);
 		this.getChildren().add(title);
 		VBox.setVgrow(title, Priority.ALWAYS);
@@ -66,7 +67,7 @@ public class PreviewQuestionItem extends VBox {
 	}
 
 	private void loadJudgmentQuestion(Question question) {
-		Text title = new Text(index + ". " + question.getTitle());
+		Text title = new Text(index + ". " + question.getTitle() + MsgUtil.getMessage("question.point", question.getPoint()));
 		title.setWrappingWidth(600);
 		this.getChildren().add(title);
 		VBox.setVgrow(title, Priority.ALWAYS);
@@ -85,15 +86,15 @@ public class PreviewQuestionItem extends VBox {
 			Text text = new Text(title);
 			text.setWrappingWidth(600);
 			this.getChildren().add(text);
-		}else {
+		} else {
 			List<String> titles = StringUtil.split(title);
 			List<String> references = StringUtil.split(question.getReference());
-			
+
 			FlowPane pane = new FlowPane();
 			pane.maxWidth(600);
 			this.getChildren().add(pane);
 			VBox.setVgrow(pane, Priority.ALWAYS);
-			
+
 			pane.getChildren().add(new Label(index + ". "));
 			for (int i = 0; i < titles.size(); i++) {
 				Label label = new Label(titles.get(i));
@@ -104,11 +105,13 @@ public class PreviewQuestionItem extends VBox {
 					pane.getChildren().add(reference);
 				}
 			}
+			Label label = new Label(MsgUtil.getMessage("question.point", question.getPoint()));
+			pane.getChildren().add(label);
 		}
 	}
 
 	private void loadSubjective(Question question) {
-		Text title = new Text(index + ". " + question.getTitle());
+		Text title = new Text(index + ". " + question.getTitle() + MsgUtil.getMessage("question.point", question.getPoint()));
 		title.setWrappingWidth(600);
 		this.getChildren().add(title);
 		VBox.setVgrow(title, Priority.ALWAYS);

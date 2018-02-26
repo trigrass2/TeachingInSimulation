@@ -22,6 +22,10 @@ public class LibraryAnswer implements Serializable {
 	 */
 	private String answer;
 	/**
+	 * 得分
+	 */
+	private Float score = 0f;
+	/**
 	 * 试题编号
 	 */
 	@Column(name = "QID")
@@ -35,11 +39,13 @@ public class LibraryAnswer implements Serializable {
 	 * 0-未更正(还是错的状态)<br>
 	 * 1-已更正
 	 */
-	private Integer corrected;
+	private Boolean corrected = false;
 	/**
 	 * 用户最后一次更正后的答案
 	 */
 	private String correctAnswer;
+	
+	private Question question;
 
 	public Integer getId() {
 		return id;
@@ -65,6 +71,14 @@ public class LibraryAnswer implements Serializable {
 		this.answer = answer;
 	}
 
+	public Float getScore() {
+		return score;
+	}
+
+	public void setScore(Float score) {
+		this.score = score;
+	}
+
 	public Integer getQuestionId() {
 		return questionId;
 	}
@@ -81,11 +95,11 @@ public class LibraryAnswer implements Serializable {
 		this.recordId = recordId;
 	}
 
-	public Integer getCorrected() {
+	public Boolean getCorrected() {
 		return corrected;
 	}
 
-	public void setCorrected(Integer corrected) {
+	public void setCorrected(Boolean corrected) {
 		this.corrected = corrected;
 	}
 
@@ -95,5 +109,13 @@ public class LibraryAnswer implements Serializable {
 
 	public void setCorrectAnswer(String correctAnswer) {
 		this.correctAnswer = correctAnswer;
+	}
+
+	public Question getQuestion() {
+		return question;
+	}
+
+	public void setQuestion(Question question) {
+		this.question = question;
 	}
 }

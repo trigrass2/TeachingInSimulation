@@ -7,6 +7,7 @@
 		<result column="OPTIONS" jdbcType="VARCHAR" property="options" />
 <!-- 		<result column="IMGS" jdbcType="VARCHAR" property="imgs" /> -->
 		<result column="REFERENCE" jdbcType="VARCHAR" property="reference" />
+		<result column="POINT" jdbcType="FLOAT" property="point" />
 		<result column="ANALYSIS" jdbcType="VARCHAR" property="analysis" />
 		<result column="TYPE" jdbcType="INTEGER" property="type" />
 		<result column="RID" jdbcType="INTEGER" property="relateId" />

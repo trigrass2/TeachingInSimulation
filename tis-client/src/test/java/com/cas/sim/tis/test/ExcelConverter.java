@@ -14,7 +14,7 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xwpf.extractor.XWPFWordExtractor;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 
-import com.cas.sim.tis.consts.QuestionConsts;
+import com.cas.sim.tis.consts.TemplateConsts;
 
 /**
  * @功能 word内容转到EXCEL中
@@ -46,7 +46,7 @@ public class ExcelConverter {
 			String data = loadDoc(file);
 			System.out.println("读取" + file.getName() + "完成");
 
-			File excel = new File(QuestionConsts.QUESTION_TEMPLATE);
+			File excel = new File(TemplateConsts.QUESTION_TEMPLATE);
 			File target = new File("C:\\Users\\Administrator\\Desktop\\Excel\\" + file.getName().replaceAll("docx", "xls"));
 
 			// 读取模版
@@ -75,9 +75,9 @@ public class ExcelConverter {
 						Cell cell = row.getCell(1);
 						if (cell == null) {
 							cell = row.createCell(1);
-							cell.setCellValue(string);
+							cell.setCellValue(string.replaceAll("（A）", "A、"));
 						} else {
-							cell.setCellValue(cell.getStringCellValue() + "\r\n" + string);
+							cell.setCellValue(cell.getStringCellValue() + "\r\n" + string.replaceAll("（B）", "B、").replaceAll("（C）", "C、").replaceAll("（D）", "D、").replaceAll("（E）", "E、").replaceAll("（F）", "F、"));
 						}
 					} else if (string.startsWith("答案：")) {
 						Cell cell2 = row.createCell(2);
@@ -123,7 +123,7 @@ public class ExcelConverter {
 			String data = loadDoc(file);
 			System.out.println("读取" + file.getName() + "完成");
 
-			File excel = new File(QuestionConsts.QUESTION_TEMPLATE);
+			File excel = new File(TemplateConsts.QUESTION_TEMPLATE);
 			File target = new File("C:\\Users\\Administrator\\Desktop\\Excel\\" + file.getName().replaceAll("docx", "xls"));
 
 			// 读取模版

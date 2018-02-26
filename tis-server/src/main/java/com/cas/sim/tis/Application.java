@@ -10,7 +10,9 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import com.cas.sim.tis.config.ServerConfig;
+import com.cas.sim.tis.message.ExamMessage;
 import com.cas.sim.tis.message.LoginMessage;
+import com.cas.sim.tis.message.handler.ExamMessageHandler;
 import com.cas.sim.tis.message.handler.LoginMessageHandler;
 import com.cas.sim.tis.util.SpringUtil;
 import com.jme3.network.Server;
@@ -114,6 +116,7 @@ public class Application implements CommandLineRunner {
 	public void run(String... args) throws Exception {
 //		配置消息
 		serverConfig.registerMessageHandler(LoginMessage.class, SpringUtil.getBean(LoginMessageHandler.class));
+		serverConfig.registerMessageHandler(ExamMessage.class, SpringUtil.getBean(ExamMessageHandler.class));
 
 //		启动
 		coreServer.start();

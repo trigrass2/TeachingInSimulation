@@ -25,8 +25,8 @@ public class LibraryRecord implements Serializable {
 	private Integer id;
 	@Column(name = "PID")
 	private Integer publishId;
-	private Integer score;
-	private Long cost;
+	private Float score;
+	private Integer cost;
 	private Integer creator;
 	@DateTimeFormat(pattern = "yyyy-MM-dd hh:mm:ss")
 	private Date createDate;
@@ -47,19 +47,19 @@ public class LibraryRecord implements Serializable {
 		this.publishId = publishId;
 	}
 
-	public Integer getScore() {
+	public Float getScore() {
 		return score;
 	}
 
-	public void setScore(Integer score) {
+	public void setScore(Float score) {
 		this.score = score;
 	}
 
-	public Long getCost() {
+	public Integer getCost() {
 		return cost;
 	}
 
-	public void setCost(Long cost) {
+	public void setCost(Integer cost) {
 		this.cost = cost;
 	}
 

@@ -15,16 +15,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
 
-import com.cas.sim.tis.consts.SystemInfo;
+import com.cas.sim.tis.message.ExamMessage;
 import com.cas.sim.tis.message.LoginMessage;
+import com.cas.sim.tis.message.handler.ExamMessageHandler;
 import com.cas.sim.tis.message.handler.LoginMessageHandler;
 import com.cas.sim.tis.message.handler.SerializerRegistrationsMessageHandler;
 import com.cas.sim.tis.message.listener.ClientMessageListener;
 import com.cas.sim.tis.util.SocketUtil;
 import com.cas.sim.tis.view.control.imp.LoginDecoration;
-import com.jme3.network.Client;
-import com.jme3.network.Network;
-import com.jme3.network.NetworkClient;
 import com.jme3.network.message.SerializerRegistrationsMessage;
 
 import javafx.fxml.FXML;
@@ -111,6 +109,7 @@ public class LoginController implements Initializable {
 			loginMessageHandler.setResourceBundle(ResourceBundle.getBundle("i18n/messages"));
 
 			ClientMessageListener.INSTENCE.registerMessageHandler(SerializerRegistrationsMessage.class, new SerializerRegistrationsMessageHandler());
+			ClientMessageListener.INSTENCE.registerMessageHandler(ExamMessage.class, new ExamMessageHandler());
 
 			SocketUtil.INSTENCE.start();
 

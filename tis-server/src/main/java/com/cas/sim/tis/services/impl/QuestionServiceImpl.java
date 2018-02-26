@@ -69,10 +69,10 @@ public class QuestionServiceImpl extends AbstractService<Question> implements Qu
 		TransactionStatus status = transactionManager.getTransaction(def);
 
 		try {
-			save(questions);
+			int count = save(questions);
 
 			Library library = libraryService.findById(rid);
-			library.setNum(questions.size());
+			library.setNum(count);
 
 			libraryService.update(library);
 			transactionManager.commit(status);

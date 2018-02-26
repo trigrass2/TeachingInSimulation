@@ -37,15 +37,15 @@ public class DialogPane<R>extends VBox {
 			if (dialog == null) {
 				return;
 			}
-			dialog.setX(e.getScreenX() + xOffset);
-			dialog.setY(e.getScreenY() + yOffset);
+			dialog.getWindow().setX(e.getScreenX() + xOffset);
+			dialog.getWindow().setY(e.getScreenY() + yOffset);
 		});
 		this.header.setOnMousePressed(e -> {
 			if (dialog == null) {
 				return;
 			}
-			xOffset = dialog.getOwner().getX() - e.getScreenX();
-			xOffset = dialog.getOwner().getY() - e.getScreenY();
+			xOffset = dialog.getWindow().getX() - e.getScreenX();
+			yOffset = dialog.getWindow().getY() - e.getScreenY();
 		});
 	}
 

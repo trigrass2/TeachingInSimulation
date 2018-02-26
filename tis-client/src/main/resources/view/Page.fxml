@@ -11,6 +11,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import com.cas.sim.tis.svg.SVGGlyph?>
 <?import com.cas.sim.tis.view.control.imp.Decoration?>
+<?import javafx.scene.control.ProgressIndicator?>
 
 <VBox prefHeight="768.0" prefWidth="1366.0" style="-fx-background-image: url(/static/images/basic/bg.png);" stylesheets="@../static/css/basic.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.cas.sim.tis.view.controller.PageController">
 	<children>
@@ -42,42 +43,45 @@
 			</children>
 		</HBox>
 		<StackPane VBox.vgrow="ALWAYS">
-			<children>
-				<HBox>
-					<children>
-						<Pane fx:id="leftBlock" maxWidth="230" minWidth="230" />
-						<StackPane fx:id="content" HBox.hgrow="ALWAYS" minWidth="0" minHeight="0" />
-					</children>
-				</HBox>
-				<HBox fx:id="leftMenu" alignment="CENTER" maxWidth="245.0" minWidth="245.0" StackPane.alignment="CENTER_LEFT">
-					<children>
-						<VBox alignment="CENTER" styleClass="left-cover">
-							<padding>
-								<Insets bottom="25.0" left="10.0" right="10.0" top="25.0" />
-							</padding>
-							<children>
-								<StackPane fx:id="leftContent" VBox.vgrow="ALWAYS" alignment="TOP_CENTER" />
-								<Button mnemonicParsing="false" styleClass="left-menu" text="系统设置" textFill="WHITE">
-									<graphic>
-										<!-- <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true"> -->
-										<!-- <image> -->
-										<!-- <Image url="@../static/images/basic/setting.png" /> -->
-										<!-- </image> -->
-										<!-- </ImageView> -->
-										<SVGGlyph name="iconfont.svg.setting" size="25" fill="WHITE" />
-									</graphic>
-								</Button>
-							</children>
-						</VBox>
-						<Button mnemonicParsing="false" onAction="#toggle" styleClass="left-menu-btn">
-							<graphic>
-								<Region fx:id="arrow" styleClass="hide" />
-							</graphic>
-						</Button>
-					</children>
-				</HBox>
+			<VBox fx:id="loadingLayer" style="-fx-background-color: rgba(0, 0, 0, 0.3);-fx-alignment: center;"/>
 
-			</children>
+			<StackPane fx:id="container">
+				<children>
+					<HBox>
+						<children>
+							<Pane fx:id="leftBlock" maxWidth="230" minWidth="230" />
+							<StackPane fx:id="content" HBox.hgrow="ALWAYS" minWidth="0" minHeight="0" />
+						</children>
+					</HBox>
+					<HBox fx:id="leftMenu" alignment="CENTER" maxWidth="245.0" minWidth="245.0" StackPane.alignment="CENTER_LEFT">
+						<children>
+							<VBox alignment="CENTER" styleClass="left-cover">
+								<padding>
+									<Insets bottom="25.0" left="10.0" right="10.0" top="25.0" />
+								</padding>
+								<children>
+									<StackPane fx:id="leftContent" VBox.vgrow="ALWAYS" alignment="TOP_CENTER" />
+									<Button mnemonicParsing="false" styleClass="left-menu" text="系统设置" textFill="WHITE">
+										<graphic>
+											<!-- <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true"> -->
+											<!-- <image> -->
+											<!-- <Image url="@../static/images/basic/setting.png" /> -->
+											<!-- </image> -->
+											<!-- </ImageView> -->
+											<SVGGlyph name="iconfont.svg.setting" size="25" fill="WHITE" />
+										</graphic>
+									</Button>
+								</children>
+							</VBox>
+							<Button mnemonicParsing="false" onAction="#toggle" styleClass="left-menu-btn">
+								<graphic>
+									<Region fx:id="arrow" styleClass="hide" />
+								</graphic>
+							</Button>
+						</children>
+					</HBox>
+				</children>
+			</StackPane>
 		</StackPane>
 	</children>
 </VBox>

@@ -13,17 +13,17 @@ import com.cas.sim.tis.util.SocketTest;
 @Configuration
 @PropertySource("file:cfg.properties")
 public class ClientConfig {
-	@Value(value = "${server.base.address}")
-	private String address;
+	@Value(value = "${server.ftp.address}")
+	private String ftpAddress;
 
 	@Value(value = "${server.ftp.port}")
-	private Integer port;
+	private Integer ftpPort;
 
-//	@Value(value = "${server.base.address}")
-//	private String address;
+	@Value(value = "${server.httpd.address}")
+	private String httpdAddress;
 
 	@Value(value = "${server.httpd.port}")
-	private Integer apachePort;
+	private Integer httpdPort;
 
 	@Bean
 	public FTPUtils buildFtpClient() {
@@ -32,13 +32,13 @@ public class ClientConfig {
 		FTPClient client = new FTPClient();
 		util.setFtpClient(client);
 
-		util.setHost(address);
-		util.setPort(port);
+		util.setHost(ftpAddress);
+		util.setPort(ftpPort);
 		util.setUsername("admin");
 		util.setPassword("admin");
 
 		try {
-			SocketTest.test(address, port);
+			SocketTest.test(ftpAddress, ftpPort);
 		} catch (RuntimeException e) {
 			throw e;
 		}
@@ -50,11 +50,11 @@ public class ClientConfig {
 	public HTTPUtils buildHttpUtil() {
 		HTTPUtils util = new HTTPUtils();
 
-		util.setHost(address);
-		util.setPort(apachePort);
+		util.setHost(httpdAddress);
+		util.setPort(httpdPort);
 
 		try {
-			SocketTest.test(address, apachePort);
+			SocketTest.test(httpdAddress, httpdPort);
 		} catch (RuntimeException e) {
 			throw e;
 		}

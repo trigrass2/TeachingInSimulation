@@ -34,6 +34,9 @@
 	-fx-fill: #e89029;
 	-fx-text-fill:#e89029;
 }
+.bold{
+	-fx-font-weight: bold;
+}
 /*******************************************************************************
  *                                                                             *
  * 饼图样式                                                                  *
@@ -445,7 +448,7 @@
  * 左侧菜单样式                                                          *
  *                                                                             *
  ******************************************************************************/
- .left-menu{
+ .left-menu,.examing-menu{
  	-fx-background-color:transparent;
  	-fx-background-radius:0.0;
  	-fx-min-height: 45.0px;
@@ -459,6 +462,13 @@
  }
  .left-menu:hover{
  	-fx-background-color:#22678f;
+ 	-fx-background-insets: 0.0px;
+ }
+ .examing-menu{
+ 	-fx-background-color:#ff9e2c;
+ }
+ .examing-menu:hover{
+ 	-fx-background-color:#ff9e2c;
  }
 /*******************************************************************************
  *                                                                             *
@@ -595,10 +605,13 @@
  *                                                                             *
  ******************************************************************************/
  .class-select-item{
+ 	-fx-font-size: 14.0px;
  	-fx-text-fill: #ffffff;
  	-fx-background-color: #296b99;
+ 	-fx-background-insets: 0.0;
  	-fx-border-color: #97ccff;
- 	-fx-border-width: 2.0px;
+ 	-fx-border-width: 3.0px;
+ 	-fx-border-insets: 0.0;
  	-fx-pref-width: 132.0px;
  	-fx-pref-height: 90.0px;
  }
@@ -606,6 +619,8 @@
  	-fx-background-color: #26739e;
  }
  .class-select-item:selected{
+ 	-fx-background-insets: 0.0;
+ 	-fx-border-insets: 0.0;
  	-fx-border-color: #ffb400;
  }
  /*******************************************************************************
@@ -614,37 +629,84 @@
  *                                                                             *
  ******************************************************************************/
  .undo{
+ 	-fx-padding: 0.0px;
+ 	-fx-text-fill: #333333;
  	-fx-pref-height: 30.0px;
  	-fx-pref-width: 30.0px;
  	-fx-border-color:#999999;
+ 	-fx-border-insets: 0.0px;
  	-fx-background-color: transparent;
+ 	-fx-background-insets: 0.0px;
  }
  .done{
+ 	-fx-padding: 0.0px;
+ 	-fx-text-fill: #ffffff;
  	-fx-pref-height: 30.0px;
  	-fx-pref-width: 30.0px;
  	-fx-border-color:#f6a23f;
+ 	-fx-border-insets: 0.0px;
  	-fx-background-color: #f6a23f;
+ 	-fx-background-insets: 0.0px;
  }
  .right{
+ 	-fx-padding: 0.0px;
+ 	-fx-text-fill: #ffffff;
  	-fx-pref-height: 30.0px;
  	-fx-pref-width: 30.0px;
  	-fx-border-color:#83ad1c;
+ 	-fx-border-insets: 0.0px;
  	-fx-background-color: #83ad1c;
+ 	-fx-background-insets: 0.0px;
  }
  .wrong{
+ 	-fx-padding: 0.0px;
+ 	-fx-text-fill: #ffffff;
  	-fx-pref-height: 30.0px;
  	-fx-pref-width: 30.0px;
  	-fx-border-color:#ff5656;
+ 	-fx-border-insets: 0.0px;
  	-fx-background-color: #ff5656;
+ 	-fx-background-insets: 0.0px;
  }
- .undo:selected,
- .done:selected,
- .right:selected,
+ .undo:selected{
+ 	-fx-padding: 0.0px;
+ 	-fx-font-weight: bold;
+ 	-fx-text-fill: #ffffff;
+ 	-fx-border-color: transparent;
+ 	-fx-border-insets: 2.0;
+ 	-fx-background-color: #19b0c6;
+ 	-fx-background-insets: 2.0;
+ }
+ .done:selected{
+ 	-fx-padding: 0.0px;
+ 	-fx-font-weight: bold;
+ 	-fx-text-fill: #ffffff;
+ 	-fx-border-color: transparent;
+ 	-fx-border-insets: 2.0;
+ 	-fx-background-color: #f6a23f;
+ 	-fx-background-insets: 2.0;
+ }
+ .right:selected{
+ 	-fx-padding: 0.0px;
+ 	-fx-font-weight: bold;
+ 	-fx-text-fill: #ffffff;
+ 	-fx-border-color: transparent;
+ 	-fx-border-insets: 2.0;
+ 	-fx-background-color: #83ad1c;
+ 	-fx-background-insets: 2.0;
+ }
  .wrong:selected{
- 	-fx-border-insets: 1.0;
- 	-fx-background-insets: 1.0;
+ 	-fx-padding: 0.0px;
+ 	-fx-font-weight: bold;
+ 	-fx-text-fill: #ffffff;
+ 	-fx-border-color: transparent;
+ 	-fx-border-insets: 2.0;
+ 	-fx-background-color: #ff5656;
+ 	-fx-background-insets: 2.0;
  }
  .option{
+ 	-fx-min-width: 680.0px;
+ 	-fx-max-width: 1485.0px;
  	-fx-border-color:#c3c3c3;
  	-fx-alignment: center-right ;
  	-fx-padding: 25.0;
@@ -657,19 +719,20 @@
 	-fx-background-color: transparent;
     -fx-padding: 0.0;
  }
- .option > .box > .mark,
+ .option > .box > .mark{
+    -fx-background-insets: 0.0;
+    -fx-shape: "M0,4 L4,8 L8,0 L3.75,7 Z";
+    -fx-pref-height: 30.0px;
+    -fx-pref-width: 30.0px;
+ }
+ 
  .option > .radio > .dot {
-    -fx-background-insets: 1.0 0.0 -1.0 0.0, 0.0;
-    -fx-shape: "M0,4H2L3,6L6,0H8L4,8H2Z";
+ 	-fx-background-insets: 0.0;
+    -fx-shape: "M0,0 L4,8 L8,4 L4.25,7 Z";
+    -fx-pref-height: 30.0px;
+    -fx-pref-width: 30.0px;
  }
  .option:selected > .box > .mark,
  .option:selected > .radio > .dot {
     -fx-background-color: #f6a23f;
  }
-.option-text>.text-field{
-	-fx-border-color:#c3c3c3;
-	-fx-padding: 25.0;
-}
-.option-text>.text-field:focused{
-	-fx-border-color:#f6a23f;
-}

@@ -87,7 +87,7 @@ public class ClassModifyDialog extends DialogPane<Class> {
 		ok.setOnAction(e -> {
 			String nameText = name.getText();
 			if (StringUtils.isEmpty(nameText)) {
-				error.setText(MsgUtil.getMessage("check.cant.null", MsgUtil.getMessage("class.name")));
+				error.setText(MsgUtil.getMessage("alert.warning.cant.null", MsgUtil.getMessage("class.name")));
 				return;
 			}
 			clazz.setName(nameText);

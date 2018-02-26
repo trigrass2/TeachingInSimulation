@@ -9,6 +9,8 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.cas.sim.tis.app.event.MouseEventListener;
+import com.cas.sim.tis.app.event.MouseEventState;
 import com.jme3.app.Application;
 import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.AbstractAppState;
@@ -19,6 +21,7 @@ import com.jme3.input.controls.InputListener;
 import com.jme3.input.controls.Trigger;
 import com.jme3.renderer.Camera;
 import com.jme3.scene.Node;
+import com.jme3.scene.Spatial;
 import com.jme3.system.AppSettings;
 
 public abstract class BaseState extends AbstractAppState {
@@ -39,9 +42,13 @@ public abstract class BaseState extends AbstractAppState {
 
 	protected AppSettings settings;
 
-//	记录state中用到的映射名，退出清除
+//	记录state中用到的映射名和事件，退出清除
 	private Map<String, List<Trigger>> inputMappings = new HashMap<>();
 	private List<InputListener> inputListeners = new ArrayList<>();
+
+	private List<Spatial> candidates = new ArrayList<>();
+
+	private MouseEventState mouseEventState;
 
 	/**
 	 * @param string
@@ -68,6 +75,14 @@ public abstract class BaseState extends AbstractAppState {
 		inputListeners.add(listener);
 	}
 
+	protected void addListener(Spatial sp, MouseEventListener l) {
+		if (mouseEventState == null) {
+			LOG.warn("没有MouseEventState");
+		}
+		candidates.add(sp);
+		mouseEventState.addCandidate(sp, l);
+	}
+
 	@Override
 	public void stateAttached(AppStateManager stateManager) {
 		LOG.debug("添加状态机{}", getClass());
@@ -83,6 +98,8 @@ public abstract class BaseState extends AbstractAppState {
 		this.stateManager = this.app.getStateManager();
 		rootNode = this.app.getRootNode();
 		settings = app.getContext().getSettings();
+
+		mouseEventState = stateManager.getState(MouseEventState.class);
 
 		initializeLocal();
 
@@ -102,13 +119,20 @@ public abstract class BaseState extends AbstractAppState {
 
 	@Override
 	public void cleanup() {
-		LOG.debug("清除{}中添加的事件映射", getClass());
+		LOG.info("清除{}中添加的事件映射及监听", getClass());
 		inputMappings.entrySet().stream().forEach(e -> e.getValue().forEach(t -> inputManager.deleteTrigger(e.getKey(), t)));// 删除
 		inputMappings.clear();
-
-		LOG.debug("清除{}中添加的事件监听", getClass());
 		inputListeners.stream().forEach(inputManager::removeListener);
 		inputListeners.clear();
+
+		if (mouseEventState == null) {
+			LOG.warn("没有MouseEventState");
+		} else {
+			LOG.info("清除{}中添加的鼠标事件监听", getClass());
+			candidates.forEach(c -> mouseEventState.removeCandidate(c));
+			candidates.clear();
+		}
+
 		super.cleanup();
 	}
 

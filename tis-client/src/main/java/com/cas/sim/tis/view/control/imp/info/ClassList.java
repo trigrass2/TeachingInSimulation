@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import com.alibaba.fastjson.JSONArray;
 import com.cas.sim.tis.consts.TemplateConsts;
 import com.cas.sim.tis.entity.Class;
+import com.cas.sim.tis.util.AlertUtil;
 import com.cas.sim.tis.util.ExcelUtil;
 import com.cas.sim.tis.util.MsgUtil;
 import com.cas.sim.tis.util.SpringUtil;
@@ -134,7 +135,7 @@ public class ClassList extends HBox implements IContent {
 		// 删除按钮
 		Column<String> del = new Column<String>();
 		del.setCellFactory(BtnCell.forTableColumn(MsgUtil.getMessage("button.delete"), Priority.ALWAYS, "blue-btn", id -> {
-			showConfirm(MsgUtil.getMessage("table.delete"), response -> {
+			AlertUtil.showConfirm(MsgUtil.getMessage("table.delete"), response -> {
 				if (response == ButtonType.YES) {
 					SpringUtil.getBean(ClassAction.class).deleteClass((int) id);
 					pagination.reload();
@@ -178,26 +179,26 @@ public class ClassList extends HBox implements IContent {
 		for (int i = 2; i < result.length; i++) {
 			Object codeObj = result[i][0];
 			if (Util.isEmpty(codeObj)) {
-				String reason = MsgUtil.getMessage("check.cant.null", MsgUtil.getMessage("teacher.code"));
-				showAlert(AlertType.WARNING, reason);
+				String reason = MsgUtil.getMessage("alert.warning.cant.null", MsgUtil.getMessage("teacher.code"));
+				AlertUtil.showAlert(AlertType.WARNING, reason);
 				return;
 			}
 			String code = String.valueOf(codeObj).trim();
 			if (code.length() > 20) {
-				String reason = MsgUtil.getMessage("check.over.length", MsgUtil.getMessage("teacher.code"), String.valueOf(20));
-				showAlert(AlertType.WARNING, reason);
+				String reason = MsgUtil.getMessage("alert.warning.over.length", MsgUtil.getMessage("teacher.code"), String.valueOf(20));
+				AlertUtil.showAlert(AlertType.WARNING, reason);
 				return;
 			}
 			Object nameObj = result[i][1];
 			if (Util.isEmpty(nameObj)) {
-				String reason = MsgUtil.getMessage("check.cant.null", MsgUtil.getMessage("class.name"));
-				showAlert(AlertType.WARNING, reason);
+				String reason = MsgUtil.getMessage("alert.warning.cant.null", MsgUtil.getMessage("class.name"));
+				AlertUtil.showAlert(AlertType.WARNING, reason);
 				return;
 			}
 			String name = String.valueOf(nameObj).trim();
 			if (name.length() > 100) {
-				String reason = MsgUtil.getMessage("check.over.length", MsgUtil.getMessage("class.name"), String.valueOf(100));
-				showAlert(AlertType.WARNING, reason);
+				String reason = MsgUtil.getMessage("alert.warning.over.length", MsgUtil.getMessage("class.name"), String.valueOf(100));
+				AlertUtil.showAlert(AlertType.WARNING, reason);
 				return;
 			}
 			ClassInfo info = new ClassInfo();
@@ -207,10 +208,10 @@ public class ClassList extends HBox implements IContent {
 		}
 		try {
 			SpringUtil.getBean(ClassAction.class).addClasses(infos);
-			showAlert(AlertType.INFORMATION, MsgUtil.getMessage("excel.import.success"));
+			AlertUtil.showAlert(AlertType.INFORMATION, MsgUtil.getMessage("excel.import.success"));
 			pagination.reload();
 		} catch (Exception e) {
-			showAlert(AlertType.ERROR, e.getMessage());
+			AlertUtil.showAlert(AlertType.ERROR, e.getMessage());
 			e.printStackTrace();
 		}
 	}
@@ -226,7 +227,7 @@ public class ClassList extends HBox implements IContent {
 			return;
 		}
 		FileUtil.copyFile(TemplateConsts.CLASS_TEMPLATE, target.getAbsolutePath(), true);
-		showAlert(AlertType.INFORMATION, MsgUtil.getMessage("excel.export.success"));
+		AlertUtil.showAlert(AlertType.INFORMATION, MsgUtil.getMessage("excel.export.success"));
 	}
 
 	private void modify(int id) {
@@ -242,11 +243,11 @@ public class ClassList extends HBox implements IContent {
 			}
 			try {
 				SpringUtil.getBean(ClassAction.class).modifyClass(obj);
-				showAlert(AlertType.INFORMATION, MsgUtil.getMessage("data.update.success"));
+				AlertUtil.showAlert(AlertType.INFORMATION, MsgUtil.getMessage("data.update.success"));
 				pagination.reload();
 			} catch (Exception e) {
 				e.printStackTrace();
-				showAlert(AlertType.ERROR, e.getMessage());
+				AlertUtil.showAlert(AlertType.ERROR, e.getMessage());
 			}
 		});
 	}

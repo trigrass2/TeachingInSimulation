@@ -27,8 +27,13 @@
 				<result column="OPTIONS" jdbcType="VARCHAR" property="options" />
 				<result column="REFERENCE" jdbcType="VARCHAR" property="reference" />
 				<result column="ANALYSIS" jdbcType="VARCHAR" property="analysis" />
+				<result column="POINT" jdbcType="FLOAT" property="point" />
 				<result column="QTYPE" jdbcType="INTEGER" property="type" />
 			</collection>
+		</association>
+		<association property="clazz" javaType="com.cas.sim.tis.entity.Class">
+			<id column="CID" jdbcType="INTEGER" property="id" />
+			<result column="CNAME" jdbcType="VARCHAR" property="name" />
 		</association>
 	</resultMap>
 	<resultMap id="ForTeacherMap" type="com.cas.sim.tis.vo.LibraryPublishForTeacher">
@@ -43,15 +48,21 @@
 		<result column="SCORE" jdbcType="INTEGER" property="score" />
 		<result column="COST" jdbcType="BIGINT" property="cost" />
 	</resultMap>
+	<resultMap id="SubmitStateMap" type="com.cas.sim.tis.vo.SubmitInfo">
+		<result column="CODE" jdbcType="VARCHAR" property="code" />
+		<result column="NAME" jdbcType="VARCHAR" property="name" />
+		<result column="SUBMITED" jdbcType="INTEGER" property="submited" />
+	</resultMap>
 	<select id="findPublishById" resultMap="BaseResultExtMap">
 		select
-		p.id,p.cid,p.type,p.average,
+		p.id,p.type,p.average,
 		l.id as lid,l.name as lname,l.time,l.type as ltype,l.num as lnum,
-		q.id as qid,q.title,q.options,q.reference,q.analysis,q.type as qtype 
+		q.id as qid,q.title,q.options,q.reference,q.analysis,q.point,q.type as qtype,
+		c.id as cid,c.name as cname  
 		from
-		library_publish p,library l,question q
+		library_publish p,class c,library l,question q
 		where
-		p.lid=l.id and l.id=q.rid and p.id=#{id}
+		p.cid=c.id and p.lid=l.id and l.id=q.rid and p.id=#{id}
 	</select>
 	<select id="findPublishForTeacher" resultMap="ForTeacherMap">
 		select
@@ -70,5 +81,11 @@
 		where
 		p.lid=l.id and p.id=r.pid and p.type=#{type} and r.creator=#{creator}
 		order by p.create_date desc
+	</select>
+	<select id="findSubmitStateById" resultMap="SubmitStateMap">
+		select 
+		from 
+		library_publish p,class c,library_record r,user u
+		where p.cid=c.id and p.lid=l.id
 	</select>
 </mapper>

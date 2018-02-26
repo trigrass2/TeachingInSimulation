@@ -16,7 +16,15 @@ public enum Session {
 	/**
 	 * 用户角色
 	 */
-	KEY_LOGIN_ROLE;
+	KEY_LOGIN_ROLE,
+	/**
+	 * 登录学生所属班级
+	 */
+	KEY_LOGIN_CLASSID,
+	/**
+	 * 当前正在进行的考核发布记录编号
+	 */
+	KEY_LIBRARY_PUBLISH_ID;
 
 	private final static Map<Session, Object> DATAS = new HashMap<>();
 

@@ -17,11 +17,11 @@ public class LibraryRecordInfo implements Serializable {
 	/**
 	 * 学生成绩
 	 */
-	private Integer score;
+	private Float score;
 	/**
 	 * 考核用时
 	 */
-	private Long cost;
+	private Integer cost;
 
 	public Integer getId() {
 		return id;
@@ -39,19 +39,19 @@ public class LibraryRecordInfo implements Serializable {
 		this.name = name;
 	}
 
-	public Integer getScore() {
+	public Float getScore() {
 		return score;
 	}
 
-	public void setScore(Integer score) {
+	public void setScore(Float score) {
 		this.score = score;
 	}
 
-	public Long getCost() {
+	public Integer getCost() {
 		return cost;
 	}
 
-	public void setCost(Long cost) {
+	public void setCost(Integer cost) {
 		this.cost = cost;
 	}
 }

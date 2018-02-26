@@ -46,12 +46,16 @@ public abstract class AbstractService<T> implements BaseService<T> {
 		return mapper.selectCountByCondition(condition);
 	}
 
-	public int save(T model) {
-		return mapper.insertSelective(model);
+	public int saveUseGeneratedKeys(T model) {
+		return mapper.insertUseGeneratedKeys(model);
 	}
 
-	public void save(List<T> models) {
-		mapper.insertList(models);
+	public void save(T model) {
+		mapper.insertSelective(model);
+	}
+
+	public int save(List<T> models) {
+		return mapper.insertList(models);
 	}
 
 	public void deleteById(Integer id) {

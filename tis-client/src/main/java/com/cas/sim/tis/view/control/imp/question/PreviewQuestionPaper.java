@@ -11,13 +11,14 @@ import java.util.ResourceBundle;
 
 import javax.swing.filechooser.FileSystemView;
 
-import com.cas.sim.tis.consts.QuestionConsts;
 import com.cas.sim.tis.consts.QuestionType;
 import com.cas.sim.tis.consts.RoleConst;
 import com.cas.sim.tis.consts.Session;
+import com.cas.sim.tis.consts.TemplateConsts;
 import com.cas.sim.tis.entity.Class;
 import com.cas.sim.tis.entity.Library;
 import com.cas.sim.tis.entity.Question;
+import com.cas.sim.tis.util.AlertUtil;
 import com.cas.sim.tis.util.ExcelUtil;
 import com.cas.sim.tis.util.MsgUtil;
 import com.cas.sim.tis.util.SpringUtil;
@@ -26,9 +27,12 @@ import com.cas.sim.tis.view.action.LibraryAction;
 import com.cas.sim.tis.view.action.LibraryPublishAction;
 import com.cas.sim.tis.view.action.QuestionAction;
 import com.cas.sim.tis.view.control.IContent;
+import com.cas.sim.tis.view.control.ILeftContent;
+import com.cas.sim.tis.view.control.IPublish;
 import com.cas.sim.tis.view.control.imp.classes.ClassSelectDialog;
 import com.cas.sim.tis.view.control.imp.dialog.Dialog;
 import com.cas.sim.tis.view.control.imp.library.LibraryList.LibraryMenuType;
+import com.cas.sim.tis.view.controller.PageController;
 import com.cas.util.FileUtil;
 import com.cas.util.Util;
 
@@ -193,7 +197,7 @@ public class PreviewQuestionPaper extends HBox implements IContent {
 		if (target == null) {
 			return;
 		}
-		FileUtil.copyFile(QuestionConsts.QUESTION_TEMPLATE, target.getAbsolutePath(), true);
+		FileUtil.copyFile(TemplateConsts.QUESTION_TEMPLATE, target.getAbsolutePath(), true);
 	}
 
 	@FXML
@@ -214,10 +218,10 @@ public class PreviewQuestionPaper extends HBox implements IContent {
 			loadQuestions();
 			this.options.getChildren().remove(importBtn);
 			this.options.getChildren().add(exportBtn);
-			showAlert(AlertType.INFORMATION, MsgUtil.getMessage("excel.import.success"));
+			AlertUtil.showAlert(AlertType.INFORMATION, MsgUtil.getMessage("excel.import.success"));
 		} catch (Exception e) {
 			e.printStackTrace();
-			showAlert(AlertType.ERROR, e.getMessage());
+			AlertUtil.showAlert(AlertType.ERROR, e.getMessage());
 		}
 	}
 
@@ -238,15 +242,21 @@ public class PreviewQuestionPaper extends HBox implements IContent {
 		exportBlank(datas);
 		exportSubjective(datas);
 		try {
-			ExcelUtil.writeExcelByTemplate(QuestionConsts.QUESTION_TEMPLATE, target.getAbsolutePath(), ExcelUtil.EXCEL_TYPE_2003, datas, 1);
-			showAlert(AlertType.INFORMATION, MsgUtil.getMessage("excel.export.success"));
+			ExcelUtil.writeExcelByTemplate(TemplateConsts.QUESTION_TEMPLATE, target.getAbsolutePath(), ExcelUtil.EXCEL_TYPE_2003, datas, 1);
+			AlertUtil.showAlert(AlertType.INFORMATION, MsgUtil.getMessage("excel.export.success"));
 		} catch (Exception e) {
-			showAlert(AlertType.ERROR, e.getMessage());
+			AlertUtil.showAlert(AlertType.ERROR, e.getMessage());
 		}
 	}
 
 	@FXML
 	private void publish() {
+		// 判断当前是否有考核正在进行
+		if (Session.get(Session.KEY_LIBRARY_PUBLISH_ID) != null) {
+			AlertUtil.showAlert(AlertType.WARNING, MsgUtil.getMessage("alert.warning.examing"));
+			return;
+		}
+		// 创建考核记录
 		List<Class> classes = SpringUtil.getBean(ClassAction.class).findClassesByTeacher(Session.get(Session.KEY_LOGIN_ID));
 
 		Dialog<Integer> dialog = new Dialog<>();
@@ -257,7 +267,20 @@ public class PreviewQuestionPaper extends HBox implements IContent {
 			if (cid == null) {
 				return;
 			}
-			SpringUtil.getBean(LibraryPublishAction.class).publishLibraryToClass(rid,cid);
+			try {
+				Integer publishId = SpringUtil.getBean(LibraryPublishAction.class).publishLibraryToClass(rid, cid);
+				// 记录当前考核发布编号
+				Session.set(Session.KEY_LIBRARY_PUBLISH_ID, publishId);
+				// 添加考核进行时菜单
+				PageController controller = SpringUtil.getBean(PageController.class);
+				ILeftContent content = controller.getLeftMenu();
+				if (content instanceof IPublish) {
+					((IPublish) content).publish(rid);
+				}
+			} catch (Exception e) {
+				AlertUtil.showAlert(AlertType.ERROR, e.getMessage());
+				e.printStackTrace();
+			}
 		});
 	}
 
@@ -315,49 +338,61 @@ public class PreviewQuestionPaper extends HBox implements IContent {
 	}
 
 	private boolean loadChoice(File source, List<Question> questions) {
-		Object[][] result = ExcelUtil.readExcelSheet(source.getAbsolutePath(), QuestionType.CHOICE.getSheetName(), 4);
+		Object[][] result = ExcelUtil.readExcelSheet(source.getAbsolutePath(), QuestionType.CHOICE.getSheetName(), 5);
 		for (int i = 2; i < result.length; i++) {
 			Object descObj = result[i][0];
 			if (Util.isEmpty(descObj)) {
-				String reason = MsgUtil.getMessage("check.cant.null", MsgUtil.getMessage("question.stem"));
-				showAlert(AlertType.WARNING, reason);
+				String reason = MsgUtil.getMessage("alert.warning.cant.null", MsgUtil.getMessage("question.stem"));
+				AlertUtil.showAlert(AlertType.WARNING, MsgUtil.getMessage("excel.import.error", i + 1, 1, reason));
 				return false;
 			}
 			String title = String.valueOf(descObj).replaceAll("\\(", "（").replaceAll("\\)", "）").trim();
 			if (title.length() > 250) {
-				String reason = MsgUtil.getMessage("check.over.length", MsgUtil.getMessage("question.stem"), String.valueOf(250));
-				showAlert(AlertType.WARNING, reason);
+				String reason = MsgUtil.getMessage("alert.warning.over.length", MsgUtil.getMessage("question.stem"), 250);
+				AlertUtil.showAlert(AlertType.WARNING, MsgUtil.getMessage("excel.import.error", i + 1, 1, reason));
 				return false;
 			}
 			Object optionsObj = result[i][1];
 			if (Util.isEmpty(optionsObj)) {
-				String reason = MsgUtil.getMessage("check.cant.null", MsgUtil.getMessage("question.option"));
-				showAlert(AlertType.WARNING, reason);
+				String reason = MsgUtil.getMessage("alert.warning.cant.null", MsgUtil.getMessage("question.option"));
+				AlertUtil.showAlert(AlertType.WARNING, MsgUtil.getMessage("excel.import.error", i + 1, 2, reason));
 				return false;
 			}
 			String options = String.valueOf(optionsObj).replace("\r\n", "|").replace("\n", "|").trim();
 			if (options.length() > 250) {
-				String reason = MsgUtil.getMessage("check.over.length", MsgUtil.getMessage("question.option"), String.valueOf(250));
-				showAlert(AlertType.WARNING, reason);
+				String reason = MsgUtil.getMessage("alert.warning.over.length", MsgUtil.getMessage("question.option"), 250);
+				AlertUtil.showAlert(AlertType.WARNING, MsgUtil.getMessage("excel.import.error", i + 1, 2, reason));
 				return false;
 			}
 			Object referenceObj = result[i][2];
 			if (Util.isEmpty(referenceObj)) {
-				String reason = MsgUtil.getMessage("check.cant.null", MsgUtil.getMessage("question.reference"));
-				showAlert(AlertType.WARNING, reason);
+				String reason = MsgUtil.getMessage("alert.warning.cant.null", MsgUtil.getMessage("question.reference"));
+				AlertUtil.showAlert(AlertType.WARNING, MsgUtil.getMessage("excel.import.error", i + 1, 3, reason));
 				return false;
 			}
 			String reference = String.valueOf(referenceObj).trim();
 			if (reference.length() > 10) {
-				String reason = MsgUtil.getMessage("check.over.length", MsgUtil.getMessage("question.reference"), String.valueOf(10));
-				showAlert(AlertType.WARNING, reason);
+				String reason = MsgUtil.getMessage("alert.warning.over.length", MsgUtil.getMessage("question.reference"), 10);
+				AlertUtil.showAlert(AlertType.WARNING, MsgUtil.getMessage("excel.import.error", i + 1, 3, reason));
 				return false;
 			}
-			Object analysisObj = result[i][3];
+			Object pointObj = result[i][3];
+			if (Util.isEmpty(pointObj)) {
+				String reason = MsgUtil.getMessage("alert.warning.cant.null", MsgUtil.getMessage("question.point"));
+				AlertUtil.showAlert(AlertType.WARNING, MsgUtil.getMessage("excel.import.error", i + 1, 4, reason));
+				return false;
+			}
+			String point = String.valueOf(pointObj).trim();
+			if (!Util.isNumeric(point)) {
+				String reason = MsgUtil.getMessage("alert.warning.not.number", MsgUtil.getMessage("question.point"));
+				AlertUtil.showAlert(AlertType.WARNING, MsgUtil.getMessage("excel.import.error", i + 1, 4, reason));
+				return false;
+			}
+			Object analysisObj = result[i][4];
 			String analysis = String.valueOf(analysisObj).trim();
 			if (analysis.length() > 250) {
-				String reason = MsgUtil.getMessage("check.over.length", MsgUtil.getMessage("question.analysis"), String.valueOf(250));
-				showAlert(AlertType.WARNING, reason);
+				String reason = MsgUtil.getMessage("alert.warning.over.length", MsgUtil.getMessage("question.analysis"), 250);
+				AlertUtil.showAlert(AlertType.WARNING, MsgUtil.getMessage("excel.import.error", i + 1, 5, reason));
 				return false;
 			}
 			Question question = new Question();
@@ -365,7 +400,7 @@ public class PreviewQuestionPaper extends HBox implements IContent {
 			question.setTitle(title);
 			question.setOptions(options);
 			question.setAnalysis(analysis);
-			question.setReference(reference);
+			question.setReference(point);
 			question.setType(QuestionType.CHOICE.getType());
 			question.setCreator(Session.get(Session.KEY_LOGIN_ID));
 			questions.add(question);
@@ -378,40 +413,52 @@ public class PreviewQuestionPaper extends HBox implements IContent {
 		for (int i = 2; i < result.length; i++) {
 			Object descObj = result[i][0];
 			if (Util.isEmpty(descObj)) {
-				String reason = MsgUtil.getMessage("check.cant.null", MsgUtil.getMessage("question.stem"));
-				showAlert(AlertType.WARNING, reason);
+				String reason = MsgUtil.getMessage("alert.warning.cant.null", MsgUtil.getMessage("question.stem"));
+				AlertUtil.showAlert(AlertType.WARNING, MsgUtil.getMessage("excel.import.error", i + 1, 1, reason));
 				return false;
 			}
 			String title = String.valueOf(descObj).replaceAll("\\(", "（").replaceAll("\\)", "）").trim();
 			if (title.length() > 250) {
-				String reason = MsgUtil.getMessage("check.over.length", MsgUtil.getMessage("question.stem"), String.valueOf(250));
-				showAlert(AlertType.WARNING, reason);
+				String reason = MsgUtil.getMessage("alert.warning.over.length", MsgUtil.getMessage("question.stem"), 250);
+				AlertUtil.showAlert(AlertType.WARNING, MsgUtil.getMessage("excel.import.error", i + 1, 1, reason));
 				return false;
 			}
 			Object referenceObj = result[i][1];
 			if (Util.isEmpty(referenceObj)) {
-				String reason = MsgUtil.getMessage("check.cant.null", MsgUtil.getMessage("question.reference"));
-				showAlert(AlertType.WARNING, reason);
+				String reason = MsgUtil.getMessage("alert.warning.cant.null", MsgUtil.getMessage("question.reference"));
+				AlertUtil.showAlert(AlertType.WARNING, MsgUtil.getMessage("excel.import.error", i + 1, 2, reason));
 				return false;
 			}
 			String reference = String.valueOf(referenceObj).trim();
 			if (reference.length() > 10) {
-				String reason = MsgUtil.getMessage("check.over.length", MsgUtil.getMessage("question.reference"), String.valueOf(10));
-				showAlert(AlertType.WARNING, reason);
+				String reason = MsgUtil.getMessage("alert.warning.over.length", MsgUtil.getMessage("question.reference"), 10);
+				AlertUtil.showAlert(AlertType.WARNING, MsgUtil.getMessage("excel.import.error", i + 1, 2, reason));
 				return false;
 			}
-			Object analysisObj = result[i][2];
+			Object pointObj = result[i][2];
+			if (Util.isEmpty(pointObj)) {
+				String reason = MsgUtil.getMessage("alert.warning.cant.null", MsgUtil.getMessage("question.point"));
+				AlertUtil.showAlert(AlertType.WARNING, MsgUtil.getMessage("excel.import.error", i + 1, 3, reason));
+				return false;
+			}
+			String point = String.valueOf(pointObj).trim();
+			if (Util.isNumeric(point)) {
+				String reason = MsgUtil.getMessage("alert.warning.not.number", MsgUtil.getMessage("question.point"));
+				AlertUtil.showAlert(AlertType.WARNING, MsgUtil.getMessage("excel.import.error", i + 1, 3, reason));
+				return false;
+			}
+			Object analysisObj = result[i][3];
 			String analysis = String.valueOf(analysisObj).trim();
 			if (analysis.length() > 250) {
-				String reason = MsgUtil.getMessage("check.over.length", MsgUtil.getMessage("question.analysis"), String.valueOf(250));
-				showAlert(AlertType.WARNING, reason);
+				String reason = MsgUtil.getMessage("alert.warning.over.length", MsgUtil.getMessage("question.analysis"), 250);
+				AlertUtil.showAlert(AlertType.WARNING, MsgUtil.getMessage("excel.import.error", i + 1, 4, reason));
 				return false;
 			}
 			Question question = new Question();
 			question.setRelateId(rid);
 			question.setTitle(title);
 			question.setAnalysis(analysis);
-			question.setReference(reference);
+			question.setReference(point);
 			question.setType(QuestionType.JUDGMENT.getType());
 			question.setCreator(Session.get(Session.KEY_LOGIN_ID));
 			questions.add(question);
@@ -424,40 +471,52 @@ public class PreviewQuestionPaper extends HBox implements IContent {
 		for (int i = 2; i < result.length; i++) {
 			Object descObj = result[i][0];
 			if (Util.isEmpty(descObj)) {
-				String reason = MsgUtil.getMessage("check.cant.null", MsgUtil.getMessage("question.stem"));
-				showAlert(AlertType.WARNING, reason);
+				String reason = MsgUtil.getMessage("alert.warning.cant.null", MsgUtil.getMessage("question.stem"));
+				AlertUtil.showAlert(AlertType.WARNING, MsgUtil.getMessage("excel.import.error", i + 1, 1, reason));
 				return false;
 			}
 			String title = String.valueOf(descObj).replaceAll("\\(", "（").replaceAll("\\)", "）").replaceAll("（）", "（|）").trim();
 			if (title.length() > 250) {
-				String reason = MsgUtil.getMessage("check.over.length", MsgUtil.getMessage("question.stem"), String.valueOf(250));
-				showAlert(AlertType.WARNING, reason);
+				String reason = MsgUtil.getMessage("alert.warning.over.length", MsgUtil.getMessage("question.stem"), 250);
+				AlertUtil.showAlert(AlertType.WARNING, MsgUtil.getMessage("excel.import.error", i + 1, 1, reason));
 				return false;
 			}
 			Object referenceObj = result[i][1];
 			if (Util.isEmpty(referenceObj)) {
-				String reason = MsgUtil.getMessage("check.cant.null", MsgUtil.getMessage("question.reference"));
-				showAlert(AlertType.WARNING, reason);
+				String reason = MsgUtil.getMessage("alert.warning.cant.null", MsgUtil.getMessage("question.reference"));
+				AlertUtil.showAlert(AlertType.WARNING, MsgUtil.getMessage("excel.import.error", i + 1, 2, reason));
 				return false;
 			}
 			String reference = String.valueOf(referenceObj).replace("\r\n", "|").replace("\n", "|").trim();
 			if (reference.length() > 250) {
-				String reason = MsgUtil.getMessage("check.over.length", MsgUtil.getMessage("question.reference"), String.valueOf(250));
-				showAlert(AlertType.WARNING, reason);
+				String reason = MsgUtil.getMessage("alert.warning.over.length", MsgUtil.getMessage("question.reference"), 250);
+				AlertUtil.showAlert(AlertType.WARNING, MsgUtil.getMessage("excel.import.error", i + 1, 2, reason));
 				return false;
 			}
-			Object analysisObj = result[i][2];
+			Object pointObj = result[i][2];
+			if (Util.isEmpty(pointObj)) {
+				String reason = MsgUtil.getMessage("alert.warning.cant.null", MsgUtil.getMessage("question.point"));
+				AlertUtil.showAlert(AlertType.WARNING, MsgUtil.getMessage("excel.import.error", i + 1, 2, reason));
+				return false;
+			}
+			String point = String.valueOf(pointObj).replace("\r\n", "|").replace("\n", "|").trim();
+			if (Util.isNumeric(point)) {
+				String reason = MsgUtil.getMessage("alert.warning.not.number", MsgUtil.getMessage("question.point"));
+				AlertUtil.showAlert(AlertType.WARNING, MsgUtil.getMessage("excel.import.error", i + 1, 2, reason));
+				return false;
+			}
+			Object analysisObj = result[i][3];
 			String analysis = String.valueOf(analysisObj).trim();
 			if (analysis.length() > 250) {
-				String reason = MsgUtil.getMessage("check.over.length", MsgUtil.getMessage("question.analysis"), String.valueOf(250));
-				showAlert(AlertType.WARNING, reason);
+				String reason = MsgUtil.getMessage("alert.warning.over.length", MsgUtil.getMessage("question.analysis"), 250);
+				AlertUtil.showAlert(AlertType.WARNING, MsgUtil.getMessage("excel.import.error", i + 1, 4, reason));
 				return false;
 			}
 			Question question = new Question();
 			question.setRelateId(rid);
 			question.setTitle(title);
 			question.setAnalysis(analysis);
-			question.setReference(reference);
+			question.setReference(point);
 			question.setType(QuestionType.BLANK.getType());
 			question.setCreator(Session.get(Session.KEY_LOGIN_ID));
 			questions.add(question);
@@ -470,21 +529,21 @@ public class PreviewQuestionPaper extends HBox implements IContent {
 		for (int i = 2; i < result.length; i++) {
 			Object descObj = result[i][0];
 			if (Util.isEmpty(descObj)) {
-				String reason = MsgUtil.getMessage("check.cant.null", MsgUtil.getMessage("question.stem"));
-				showAlert(AlertType.WARNING, reason);
+				String reason = MsgUtil.getMessage("alert.warning.cant.null", MsgUtil.getMessage("question.stem"));
+				AlertUtil.showAlert(AlertType.WARNING, MsgUtil.getMessage("excel.import.error", i + 1, 1, reason));
 				return false;
 			}
 			String title = String.valueOf(descObj).replaceAll("\\(", "（").replaceAll("\\)", "）").trim();
 			if (title.length() > 250) {
-				String reason = MsgUtil.getMessage("check.over.length", MsgUtil.getMessage("question.stem"), String.valueOf(250));
-				showAlert(AlertType.WARNING, reason);
+				String reason = MsgUtil.getMessage("alert.warning.over.length", MsgUtil.getMessage("question.stem"), 250);
+				AlertUtil.showAlert(AlertType.WARNING, MsgUtil.getMessage("excel.import.error", i + 1, 1, reason));
 				return false;
 			}
 			Object analysisObj = result[i][1];
 			String analysis = String.valueOf(analysisObj).trim();
 			if (analysis.length() > 250) {
-				String reason = MsgUtil.getMessage("check.over.length", MsgUtil.getMessage("question.analysis"), String.valueOf(250));
-				showAlert(AlertType.WARNING, reason);
+				String reason = MsgUtil.getMessage("alert.warning.over.length", MsgUtil.getMessage("question.analysis"), 250);
+				AlertUtil.showAlert(AlertType.WARNING, MsgUtil.getMessage("excel.import.error", i + 1, 2, reason));
 				return false;
 			}
 			Question question = new Question();

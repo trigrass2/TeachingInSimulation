@@ -11,9 +11,11 @@ public interface BaseService<T> {
 
 	int getTotalBy(Condition condition);
 
-	int save(T model);// 持久化
-
-	void save(List<T> models);// 批量持久化
+	int saveUseGeneratedKeys(T model);
+	
+	void save(T model);// 持久化
+	
+	int save(List<T> models);// 批量持久化，返回实际批量插入条数
 
 	void deleteById(Integer id);// 通过主鍵刪除
 

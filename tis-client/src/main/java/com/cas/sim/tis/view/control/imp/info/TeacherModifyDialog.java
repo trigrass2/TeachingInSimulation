@@ -75,12 +75,12 @@ public class TeacherModifyDialog extends DialogPane<User> {
 		ok.setOnAction(e -> {
 			String codeText = code.getText();
 			if (StringUtils.isEmpty(codeText)) {
-				error.setText(MsgUtil.getMessage("check.cant.null", MsgUtil.getMessage("teacher.code")));
+				error.setText(MsgUtil.getMessage("alert.warning.cant.null", MsgUtil.getMessage("teacher.code")));
 				return;
 			}
 			String nameText = name.getText();
 			if (StringUtils.isEmpty(nameText)) {
-				error.setText(MsgUtil.getMessage("check.cant.null", MsgUtil.getMessage("teacher.name")));
+				error.setText(MsgUtil.getMessage("alert.warning.cant.null", MsgUtil.getMessage("teacher.name")));
 				return;
 			}
 			teacher.setCode(codeText);

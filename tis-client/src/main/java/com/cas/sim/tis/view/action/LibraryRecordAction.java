@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.remoting.rmi.RmiProxyFactoryBean;
 import org.springframework.stereotype.Component;
 
+import com.cas.sim.tis.entity.LibraryAnswer;
+import com.cas.sim.tis.entity.LibraryRecord;
 import com.cas.sim.tis.services.LibraryRecordService;
 import com.cas.sim.tis.vo.LibraryRecordInfo;
 
@@ -25,6 +27,11 @@ public class LibraryRecordAction {
 	public List<LibraryRecordInfo> findPublishForTeacher(int pid) {
 		LibraryRecordService service = (LibraryRecordService) libraryRecordServiceFactory.getObject();
 		return service.findRecordByPublishId(pid);
+	}
+
+	public void addRecord(LibraryRecord record, List<LibraryAnswer> answers) {
+		LibraryRecordService service = (LibraryRecordService) libraryRecordServiceFactory.getObject();
+		service.addRecord(record, answers);
 	}
 	
 }

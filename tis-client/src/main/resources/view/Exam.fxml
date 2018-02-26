@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.String?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.text.Text?>
+<?import com.cas.sim.tis.svg.SVGGlyph?>
+<?import com.cas.sim.tis.view.control.imp.Decoration?>
+<?import com.cas.sim.tis.view.control.imp.Title?>
+
+<VBox prefHeight="768.0" prefWidth="1366.0" style="-fx-background-image: url(/static/images/basic/bg.png);" stylesheets="@../static/css/basic.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.cas.sim.tis.view.controller.ExamController">
+	<children>
+		<HBox alignment="CENTER_LEFT" prefHeight="75.0" minHeight="75.0" styleClass="top-cover">
+			<children>
+				<ImageView fitHeight="30.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true">
+					<image>
+						<Image url="@../static/images/basic/logo.png" />
+					</image>
+					<HBox.margin>
+						<Insets left="40" right="40" />
+					</HBox.margin>
+				</ImageView>
+				<Button fx:id="back" visible="false" mnemonicParsing="false" onAction="#back" styleClass="img-btn" text="返回" textFill="WHITE">
+					<graphic>
+						<SVGGlyph name="iconfont.svg.back" size="16" fill="WHITE" />
+					</graphic>
+				</Button>
+				<HBox alignment="TOP_RIGHT" HBox.hgrow="ALWAYS">
+					<children>
+						<Decoration />
+					</children>
+				</HBox>
+			</children>
+		</HBox>
+		<HBox VBox.vgrow="ALWAYS">
+			<children>
+				<VBox HBox.hgrow="ALWAYS" spacing="10" style="-fx-background-color: #ffffff;">
+					<children>
+						<Title fx:id="libraryName" />
+						<VBox spacing="30" VBox.vgrow="ALWAYS" alignment="CENTER_LEFT">
+							<children>
+								<ScrollPane fx:id="options" VBox.vgrow="ALWAYS" fitToWidth="true" hbarPolicy="NEVER" />
+								<HBox>
+									<Button fx:id="prev" prefHeight="40" prefWidth="250.0" text="%button.question.prev" onAction="#prev" styleClass="blue-btn" disable="true"/>
+									<HBox alignment="BOTTOM_RIGHT" HBox.hgrow="ALWAYS">
+										<Button fx:id="next" prefHeight="40" prefWidth="250.0" text="%button.question.next" onAction="#next" styleClass="blue-btn" />
+									</HBox>
+								</HBox>
+							</children>
+							<padding>
+								<Insets left="125" right="125" />
+							</padding>
+						</VBox>
+					</children>
+					<padding>
+						<Insets top="15" bottom="15" />
+					</padding>
+				</VBox>
+				<VBox prefWidth="435.0" minWidth="435.0" maxWidth="435.0" style="-fx-background-color: #fbfbfb;">
+					<children>
+						<Title title="%exam.title.anwser.card" />
+						<ScrollPane fitToWidth="true" hbarPolicy="NEVER" VBox.vgrow="ALWAYS">
+							<content>
+								<FlowPane fx:id="flow" hgap="12" vgap="12" prefWrapLength="435.0">
+									<padding>
+										<Insets left="7.5" right="7.5" top="15" bottom="15" />
+									</padding>
+								</FlowPane>
+							</content>
+						</ScrollPane>
+						<VBox spacing="20" alignment="BOTTOM_CENTER">
+							<HBox spacing="30">
+								<HBox>
+									<Label text="%exam.total" styleClass="font14" />
+									<Label fx:id="total" text="--">
+										<styleClass>
+											<String fx:value="font14" />
+											<String fx:value="green" />
+										</styleClass>
+									</Label>
+									<Label text="%exam.point" styleClass="font14" />
+								</HBox>
+								<HBox>
+									<Label text="%exam.score" styleClass="font14" />
+									<Label fx:id="score" text="--">
+										<styleClass>
+											<String fx:value="font14" />
+											<String fx:value="orange" />
+										</styleClass>
+									</Label>
+									<Label text="%exam.point" styleClass="font14" />
+								</HBox>
+								<HBox>
+									<Label text="%exam.time" styleClass="font14" />
+									<Label fx:id="minute">
+										<styleClass>
+											<String fx:value="font14" />
+											<String fx:value="red" />
+										</styleClass>
+									</Label>
+									<Label text="%exam.min" styleClass="font14" />
+									<Label fx:id="second">
+										<styleClass>
+											<String fx:value="font14" />
+											<String fx:value="red" />
+										</styleClass>
+									</Label>
+									<Label text="%exam.sec" styleClass="font14" />
+								</HBox>
+							</HBox>
+							<Button prefHeight="40" prefWidth="390.0" text="%button.submit" onAction="#submit" styleClass="blue-btn" />
+							<padding>
+								<Insets left="25" right="25" />
+							</padding>
+						</VBox>
+					</children>
+					<padding>
+						<Insets top="15" bottom="15" />
+					</padding>
+				</VBox>
+			</children>
+		</HBox>
+	</children>
+</VBox>

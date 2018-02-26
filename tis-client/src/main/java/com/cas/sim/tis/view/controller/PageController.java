@@ -42,12 +42,19 @@ public class PageController implements Initializable {
 
 	@FXML
 	private Region arrow;
+<<<<<<< HEAD
+=======
+
+>>>>>>> c2ecb2dd75187d7670e8cdc7617d5a37e45034cc
 	@FXML
 	private Pane loadingLayer;
 	@FXML
 	private StackPane container;
+<<<<<<< HEAD
 	
 	private ILeftContent left;
+=======
+>>>>>>> c2ecb2dd75187d7670e8cdc7617d5a37e45034cc
 	/**
 	 * 上一层内容
 	 */
@@ -204,4 +211,7 @@ public class PageController implements Initializable {
 		container.setDisable(false);
 	}
 
+	public ILeftContent getLeftMenu() {
+		return left;
+	}
 }

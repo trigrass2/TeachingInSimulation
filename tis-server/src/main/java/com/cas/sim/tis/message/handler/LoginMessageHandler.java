@@ -53,6 +53,7 @@ public class LoginMessageHandler implements ServerHandler<LoginMessage> {
 					source.send(respMsg);
 				} else {
 					source.setAttribute(Session.KEY_LOGIN_ID.name(), user.getId());
+					source.setAttribute(Session.KEY_LOGIN_CLASSID.name(), user.getClassId());
 					source.setAttribute(Session.KEY_LOGIN_ACCOUNT.name(), user.getCode());
 					clients.add(source);
 					LOG.info("客户端登录成功，当前客户端数量{}", clients.size());

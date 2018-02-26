@@ -55,6 +55,8 @@ public class LibraryPublish implements Serializable {
 	
 	private Library library;
 	
+	private Class clazz;
+	
 	public Integer getId() {
 		return id;
 	}
@@ -113,5 +115,13 @@ public class LibraryPublish implements Serializable {
 
 	public void setLibrary(Library library) {
 		this.library = library;
+	}
+
+	public Class getClazz() {
+		return clazz;
+	}
+
+	public void setClazz(Class clazz) {
+		this.clazz = clazz;
 	}
 }

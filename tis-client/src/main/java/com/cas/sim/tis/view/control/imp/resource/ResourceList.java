@@ -21,6 +21,7 @@ import com.cas.sim.tis.consts.ResourceConsts;
 import com.cas.sim.tis.consts.ResourceType;
 import com.cas.sim.tis.entity.Resource;
 import com.cas.sim.tis.svg.SVGGlyph;
+import com.cas.sim.tis.util.AlertUtil;
 import com.cas.sim.tis.util.FTPUtils;
 import com.cas.sim.tis.util.MsgUtil;
 import com.cas.sim.tis.util.SpringUtil;
@@ -299,7 +300,7 @@ public class ResourceList extends HBox implements IContent {
 			// 删除按钮
 			Column<String> delete = new Column<String>();
 			delete.setCellFactory(BtnCell.forTableColumn(MsgUtil.getMessage("button.delete"), "blue-btn", rid -> {
-				showConfirm(MsgUtil.getMessage("table.delete"), response -> {
+				AlertUtil.showConfirm(MsgUtil.getMessage("table.delete"), response -> {
 					if (response == ButtonType.YES) {
 						SpringUtil.getBean(ResourceAction.class).detele((Integer) rid);
 						pagination.reload();
@@ -460,7 +461,7 @@ public class ResourceList extends HBox implements IContent {
 		uploadTip.setText(MsgUtil.getMessage("ftp.upload.waiting"));
 		boolean uploaded = SpringUtil.getBean(FTPUtils.class).uploadFile(ResourceConsts.FTP_RES_PATH, uploadFile, rename);
 		if (!uploaded) {
-			showAlert(AlertType.ERROR, MsgUtil.getMessage("ftp.upload.failure"));
+			AlertUtil.showAlert(AlertType.ERROR, MsgUtil.getMessage("ftp.upload.failure"));
 			// 启用上传按钮
 			((Button) event.getSource()).setDisable(false);
 			return;
@@ -480,9 +481,9 @@ public class ResourceList extends HBox implements IContent {
 		// 记录到数据库
 		boolean converter = action.addResource(resource);
 		if (converter) {
-			showAlert(AlertType.INFORMATION, MsgUtil.getMessage("ftp.upload.success"));
+			AlertUtil.showAlert(AlertType.INFORMATION, MsgUtil.getMessage("ftp.upload.success"));
 		} else {
-			showAlert(AlertType.ERROR, MsgUtil.getMessage("ftp.upload.converter.failure"));
+			AlertUtil.showAlert(AlertType.ERROR, MsgUtil.getMessage("ftp.upload.converter.failure"));
 		}
 		// 启用上传按钮
 		((Button) event.getSource()).setDisable(false);

@@ -168,8 +168,6 @@ public class ResourceServiceImpl extends AbstractService<Resource> implements Re
 			ResourceMapper resourceMapper = (ResourceMapper) mapper;
 			resourceMapper.increaseBrowse(id);
 
-			status.flush();
-
 			Condition condition = new Condition(BrowseHistory.class);
 			condition.orderBy("createDate").asc();
 			Criteria criteria = condition.createCriteria();
@@ -207,7 +205,6 @@ public class ResourceServiceImpl extends AbstractService<Resource> implements Re
 			ResourceMapper resourceMapper = (ResourceMapper) mapper;
 			resourceMapper.decreaseCollection(id);
 
-			status.flush();
 			// 修改用户收藏记录
 			Condition condition = new Condition(Collection.class);
 			Criteria criteria = condition.createCriteria();
@@ -241,8 +238,6 @@ public class ResourceServiceImpl extends AbstractService<Resource> implements Re
 			// 增加资源收藏数量
 			ResourceMapper resourceMapper = (ResourceMapper) mapper;
 			resourceMapper.increaseCollection(id);
-
-			status.flush();
 
 			// 新增用户收藏记录
 			Collection collection = new Collection();

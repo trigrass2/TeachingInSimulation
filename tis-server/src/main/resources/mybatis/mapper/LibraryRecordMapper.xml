@@ -4,16 +4,16 @@
 	<resultMap id="BaseResultMap" type="com.cas.sim.tis.entity.LibraryRecord">
 		<id column="ID" jdbcType="INTEGER" property="id" />
 		<result column="PID" jdbcType="INTEGER" property="publishId" />
-		<result column="SCORE" jdbcType="INTEGER" property="score" />
-		<result column="COST" jdbcType="BIGINT" property="cost" />
+		<result column="SCORE" jdbcType="FLOAT" property="score" />
+		<result column="COST" jdbcType="INTEGER" property="cost" />
 		<result column="CREATOR" jdbcType="INTEGER" property="creator" />
 		<result column="CREATE_DATE" jdbcType="TIMESTAMP" property="createDate" />
 	</resultMap>
 	<resultMap id="RecordInfoMap" type="com.cas.sim.tis.vo.LibraryRecordInfo">
 		<id column="ID" jdbcType="INTEGER" property="id" />
 		<result column="NAME" jdbcType="VARCHAR" property="name" />
-		<result column="SCORE" jdbcType="INTEGER" property="score" />
-		<result column="COST" jdbcType="BIGINT" property="cost" />
+		<result column="SCORE" jdbcType="FLOAT" property="score" />
+		<result column="COST" jdbcType="INTEGER" property="cost" />
 	</resultMap>
 	<select id="findRecordByPublishId" resultMap="RecordInfoMap">
 		select 

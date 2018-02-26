@@ -36,7 +36,7 @@ public class CircuitTest {
 //		ElecComp elecComp = service.findById(10);
 		ElecComp elecComp = service.findBy("model", "CJX2-12");
 
-		String cfgPath = util.getHttpUrl(elecComp.getCfgPath());
+		String cfgPath = util.getFullPath(elecComp.getCfgPath());
 		URL url = new URL(cfgPath);
 		ElecCompDef elecCompDef = JaxbUtil.converyToJavaBean(url, ElecCompDef.class);
 		System.out.println(elecCompDef);
