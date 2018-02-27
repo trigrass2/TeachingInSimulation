@@ -63,8 +63,9 @@ public class ExamingMenuItem extends HBox implements IDistory {
 		});
 
 		VBox.setVgrow(examing, Priority.ALWAYS);
+		getChildren().add(examing);
 		setAlignment(Pos.CENTER);
-//		setVisible(false);
+		setVisible(false);
 	}
 
 	public void load(int id) {
@@ -79,7 +80,7 @@ public class ExamingMenuItem extends HBox implements IDistory {
 		Dialog<Boolean> dialog = new Dialog<>();
 		dialog.setDialogPane(new ExamingDialog(publish));
 		dialog.setTitle(MsgUtil.getMessage("class.dialog.modify"));
-		dialog.setPrefSize(635, 320);
+		dialog.setPrefSize(640, 380);
 		dialog.showAndWait().ifPresent(finish -> {
 			if (finish) {
 				ExamMessage message = new ExamMessage();

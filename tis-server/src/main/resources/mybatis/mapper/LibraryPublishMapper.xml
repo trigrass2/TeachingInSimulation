@@ -58,7 +58,7 @@
 		p.id,p.type,p.average,
 		l.id as lid,l.name as lname,l.time,l.type as ltype,l.num as lnum,
 		q.id as qid,q.title,q.options,q.reference,q.analysis,q.point,q.type as qtype,
-		c.id as cid,c.name as cname  
+		c.id as cid,c.name as cname
 		from
 		library_publish p,class c,library l,question q
 		where
@@ -83,9 +83,17 @@
 		order by p.create_date desc
 	</select>
 	<select id="findSubmitStateById" resultMap="SubmitStateMap">
-		select 
-		from 
-		library_publish p,class c,library_record r,user u
-		where p.cid=c.id and p.lid=l.id
+		SELECT
+		a.code, a.name, COUNT(r.id) as submited
+		FROM
+		(SELECT
+		p.id AS pid, u.id AS uid, u.code, u.name
+		FROM
+		library_publish p, user u
+		WHERE
+		p.cid = u.cid AND p.id = #{id}) a
+		LEFT JOIN
+		library_record r ON a.pid = r.pid AND a.uid = r.creator
+		GROUP BY a.code , a.name;
 	</select>
 </mapper>

@@ -34,6 +34,10 @@
 	-fx-fill: #e89029;
 	-fx-text-fill:#e89029;
 }
+.blue{
+	-fx-fill: #0090FF;
+	-fx-text-fill:#0090FF;
+}
 .bold{
 	-fx-font-weight: bold;
 }
@@ -587,11 +591,11 @@
  *                                                                             *
  ******************************************************************************/
  .dialog{
+    -fx-background-color:#ffffff;
  	-fx-border-color:#E5E5E5;
  }
  .dialog>.header{
  	-fx-padding: 15.0px;
-    -fx-background-color:#ffffff;
     -fx-border-color:#0090FF,#E5E5E5;
     -fx-border-width: 3.0 0.0 0.0 0.0,0.0 0.0 1.0 0.0;
  }

@@ -26,10 +26,12 @@ public class Cell<T>extends Label {
 	}
 
 	protected Row row;
-	
+
 	protected Tooltip tooltip = new Tooltip();
 
 	private ChangeListener<Boolean> editListener;
+
+	private boolean header;
 
 	public Cell(StringConverter<T> converter) {
 		this.setText("");
@@ -248,7 +250,7 @@ public class Cell<T>extends Label {
 		newCol.getStyleClass().addListener(weakColumnStyleClassListener);
 		getStyleClass().addAll(newCol.getStyleClass());
 		newCol.styleFactoryProperty().addListener(weakColumnStyleFactrayListener);
-		if (newCol.getStyleFactory() != null) {
+		if (newCol.getStyleFactory() != null && !header) {
 			getStyleClass().add(newCol.getStyleFactory().toString(getItem()));
 		}
 		newCol.alignmentProperty().addListener(weakColumnAlignmentListener);
@@ -320,5 +322,13 @@ public class Cell<T>extends Label {
 
 	public void destory() {
 		unbind();
+	}
+
+	public void setHeader(boolean header) {
+		this.header = header;
+	}
+
+	public boolean isHeader() {
+		return header;
 	}
 }

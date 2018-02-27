@@ -75,6 +75,7 @@ public class LibraryMenu extends LeftMenu implements IPublish, IDistory {
 		if (!menu.getChildren().contains(item)) {
 			item = new ExamingMenuItem();
 			menu.getChildren().add(item);
+			menu.layout();
 		}
 		if (item != null) {
 			item.load(id);

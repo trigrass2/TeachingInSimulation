@@ -11,6 +11,7 @@ import com.cas.sim.tis.svg.SVGGlyph;
 import com.cas.sim.tis.util.MsgUtil;
 import com.cas.sim.tis.util.SpringUtil;
 import com.cas.sim.tis.view.control.imp.dialog.DialogPane;
+import com.cas.sim.tis.view.control.imp.table.Cell;
 import com.cas.sim.tis.view.control.imp.table.Column;
 import com.cas.sim.tis.view.control.imp.table.Table;
 import com.cas.sim.tis.vo.SubmitInfo;
@@ -27,6 +28,7 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.util.Duration;
+import javafx.util.StringConverter;
 
 public class ExamingDialog extends DialogPane<Boolean> {
 
@@ -42,18 +44,25 @@ public class ExamingDialog extends DialogPane<Boolean> {
 
 		Label libraryName = new Label(library.getName());
 		libraryName.getStyleClass().add("orange");
+		HBox.getHgrow(libraryName);
+
+		HBox libraryBox = new HBox();
+		libraryBox.setAlignment(Pos.CENTER);
+		libraryBox.getChildren().add(libraryName);
+		HBox.getHgrow(libraryBox);
 
 		Label time = new Label(MsgUtil.getMessage("library.time.expand", library.getTime()));
 		time.getStyleClass().add("orange");
 
-		SVGGlyph glyph = new SVGGlyph("iconfont.svg.refresh", Color.web("#19b0c6"), 25);
+		SVGGlyph glyph = new SVGGlyph("iconfont.svg.refresh", Color.web("#19b0c6"), 20);
 
 		RotateTransition transition = new RotateTransition(Duration.millis(500), glyph);
 		transition.setFromAngle(0);
 		transition.setToAngle(360);
 
 		Button refresh = new Button();
-		refresh.setGraphic(refresh);
+		refresh.setGraphic(glyph);
+		refresh.getStyleClass().add("img-btn");
 		refresh.hoverProperty().addListener((b, o, n) -> {
 			if (n.booleanValue()) {
 				transition.playFromStart();
@@ -65,36 +74,63 @@ public class ExamingDialog extends DialogPane<Boolean> {
 
 		HBox box = new HBox(30);
 		box.setAlignment(Pos.CENTER);
-		box.setPadding(new Insets(20));
-		box.getChildren().addAll(className, libraryName, time);
+		box.getChildren().addAll(className, libraryBox, time, refresh);
 
 		table.setRowHeight(45);
+		table.setSeparatorable(false);
+		table.setRowsSpacing(1);
 
-		// 数据库唯一表示
-		Column<Integer> primary = new Column<>();
-		primary.setPrimary(true);
-		primary.setVisible(false);
-		primary.setKey("id");
 		// 学生学号
 		Column<String> code = new Column<>();
 		code.setAlignment(Pos.CENTER);
 		code.setKey("code");
 		code.setText(MsgUtil.getMessage("student.code"));
-		code.setPrefWidth(150);
+		code.setPrefWidth(100);
 		// 学生名称
 		Column<String> name = new Column<>();
 		name.setAlignment(Pos.CENTER);
 		name.setKey("name");
 		name.setText(MsgUtil.getMessage("student.name"));
 		name.setPrefWidth(100);
-		table.getColumns().addAll(primary, code, name);
 		// 提交状态
-		Column<String> submit = new Column<>();
+		Column<Boolean> submit = new Column<>();
 		submit.setAlignment(Pos.CENTER);
-		submit.setKey("state");
+		submit.setKey("submited");
 		submit.setText(MsgUtil.getMessage("exam.submit.state"));
 		submit.setPrefWidth(100);
-		table.getColumns().addAll(primary, code, submit);
+		submit.setStyleFactory(new StringConverter<Boolean>() {
+
+			@Override
+			public String toString(Boolean submited) {
+				if (submited) {
+					return "blue";
+				} else {
+					return "orange";
+				}
+			}
+
+			@Override
+			public Boolean fromString(String string) {
+				return null;
+			}
+		});
+		submit.setCellFactory(Cell.forTableColumn(new StringConverter<Boolean>() {
+
+			@Override
+			public String toString(Boolean submited) {
+				if (submited) {
+					return MsgUtil.getMessage("exam.submited");
+				} else {
+					return MsgUtil.getMessage("exam.unsubmit");
+				}
+			}
+
+			@Override
+			public Boolean fromString(String string) {
+				return null;
+			}
+		}));
+		table.getColumns().addAll(code, name, submit);
 
 		ScrollPane scroll = new ScrollPane();
 		scroll.setFitToWidth(true);
@@ -109,8 +145,14 @@ public class ExamingDialog extends DialogPane<Boolean> {
 			setResult(true);
 		});
 
-		this.getChildren().addAll(box, scroll, finish);
-
+		
+		VBox content = new VBox(20);
+		content.getChildren().addAll(box, scroll, finish);
+		content.setAlignment(Pos.CENTER);
+		content.setPadding(new Insets(20));
+		
+		this.getChildren().add(content);
+		
 		refresh(publish.getId());
 	}
 

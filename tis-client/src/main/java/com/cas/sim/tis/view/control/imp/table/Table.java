@@ -222,6 +222,27 @@ public class Table extends VBox {
 		commitedRow.set(value);
 	}
 
+	/**
+	 * 表格数据之间的行间距
+	 */
+	private ObjectProperty<Double> rowsSpacing = new SimpleObjectProperty<Double>(10d) {
+		public void set(Double newValue) {
+			Table.this.content.setSpacing(newValue);
+		};
+	};
+
+	public final void setRowsSpacing(double value) {
+		rowsSpacing.set(value);
+	}
+
+	public final double getRowsSpacing() {
+		return rowsSpacing.get();
+	}
+
+	public final ObjectProperty<Double> rowsSpacingProperty() {
+		return rowsSpacing;
+	}
+
 	private ObjectProperty<Insets> rowPadding = new SimpleObjectProperty<Insets>(Insets.EMPTY);
 
 	public final void setRowPadding(Insets value) {
@@ -232,7 +253,7 @@ public class Table extends VBox {
 		return rowPadding.get();
 	}
 
-	public final ObjectProperty<Insets> rowpPaddingProperty() {
+	public final ObjectProperty<Insets> rowPaddingProperty() {
 		return rowPadding;
 	}
 
@@ -354,6 +375,7 @@ public class Table extends VBox {
 				cell.setMaxHeight(getRowHeight());
 				cell.setPrefHeight(getRowHeight());
 			}
+			cell.setHeader(true);
 			cell.updateTableColumn((Column<Object>) column);
 			header.addHeaderCell(cell);
 		}
@@ -376,8 +398,7 @@ public class Table extends VBox {
 			this.getChildren().add(scrollPane);
 			for (int i = 0; i < newItems.size(); i++) {
 				JSONObject object = newItems.getJSONObject(i);
-				Row row = null;
-				row = new Row(normalStyleClass, hoverStyleClass, selectedStyleClass);
+				Row row = new Row(normalStyleClass, hoverStyleClass, selectedStyleClass);
 				row.setEditable(isEditable());
 				this.addRow(row);
 				if (getSerial()) {
