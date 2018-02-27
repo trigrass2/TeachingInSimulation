@@ -1,4 +1,4 @@
-package com.cas.sim.tis.view.action;
+package com.cas.sim.tis.action;
 
 import javax.annotation.Resource;
 
