@@ -43,7 +43,7 @@
 			</children>
 		</HBox>
 		<StackPane VBox.vgrow="ALWAYS">
-			<VBox visible="false" fx:id="loadingLayer" style="-fx-background-color: rgba(0, 0, 0, 0.3);-fx-alignment: center;"/>
+			
 
 			<StackPane fx:id="container">
 				<children>
@@ -82,6 +82,7 @@
 					</HBox>
 				</children>
 			</StackPane>
+			<VBox visible="false" fx:id="loadingLayer" style="-fx-background-color: rgba(0, 0, 0, 0.3);-fx-alignment: center;" />
 		</StackPane>
 	</children>
 </VBox>
