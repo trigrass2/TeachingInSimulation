@@ -83,7 +83,7 @@ public class PreviewQuestionItem extends VBox {
 		String title = question.getTitle();
 		if (!showReference) {
 			title = title.replaceAll("\\|", "");
-			Text text = new Text(title);
+			Text text = new Text(index + ". " + title);
 			text.setWrappingWidth(600);
 			this.getChildren().add(text);
 		} else {

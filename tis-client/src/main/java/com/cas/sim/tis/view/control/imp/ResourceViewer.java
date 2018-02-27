@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import com.cas.sim.tis.action.CollectionAction;
+import com.cas.sim.tis.action.ResourceAction;
 import com.cas.sim.tis.consts.ResourceConsts;
 import com.cas.sim.tis.consts.ResourceType;
 import com.cas.sim.tis.entity.Resource;
@@ -11,8 +13,6 @@ import com.cas.sim.tis.svg.SVGGlyph;
 import com.cas.sim.tis.util.HTTPUtils;
 import com.cas.sim.tis.util.MsgUtil;
 import com.cas.sim.tis.util.SpringUtil;
-import com.cas.sim.tis.view.action.CollectionAction;
-import com.cas.sim.tis.view.action.ResourceAction;
 import com.cas.sim.tis.view.control.IContent;
 import com.cas.sim.tis.view.control.IDistory;
 import com.cas.sim.tis.view.control.imp.vlc.VLCPlayer;

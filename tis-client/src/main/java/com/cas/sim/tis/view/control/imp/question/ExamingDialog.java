@@ -1,15 +1,19 @@
 package com.cas.sim.tis.view.control.imp.question;
 
+import java.util.List;
+
+import com.alibaba.fastjson.JSONArray;
+import com.cas.sim.tis.action.LibraryPublishAction;
 import com.cas.sim.tis.entity.Class;
 import com.cas.sim.tis.entity.Library;
 import com.cas.sim.tis.entity.LibraryPublish;
 import com.cas.sim.tis.svg.SVGGlyph;
 import com.cas.sim.tis.util.MsgUtil;
 import com.cas.sim.tis.util.SpringUtil;
-import com.cas.sim.tis.view.action.LibraryPublishAction;
 import com.cas.sim.tis.view.control.imp.dialog.DialogPane;
 import com.cas.sim.tis.view.control.imp.table.Column;
 import com.cas.sim.tis.view.control.imp.table.Table;
+import com.cas.sim.tis.vo.SubmitInfo;
 
 import javafx.animation.RotateTransition;
 import javafx.geometry.Insets;
@@ -25,6 +29,8 @@ import javafx.scene.paint.Color;
 import javafx.util.Duration;
 
 public class ExamingDialog extends DialogPane<Boolean> {
+
+	private Table table = new Table("table-row", "table-row-hover", "table-row-selected");
 
 	public ExamingDialog(LibraryPublish publish) {
 		Class clazz = publish.getClazz();
@@ -62,7 +68,6 @@ public class ExamingDialog extends DialogPane<Boolean> {
 		box.setPadding(new Insets(20));
 		box.getChildren().addAll(className, libraryName, time);
 
-		Table table = new Table("table-row", "table-row-hover", "table-row-selected");
 		table.setRowHeight(45);
 
 		// 数据库唯一表示
@@ -97,14 +102,23 @@ public class ExamingDialog extends DialogPane<Boolean> {
 		scroll.setContent(table);
 		VBox.setVgrow(scroll, Priority.ALWAYS);
 
-		Button finish = new Button();
+		Button finish = new Button(MsgUtil.getMessage("exam.finish"));
+		finish.getStyleClass().add("blue-btn");
+		finish.setPrefSize(100, 40);
+		finish.setOnAction(e -> {
+			setResult(true);
+		});
 
-		HBox btns = new HBox(50);
+		this.getChildren().addAll(box, scroll, finish);
 
-		this.getChildren().addAll(box, scroll, btns);
+		refresh(publish.getId());
 	}
 
 	private void refresh(Integer pid) {
-		SpringUtil.getBean(LibraryPublishAction.class).findSubmitStateByPublishId(pid);
+		List<SubmitInfo> submits = SpringUtil.getBean(LibraryPublishAction.class).findSubmitStateById(pid);
+		JSONArray array = new JSONArray();
+		array.addAll(submits);
+		table.setItems(array);
+		table.build();
 	}
 }

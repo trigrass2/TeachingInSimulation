@@ -2,10 +2,10 @@ package com.cas.sim.tis.view.control.imp.jme;
 
 import java.util.List;
 
+import com.cas.sim.tis.action.TypicalCaseAction;
 import com.cas.sim.tis.entity.TypicalCase;
 import com.cas.sim.tis.util.MsgUtil;
 import com.cas.sim.tis.util.SpringUtil;
-import com.cas.sim.tis.view.action.TypicalCaseAction;
 import com.cas.sim.tis.view.control.ILeftContent;
 
 import javafx.scene.control.Button;

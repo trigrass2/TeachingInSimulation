@@ -1,10 +1,10 @@
 package com.cas.sim.tis.view.control.imp.resource;
 
+import com.cas.sim.tis.action.UserAction;
 import com.cas.sim.tis.consts.RoleConst;
 import com.cas.sim.tis.consts.Session;
 import com.cas.sim.tis.util.MsgUtil;
 import com.cas.sim.tis.util.SpringUtil;
-import com.cas.sim.tis.view.action.UserAction;
 import com.cas.sim.tis.view.control.imp.LeftMenu;
 import com.cas.sim.tis.view.control.imp.resource.ResourceList.ResourceMenuType;
 import com.cas.sim.tis.view.controller.PageController;

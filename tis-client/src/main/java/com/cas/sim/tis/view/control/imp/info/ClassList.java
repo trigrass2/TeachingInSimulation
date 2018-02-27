@@ -13,13 +13,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.alibaba.fastjson.JSONArray;
+import com.cas.sim.tis.action.ClassAction;
 import com.cas.sim.tis.consts.TemplateConsts;
 import com.cas.sim.tis.entity.Class;
 import com.cas.sim.tis.util.AlertUtil;
 import com.cas.sim.tis.util.ExcelUtil;
 import com.cas.sim.tis.util.MsgUtil;
 import com.cas.sim.tis.util.SpringUtil;
-import com.cas.sim.tis.view.action.ClassAction;
 import com.cas.sim.tis.view.control.IContent;
 import com.cas.sim.tis.view.control.imp.Title;
 import com.cas.sim.tis.view.control.imp.dialog.Dialog;

@@ -8,6 +8,7 @@ import java.util.Map;
 import org.springframework.util.StringUtils;
 
 import com.cas.sim.tis.Application;
+import com.cas.sim.tis.action.LibraryRecordAction;
 import com.cas.sim.tis.consts.QuestionType;
 import com.cas.sim.tis.consts.Session;
 import com.cas.sim.tis.entity.Library;
@@ -18,7 +19,6 @@ import com.cas.sim.tis.entity.Question;
 import com.cas.sim.tis.util.MsgUtil;
 import com.cas.sim.tis.util.SpringUtil;
 import com.cas.sim.tis.view.HomeView;
-import com.cas.sim.tis.view.action.LibraryRecordAction;
 import com.cas.sim.tis.view.control.imp.Title;
 import com.cas.sim.tis.view.control.imp.exam.BlankOption;
 import com.cas.sim.tis.view.control.imp.exam.ChoiceOption;

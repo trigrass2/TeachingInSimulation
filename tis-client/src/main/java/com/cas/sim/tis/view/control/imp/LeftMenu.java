@@ -3,11 +3,11 @@ package com.cas.sim.tis.view.control.imp;
 import java.io.IOException;
 import java.net.URL;
 
+import com.cas.sim.tis.action.UserAction;
 import com.cas.sim.tis.consts.Session;
 import com.cas.sim.tis.entity.User;
 import com.cas.sim.tis.svg.SVGGlyph;
 import com.cas.sim.tis.util.SpringUtil;
-import com.cas.sim.tis.view.action.UserAction;
 import com.cas.sim.tis.view.control.ILeftContent;
 
 import javafx.event.ActionEvent;

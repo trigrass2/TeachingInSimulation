@@ -3,9 +3,9 @@ package com.cas.sim.tis.view.control.imp.jme;
 import java.util.List;
 import java.util.Map;
 
+import com.cas.sim.tis.action.ElecCompAction;
 import com.cas.sim.tis.entity.ElecComp;
 import com.cas.sim.tis.util.SpringUtil;
-import com.cas.sim.tis.view.action.ElecCompAction;
 import com.cas.sim.tis.view.control.ILeftContent;
 
 import javafx.scene.control.Accordion;

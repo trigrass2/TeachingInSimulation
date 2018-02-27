@@ -1,11 +1,11 @@
 package com.cas.sim.tis.message.handler;
 
 import com.cas.sim.tis.Application;
+import com.cas.sim.tis.action.LibraryPublishAction;
 import com.cas.sim.tis.entity.LibraryPublish;
 import com.cas.sim.tis.message.ExamMessage;
 import com.cas.sim.tis.util.SpringUtil;
 import com.cas.sim.tis.view.ExamView;
-import com.cas.sim.tis.view.action.LibraryPublishAction;
 import com.cas.sim.tis.view.controller.ExamController;
 import com.jme3.network.Client;
 

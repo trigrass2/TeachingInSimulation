@@ -4,11 +4,11 @@ import java.util.List;
 
 import org.springframework.util.StringUtils;
 
+import com.cas.sim.tis.action.UserAction;
 import com.cas.sim.tis.entity.Class;
 import com.cas.sim.tis.entity.User;
 import com.cas.sim.tis.util.MsgUtil;
 import com.cas.sim.tis.util.SpringUtil;
-import com.cas.sim.tis.view.action.UserAction;
 import com.cas.sim.tis.view.control.imp.dialog.DialogPane;
 
 import javafx.collections.FXCollections;

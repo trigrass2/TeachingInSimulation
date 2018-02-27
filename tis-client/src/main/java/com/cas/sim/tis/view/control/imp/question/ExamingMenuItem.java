@@ -1,7 +1,14 @@
 package com.cas.sim.tis.view.control.imp.question;
 
-import com.cas.sim.tis.entity.Library;
+import com.cas.sim.tis.action.LibraryPublishAction;
+import com.cas.sim.tis.entity.LibraryPublish;
+import com.cas.sim.tis.message.ExamMessage;
 import com.cas.sim.tis.svg.SVGGlyph;
+import com.cas.sim.tis.util.MsgUtil;
+import com.cas.sim.tis.util.SocketUtil;
+import com.cas.sim.tis.util.SpringUtil;
+import com.cas.sim.tis.view.control.IDistory;
+import com.cas.sim.tis.view.control.imp.dialog.Dialog;
 
 import javafx.animation.RotateTransition;
 import javafx.geometry.Pos;
@@ -13,13 +20,13 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.util.Duration;
 
-public class ExamingMenuItem extends HBox {
+public class ExamingMenuItem extends HBox implements IDistory {
 
-	private Library library;
+	private LibraryPublish publish;
 	private RotateTransition rotateTransition;
+	private Button examing;
 
-	public ExamingMenuItem(Library library) {
-		this.library = library;
+	public ExamingMenuItem() {
 		// 预置考试进行中提示
 		SVGGlyph glyph = new SVGGlyph("iconfont.svg.clock", Color.WHITE, 22);
 		if (rotateTransition != null) {
@@ -47,14 +54,47 @@ public class ExamingMenuItem extends HBox {
 		});
 		rotateTransition.playFromStart();
 
-		String name = library.getName();
 
-		Button examing = new Button();
+		examing = new Button();
 		examing.setGraphic(glyph);
-		examing.setText(name);
-		examing.setTooltip(new Tooltip(name));
 		examing.getStyleClass().add("examing-menu");
+		examing.setOnAction(e -> {
+			showDialog();
+		});
+
 		VBox.setVgrow(examing, Priority.ALWAYS);
 		setAlignment(Pos.CENTER);
+//		setVisible(false);
+	}
+
+	public void load(int id) {
+		this.publish = SpringUtil.getBean(LibraryPublishAction.class).findPublishById(id);
+		String name = publish.getLibrary().getName();
+		examing.setText(name);
+		examing.setTooltip(new Tooltip(name));
+		setVisible(true);
+	}
+	
+	private void showDialog() {
+		Dialog<Boolean> dialog = new Dialog<>();
+		dialog.setDialogPane(new ExamingDialog(publish));
+		dialog.setTitle(MsgUtil.getMessage("class.dialog.modify"));
+		dialog.setPrefSize(635, 320);
+		dialog.showAndWait().ifPresent(finish -> {
+			if (finish) {
+				ExamMessage message = new ExamMessage();
+				message.setPid(publish.getId());
+				message.setType(ExamMessage.EXAM_OVER);
+				
+				SocketUtil.INSTENCE.send(message);
+				ExamingMenuItem.this.setVisible(false);
+				rotateTransition.stop();
+			}
+		});
+	}
+
+	@Override
+	public void distroy() {
+		rotateTransition.stop();
 	}
 }

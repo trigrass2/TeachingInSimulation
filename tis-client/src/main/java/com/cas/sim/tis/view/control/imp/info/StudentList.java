@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 
 import com.alibaba.fastjson.JSONArray;
 import com.cas.sim.tis.consts.TemplateConsts;
+import com.cas.sim.tis.action.UserAction;
 import com.cas.sim.tis.consts.RoleConst;
 import com.cas.sim.tis.consts.Session;
 import com.cas.sim.tis.entity.User;
@@ -21,7 +22,6 @@ import com.cas.sim.tis.util.AlertUtil;
 import com.cas.sim.tis.util.ExcelUtil;
 import com.cas.sim.tis.util.MsgUtil;
 import com.cas.sim.tis.util.SpringUtil;
-import com.cas.sim.tis.view.action.UserAction;
 import com.cas.sim.tis.view.control.IContent;
 import com.cas.sim.tis.view.control.imp.Title;
 import com.cas.sim.tis.view.control.imp.dialog.Dialog;
