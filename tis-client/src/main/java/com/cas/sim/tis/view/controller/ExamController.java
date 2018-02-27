@@ -16,6 +16,7 @@ import com.cas.sim.tis.entity.LibraryAnswer;
 import com.cas.sim.tis.entity.LibraryPublish;
 import com.cas.sim.tis.entity.LibraryRecord;
 import com.cas.sim.tis.entity.Question;
+import com.cas.sim.tis.util.AlertUtil;
 import com.cas.sim.tis.util.MsgUtil;
 import com.cas.sim.tis.util.SpringUtil;
 import com.cas.sim.tis.view.HomeView;
@@ -27,12 +28,10 @@ import com.cas.sim.tis.view.control.imp.exam.JudgmentOption;
 import com.cas.sim.tis.view.control.imp.exam.SubjectiveOption;
 
 import de.felixroske.jfxsupport.FXMLController;
-import de.felixroske.jfxsupport.GUIState;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
@@ -66,6 +65,8 @@ public class ExamController {
 	private Button next;
 	@FXML
 	private Button back;
+	@FXML
+	private Button submit;
 
 	private ToggleGroup group = new ToggleGroup();
 
@@ -90,6 +91,8 @@ public class ExamController {
 	private boolean submited;
 
 	public void initialize(LibraryPublish publish) {
+		clear();
+
 		this.publish = publish;
 
 		this.library = publish.getLibrary();
@@ -124,12 +127,14 @@ public class ExamController {
 			if (o == null || n == null || o == n) {
 				return;
 			}
-			// 验证上一个试题是否作答完成
-			LibraryAnswer answer = current.getAnswer();
-			if (answer != null && !StringUtils.isEmpty(answer.getAnswer())) {
-				answers.put((Integer) o.getUserData(), answer);
-				((ToggleButton) o).getStyleClass().remove("undo");
-				((ToggleButton) o).getStyleClass().add("done");
+			if (!submited) {
+				// 验证上一个试题是否作答完成
+				LibraryAnswer answer = current.getAnswer();
+				if (answer != null && !StringUtils.isEmpty(answer.getAnswer())) {
+					answers.put((Integer) o.getUserData(), answer);
+					((ToggleButton) o).getStyleClass().remove("undo");
+					((ToggleButton) o).getStyleClass().add("done");
+				}
 			}
 			// 加载下一个试题
 			currIndex = (int) n.getUserData();
@@ -216,59 +221,91 @@ public class ExamController {
 
 	@FXML
 	private void back() {
+		timeline.stop();
 		// 考试结束返回首页
 		Application.showView(HomeView.class);
 	}
 
+	/**
+	 * 
+	 */
+	private void clear() {
+		this.submited = false;
+		this.submit.setDisable(false);
+		this.current = null;
+		this.currIndex = 0;
+		this.cost = 0;
+		this.group.getToggles().clear();
+		this.flow.getChildren().clear();
+		this.answers.clear();
+		this.back.setVisible(false);
+	}
+
 	@FXML
-	private void submit(ActionEvent event) {
-		((Button) event.getSource()).setDisable(true);
-		Alert alert = new Alert(AlertType.CONFIRMATION, MsgUtil.getMessage("alert.confirmation.submit"), ButtonType.YES, ButtonType.NO);
-		alert.initOwner(GUIState.getStage());
-		alert.setHeaderText(null);
-		alert.showAndWait().ifPresent(resp -> {
-			if (resp == ButtonType.NO) {
-				((Button)event.getSource()).setDisable(false);
-				return;
-			}
-			// 计时暂停
-			timeline.stop();
-			// 计算得分
-			float score = 0;
-			for (int i = 0; i < answers.size(); i++) {
-				LibraryAnswer libraryAnswer = answers.get(i);
-				Question question = libraryAnswer.getQuestion();
-				int type = question.getType();
-				if (QuestionType.SUBJECTIVE.getType() == type) {
-					continue;
+	private void submit() {
+		submit(false);
+	}
+
+	public void submit(boolean passive) {
+		if (submited) {
+			return;
+		}
+		submit.setDisable(true);
+		if (passive) {
+			AlertUtil.showAlert(AlertType.INFORMATION, MsgUtil.getMessage("exam.over"));
+			finish();
+		} else {
+			AlertUtil.showConfirm(MsgUtil.getMessage("alert.confirmation.submit"), resp -> {
+				if (resp == ButtonType.NO) {
+					submit.setDisable(false);
+					return;
 				}
-				ToggleButton button = (ToggleButton) group.getToggles().get(i);
-				button.getStyleClass().remove("undo");
-				button.getStyleClass().remove("done");
-				score += libraryAnswer.getScore();
-				if (libraryAnswer.getCorrected()) {
-					libraryAnswer.setCorrected(true);
-					button.getStyleClass().add("right");
-				} else {
-					button.getStyleClass().add("wrong");
-				}
+				finish();
+			});
+		}
+	}
+
+	public void finish() {
+		// 计时暂停
+		timeline.stop();
+		// 计算得分
+		float score = 0;
+		for (int i = 0; i < answers.size(); i++) {
+			LibraryAnswer libraryAnswer = answers.get(i);
+			Question question = libraryAnswer.getQuestion();
+			int type = question.getType();
+			if (QuestionType.SUBJECTIVE.getType() == type) {
+				continue;
 			}
-			this.score.setText(String.valueOf(score));
+			ToggleButton button = (ToggleButton) group.getToggles().get(i);
+			button.getStyleClass().remove("undo");
+			button.getStyleClass().remove("done");
+			score += libraryAnswer.getScore();
+			if (libraryAnswer.getCorrected()) {
+				button.getStyleClass().add("right");
+			} else {
+				button.getStyleClass().add("wrong");
+			}
+		}
+		this.score.setText(String.valueOf(score));
 
-			int pid = publish.getId();
+		int pid = publish.getId();
 
-			LibraryRecord record = new LibraryRecord();
-			record.setCost(cost);
-			record.setScore(score);
-			record.setPublishId(pid);
-			record.setCreator(Session.get(Session.KEY_LOGIN_ID));
+		LibraryRecord record = new LibraryRecord();
+		record.setCost(cost);
+		record.setScore(score);
+		record.setPublishId(pid);
+		record.setCreator(Session.get(Session.KEY_LOGIN_ID));
 
-			List<LibraryAnswer> libraryAnswers = new ArrayList<>(this.answers.values());
+		List<LibraryAnswer> libraryAnswers = new ArrayList<>(this.answers.values());
 
-			SpringUtil.getBean(LibraryRecordAction.class).addRecord(record, libraryAnswers);
+		SpringUtil.getBean(LibraryRecordAction.class).addRecord(record, libraryAnswers);
 
-			back.setVisible(true);
-			submited = true;
-		});
+		back.setVisible(true);
+		submited = true;
+	}
+
+	public LibraryPublish getLibraryPublish() {
+		return publish;
 	}
 }

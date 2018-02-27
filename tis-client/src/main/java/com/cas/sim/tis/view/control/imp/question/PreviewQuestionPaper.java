@@ -275,7 +275,7 @@ public class PreviewQuestionPaper extends HBox implements IContent {
 				PageController controller = SpringUtil.getBean(PageController.class);
 				ILeftContent content = controller.getLeftMenu();
 				if (content instanceof IPublish) {
-					((IPublish) content).publish(rid);
+					((IPublish) content).publish(publishId);
 				}
 			} catch (Exception e) {
 				AlertUtil.showAlert(AlertType.ERROR, e.getMessage());

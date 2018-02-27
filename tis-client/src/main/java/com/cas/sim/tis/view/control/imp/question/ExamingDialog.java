@@ -138,7 +138,7 @@ public class ExamingDialog extends DialogPane<Boolean> {
 		scroll.setContent(table);
 		VBox.setVgrow(scroll, Priority.ALWAYS);
 
-		Button finish = new Button(MsgUtil.getMessage("exam.finish"));
+		Button finish = new Button(MsgUtil.getMessage("exam.to.finish"));
 		finish.getStyleClass().add("blue-btn");
 		finish.setPrefSize(100, 40);
 		finish.setOnAction(e -> {

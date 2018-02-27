@@ -15,13 +15,21 @@ public class ExamMessageHandler implements ClientHandler<ExamMessage> {
 
 	@Override
 	public void execute(Client client, ExamMessage m) throws Exception {
-		if (ExamMessage.EXAM_START == m.getType()) {
+		int type = m.getType();
+		if (ExamMessage.EXAM_START == type) {
 			LibraryPublish publish = SpringUtil.getBean(LibraryPublishAction.class).findPublishById(m.getPid());
 			Platform.runLater(() -> {
 				Application.showView(ExamView.class);
 
 				ExamController controller = SpringUtil.getBean(ExamController.class);
 				controller.initialize(publish);
+			});
+		} else if (ExamMessage.EXAM_OVER == type) {
+			Platform.runLater(() -> {
+				ExamController controller = SpringUtil.getBean(ExamController.class);
+				if (m.getPid() == controller.getLibraryPublish().getId()) {
+					controller.submit(true);
+				}
 			});
 		}
 	}

@@ -1,6 +1,7 @@
 package com.cas.sim.tis.view.control.imp.question;
 
 import com.cas.sim.tis.action.LibraryPublishAction;
+import com.cas.sim.tis.consts.Session;
 import com.cas.sim.tis.entity.LibraryPublish;
 import com.cas.sim.tis.message.ExamMessage;
 import com.cas.sim.tis.svg.SVGGlyph;
@@ -90,6 +91,7 @@ public class ExamingMenuItem extends HBox implements IDistory {
 				SocketUtil.INSTENCE.send(message);
 				ExamingMenuItem.this.setVisible(false);
 				rotateTransition.stop();
+				Session.set(Session.KEY_LIBRARY_PUBLISH_ID, null);
 			}
 		});
 	}
