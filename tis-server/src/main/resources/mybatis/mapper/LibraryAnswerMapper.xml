@@ -45,4 +45,17 @@
 		        AND a.qid = q.id
 		ORDER BY a.index;        
 	</select>
+	<select id="statisticsByQuestionId" resultType="int">
+		SELECT 
+		    COUNT(*) AS num
+		FROM
+		    library_publish p,
+		    library_record r,
+		    library_answer a
+		WHERE
+		    p.id = r.pid AND r.id = a.lrid
+		        AND a.qid = #{qid}
+		        AND p.id = #{pid}
+				AND a.corrected = #{type}
+	</select>
 </mapper>

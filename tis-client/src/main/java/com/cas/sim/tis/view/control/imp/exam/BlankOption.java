@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.util.StringUtils;
 
+import com.cas.sim.tis.consts.AnswerState;
 import com.cas.sim.tis.entity.LibraryAnswer;
 import com.cas.sim.tis.entity.Question;
 import com.cas.sim.tis.util.MsgUtil;
@@ -117,7 +118,11 @@ public class BlankOption extends VBox implements IOption {
 			}
 		}
 		libraryAnswer.setAnswer(answer);
-		libraryAnswer.setCorrected(corrected);
+		if (corrected) {
+			libraryAnswer.setCorrected(AnswerState.ANSWER_STATE_RIGHT.getType());
+		} else {
+			libraryAnswer.setCorrected(AnswerState.ANSWER_STATE_WRONG.getType());
+		}
 		libraryAnswer.setScore(MathUtil.round(2, score));
 		return libraryAnswer;
 	}

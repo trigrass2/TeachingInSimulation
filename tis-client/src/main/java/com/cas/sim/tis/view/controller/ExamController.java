@@ -9,6 +9,7 @@ import org.springframework.util.StringUtils;
 
 import com.cas.sim.tis.Application;
 import com.cas.sim.tis.action.LibraryRecordAction;
+import com.cas.sim.tis.consts.AnswerState;
 import com.cas.sim.tis.consts.QuestionType;
 import com.cas.sim.tis.consts.Session;
 import com.cas.sim.tis.entity.Library;
@@ -130,8 +131,6 @@ public class ExamController {
 				this.group.selectToggle(o);
 				return;
 			}
-			System.out.println("o=" + (Integer) o.getUserData());
-			System.out.println("n=" + (Integer) n.getUserData());
 			if (!submited) {
 				// 验证上一个试题是否作答完成
 				checkAnswer((ToggleButton) o);
@@ -175,6 +174,7 @@ public class ExamController {
 		}
 		String answerStr = answer.getAnswer();
 		if (StringUtils.isEmpty(answerStr)) {
+			answer.setCorrected(AnswerState.ANSWER_STATE_UNDO.getType());
 			if (button.getStyleClass().contains("undo")) {
 				return;
 			} else {
@@ -182,6 +182,7 @@ public class ExamController {
 				button.getStyleClass().add("undo");
 			}
 		} else if (StringUtils.isEmpty(answerStr.replaceAll("\\|", ""))) {
+			answer.setCorrected(AnswerState.ANSWER_STATE_UNDO.getType());
 			if (button.getStyleClass().contains("undo")) {
 				return;
 			} else {
@@ -327,7 +328,7 @@ public class ExamController {
 			button.getStyleClass().remove("undo");
 			button.getStyleClass().remove("done");
 			score += libraryAnswer.getScore();
-			if (libraryAnswer.isCorrected()) {
+			if (AnswerState.ANSWER_STATE_RIGHT.getType() == libraryAnswer.getCorrected()) {
 				button.getStyleClass().add("right");
 			} else {
 				button.getStyleClass().add("wrong");

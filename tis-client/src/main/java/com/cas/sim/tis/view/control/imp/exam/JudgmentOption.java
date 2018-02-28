@@ -1,5 +1,6 @@
 package com.cas.sim.tis.view.control.imp.exam;
 
+import com.cas.sim.tis.consts.AnswerState;
 import com.cas.sim.tis.entity.LibraryAnswer;
 import com.cas.sim.tis.entity.Question;
 import com.cas.sim.tis.util.MsgUtil;
@@ -42,10 +43,10 @@ public class JudgmentOption extends VBox implements IOption {
 				libraryAnswer.setAnswer((String) n.getUserData());
 			}
 			if (question.getReference().equals(n.getUserData())) {
-				libraryAnswer.setCorrected(true);
+				libraryAnswer.setCorrected(AnswerState.ANSWER_STATE_RIGHT.getType());
 				libraryAnswer.setScore(question.getPoint());
 			} else {
-				libraryAnswer.setCorrected(false);
+				libraryAnswer.setCorrected(AnswerState.ANSWER_STATE_WRONG.getType());
 				libraryAnswer.setScore(0f);
 			}
 		});

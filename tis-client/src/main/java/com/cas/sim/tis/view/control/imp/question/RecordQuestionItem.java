@@ -2,6 +2,7 @@ package com.cas.sim.tis.view.control.imp.question;
 
 import java.util.List;
 
+import com.cas.sim.tis.consts.AnswerState;
 import com.cas.sim.tis.consts.QuestionType;
 import com.cas.sim.tis.entity.LibraryAnswer;
 import com.cas.sim.tis.entity.Question;
@@ -70,7 +71,7 @@ public class RecordQuestionItem extends VBox {
 			box.getChildren().add(text);
 		}
 		Label studentAnswer = new Label(MsgUtil.getMessage("question.answer", answer.getAnswer()));
-		if (answer.isCorrected()) {
+		if (AnswerState.ANSWER_STATE_RIGHT.getType() == answer.getCorrected()) {
 			studentAnswer.getStyleClass().add("green");
 		} else {
 			studentAnswer.getStyleClass().add("red");
@@ -90,7 +91,7 @@ public class RecordQuestionItem extends VBox {
 		this.getChildren().add(reference);
 
 		Label studentAnswer = new Label(MsgUtil.getMessage("question.answer", answer.getAnswer()));
-		if (answer.isCorrected()) {
+		if (AnswerState.ANSWER_STATE_RIGHT.getType() == answer.getCorrected()) {
 			studentAnswer.getStyleClass().add("green");
 		} else {
 			studentAnswer.getStyleClass().add("red");
@@ -123,7 +124,7 @@ public class RecordQuestionItem extends VBox {
 
 		Text studentAnswer = new Text(MsgUtil.getMessage("question.answer", answer.getAnswer().replaceAll("\\|", "；")));
 		studentAnswer.setWrappingWidth(600);
-		if (answer.isCorrected()) {
+		if (AnswerState.ANSWER_STATE_RIGHT.getType() == answer.getCorrected()) {
 			studentAnswer.getStyleClass().add("green");
 		} else {
 			studentAnswer.getStyleClass().add("red");
@@ -140,7 +141,7 @@ public class RecordQuestionItem extends VBox {
 		String answerStr = answer.getAnswer();
 		Text studentAnswer = new Text(MsgUtil.getMessage("question.answer", answerStr == null ? "" : answerStr));
 		studentAnswer.setWrappingWidth(600);
-		if (answer.isCorrected()) {
+		if (AnswerState.ANSWER_STATE_RIGHT.getType() == answer.getCorrected()) {
 			studentAnswer.getStyleClass().add("green");
 		} else {
 			studentAnswer.getStyleClass().add("red");

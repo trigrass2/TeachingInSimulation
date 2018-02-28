@@ -21,14 +21,15 @@
 		SELECT 
 		    *
 		FROM
-		    question q
-		        LEFT JOIN
+		    question q,
 		    (SELECT 
 		        *
 		    FROM
 		        library_publish
 		    WHERE
-		        id = #{pid}) p ON p.LID = q.id
+		        id = #{pid}) p
+		WHERE
+		    p.LID = q.RID
 		ORDER BY q.id
 	</select>
 </mapper>

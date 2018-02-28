@@ -3,6 +3,7 @@ package com.cas.sim.tis.view.control.imp.exam;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.cas.sim.tis.consts.AnswerState;
 import com.cas.sim.tis.entity.LibraryAnswer;
 import com.cas.sim.tis.entity.Question;
 import com.cas.sim.tis.util.MsgUtil;
@@ -63,10 +64,10 @@ public class ChoiceOption extends VBox implements IOption {
 			}
 			libraryAnswer.setAnswer(answer.toString());
 			if (question.getReference().equals(answer.toString())) {
-				libraryAnswer.setCorrected(true);
+				libraryAnswer.setCorrected(AnswerState.ANSWER_STATE_RIGHT.getType());
 				libraryAnswer.setScore(question.getPoint());
 			} else {
-				libraryAnswer.setCorrected(false);
+				libraryAnswer.setCorrected(AnswerState.ANSWER_STATE_WRONG.getType());
 				libraryAnswer.setScore(0f);
 			}
 		});

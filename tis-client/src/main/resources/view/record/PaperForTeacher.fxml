@@ -28,7 +28,7 @@
 	<children>
 		<VBox HBox.hgrow="ALWAYS" spacing="20">
 			<children>
-				<Title title="%library.title.detail" />
+				<Title title="%exam.title.detail" />
 				<HBox alignment="CENTER_LEFT" HBox.hgrow="ALWAYS" style="-fx-background-color:#f6f6f6;">
 					<Label fx:id="libName" styleClass="font14">
 						<graphic>

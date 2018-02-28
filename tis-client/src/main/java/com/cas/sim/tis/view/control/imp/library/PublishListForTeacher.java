@@ -14,11 +14,13 @@ import com.cas.sim.tis.util.SpringUtil;
 import com.cas.sim.tis.view.control.IContent;
 import com.cas.sim.tis.view.control.imp.Title;
 import com.cas.sim.tis.view.control.imp.pagination.PaginationBar;
+import com.cas.sim.tis.view.control.imp.question.TeacherQuestionPaper;
 import com.cas.sim.tis.view.control.imp.table.BtnCell;
 import com.cas.sim.tis.view.control.imp.table.Cell;
 import com.cas.sim.tis.view.control.imp.table.Column;
 import com.cas.sim.tis.view.control.imp.table.Table;
 import com.cas.sim.tis.view.controller.PageController;
+import com.cas.sim.tis.view.controller.PageController.PageLevel;
 import com.cas.sim.tis.vo.LibraryPublishForTeacher;
 import com.cas.util.DateUtil;
 import com.github.pagehelper.PageInfo;
@@ -133,6 +135,7 @@ public class PublishListForTeacher extends HBox implements IContent {
 		Column<String> view = new Column<String>();
 		view.setCellFactory(BtnCell.forTableColumn(MsgUtil.getMessage("button.view"), Priority.ALWAYS, "blue-btn", id -> {
 			PageController controller = SpringUtil.getBean(PageController.class);
+			controller.loadContent(new TeacherQuestionPaper((int) id), PageLevel.Level2);
 		}));
 		view.setAlignment(Pos.CENTER_RIGHT);
 		table.getColumns().add(view);
