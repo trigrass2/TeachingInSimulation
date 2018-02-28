@@ -5,6 +5,8 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Id;
 
+import com.cas.sim.tis.consts.AnswerState;
+
 public class LibraryAnswer implements Serializable {
 
 	/**
@@ -39,12 +41,12 @@ public class LibraryAnswer implements Serializable {
 	 * 0-未更正(还是错的状态)<br>
 	 * 1-已更正
 	 */
-	private Boolean corrected = false;
+	private Integer corrected = AnswerState.ANSWER_STATE_UNDO.getType();
 	/**
 	 * 用户最后一次更正后的答案
 	 */
 	private String correctAnswer;
-	
+
 	private Question question;
 
 	public Integer getId() {
@@ -95,11 +97,11 @@ public class LibraryAnswer implements Serializable {
 		this.recordId = recordId;
 	}
 
-	public Boolean isCorrected() {
+	public Integer getCorrected() {
 		return corrected;
 	}
 
-	public void setCorrected(Boolean corrected) {
+	public void setCorrected(Integer corrected) {
 		this.corrected = corrected;
 	}
 
