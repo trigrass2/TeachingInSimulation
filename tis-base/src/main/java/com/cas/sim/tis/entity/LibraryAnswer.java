@@ -95,7 +95,7 @@ public class LibraryAnswer implements Serializable {
 		this.recordId = recordId;
 	}
 
-	public Boolean getCorrected() {
+	public Boolean isCorrected() {
 		return corrected;
 	}
 

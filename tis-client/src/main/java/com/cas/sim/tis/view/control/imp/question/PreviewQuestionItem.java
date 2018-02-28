@@ -21,7 +21,7 @@ public class PreviewQuestionItem extends VBox {
 	public PreviewQuestionItem(int index, QuestionType type, Question question, boolean showReference) {
 		this.index = index;
 		this.showReference = showReference;
-		this.getStyleClass().add("preview");
+		this.getStyleClass().add("question");
 		loadQuestion(type, question);
 	}
 

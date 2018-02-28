@@ -574,14 +574,18 @@
  * 试题列表样式                                                          *
  *                                                                             *
  ******************************************************************************/
- .preview{
+ .question{
  	-fx-border-color: #c1c1c1;
  	-fx-border-style: dashed;
  	-fx-border-width: 2.0;
  	-fx-spacing: 20.0;
  	-fx-padding: 20.0;
  }
- .preview:hover{
+ .question:hover{
+ 	-fx-border-color: #f6a23f;
+ 	-fx-border-style: solid;
+ }
+ .question-selected{
  	-fx-border-color: #f6a23f;
  	-fx-border-style: solid;
  }

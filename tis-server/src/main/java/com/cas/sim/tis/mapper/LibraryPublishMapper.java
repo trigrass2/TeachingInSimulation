@@ -17,7 +17,7 @@ public interface LibraryPublishMapper extends IMapper<LibraryPublish> {
 
 	List<LibraryPublishForTeacher> findPublishForTeacher(@Param("creator") int creator);
 
-	List<LibraryPublishForStudent> findPublishForStudent(@Param("type") int type, @Param("creator") int creator);
+	List<LibraryPublishForStudent> findPublishForStudent(@Param("ptype") int ptype, @Param("creator") int creator);
 
 	List<SubmitInfo> findSubmitStateById(int id);
 }

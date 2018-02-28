@@ -12,6 +12,7 @@ import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import com.cas.sim.tis.entity.Library;
 import com.cas.sim.tis.entity.Question;
+import com.cas.sim.tis.mapper.QuestionMapper;
 import com.cas.sim.tis.services.LibraryService;
 import com.cas.sim.tis.services.QuestionService;
 import com.cas.sim.tis.util.SpringUtil;
@@ -55,6 +56,12 @@ public class QuestionServiceImpl extends AbstractService<Question> implements Qu
 		criteria.andEqualTo("relateId", rid);
 		criteria.andEqualTo("type", type);
 		return findByCondition(condition);
+	}
+
+	@Override
+	public List<Question> findQuestionsByPublish(int pid) {
+		QuestionMapper questionMapper = (QuestionMapper) mapper;
+		return questionMapper.findQuestionsByPublish(pid);
 	}
 
 	@Override

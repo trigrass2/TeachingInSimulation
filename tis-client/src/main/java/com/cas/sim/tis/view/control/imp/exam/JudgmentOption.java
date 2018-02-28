@@ -51,7 +51,7 @@ public class JudgmentOption extends VBox implements IOption {
 		});
 		
 		if (showRefrence) {
-			Label reference = new Label(MsgUtil.getMessage("exam.answer", question.getReference()));
+			Label reference = new Label(MsgUtil.getMessage("question.reference", question.getReference()));
 			reference.getStyleClass().add("green");
 			this.getChildren().add(reference);
 		}

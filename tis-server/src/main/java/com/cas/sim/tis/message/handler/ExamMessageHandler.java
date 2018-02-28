@@ -21,11 +21,16 @@ public class ExamMessageHandler implements ServerHandler<ExamMessage> {
 	private ServerConfig serverConfig;
 	@Resource
 	private LibraryPublishService libraryPublishService;
-	
+
 	@Override
 	public void execute(HostedConnection source, ExamMessage m) throws Exception {
 		if (ExamMessage.EXAM_OVER == m.getType()) {
+			// 获得发布记录对象
 			LibraryPublish publish = libraryPublishService.findById(m.getPid());
+			// 更新发布记录状态
+			publish.setState(true);
+			libraryPublishService.update(publish);
+
 			// 通知当前考试学生考试结束
 			List<HostedConnection> collection = new ArrayList<>();
 			for (HostedConnection hostedConnection : serverConfig.getClients()) {

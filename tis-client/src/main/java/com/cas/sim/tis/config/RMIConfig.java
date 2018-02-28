@@ -13,6 +13,7 @@ import com.cas.sim.tis.services.BrowseHistoryService;
 import com.cas.sim.tis.services.ClassService;
 import com.cas.sim.tis.services.CollectionService;
 import com.cas.sim.tis.services.ElecCompService;
+import com.cas.sim.tis.services.LibraryAnswerService;
 import com.cas.sim.tis.services.LibraryPublishService;
 import com.cas.sim.tis.services.LibraryRecordService;
 import com.cas.sim.tis.services.LibraryService;
@@ -122,6 +123,16 @@ public class RMIConfig {
 		bean.setServiceUrl("rmi://" + host + ":" + port + "/libraryRecordService");
 		LOG.info("远程访问路径：{}", bean.getServiceUrl());
 		bean.setServiceInterface(LibraryRecordService.class);
+		return bean;
+	}
+	
+	@Bean
+	@Qualifier("libraryAnswerServiceFactory")
+	public RmiProxyFactoryBean buildLibraryAnswerServiceFactory() {
+		RmiProxyFactoryBean bean = new RmiProxyFactoryBean();
+		bean.setServiceUrl("rmi://" + host + ":" + port + "/libraryAnswerService");
+		LOG.info("远程访问路径：{}", bean.getServiceUrl());
+		bean.setServiceInterface(LibraryAnswerService.class);
 		return bean;
 	}
 

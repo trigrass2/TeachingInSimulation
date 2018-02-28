@@ -1,5 +1,6 @@
 package com.cas.sim.tis.view.control.imp.library;
 
+import com.cas.sim.tis.consts.PublishType;
 import com.cas.sim.tis.consts.RoleConst;
 import com.cas.sim.tis.consts.Session;
 import com.cas.sim.tis.util.MsgUtil;
@@ -43,6 +44,7 @@ public class LibraryMenu extends LeftMenu implements IPublish, IDistory {
 			});
 			addMenuItem(MsgUtil.getMessage("library.menu.exam"), "iconfont.svg.record", e -> {
 				PageController controller = SpringUtil.getBean(PageController.class);
+				controller.loadContent(new PublishListForTeacher(), PageLevel.Level1);
 			});
 			Integer publishId = Session.get(Session.KEY_LIBRARY_PUBLISH_ID);
 			if (publishId != null) {
@@ -62,10 +64,12 @@ public class LibraryMenu extends LeftMenu implements IPublish, IDistory {
 				controller.loadContent(new LibraryList(LibraryMenuType.STUDENT_MINE), PageLevel.Level1);
 			});
 			addMenuItem(MsgUtil.getMessage("library.menu.exam"), "iconfont.svg.record", e -> {
-
+				PageController controller = SpringUtil.getBean(PageController.class);
+				controller.loadContent(new PublishListForStudent(PublishType.EXAM), PageLevel.Level1);
 			});
 			addMenuItem(MsgUtil.getMessage("library.menu.train"), "iconfont.svg.record", e -> {
-
+				PageController controller = SpringUtil.getBean(PageController.class);
+				controller.loadContent(new PublishListForStudent(PublishType.PRACTICE), PageLevel.Level1);
 			});
 		}
 	}

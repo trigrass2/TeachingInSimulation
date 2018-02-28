@@ -13,6 +13,8 @@ public interface QuestionService extends BaseService<Question> {
 
 	List<Question> findQuestionsByLibraryAndQuestionType(int rid, int type);
 
+	List<Question> findQuestionsByPublish(int pid);
+
 	void addQuestions(int rid,List<Question> questions);
 
 	int countQuestionByLibrary(int rid);

@@ -1,6 +1,7 @@
 package com.cas.sim.tis.vo;
 
 import java.io.Serializable;
+import java.util.Date;
 
 public class LibraryPublishForStudent implements Serializable {
 
@@ -12,6 +13,7 @@ public class LibraryPublishForStudent implements Serializable {
 	private String name;
 	private Integer score;
 	private Long cost;
+	private Date date;
 
 	public Integer getId() {
 		return id;
@@ -43,5 +45,13 @@ public class LibraryPublishForStudent implements Serializable {
 
 	public void setCost(Long cost) {
 		this.cost = cost;
+	}
+
+	public Date getDate() {
+		return date;
+	}
+
+	public void setDate(Date date) {
+		this.date = date;
 	}
 }

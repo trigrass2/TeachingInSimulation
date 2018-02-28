@@ -40,6 +40,11 @@ public class QuestionAction {
 		return service.findQuestionsByLibraryAndQuestionType(rid, type);
 	}
 
+	public List<Question> findQuestionsByPublish(int pid) {
+		QuestionService service = (QuestionService) questionServiceFactory.getObject();
+		return service.findQuestionsByPublish(pid);
+	}
+
 	/**
 	 * 批量添加试题
 	 * @param questions

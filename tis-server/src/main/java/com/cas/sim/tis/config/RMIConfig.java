@@ -11,6 +11,7 @@ import com.cas.sim.tis.services.BrowseHistoryService;
 import com.cas.sim.tis.services.ClassService;
 import com.cas.sim.tis.services.CollectionService;
 import com.cas.sim.tis.services.ElecCompService;
+import com.cas.sim.tis.services.LibraryAnswerService;
 import com.cas.sim.tis.services.LibraryPublishService;
 import com.cas.sim.tis.services.LibraryRecordService;
 import com.cas.sim.tis.services.LibraryService;
@@ -53,6 +54,8 @@ public class RMIConfig {
 	private LibraryPublishService libraryPublishService;
 	@Resource
 	private LibraryRecordService libraryRecordService;
+	@Resource
+	private LibraryAnswerService libraryAnswerService;
 
 	@Value("${server.rmi.registry}")
 	private Integer registPort;
@@ -229,6 +232,22 @@ public class RMIConfig {
 		exporter.setServiceInterface(LibraryRecordService.class);
 		exporter.setServiceName("libraryRecordService");
 		exporter.setService(libraryRecordService);
+		
+		if (servicePort != null) {
+			exporter.setServicePort(servicePort);
+		}
+		if (registPort != null) {
+			exporter.setRegistryPort(registPort);
+		}
+		return exporter;
+	}
+	
+	@Bean
+	public RmiServiceExporter libraryAnswerServiceExporter() {
+		RmiServiceExporter exporter = new RmiServiceExporter();
+		exporter.setServiceInterface(LibraryAnswerService.class);
+		exporter.setServiceName("libraryAnswerService");
+		exporter.setService(libraryAnswerService);
 		
 		if (servicePort != null) {
 			exporter.setServicePort(servicePort);

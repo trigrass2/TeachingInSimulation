@@ -86,6 +86,7 @@ public class ExamController {
 	private Map<Integer, LibraryAnswer> answers = new HashMap<>();
 
 	private Timeline timeline;
+
 	private int cost;
 
 	private boolean submited;
@@ -122,19 +123,18 @@ public class ExamController {
 		}
 		this.total.setText(String.valueOf(total));
 
-		group.selectToggle(group.getToggles().get(0));
 		group.selectedToggleProperty().addListener((b, o, n) -> {
-			if (o == null || n == null || o == n) {
+			if (o == null) {
+				return;
+			} else if (n == null) {
+				this.group.selectToggle(o);
 				return;
 			}
+			System.out.println("o=" + (Integer) o.getUserData());
+			System.out.println("n=" + (Integer) n.getUserData());
 			if (!submited) {
 				// 验证上一个试题是否作答完成
-				LibraryAnswer answer = current.getAnswer();
-				if (answer != null && !StringUtils.isEmpty(answer.getAnswer())) {
-					answers.put((Integer) o.getUserData(), answer);
-					((ToggleButton) o).getStyleClass().remove("undo");
-					((ToggleButton) o).getStyleClass().add("done");
-				}
+				checkAnswer((ToggleButton) o);
 			}
 			// 加载下一个试题
 			currIndex = (int) n.getUserData();
@@ -148,6 +148,7 @@ public class ExamController {
 			}
 			loadQuestion();
 		});
+		group.selectToggle(group.getToggles().get(0));
 		loadQuestion();
 
 		// 启动计时器
@@ -159,6 +160,43 @@ public class ExamController {
 			this.second.setText(String.valueOf(cost % 60));
 		}));
 		timeline.play();
+	}
+
+	/**
+	 * @param o
+	 */
+	private void checkAnswer(ToggleButton button) {
+		if (current == null) {
+			return;
+		}
+		LibraryAnswer answer = current.getAnswer();
+		if (answer == null) {
+			return;
+		}
+		String answerStr = answer.getAnswer();
+		if (StringUtils.isEmpty(answerStr)) {
+			if (button.getStyleClass().contains("undo")) {
+				return;
+			} else {
+				button.getStyleClass().remove("done");
+				button.getStyleClass().add("undo");
+			}
+		} else if (StringUtils.isEmpty(answerStr.replaceAll("\\|", ""))) {
+			if (button.getStyleClass().contains("undo")) {
+				return;
+			} else {
+				button.getStyleClass().remove("done");
+				button.getStyleClass().add("undo");
+			}
+		} else {
+			answers.put((Integer) button.getUserData(), answer);
+			if (button.getStyleClass().contains("done")) {
+				return;
+			} else {
+				button.getStyleClass().add("done");
+				button.getStyleClass().remove("undo");
+			}
+		}
 	}
 
 	/**
@@ -231,14 +269,20 @@ public class ExamController {
 	 */
 	private void clear() {
 		this.submited = false;
-		this.submit.setDisable(false);
 		this.current = null;
 		this.currIndex = 0;
 		this.cost = 0;
+
+		this.answers.clear();
 		this.group.getToggles().clear();
 		this.flow.getChildren().clear();
-		this.answers.clear();
+
+		this.submit.setDisable(false);
 		this.back.setVisible(false);
+		this.prev.setDisable(true);
+		this.next.setDisable(false);
+
+		this.score.setText("--");
 	}
 
 	@FXML
@@ -266,6 +310,8 @@ public class ExamController {
 	}
 
 	public void finish() {
+		// 提交前更新一下当前显示试题的答案
+		checkAnswer((ToggleButton) group.getSelectedToggle());
 		// 计时暂停
 		timeline.stop();
 		// 计算得分
@@ -281,7 +327,7 @@ public class ExamController {
 			button.getStyleClass().remove("undo");
 			button.getStyleClass().remove("done");
 			score += libraryAnswer.getScore();
-			if (libraryAnswer.getCorrected()) {
+			if (libraryAnswer.isCorrected()) {
 				button.getStyleClass().add("right");
 			} else {
 				button.getStyleClass().add("wrong");
@@ -303,6 +349,7 @@ public class ExamController {
 
 		back.setVisible(true);
 		submited = true;
+		group.selectToggle(group.getToggles().get(0));
 	}
 
 	public LibraryPublish getLibraryPublish() {

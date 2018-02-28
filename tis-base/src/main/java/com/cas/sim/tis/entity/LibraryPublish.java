@@ -24,13 +24,13 @@ public class LibraryPublish implements Serializable {
 
 	public enum LibraryPublishType {
 		PRACTICE(0), EXAM(1);
-		
+
 		private int type;
 
 		private LibraryPublishType(int type) {
 			this.type = type;
 		}
-		
+
 		public int getType() {
 			return type;
 		}
@@ -52,11 +52,13 @@ public class LibraryPublish implements Serializable {
 	private Integer creator;
 	@DateTimeFormat(pattern = "yyyy-MM-dd hh:mm:ss")
 	private Date createDate;
-	
+
+	private Boolean state = false;
+
 	private Library library;
-	
+
 	private Class clazz;
-	
+
 	public Integer getId() {
 		return id;
 	}
@@ -107,6 +109,14 @@ public class LibraryPublish implements Serializable {
 
 	public Date getCreateDate() {
 		return createDate;
+	}
+
+	public Boolean getState() {
+		return state;
+	}
+
+	public void setState(Boolean state) {
+		this.state = state;
 	}
 
 	public Library getLibrary() {

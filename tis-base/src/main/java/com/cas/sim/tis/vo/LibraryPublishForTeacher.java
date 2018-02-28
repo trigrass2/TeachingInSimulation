@@ -1,9 +1,9 @@
 package com.cas.sim.tis.vo;
 
 import java.io.Serializable;
+import java.util.Date;
 
 import javax.persistence.Column;
-
 
 public class LibraryPublishForTeacher implements Serializable {
 
@@ -14,9 +14,10 @@ public class LibraryPublishForTeacher implements Serializable {
 
 	private Integer id;
 	private String name;
-	@Column(name="CNAME")
+	@Column(name = "CNAME")
 	private String className;
 	private Float average;
+	private Date date;
 
 	public Integer getId() {
 		return id;
@@ -48,5 +49,13 @@ public class LibraryPublishForTeacher implements Serializable {
 
 	public void setAverage(Float average) {
 		this.average = average;
+	}
+
+	public Date getDate() {
+		return date;
+	}
+
+	public void setDate(Date date) {
+		this.date = date;
 	}
 }

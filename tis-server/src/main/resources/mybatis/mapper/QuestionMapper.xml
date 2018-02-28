@@ -5,7 +5,7 @@
 		<id column="ID" jdbcType="INTEGER" property="id" />
 		<result column="TITLE" jdbcType="VARCHAR" property="title" />
 		<result column="OPTIONS" jdbcType="VARCHAR" property="options" />
-<!-- 		<result column="IMGS" jdbcType="VARCHAR" property="imgs" /> -->
+		<!-- <result column="IMGS" jdbcType="VARCHAR" property="imgs" /> -->
 		<result column="REFERENCE" jdbcType="VARCHAR" property="reference" />
 		<result column="POINT" jdbcType="FLOAT" property="point" />
 		<result column="ANALYSIS" jdbcType="VARCHAR" property="analysis" />
@@ -17,4 +17,18 @@
 		<result column="UPDATE_DATE" jdbcType="TIMESTAMP" property="updateDate" />
 		<result column="DEL" jdbcType="INTEGER" property="del" />
 	</resultMap>
+	<select id="findQuestionsByPublish" resultMap="BaseResultMap">
+		SELECT 
+		    *
+		FROM
+		    question q
+		        LEFT JOIN
+		    (SELECT 
+		        *
+		    FROM
+		        library_publish
+		    WHERE
+		        id = #{pid}) p ON p.LID = q.id
+		ORDER BY q.id
+	</select>
 </mapper>

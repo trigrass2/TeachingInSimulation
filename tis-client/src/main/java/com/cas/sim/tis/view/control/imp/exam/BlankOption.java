@@ -66,7 +66,7 @@ public class BlankOption extends VBox implements IOption {
 		}
 
 		if (showRefrence) {
-			Text reference = new Text(MsgUtil.getMessage("exam.answer", StringUtil.combine(references, '；')));
+			Text reference = new Text(MsgUtil.getMessage("question.reference", StringUtil.combine(references, '；')));
 			reference.getStyleClass().add("green");
 			reference.setWrappingWidth(680);
 			this.getChildren().add(reference);

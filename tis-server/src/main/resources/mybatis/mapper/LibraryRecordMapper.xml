@@ -24,4 +24,12 @@
 			r.creator=u.id and r.pid=#{pid}
 		order by u.code asc
 	</select>
+	<select id="getRecordScoresSumByPublishId" resultType="java.lang.Float">
+		SELECT 
+		    IFNULL(SUM(r.score), 0)
+		FROM
+		    library_record r
+		WHERE
+		    r.pid = #{pid}
+	</select>
 </mapper>

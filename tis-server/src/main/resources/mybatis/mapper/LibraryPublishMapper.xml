@@ -9,6 +9,7 @@
 		<result column="AVERAGE" jdbcType="FLOAT" property="average" />
 		<result column="CREATOR" jdbcType="VARCHAR" property="creator" />
 		<result column="CREATE_DATE" jdbcType="TIMESTAMP" property="createDate" />
+		<result column="STATE" jdbcType="INTEGER" property="state" />
 	</resultMap>
 	<resultMap id="BaseResultExtMap" type="com.cas.sim.tis.entity.LibraryPublish" extends="BaseResultMap">
 		<id column="ID" jdbcType="INTEGER" property="id" />
@@ -41,12 +42,14 @@
 		<result column="NAME" jdbcType="VARCHAR" property="name" />
 		<result column="AVERAGE" jdbcType="FLOAT" property="average" />
 		<result column="CNAME" jdbcType="VARCHAR" property="className" />
+		<result column="CREATE_DATE" jdbcType="TIMESTAMP" property="date" />
 	</resultMap>
 	<resultMap id="ForStudentMap" type="com.cas.sim.tis.vo.LibraryPublishForStudent">
 		<id column="ID" jdbcType="INTEGER" property="id" />
 		<result column="NAME" jdbcType="VARCHAR" property="name" />
 		<result column="SCORE" jdbcType="INTEGER" property="score" />
 		<result column="COST" jdbcType="BIGINT" property="cost" />
+		<result column="CREATE_DATE" jdbcType="TIMESTAMP" property="date" />
 	</resultMap>
 	<resultMap id="SubmitStateMap" type="com.cas.sim.tis.vo.SubmitInfo">
 		<result column="CODE" jdbcType="VARCHAR" property="code" />
@@ -66,20 +69,26 @@
 	</select>
 	<select id="findPublishForTeacher" resultMap="ForTeacherMap">
 		select
-		p.id,l.name,c.name as cname,p.average
+		p.id,l.name,c.name as cname,p.average,p.create_date
 		from
 		library_publish p,library l,class c
 		where
-		p.lid=l.id and p.cid=c.id and p.creator=#{creator}
+		p.lid=l.id and p.cid=c.id and p.creator=#{creator} and p.state=1
 		order by p.create_date desc
 	</select>
 	<select id="findPublishForStudent" resultMap="ForStudentMap">
 		select
-		r.id,l.name,r.score,r.cost
+		p.id,l.name,r.score,r.cost
+		<if test="ptype==0">
+			,p.create_date
+		</if>
+		<if test="ptype==1">
+			,r.create_date
+		</if>
 		from
 		library_publish p,library l,library_record r
 		where
-		p.lid=l.id and p.id=r.pid and p.type=#{type} and r.creator=#{creator}
+		p.lid=l.id and p.id=r.pid and p.type=#{ptype} and r.creator=#{creator}
 		order by p.create_date desc
 	</select>
 	<select id="findSubmitStateById" resultMap="SubmitStateMap">

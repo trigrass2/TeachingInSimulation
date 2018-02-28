@@ -3,7 +3,6 @@ package com.cas.sim.tis.view.control.imp.exam;
 import com.cas.sim.tis.entity.LibraryAnswer;
 import com.cas.sim.tis.entity.Question;
 import com.cas.sim.tis.util.MsgUtil;
-import com.cas.util.StringUtil;
 
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.VBox;
@@ -25,14 +24,15 @@ public class SubjectiveOption extends VBox implements IOption {
 		this.getChildren().add(text);
 
 		TextArea area = new TextArea();
+		area.setText(libraryAnswer.getAnswer());
 		area.getStyleClass().add("option-text");
 		area.textProperty().addListener((b, o, n) -> {
 			this.libraryAnswer.setAnswer(n);
 		});
 		this.getChildren().add(area);
-		
+
 		if (showRefrence) {
-			Text reference = new Text(MsgUtil.getMessage("exam.answer", question.getReference()));
+			Text reference = new Text(MsgUtil.getMessage("question.reference", question.getReference() == null ? "" : question.getReference()));
 			reference.getStyleClass().add("green");
 			reference.setWrappingWidth(680);
 			this.getChildren().add(reference);

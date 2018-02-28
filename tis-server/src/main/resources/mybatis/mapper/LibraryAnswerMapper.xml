@@ -11,4 +11,38 @@
 		<result column="CORRECTED" jdbcType="INTEGER" property="corrected" />
 		<result column="CORRECT_ANSWER" jdbcType="VARCHAR" property="correctAnswer" />
 	</resultMap>
+	<resultMap id="BaseResultExtMap" type="com.cas.sim.tis.entity.LibraryAnswer">
+		<id column="ID" jdbcType="INTEGER" property="id" />
+		<result column="ANSWER" jdbcType="INTEGER" property="answer" />
+		<result column="QID" jdbcType="INTEGER" property="questionId" />
+		<association property="question" javaType="com.cas.sim.tis.entity.Question">
+			<id column="QID" jdbcType="INTEGER" property="id" />
+			<result column="TITLE" jdbcType="VARCHAR" property="title" />
+			<result column="OPTIONS" jdbcType="VARCHAR" property="options" />
+			<result column="REFERENCE" jdbcType="VARCHAR" property="reference" />
+			<result column="POINT" jdbcType="FLOAT" property="point" />
+			<result column="ANALYSIS" jdbcType="VARCHAR" property="analysis" />
+			<result column="TYPE" jdbcType="INTEGER" property="type" />
+		</association>
+	</resultMap>
+	<select id="findAnswersByPublish" resultMap="BaseResultExtMap">
+		SELECT 
+		    a.id,
+		    a.answer,
+		    a.qid,
+		    q.title,
+		    q.options,
+		    q.reference,
+		    q.point,
+		    q.analysis,
+		    q.type
+		FROM
+		    library_record r,
+		    library_answer a,
+		    question q
+		WHERE
+		    r.id = a.lrid AND r.pid = #{pid}
+		        AND a.qid = q.id
+		ORDER BY a.index;        
+	</select>
 </mapper>

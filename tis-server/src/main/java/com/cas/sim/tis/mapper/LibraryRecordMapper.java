@@ -13,4 +13,6 @@ public interface LibraryRecordMapper extends IMapper<LibraryRecord> {
 
 	List<LibraryRecordInfo> findRecordByPublishId(@Param("pid") int pid);
 
+	float getRecordScoresSumByPublishId(@Param("pid") int pid);
+
 }
