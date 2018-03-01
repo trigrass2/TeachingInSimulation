@@ -54,16 +54,16 @@ public class ExcelConverter {
 			Workbook wb = new HSSFWorkbook(in);
 			in.close();
 
-			removeOther(wb, 1);  
-			removeOther(wb, 2);  
-			removeOther(wb, 3);  
-			
+			removeOther(wb, 1);
+			removeOther(wb, 2);
+			removeOther(wb, 3);
+
 			Sheet sheet = wb.getSheetAt(0);
 			int index = 2;
 			for (String d : data.split("\r\n")) {
 				for (String string : d.split("\n")) {
 					System.out.println(index);
-					if (string.startsWith("维修电工（初级）")||string.matches("[1-9]\\d*")) {
+					if (string.startsWith("维修电工（初级）") || string.matches("[1-9]\\d*")) {
 						continue;
 					}
 					if (string.matches("[0-9]+.*")) {
@@ -82,16 +82,18 @@ public class ExcelConverter {
 					} else if (string.startsWith("答案：")) {
 						Cell cell2 = row.createCell(2);
 						cell2.setCellValue(string.replaceAll("答案：", ""));
+						Cell cell3 = row.createCell(3);
+						cell3.setCellValue("5");
 					} else if (string.startsWith("难度：")) {
-						Cell cell = row.getCell(3);
+						Cell cell = row.getCell(4);
 						if (cell == null) {
-							cell = row.createCell(3);
+							cell = row.createCell(4);
 						}
 						cell.setCellValue(string);
 					} else if (string.startsWith("知识点：")) {
-						Cell cell = row.getCell(3);
+						Cell cell = row.getCell(4);
 						if (cell == null) {
-							cell = row.createCell(3);
+							cell = row.createCell(4);
 						}
 						cell.setCellValue(cell.getStringCellValue() + "\r\n" + string);
 						index++;
@@ -108,10 +110,10 @@ public class ExcelConverter {
 
 	/**
 	 * @param wb
-	 * @param sheetIndex 
+	 * @param sheetIndex
 	 */
 	private static void removeOther(Workbook wb, int sheetIndex) {
-		Sheet sheet= wb.getSheetAt(sheetIndex);
+		Sheet sheet = wb.getSheetAt(sheetIndex);
 		Row row = sheet.getRow(2);
 		sheet.removeRow(row);
 	}
@@ -130,17 +132,17 @@ public class ExcelConverter {
 			FileInputStream in = new FileInputStream(excel);
 			Workbook wb = new HSSFWorkbook(in);
 			in.close();
-			
-			removeOther(wb, 0);  
-			removeOther(wb, 2);  
-			removeOther(wb, 3);  
-			
+
+			removeOther(wb, 0);
+			removeOther(wb, 2);
+			removeOther(wb, 3);
+
 			Sheet sheet = wb.getSheetAt(1);
 			int index = 2;
 			for (String d : data.split("\r\n")) {
 				for (String string : d.split("\n")) {
 					System.out.println(index);
-					if (string.startsWith("维修电工（初级）")||string.matches("[1-9]\\d*")) {
+					if (string.startsWith("维修电工（初级）") || string.matches("[1-9]\\d*")) {
 						continue;
 					}
 					if (string.matches("[0-9]+.*")) {
@@ -151,16 +153,18 @@ public class ExcelConverter {
 					} else if (string.startsWith("答案：")) {
 						Cell cell2 = row.createCell(1);
 						cell2.setCellValue(string.replaceAll("答案：", "").replaceAll("×", "错误").replaceAll("√", "正确"));
+						Cell cell3 = row.createCell(2);
+						cell3.setCellValue("5");
 					} else if (string.startsWith("难度：")) {
-						Cell cell = row.getCell(2);
+						Cell cell = row.getCell(3);
 						if (cell == null) {
-							cell = row.createCell(2);
+							cell = row.createCell(3);
 						}
 						cell.setCellValue(string);
 					} else if (string.startsWith("知识点：")) {
-						Cell cell = row.getCell(2);
+						Cell cell = row.getCell(3);
 						if (cell == null) {
-							cell = row.createCell(2);
+							cell = row.createCell(3);
 						}
 						cell.setCellValue(cell.getStringCellValue() + "\r\n" + string);
 						index++;

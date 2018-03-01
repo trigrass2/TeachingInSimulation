@@ -6,12 +6,24 @@
 <?import javafx.scene.layout.Region?>
 
 
-<fx:root maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" spacing="10.0" styleClass="_title" type="HBox" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8.0.141">
+<fx:root alignment="CENTER_LEFT" type="HBox" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <Region styleClass="icon" />
-      <Label fx:id="title" styleClass="font14" textFill="WHITE" />
+      <HBox styleClass="_title">
+         <children>
+            <Region styleClass="icon" />
+            <HBox alignment="CENTER_LEFT" HBox.hgrow="ALWAYS">
+               <children>
+                  <Label fx:id="title" styleClass="font14" textFill="WHITE" />
+               </children>
+               <padding>
+                  <Insets left="10.0" />
+               </padding>
+            </HBox>
+            <Region styleClass="triangle" />
+         </children>
+         <padding>
+            <Insets left="12.0" />
+         </padding>
+      </HBox>
    </children>
-   <padding>
-      <Insets left="12.0" right="12.0" />
-   </padding>
 </fx:root>

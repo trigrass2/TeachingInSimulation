@@ -481,9 +481,11 @@
  ******************************************************************************/
  ._title{
  	-fx-background-color: #ff9e2c;
- 	-fx-background-radius: 0.0 20.0 20.0 0.0;
+ 	-fx-background-insets: 0.0 20.0 0.0 0.0;
  	-fx-pref-height: 35.0px;
- 	-fx-pref-width: 150.0px;
+ 	-fx-max-height: 35.0px;
+ 	-fx-min-height: 35.0px;
+ 	-fx-min-width: 150.0px;
  	-fx-alignment: CENTER-LEFT;
  }
  ._title>.icon{
@@ -495,6 +497,13 @@
  	-fx-background-color: #ffffff;
     -fx-shape: "M 0 0 L 13 7 L 0 13 z";
     -fx-scale-shape: true;
+ }
+ ._title>.triangle{
+ 	-fx-pref-width:20.0px;
+ 	-fx-max-width:20.0px;
+ 	-fx-min-width:20.0px;
+ 	-fx-background-color: #ff9e2c;
+ 	-fx-shape:"M 0 0 L 0 35 L 20 35 L 20 17 z";
  }
 /*******************************************************************************
  *                                                                             *
