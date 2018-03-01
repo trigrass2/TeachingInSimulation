@@ -80,4 +80,11 @@ public class LibraryPublishServiceImpl extends AbstractService<LibraryPublish> i
 		return publish.getId();
 	}
 
+	@Override
+	public int practiceLibraryByStudent(LibraryPublish publish) {
+		// 记录考核发布记录
+		saveUseGeneratedKeys(publish);
+		return publish.getId();
+	}
+
 }

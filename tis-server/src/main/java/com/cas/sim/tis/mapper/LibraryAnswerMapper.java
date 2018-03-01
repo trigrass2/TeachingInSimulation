@@ -11,9 +11,9 @@ import com.cas.sim.tis.entity.LibraryAnswer;
 @Mapper
 public interface LibraryAnswerMapper extends IMapper<LibraryAnswer> {
 
-	List<LibraryAnswer> findAnswersByPublish(int pid);
+	List<LibraryAnswer> findAnswersByPublish(@Param("pid") int pid, @Param("onlyWrong") boolean onlyWrong);
 
 	@MapKey("state")
-	int statisticsByQuestionId(@Param("pid") int pid, @Param("qid") int qid,@Param("type") int type);
+	int statisticsByQuestionId(@Param("pid") int pid, @Param("qid") int qid, @Param("type") int type);
 
 }

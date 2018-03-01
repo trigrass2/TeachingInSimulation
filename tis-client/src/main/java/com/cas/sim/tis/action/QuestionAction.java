@@ -40,9 +40,9 @@ public class QuestionAction {
 		return service.findQuestionsByLibraryAndQuestionType(rid, type);
 	}
 
-	public List<Question> findQuestionsByPublish(int pid) {
+	public List<Question> findQuestionsByPublish(int pid, boolean mostWrong) {
 		QuestionService service = (QuestionService) questionServiceFactory.getObject();
-		return service.findQuestionsByPublish(pid);
+		return service.findQuestionsByPublish(pid, mostWrong);
 	}
 
 	/**

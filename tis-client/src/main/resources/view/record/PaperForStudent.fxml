@@ -35,8 +35,20 @@
 							<SVGGlyph name="iconfont.svg.right" fill="#bebebe" size="10" />
 						</graphic>
 					</Label>
+					<HBox spacing="10" alignment="CENTER_RIGHT" HBox.hgrow="ALWAYS">
+						<children>
+							<ToggleButton mnemonicParsing="false" text="%button.only.wrong">
+								<userData>
+									<String fx:value="false" />
+								</userData>
+								<toggleGroup>
+									<ToggleGroup fx:id="filter" />
+								</toggleGroup>
+							</ToggleButton>
+						</children>
+					</HBox>
 					<padding>
-						<Insets top="10" bottom="10" left="10" />
+						<Insets top="10" bottom="10" left="10" right="10" />
 					</padding>
 					<VBox.margin>
 						<Insets left="20" />

@@ -43,6 +43,9 @@
 		WHERE
 		    r.id = a.lrid AND r.pid = #{pid}
 		        AND a.qid = q.id
+		    	<if test="onlyWrong">
+		    	AND a.corrected in (1,2)	
+		    	</if>
 		ORDER BY a.index;        
 	</select>
 	<select id="statisticsByQuestionId" resultType="int">

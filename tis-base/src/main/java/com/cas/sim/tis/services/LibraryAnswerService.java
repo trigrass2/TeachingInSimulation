@@ -8,7 +8,7 @@ import com.cas.sim.tis.entity.LibraryAnswer;
 
 public interface LibraryAnswerService extends BaseService<LibraryAnswer> {
 
-	List<LibraryAnswer> findAnswersByPublish(int pid);
+	List<LibraryAnswer> findAnswersByPublish(int pid, boolean onlyWrong);
 
 	Map<AnswerState, Integer> statisticsByQuestionId(int pid, int qid);
 

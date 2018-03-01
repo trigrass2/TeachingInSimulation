@@ -11,6 +11,7 @@ import java.util.ResourceBundle;
 
 import javax.swing.filechooser.FileSystemView;
 
+import com.cas.sim.tis.Application;
 import com.cas.sim.tis.action.ClassAction;
 import com.cas.sim.tis.action.LibraryAction;
 import com.cas.sim.tis.action.LibraryPublishAction;
@@ -21,17 +22,20 @@ import com.cas.sim.tis.consts.Session;
 import com.cas.sim.tis.consts.TemplateConsts;
 import com.cas.sim.tis.entity.Class;
 import com.cas.sim.tis.entity.Library;
+import com.cas.sim.tis.entity.LibraryPublish;
 import com.cas.sim.tis.entity.Question;
 import com.cas.sim.tis.util.AlertUtil;
 import com.cas.sim.tis.util.ExcelUtil;
 import com.cas.sim.tis.util.MsgUtil;
 import com.cas.sim.tis.util.SpringUtil;
+import com.cas.sim.tis.view.ExamView;
 import com.cas.sim.tis.view.control.IContent;
 import com.cas.sim.tis.view.control.ILeftContent;
 import com.cas.sim.tis.view.control.IPublish;
 import com.cas.sim.tis.view.control.imp.classes.ClassSelectDialog;
 import com.cas.sim.tis.view.control.imp.dialog.Dialog;
 import com.cas.sim.tis.view.control.imp.library.LibraryList.LibraryMenuType;
+import com.cas.sim.tis.view.controller.ExamController;
 import com.cas.sim.tis.view.controller.PageController;
 import com.cas.util.FileUtil;
 import com.cas.util.Util;
@@ -286,7 +290,13 @@ public class PreviewQuestionPaper extends HBox implements IContent {
 
 	@FXML
 	private void practice() {
+		int id = SpringUtil.getBean(LibraryPublishAction.class).practiceLibraryByStudent(rid);
+		LibraryPublish publish = SpringUtil.getBean(LibraryPublishAction.class).findPublishById(id);
 
+		Application.showView(ExamView.class);
+
+		ExamController controller = SpringUtil.getBean(ExamController.class);
+		controller.initialize(publish);
 	}
 
 	private void exportChoice(Map<String, Object[][]> datas) {

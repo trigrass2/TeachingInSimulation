@@ -19,4 +19,6 @@ public interface LibraryPublishService extends BaseService<LibraryPublish> {
 	List<SubmitInfo> findSubmitStateById(int id);
 
 	Integer publishLibraryToClass(LibraryPublish publish);
+
+	int practiceLibraryByStudent(LibraryPublish publish);
 }

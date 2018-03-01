@@ -65,16 +65,20 @@ public class LibraryRecordServiceImpl extends AbstractService<LibraryRecord> imp
 			LibraryPublish publish = publishService.findById(record.getPublishId());
 
 			// 获得班级总人数
-			Condition userCon = new Condition(User.class);
-			Criteria criteria = userCon.createCriteria();
-			criteria.andEqualTo("classId", publish.getClassId());
-			criteria.andEqualTo("del", 0);
-			int total = userService.getTotalBy(userCon);
-			// 获得已交卷成绩总和
-			LibraryRecordMapper recordMapper = (LibraryRecordMapper) mapper;
-			float sum = recordMapper.getRecordScoresSumByPublishId(publish.getId());
+			if (publish.getClassId() == null) {
+				publish.setAverage(MathUtil.round(2, record.getScore()));
+			} else {
+				Condition userCon = new Condition(User.class);
+				Criteria criteria = userCon.createCriteria();
+				criteria.andEqualTo("classId", publish.getClassId());
+				criteria.andEqualTo("del", 0);
+				int total = userService.getTotalBy(userCon);
+				// 获得已交卷成绩总和
+				LibraryRecordMapper recordMapper = (LibraryRecordMapper) mapper;
+				float sum = recordMapper.getRecordScoresSumByPublishId(publish.getId());
+				publish.setAverage(MathUtil.round(2, sum / total));
+			}
 			// 更新平均成绩
-			publish.setAverage(MathUtil.round(2, sum / total));
 			publishService.update(publish);
 
 			transactionManager.commit(status);

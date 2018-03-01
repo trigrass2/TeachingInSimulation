@@ -15,9 +15,9 @@ import com.cas.sim.tis.services.LibraryAnswerService;
 public class LibraryAnswerServiceImpl extends AbstractService<LibraryAnswer> implements LibraryAnswerService {
 
 	@Override
-	public List<LibraryAnswer> findAnswersByPublish(int pid) {
+	public List<LibraryAnswer> findAnswersByPublish(int pid, boolean onlyWrong) {
 		LibraryAnswerMapper answerMapper = (LibraryAnswerMapper) mapper;
-		return answerMapper.findAnswersByPublish(pid);
+		return answerMapper.findAnswersByPublish(pid, onlyWrong);
 	}
 
 	@Override

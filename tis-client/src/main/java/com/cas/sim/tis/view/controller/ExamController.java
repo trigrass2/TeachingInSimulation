@@ -31,6 +31,7 @@ import com.cas.sim.tis.view.control.imp.exam.SubjectiveOption;
 import de.felixroske.jfxsupport.FXMLController;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.beans.value.ChangeListener;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert.AlertType;
@@ -38,6 +39,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.Toggle;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.FlowPane;
@@ -91,6 +93,7 @@ public class ExamController {
 	private int cost;
 
 	private boolean submited;
+	private ChangeListener<Toggle> groupListener;
 
 	public void initialize(LibraryPublish publish) {
 		clear();
@@ -124,7 +127,7 @@ public class ExamController {
 		}
 		this.total.setText(String.valueOf(total));
 
-		group.selectedToggleProperty().addListener((b, o, n) -> {
+		groupListener = (b, o, n) -> {
 			if (o == null) {
 				return;
 			} else if (n == null) {
@@ -146,7 +149,8 @@ public class ExamController {
 				next.setDisable(true);
 			}
 			loadQuestion();
-		});
+		};
+		group.selectedToggleProperty().addListener(groupListener);
 		group.selectToggle(group.getToggles().get(0));
 		loadQuestion();
 
@@ -277,6 +281,9 @@ public class ExamController {
 		this.answers.clear();
 		this.group.getToggles().clear();
 		this.flow.getChildren().clear();
+		if (groupListener != null) {
+			this.group.selectedToggleProperty().removeListener(groupListener);
+		}
 
 		this.submit.setDisable(false);
 		this.back.setVisible(false);

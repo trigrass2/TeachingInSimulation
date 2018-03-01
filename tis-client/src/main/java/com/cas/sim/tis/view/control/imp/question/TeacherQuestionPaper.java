@@ -27,6 +27,8 @@ import javafx.scene.Node;
 import javafx.scene.chart.PieChart;
 import javafx.scene.chart.PieChart.Data;
 import javafx.scene.control.Label;
+import javafx.scene.control.Toggle;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
@@ -55,6 +57,8 @@ public class TeacherQuestionPaper extends HBox implements IContent {
 	private Label rate;
 	@FXML
 	private Text analysis;
+	@FXML
+	private ToggleGroup order;
 
 	private int pid;
 	private PreviewQuestionItem currentItem;
@@ -97,12 +101,25 @@ public class TeacherQuestionPaper extends HBox implements IContent {
 			tip.setTranslateY(e.getY());
 		});
 		
-		loadQuestions();
+		order.selectedToggleProperty().addListener((observe, oldVal, newVal) -> {
+			if (newVal == null) {
+				order.selectToggle(oldVal);
+				return;
+			}
+			loadQuestions();
+		});
+		order.selectToggle(order.getToggles().get(0));
 	}
 
 	private void loadQuestions() {
 		this.paper.getChildren().clear();
-		List<Question> questions = SpringUtil.getBean(QuestionAction.class).findQuestionsByPublish(pid);
+
+		boolean mostWrong = false;
+		Toggle toggle = order.getSelectedToggle();
+		if (toggle != null) {
+			mostWrong = Boolean.valueOf((String) order.getSelectedToggle().getUserData());
+		}
+		List<Question> questions = SpringUtil.getBean(QuestionAction.class).findQuestionsByPublish(pid, mostWrong);
 		for (int i = 0; i < questions.size(); i++) {
 			int index = i + 1;
 			Question question = questions.get(i);

@@ -15,10 +15,12 @@ import com.cas.sim.tis.util.SpringUtil;
 import com.cas.sim.tis.view.control.IContent;
 import com.cas.sim.tis.view.control.imp.Title;
 
+import javafx.beans.value.WeakChangeListener;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
@@ -41,6 +43,8 @@ public class StudentQuestionPaper extends HBox implements IContent {
 	private VBox paper;
 	@FXML
 	private Text analysis;
+	@FXML
+	private ToggleGroup filter;
 
 	private int pid;
 	private PublishType type;
@@ -82,12 +86,16 @@ public class StudentQuestionPaper extends HBox implements IContent {
 		LibraryPublish publish = SpringUtil.getBean(LibraryPublishAction.class).findPublishById(pid);
 		this.libName.setText(publish.getLibrary().getName());
 
+		filter.selectedToggleProperty().addListener((b, o, n) -> {
+			loadQuestions();
+		});
 		loadQuestions();
 	}
 
 	private void loadQuestions() {
 		this.paper.getChildren().clear();
-		List<LibraryAnswer> answers = SpringUtil.getBean(LibraryAnswerAction.class).findAnswersByPublish(pid);
+		boolean onlyWrong = filter.getSelectedToggle()!=null;
+		List<LibraryAnswer> answers = SpringUtil.getBean(LibraryAnswerAction.class).findAnswersByPublish(pid, onlyWrong);
 		for (int i = 0; i < answers.size(); i++) {
 			int index = i + 1;
 			LibraryAnswer answer = answers.get(i);

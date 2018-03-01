@@ -59,9 +59,9 @@ public class QuestionServiceImpl extends AbstractService<Question> implements Qu
 	}
 
 	@Override
-	public List<Question> findQuestionsByPublish(int pid) {
+	public List<Question> findQuestionsByPublish(int pid, boolean mostWrong) {
 		QuestionMapper questionMapper = (QuestionMapper) mapper;
-		return questionMapper.findQuestionsByPublish(pid);
+		return questionMapper.findQuestionsByPublish(pid, mostWrong);
 	}
 
 	@Override

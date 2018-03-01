@@ -19,9 +19,9 @@ public class LibraryAnswerAction {
 	@Qualifier("libraryAnswerServiceFactory")
 	private RmiProxyFactoryBean libraryAnswerServiceFactory;
 
-	public List<LibraryAnswer> findAnswersByPublish(int pid) {
+	public List<LibraryAnswer> findAnswersByPublish(int pid, boolean onlyWrong) {
 		LibraryAnswerService service = (LibraryAnswerService) libraryAnswerServiceFactory.getObject();
-		return service.findAnswersByPublish(pid);
+		return service.findAnswersByPublish(pid, onlyWrong);
 	}
 
 	public Map<AnswerState, Integer> statisticsByQuestionId(int pid, int qid) {

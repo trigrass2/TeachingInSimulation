@@ -21,15 +21,29 @@
 		SELECT 
 		    *
 		FROM
-		    question q,
 		    (SELECT 
-		        *
+		        q.*
 		    FROM
-		        library_publish
+		        library_publish p, question q
 		    WHERE
-		        id = #{pid}) p
-		WHERE
-		    p.LID = q.RID
-		ORDER BY q.id
+		        p.lid = q.rid AND q.del = 0 AND p.id = #{pid}) a
+		        LEFT JOIN
+		    (SELECT 
+		        COUNT(*) AS num, a.qid
+		    FROM
+		        library_record r, library_answer a
+		    WHERE
+		        r.id = a.LRID AND r.pid = #{pid}
+		            AND a.CORRECTED IN (1 , 2)
+		    GROUP BY a.qid) b ON a.id = b.qid
+		ORDER BY 
+		<choose>
+			<when test="mostWrong">
+				b.num DESC
+			</when>
+			<otherwise>
+				a.id asc
+			</otherwise>
+		</choose>
 	</select>
 </mapper>

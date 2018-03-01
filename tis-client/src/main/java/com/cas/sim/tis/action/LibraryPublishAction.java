@@ -41,6 +41,21 @@ public class LibraryPublishAction {
 	}
 
 	/**
+	 * 根据发布编号查询
+	 * @param pid
+	 * @return
+	 */
+	public LibraryPublish findPublishById(int id) {
+		LibraryPublishService service = (LibraryPublishService) libraryPublishServiceFactory.getObject();
+		return service.findPublishById(id);
+	}
+
+	public List<SubmitInfo> findSubmitStateById(int id) {
+		LibraryPublishService service = (LibraryPublishService) libraryPublishServiceFactory.getObject();
+		return service.findSubmitStateById(id);
+	}
+
+	/**
 	 * 教师发布考核
 	 * @param rid 题库编号
 	 * @param cid 班级编号
@@ -56,18 +71,12 @@ public class LibraryPublishAction {
 		return service.publishLibraryToClass(publish);
 	}
 
-	/**
-	 * 根据发布编号查询
-	 * @param pid
-	 * @return
-	 */
-	public LibraryPublish findPublishById(int id) {
+	public int practiceLibraryByStudent(int rid) {
 		LibraryPublishService service = (LibraryPublishService) libraryPublishServiceFactory.getObject();
-		return service.findPublishById(id);
-	}
-
-	public List<SubmitInfo> findSubmitStateById(int id) {
-		LibraryPublishService service = (LibraryPublishService) libraryPublishServiceFactory.getObject();
-		return service.findSubmitStateById(id);
+		LibraryPublish publish = new LibraryPublish();
+		publish.setLibraryId(rid);
+		publish.setCreator(Session.get(Session.KEY_LOGIN_ID));
+		publish.setType(LibraryPublishType.PRACTICE.getType());
+		return service.practiceLibraryByStudent(publish);
 	}
 }

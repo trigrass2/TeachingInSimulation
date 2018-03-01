@@ -57,15 +57,33 @@
 		<result column="SUBMITED" jdbcType="INTEGER" property="submited" />
 	</resultMap>
 	<select id="findPublishById" resultMap="BaseResultExtMap">
-		select
-		p.id,p.type,p.average,
-		l.id as lid,l.name as lname,l.time,l.type as ltype,l.num as lnum,
-		q.id as qid,q.title,q.options,q.reference,q.analysis,q.point,q.type as qtype,
-		c.id as cid,c.name as cname
-		from
-		library_publish p,class c,library l,question q
-		where
-		p.cid=c.id and p.lid=l.id and l.id=q.rid and p.id=#{id}
+		SELECT 
+		    a.*, c.id AS cid, c.name AS cname
+		FROM
+		    (SELECT 
+		        p.id,
+		            p.cid,
+		            p.type,
+		            p.average,
+		            l.id AS lid,
+		            l.name AS lname,
+		            l.time,
+		            l.type AS ltype,
+		            l.num AS lnum,
+		            q.id AS qid,
+		            q.title,
+		            q.options,
+		            q.reference,
+		            q.analysis,
+		            q.point,
+		            q.type AS qtype
+		    FROM
+		        library_publish p, library l, question q
+		    WHERE
+		        p.lid = l.id AND l.id = q.rid
+		            AND p.id = #{id}) a
+		        LEFT JOIN
+		    class c ON a.cid = c.id
 	</select>
 	<select id="findPublishForTeacher" resultMap="ForTeacherMap">
 		select
