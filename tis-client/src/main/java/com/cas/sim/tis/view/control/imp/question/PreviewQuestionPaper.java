@@ -410,7 +410,8 @@ public class PreviewQuestionPaper extends HBox implements IContent {
 			question.setTitle(title);
 			question.setOptions(options);
 			question.setAnalysis(analysis);
-			question.setReference(point);
+			question.setPoint(Float.parseFloat(point));
+			question.setReference(analysis);
 			question.setType(QuestionType.CHOICE.getType());
 			question.setCreator(Session.get(Session.KEY_LOGIN_ID));
 			questions.add(question);
@@ -468,7 +469,8 @@ public class PreviewQuestionPaper extends HBox implements IContent {
 			question.setRelateId(rid);
 			question.setTitle(title);
 			question.setAnalysis(analysis);
-			question.setReference(point);
+			question.setPoint(Float.parseFloat(point));
+			question.setReference(analysis);
 			question.setType(QuestionType.JUDGMENT.getType());
 			question.setCreator(Session.get(Session.KEY_LOGIN_ID));
 			questions.add(question);
@@ -526,7 +528,8 @@ public class PreviewQuestionPaper extends HBox implements IContent {
 			question.setRelateId(rid);
 			question.setTitle(title);
 			question.setAnalysis(analysis);
-			question.setReference(point);
+			question.setPoint(Float.parseFloat(point));
+			question.setReference(analysis);
 			question.setType(QuestionType.BLANK.getType());
 			question.setCreator(Session.get(Session.KEY_LOGIN_ID));
 			questions.add(question);
@@ -559,7 +562,7 @@ public class PreviewQuestionPaper extends HBox implements IContent {
 			Question question = new Question();
 			question.setRelateId(rid);
 			question.setTitle(title);
-			question.setAnalysis(analysis);
+			question.setReference(analysis);
 			question.setType(QuestionType.SUBJECTIVE.getType());
 			question.setCreator(Session.get(Session.KEY_LOGIN_ID));
 			questions.add(question);
