@@ -30,9 +30,10 @@ public class ExamingMenuItem extends HBox implements IDistory {
 	public ExamingMenuItem() {
 		// 预置考试进行中提示
 		SVGGlyph glyph = new SVGGlyph("iconfont.svg.clock", Color.WHITE, 22);
-		if (rotateTransition != null) {
-			rotateTransition.stop();
-		}
+//		此时的rotateTransition必然是null值
+//		if (rotateTransition != null) {
+//			rotateTransition.stop();
+//		}
 		rotateTransition = new RotateTransition(Duration.millis(100), glyph);
 		rotateTransition.setFromAngle(-20);
 		rotateTransition.setToAngle(20);
@@ -58,7 +59,7 @@ public class ExamingMenuItem extends HBox implements IDistory {
 
 		examing = new Button();
 		examing.setGraphic(glyph);
-		examing.getStyleClass().add("examing-menu");
+		examing.getStyleClass().add("left-menu-orange");
 		examing.setOnAction(e -> {
 			showDialog();
 		});
