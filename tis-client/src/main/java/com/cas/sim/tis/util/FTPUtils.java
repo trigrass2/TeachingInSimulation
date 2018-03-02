@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -224,29 +225,84 @@ public class FTPUtils {
 		return null;
 	}
 
+	public void getPath(String path, List<String> pathArray) throws IOException {
+		FTPFile[] files = ftpClient.listFiles();
+		for (FTPFile ftpFile : files) {
+			if (ftpFile.getName().equals(".") || ftpFile.getName().equals("..")) {
+				continue;
+			}
+			if (ftpFile.isDirectory()) {// 如果是目录，则递归调用，查找里面所有文件
+				path += "/" + ftpFile.getName();
+				pathArray.add(path);
+				ftpClient.changeWorkingDirectory(path);// 改变当前路径
+				getPath(path, pathArray);// 递归调用
+				path = path.substring(0, path.lastIndexOf("/"));// 避免对之后的同目录下的路径构造作出干扰，
+			}
+		}
+	}
+
+	public void download(List<String> pathArray, String localRootPath) throws IOException {
+		download(pathArray, localRootPath, null);
+	}
+
+	public void download(List<String> pathArray, String localRootPath, TaskListener listener) throws IOException {
+		for (String string : pathArray) {
+			String localPath = localRootPath + string;
+			File localFile = new File(localPath);
+			if (!localFile.exists()) {
+				localFile.mkdirs();
+			}
+		}
+		for (String string : pathArray) {
+			String localPath = localRootPath + string;// 构造本地路径
+			ftpClient.changeWorkingDirectory(string);
+			FTPFile[] file = ftpClient.listFiles();
+			for (FTPFile ftpFile : file) {
+				if (ftpFile.getName().equals(".") || ftpFile.getName().equals("..")) continue;
+				File localFile = new File(localPath);
+				if (!ftpFile.isDirectory()) {
+					File local = new File(localFile + "/" + ftpFile.getName());
+					if (local.exists()) {
+						if (listener != null) listener.skip(file.length, local);
+						continue;
+					}
+					OutputStream is = new FileOutputStream(local);
+					boolean flg = ftpClient.retrieveFile(ftpFile.getName(), is);
+					if (flg) {
+						LOG.info("与服务器同步文件成功：{}", local);
+					} else {
+						LOG.info("与服务器同步文件失败：{}", local);
+					}
+					is.close();
+					if (listener != null) listener.finished(file.length, local);
+				}
+			}
+		}
+	}
+
 	/**
 	 * 下载FTP服务器文件至本地<br/>
 	 * 操作完成后需调用logout方法与服务器断开连接
 	 * @param serverName 服务器名称
 	 * @param remotePath 下载文件存储路径
 	 * @param fileName 下载文件存储名称
-	 * @return <b>InputStream</b>：文件输入流
 	 */
-	public InputStream retrieveFile(String remotePath, String fileName) {
+	public boolean retrieveFile(String remotePath, String localPath, String fileName) {
+		boolean result = false;
 		try {
 			// 连接至服务器
 			connect(remotePath);
 			// 获取文件输入流
-			boolean result = ftpClient.retrieveFile(new String(fileName.getBytes("UTF-8"), "ISO-8859-1"), new FileOutputStream("C://name"));
-			if (result) {
-				LOG.info("下载文件{}成功", fileName);
-			} else {
-				LOG.warn("下载文件{}失败", fileName);
-			}
+			result = ftpClient.retrieveFile(fileName, new FileOutputStream(localPath));
 		} catch (Exception e) {
 			LOG.warn("下载文件时出现了一个错误", e);
 		}
-		return null;
+		if (result) {
+			LOG.info("下载文件{}成功", fileName);
+		} else {
+			LOG.warn("下载文件{}失败", fileName);
+		}
+		return result;
 	}
 
 	/**
@@ -369,6 +425,12 @@ public class FTPUtils {
 
 	public void setPassword(String password) {
 		this.password = password;
+	}
+
+	public static interface TaskListener {
+		void finished(int size, File local);
+
+		void skip(int size, File local);
 	}
 
 }

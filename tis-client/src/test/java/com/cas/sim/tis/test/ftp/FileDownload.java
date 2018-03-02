@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.io.Util;
@@ -12,6 +14,7 @@ import org.junit.Test;
 import org.springframework.util.StopWatch;
 
 import com.cas.sim.tis.util.FTPUtils;
+import com.cas.sim.tis.util.FTPUtils.TaskListener;
 
 public class FileDownload {
 
@@ -21,7 +24,7 @@ public class FileDownload {
 		FTPClient client = new FTPClient();
 		util.setFtpClient(client);
 
-		util.setHost("192.168.1.19");
+		util.setHost("192.168.1.123");
 		util.setPort(21);
 		util.setUsername(user);
 		util.setPassword(password);
@@ -43,6 +46,7 @@ public class FileDownload {
 		boolean result = util.uploadFile("/Test", new File("G:\\jfxrt.jar"), System.currentTimeMillis() + ".jar");
 		Assert.assertTrue(result);
 	}
+
 	@Test
 	public void testUpload() throws Exception {
 //		管理员可以上传文件
@@ -79,5 +83,19 @@ public class FileDownload {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+
+	@Test
+	public void testDownload() throws Exception {
+		FTPUtils ftpUtils = getUtil("admin", "admin");
+		List<String> pathArray = new ArrayList<>();
+		boolean f = ftpUtils.connect("/assets");
+		System.out.println(f);
+		ftpUtils.getPath("/assets", pathArray);
+
+		pathArray.forEach(System.out::println);
+		ftpUtils.download(pathArray, "./");
+
+		ftpUtils.disconnect();
 	}
 }

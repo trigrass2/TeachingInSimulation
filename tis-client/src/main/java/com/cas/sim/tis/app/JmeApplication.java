@@ -40,7 +40,7 @@ public class JmeApplication extends JmeToJFXApplication {
 ////		注册资源路径
 //		assetManager.registerLocator(assetPath, UrlLocator.class);
 		
-		assetManager.registerLocator("E:\\JME_SDKPROJ_HOME\\ESimulation3D\\assets", FileLocator.class);
+		assetManager.registerLocator("assets", FileLocator.class);
 
 ////		创建天空盒
 ////		Spatial sky = SkyFactory.createSky(assetManager, "Model/Sky/noon_grass_2k.hdr", SkyFactory.EnvMapType.EquirectMap);
