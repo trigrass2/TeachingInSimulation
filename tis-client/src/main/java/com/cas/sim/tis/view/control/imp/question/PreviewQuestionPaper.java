@@ -266,7 +266,7 @@ public class PreviewQuestionPaper extends HBox implements IContent {
 		Dialog<Integer> dialog = new Dialog<>();
 		dialog.setDialogPane(new ClassSelectDialog(classes));
 		dialog.setTitle(MsgUtil.getMessage("class.dialog.select"));
-		dialog.setPrefSize(635, 320);
+		dialog.setPrefSize(652, 420);
 		dialog.showAndWait().ifPresent(cid -> {
 			if (cid == null) {
 				return;

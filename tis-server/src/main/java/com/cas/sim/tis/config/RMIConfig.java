@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.remoting.rmi.RmiServiceExporter;
 
 import com.cas.sim.tis.services.BrowseHistoryService;
+import com.cas.sim.tis.services.CatalogService;
 import com.cas.sim.tis.services.ClassService;
 import com.cas.sim.tis.services.CollectionService;
 import com.cas.sim.tis.services.ElecCompService;
@@ -56,6 +57,8 @@ public class RMIConfig {
 	private LibraryRecordService libraryRecordService;
 	@Resource
 	private LibraryAnswerService libraryAnswerService;
+	@Resource
+	private CatalogService catalogService;
 
 	@Value("${server.rmi.registry}")
 	private Integer registPort;
@@ -248,6 +251,22 @@ public class RMIConfig {
 		exporter.setServiceInterface(LibraryAnswerService.class);
 		exporter.setServiceName("libraryAnswerService");
 		exporter.setService(libraryAnswerService);
+		
+		if (servicePort != null) {
+			exporter.setServicePort(servicePort);
+		}
+		if (registPort != null) {
+			exporter.setRegistryPort(registPort);
+		}
+		return exporter;
+	}
+	
+	@Bean
+	public RmiServiceExporter catalogServiceExporter() {
+		RmiServiceExporter exporter = new RmiServiceExporter();
+		exporter.setServiceInterface(CatalogService.class);
+		exporter.setServiceName("catalogService");
+		exporter.setService(catalogService);
 		
 		if (servicePort != null) {
 			exporter.setServicePort(servicePort);

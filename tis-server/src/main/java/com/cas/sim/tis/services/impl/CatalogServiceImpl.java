@@ -16,24 +16,24 @@ import tk.mybatis.mapper.entity.Example.Criteria;
 public class CatalogServiceImpl extends AbstractService<Catalog> implements CatalogService {
 
 	@Override
-	public List<Catalog> findSections(int type, Integer upperId) {
+	public List<Catalog> findCatalogsByParentId(Integer rid) {
 		Condition condition = new Condition(Catalog.class);
 		Criteria criteria = condition.createCriteria();
-		criteria.andEqualTo("lvl", type);
-		criteria.andEqualTo("upperId", upperId);
-
-		CatalogMapper sectionMapper = (CatalogMapper) mapper;
-		sectionMapper.selectByCondition(condition);
-
-		List<Catalog> sections = null;
+		criteria.andEqualTo("rid", rid);
+		criteria.andEqualTo("del", 0);
+		
+		CatalogMapper catalogMapper = (CatalogMapper) mapper;
+		catalogMapper.selectByCondition(condition);
+		
+		List<Catalog> catalogs = null;
 		try {
-			sections = sectionMapper.selectByCondition(condition);
-			LOG.debug("查询到子节点数量：{}", sections.size());
+			catalogs = catalogMapper.selectByCondition(condition);
+			LOG.debug("查询到子节点数量：{}", catalogs.size());
 		} catch (Exception e) {
-			LOG.error("查询ID{}下子节点失败！", upperId);
-			sections = Collections.emptyList();
+			LOG.error("查询ID{}下子节点失败！", rid);
+			catalogs = Collections.emptyList();
 		}
-		return sections;
+		return catalogs;
 	}
 
 }

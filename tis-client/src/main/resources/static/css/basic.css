@@ -408,51 +408,81 @@
 }
 /*******************************************************************************
  *                                                                             *
- * 树样式                                                          *
+ * 手风琴样式                                                          *
  *                                                                             *
  ******************************************************************************/
- .leaf{
- 	-fx-padding: 5.0px;
- 	-fx-spacing: 5.0px;
- 	-fx-border-width: 0.0px;
- 	-fx-font-size:12.0px;
- }
- .leaf>.label{
- 	-fx-text-fill:#ffffff;
- }
- .leaf>*>.label{
- 	-fx-text-fill:#ffffff;
- }
- .leaf:hover{
- 	/*-fx-effect:dropshadow(three-pass-box , #ffffbe, 5.0, 0.0 , 0.0, 0.0);*/
- 	-fx-cursor: hand;
- }
- .leaf:hover>.label{
- 	-fx-text-fill:#ff9e2c;
- }
- .leaf:hover>*>.label{
- 	-fx-text-fill:#ff9e2c;
- }
- .lv1>*>.leaf{
- 	-fx-background-color: #22678f;
- 	-fx-font-size: 14.0px;
- }
- .lv4>*>.leaf{
- 	-fx-border-color:#ffffff;
+ .titled-content-btn{
+	-fx-pref-width: 210.0px;
+	-fx-text-fill: #ffffff;
+	-fx-font-weight: normal;
+	-fx-background-color:transparent;
+	-fx-border-color:#ffffff;
  	-fx-border-width: 0.0 0.0 1.0 0.0;
  	-fx-border-style:dashed;
- }
- .lv4:hover>*>.leaf{
- 	-fx-border-color:#ff9e2c;
+ 	-fx-alignment: center-left;
+}
+.titled-content-btn:hover{
+	-fx-pref-width: 210.0px;
+	-fx-text-fill: #ff9e2c;
+	-fx-background-color:transparent;
+	-fx-border-color:#ff9e2c;
  	-fx-border-width: 0.0 0.0 1.0 0.0;
  	-fx-border-style:dashed;
- }
+ 	-fx-alignment: center-left;
+}
+.titled-content-btn:selected{
+	-fx-pref-width: 210.0px;
+	-fx-text-fill: #ff9e2c;
+	-fx-background-color:transparent;
+	-fx-border-color:#ff9e2c;
+ 	-fx-border-width: 0.0 0.0 1.0 0.0;
+ 	-fx-border-style:dashed;
+ 	-fx-alignment: center-left;
+}
+.titled-content-btn:hover>*>.label,
+.titled-content-btn:hover>*>*>.label,
+.titled-content-btn:selected>*>.label,
+.titled-content-btn:selected>*>*>.label{
+	-fx-text-fill: #ff9e2c;
+}
+.titled-pane {
+    -fx-text-fill: #ffffff;
+    -fx-font-size: 14.0px;
+    -fx-font-weight: bold;
+}
+.titled-pane>.title>* {
+    -fx-text-fill: #ffffff;
+    -fx-font-size: 14.0px;
+    -fx-font-weight: bold;
+}
+.titled-pane:hover>.title>* {
+    -fx-effect:dropshadow(three-pass-box , #ffffbe88, 5.0, 0.0 , 0.0, 0.0);
+}
+.titled-pane > .title > .arrow-button > .arrow {
+    -fx-background-color: #ffffff;
+    -fx-background-insets: 0.0;
+    -fx-padding: 3.0 3.75 3.0 3.75; /* 3 3.75 3 3.75 */
+    -fx-shape: "M 0 0 h 7 l -3.5 4 z";
+}
+.titled-pane > *.content {
+    -fx-background-color:transparent;
+    -fx-background-insets: 0.0;
+    -fx-border-color:transparent;
+    -fx-padding: 5.0px;
+}
+.accordion > .titled-pane > .title {
+    -fx-background-color:transparent;
+    -fx-background-insets: 0.0;
+    -fx-background-radius: 0.0;
+    -fx-text-fill: #ffffff;
+    -fx-padding: 5.0px 0.0;
+}
 /*******************************************************************************
  *                                                                             *
  * 左侧菜单样式                                                          *
  *                                                                             *
  ******************************************************************************/
- .left-menu,.examing-menu{
+ .left-menu,.left-menu-orange{
  	-fx-background-color:transparent;
  	-fx-background-radius:0.0;
  	-fx-min-height: 45.0px;
@@ -468,10 +498,11 @@
  	-fx-background-color:#22678f;
  	-fx-background-insets: 0.0px;
  }
- .examing-menu{
+ .left-menu-orange{
+ 	-fx-alignment: CENTER;
  	-fx-background-color:#ff9e2c;
  }
- .examing-menu:hover{
+ .left-menu-orange:hover{
  	-fx-background-color:#ff9e2c;
  }
 /*******************************************************************************
@@ -623,22 +654,24 @@
  ******************************************************************************/
  .class-select-item{
  	-fx-font-size: 14.0px;
- 	-fx-text-fill: #ffffff;
- 	-fx-background-color: #296b99;
+ 	-fx-text-fill: #6e6e6e;
+ 	-fx-background-color: #97ccff;
  	-fx-background-insets: 0.0;
- 	-fx-border-color: #97ccff;
+ 	-fx-border-color: #d9d9d9;
  	-fx-border-width: 3.0px;
  	-fx-border-insets: 0.0;
  	-fx-pref-width: 132.0px;
  	-fx-pref-height: 90.0px;
  }
  .class-select-item:hover{
- 	-fx-background-color: #26739e;
+ 	-fx-background-color: #e3f4ff;
  }
  .class-select-item:selected{
+ 	-fx-text-fill: #ffffff;
+ 	-fx-background-color: #30648d;
  	-fx-background-insets: 0.0;
- 	-fx-border-insets: 0.0;
- 	-fx-border-color: #ffb400;
+ 	-fx-border-color: #d9d9d9;
+ 	-fx-border-width: 3.0px;
  }
  /*******************************************************************************
  *                                                                             *
@@ -758,7 +791,3 @@
  * 切换按钮样式                                                          *
  *                                                                             *
  ******************************************************************************/
- .switch>*>.mark{
- 	-fx-pref-height: 20.0;
- 	-fx-pref-width:20.0;
- }

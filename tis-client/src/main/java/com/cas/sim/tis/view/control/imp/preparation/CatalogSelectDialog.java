@@ -1,8 +1,8 @@
-package com.cas.sim.tis.view.control.imp.classes;
+package com.cas.sim.tis.view.control.imp.preparation;
 
 import java.util.List;
 
-import com.cas.sim.tis.entity.Class;
+import com.cas.sim.tis.entity.Catalog;
 import com.cas.sim.tis.util.MsgUtil;
 import com.cas.sim.tis.view.control.imp.dialog.DialogPane;
 
@@ -19,29 +19,18 @@ import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 
-/**
- * 弹出窗口选择班级面板<br>
- * 结果返回班级表编号
- * @功能 ClassSelectDialog.java
- * @作者 Caowj
- * @创建日期 2018年2月10日
- * @修改人 Caowj
- */
-public class ClassSelectDialog extends DialogPane<Integer> {
-
+public class CatalogSelectDialog extends DialogPane<Catalog> {
 	private ToggleGroup group = new ToggleGroup();
-
-	public ClassSelectDialog(List<Class> classes) {
-		super();
-
+	
+	public CatalogSelectDialog(List<Catalog> catalogs) {
 		FlowPane flow = new FlowPane();
 		flow.setHgap(15);
 		flow.setVgap(15);
 		flow.setPrefWrapLength(600);
 		flow.setAlignment(Pos.TOP_CENTER);
 
-		for (Class clazz : classes) {
-			flow.getChildren().add(createSelectItem(clazz));
+		for (Catalog catalog : catalogs) {
+			flow.getChildren().add(createSelectItem(catalog));
 		}
 
 		ScrollPane scroll = new ScrollPane(flow);
@@ -62,8 +51,8 @@ public class ClassSelectDialog extends DialogPane<Integer> {
 				error.setText(MsgUtil.getMessage("class.select.error"));
 				return;
 			}
-			Class clazz = (Class) toggle.getUserData();
-			dialog.setResult(clazz.getId());
+			Catalog catalog = (Catalog) toggle.getUserData();
+			dialog.setResult(catalog);
 		});
 
 		this.setSpacing(20);
@@ -72,10 +61,10 @@ public class ClassSelectDialog extends DialogPane<Integer> {
 		this.getChildren().addAll(scroll, error, ok);
 	}
 
-	private ToggleButton createSelectItem(Class clazz) {
-		ToggleButton toggle = new ToggleButton(clazz.getName());
+	private ToggleButton createSelectItem(Catalog catalog) {
+		ToggleButton toggle = new ToggleButton(catalog.getName());
 		toggle.getStyleClass().add("class-select-item");
-		toggle.setUserData(clazz);
+		toggle.setUserData(catalog);
 		toggle.setWrapText(true);
 		group.getToggles().add(toggle);
 		return toggle;

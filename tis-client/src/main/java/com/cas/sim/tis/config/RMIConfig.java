@@ -10,6 +10,7 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.remoting.rmi.RmiProxyFactoryBean;
 
 import com.cas.sim.tis.services.BrowseHistoryService;
+import com.cas.sim.tis.services.CatalogService;
 import com.cas.sim.tis.services.ClassService;
 import com.cas.sim.tis.services.CollectionService;
 import com.cas.sim.tis.services.ElecCompService;
@@ -137,6 +138,16 @@ public class RMIConfig {
 	}
 
 	@Bean
+	@Qualifier("typicalCaseServiceFactory")
+	public RmiProxyFactoryBean buildTypicalCaseServiceFactory() {
+		RmiProxyFactoryBean bean = new RmiProxyFactoryBean();
+		bean.setServiceUrl("rmi://" + host + ":" + port + "/typicalCaseService");
+		LOG.info("远程访问路径：{}", bean.getServiceUrl());
+		bean.setServiceInterface(TypicalCaseService.class);
+		return bean;
+	}
+
+	@Bean
 	@Qualifier("elecCompServiceFactory")
 	public RmiProxyFactoryBean buildElecCompServiceFactory() {
 		RmiProxyFactoryBean bean = new RmiProxyFactoryBean();
@@ -147,12 +158,12 @@ public class RMIConfig {
 	}
 
 	@Bean
-	@Qualifier("typicalCaseServiceFactory")
-	public RmiProxyFactoryBean buildTypicalCaseServiceFactory() {
+	@Qualifier("catalogServiceFactory")
+	public RmiProxyFactoryBean buildCatalogServiceFactory() {
 		RmiProxyFactoryBean bean = new RmiProxyFactoryBean();
-		bean.setServiceUrl("rmi://" + host + ":" + port + "/typicalCaseService");
+		bean.setServiceUrl("rmi://" + host + ":" + port + "/catalogService");
 		LOG.info("远程访问路径：{}", bean.getServiceUrl());
-		bean.setServiceInterface(TypicalCaseService.class);
+		bean.setServiceInterface(CatalogService.class);
 		return bean;
 	}
 }

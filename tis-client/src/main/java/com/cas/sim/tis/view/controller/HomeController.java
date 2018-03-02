@@ -41,18 +41,24 @@ public class HomeController implements Initializable {
 		// 判断当前登录人角色，加载对应菜单
 		int role = Session.get(Session.KEY_LOGIN_ROLE);
 		if (RoleConst.ADMIN == role) {
-//			管理员特有的菜单
-			buildMenu(MenuEnum.Information);
+//			管理员的菜单
+			buildMenu(MenuEnum.Information, //
+					MenuEnum.Resource, //
+					MenuEnum.Questions//
+			);
 		} else if (RoleConst.TEACHER == role) {
-//			学生特有的菜单
+//			教师的菜单
+			buildMenu(MenuEnum.Resource, //
+					MenuEnum.Questions, //
+					MenuEnum.Preparation //
+			);
 		} else if (RoleConst.STUDENT == role) {
-//			学生特有的菜单
+//			学生的菜单
+			buildMenu(MenuEnum.Resource, //
+					MenuEnum.Questions, //
+					MenuEnum.Lessones //
+			);
 		}
-//		公有的菜单
-		buildMenu(MenuEnum.Resource, //
-				MenuEnum.Questions, //
-				MenuEnum.Preparation //
-		);
 
 		menu.getChildren().addAll(homeMenus);
 
@@ -93,7 +99,7 @@ public class HomeController implements Initializable {
 
 		controller.loadLeftMenu(new RecongnizeMenu(content));
 		controller.loadContent(content, PageLevel.Level1);
-		
+
 		SpringUtil.getBean(PageController.class).showLoading();
 	}
 
