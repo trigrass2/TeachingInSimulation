@@ -4,7 +4,8 @@
  */
 package com.cas.circuit;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.cas.circuit.consts.IOType;
 import com.cas.circuit.vo.ControlIO;
@@ -15,7 +16,7 @@ import com.cas.circuit.vo.Terminal;
  * @author 张振宇 Jul 29, 2015 2:20:09 PM
  */
 public class BaseElectricCompLogic {
-	public static Logger log = Logger.getLogger(BaseElectricCompLogic.class);
+	public static final Logger LOG = LoggerFactory.getLogger(BaseElectricCompLogic.class);
 	public static final String ELECCOMP_STATE = "eleccomp_state";
 	protected ElecCompDef elecComp;
 	protected boolean workable;

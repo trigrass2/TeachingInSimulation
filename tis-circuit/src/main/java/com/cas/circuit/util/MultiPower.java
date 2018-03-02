@@ -62,10 +62,10 @@ public class MultiPower {
 
 			R r = R.getR(envName);
 			result = new MesureResult();
-			result.setType(r.getVoltage().getVoltType());
+			result.setType(r.getVoltage().getType());
 			result.setEvn(envName);
 			float volt = startTermVoltValue.getValue() - endTermVoltValue.getValue();
-			result.setVolt(r.getVoltage().getVoltType() == Voltage.IS_AC ? Math.abs(volt) : volt);
+			result.setVolt(r.getVoltage().getType() == Voltage.IS_AC ? Math.abs(volt) : volt);
 			result.setDatas(r.getVoltage().getData());
 		} else {
 			for (String env : envs) {
@@ -74,12 +74,12 @@ public class MultiPower {
 
 				R r = R.getR(env);
 				float volt = startTermVoltValue.getValue() - endTermVoltValue.getValue();
-				float v = r.getVoltage().getVoltType() == Voltage.IS_AC ? Math.abs(volt) : volt;
+				float v = r.getVoltage().getType() == Voltage.IS_AC ? Math.abs(volt) : volt;
 //				System.out.println(v);
 
 				if (result == null) {
 					result = new MesureResult();
-					result.setType(r.getVoltage().getVoltType());
+					result.setType(r.getVoltage().getType());
 					result.setEvn(env);
 					result.setVolt(v);
 					result.setDatas(r.getVoltage().getData());

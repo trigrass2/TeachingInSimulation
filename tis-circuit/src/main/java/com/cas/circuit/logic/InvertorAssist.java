@@ -29,7 +29,7 @@ public class InvertorAssist {
 				Method paramNameMethod = getClass().getMethod(entry.getKey(), String.class);
 				paramNameMethod.invoke(this, entry.getValue());
 			} catch (Exception e) {
-				Inverter.log.error(e.getMessage(), e);
+				Inverter.LOG.error(e.getMessage(), e);
 			}
 		}
 	}
@@ -55,7 +55,7 @@ public class InvertorAssist {
 		try {
 			hertz = MathUtil.parseFloat(value, 0f) / 100;
 		} catch (NumberFormatException e) {
-			Inverter.log.error(e.getMessage(), e);
+			Inverter.LOG.error(e.getMessage(), e);
 		}
 		inverter.setFrequency(hertz);
 	}

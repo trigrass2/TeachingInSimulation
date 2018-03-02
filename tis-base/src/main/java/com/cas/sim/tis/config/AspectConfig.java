@@ -25,7 +25,7 @@ public class AspectConfig {
 	@Around("actionPointcut()")
 	public Object onAround(ProceedingJoinPoint pjp) {
 		try {
-			logger.info("执行 {}.{}({})", //
+			logger.debug("执行 {}.{}({})", //
 					pjp.getSignature().getDeclaringTypeName(), //
 					pjp.getSignature().getName(), //
 					pjp.getArgs());

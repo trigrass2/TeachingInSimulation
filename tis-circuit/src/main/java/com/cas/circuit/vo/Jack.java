@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import javax.annotation.Nullable;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -103,7 +104,7 @@ public class Jack {
 		return stitchList;
 	}
 
-	public Stitch getStitch(Integer index) {
+	@Nullable public Stitch getStitch(Integer index) {
 		return stitchMap.get(index);
 	}
 

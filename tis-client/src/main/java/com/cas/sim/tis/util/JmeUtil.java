@@ -5,6 +5,7 @@ import java.util.List;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import com.cas.sim.tis.app.event.MouseEventState;
 import com.cas.util.StringUtil;
 import com.jme3.asset.AssetManager;
 import com.jme3.collision.CollisionResult;
@@ -28,7 +29,9 @@ import com.jme3.scene.shape.Sphere;
 
 public final class JmeUtil {
 
-	public static final String MOUSE_TRANSPARENT = "MouseTransparent";
+	public static final Vector3f UNIT_XY = new Vector3f(1, 1, 0);
+	public static final Vector3f UNIT_XZ = new Vector3f(1, 0, 1);
+	public static final Vector3f UNIT_YZ = new Vector3f(0, 1, 1);
 
 	/**
 	 * @param value eg.(-0.017576016, 0.011718482, -0.99977684)
@@ -190,16 +193,17 @@ public final class JmeUtil {
 		final Vector2f cursor = inputManager.getCursorPosition();
 		return getCollisionFromScreenPos(spatial, camera, cursor.getX(), cursor.getY());
 	}
+
 	@Nullable
 	public static CollisionResult getCollisionFromScreenPos(@NotNull final Spatial spatial, @NotNull final Camera camera, final float screenX, final float screenY) {
 
 		final Vector2f point = new Vector2f(screenX, screenY);
 //		final Vector3f click3d = camera.getWorldCoordinates(point, 0f);
 //		final Vector3f dir = camera.getWorldCoordinates(point, 1f).subtract(click3d).normalize();
-        Vector3f origin    = camera.getWorldCoordinates(point, 0.0f);
-        Vector3f direction = camera.getWorldCoordinates(point, 0.3f);
-        direction.subtractLocal(origin).normalizeLocal();
-        
+		Vector3f origin = camera.getWorldCoordinates(point, 0.0f);
+		Vector3f direction = camera.getWorldCoordinates(point, 0.3f);
+		direction.subtractLocal(origin).normalizeLocal();
+
 		final Ray ray = new Ray();
 		ray.setOrigin(origin);
 		ray.setDirection(direction);
@@ -217,8 +221,8 @@ public final class JmeUtil {
 			if (collisionResult.getGeometry().getCullHint() == CullHint.Always) {
 				continue;
 			}
-			Boolean mouseTransparent = collisionResult.getGeometry().getUserData(MOUSE_TRANSPARENT);
-			if (mouseTransparent != null && mouseTransparent.booleanValue()) {
+			Boolean mouseTransparent = collisionResult.getGeometry().getUserData(MouseEventState.TO_MOUSE_VISIBLE);
+			if (mouseTransparent != null && !mouseTransparent.booleanValue()) {
 				continue;
 			}
 
@@ -228,13 +232,13 @@ public final class JmeUtil {
 		return null;
 	}
 
-	public static void setMouseTransparent(Spatial spatial, boolean transparent) {
+	public static void setMouseVisible(Spatial spatial, boolean visible) {
 		if (spatial != null) {
-			spatial.setUserData(MOUSE_TRANSPARENT, transparent);
+			spatial.setUserData(MouseEventState.TO_MOUSE_VISIBLE, visible);
 		}
 
 		if (spatial instanceof Node) {
-			((Node) spatial).getChildren().forEach(child -> setMouseTransparent(child, transparent));
+			((Node) spatial).getChildren().forEach(child -> setMouseVisible(child, visible));
 		}
 	}
 
@@ -376,6 +380,7 @@ public final class JmeUtil {
 		}
 		return node;
 	}
+
 	/**
 	 * 创建球体
 	 */

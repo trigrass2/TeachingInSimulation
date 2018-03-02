@@ -14,7 +14,7 @@ public class VoltageAdapter extends XmlAdapter<String, Voltage> {
 
 		Voltage volt = new Voltage();
 		if (v.startsWith("+") || v.startsWith("-")) {
-			volt.setVoltType(Voltage.IS_DC);
+			volt.setType(Voltage.IS_DC);
 			v = v.substring(1);
 		}
 		if (v.endsWith("V") || v.endsWith("v")) {
@@ -29,7 +29,7 @@ public class VoltageAdapter extends XmlAdapter<String, Voltage> {
 		if (v == null) {
 			return null;
 		}
-		return ((v.getVoltType() == Voltage.IS_AC) ? "" : "+") + v.getValue() + "v";
+		return ((v.getType() == Voltage.IS_AC) ? "" : "+") + v.getValue() + "v";
 	}
 
 }

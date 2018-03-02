@@ -45,4 +45,8 @@ public class BrowseHistory implements Serializable {
 	public Date getCreateDate() {
 		return createDate;
 	}
+	
+	public void setCreateDate(Date createDate) {
+		this.createDate = createDate;
+	}
 }

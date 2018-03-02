@@ -641,11 +641,11 @@ public class R {
 				R r = R.getR(envName);
 				if (r != null) {
 					result = new MesureResult();
-					result.setType(r.voltage.getVoltType());
+					result.setType(r.voltage.getType());
 					result.setEvn(envName);
 					result.setFrequency(r.voltage.getFrequency());
 					float volt = startTermVoltValue.getValue() - endTermVoltValue.getValue();
-					result.setVolt(r.voltage.getVoltType() == Voltage.IS_AC ? Math.abs(volt) : volt);
+					result.setVolt(r.voltage.getType() == Voltage.IS_AC ? Math.abs(volt) : volt);
 					result.setDatas(r.getVoltage().getData());
 				}
 			} catch (Exception e) {

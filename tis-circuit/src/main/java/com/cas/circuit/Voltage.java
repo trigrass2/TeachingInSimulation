@@ -15,7 +15,7 @@ public class Voltage implements Cloneable {
 //	电压环境
 	protected String env;
 //	电压类型（DC、AC）
-	protected int voltType;
+	protected int type;
 //	电压值
 	protected float value;
 //	电压相位(0,120,240)
@@ -39,7 +39,7 @@ public class Voltage implements Cloneable {
 	public Voltage(String env, int voltType, float value, int phase) {
 		super();
 		this.env = env;
-		this.voltType = voltType;
+		this.type = voltType;
 		this.value = value;
 		this.phase = phase;
 	}
@@ -58,18 +58,12 @@ public class Voltage implements Cloneable {
 		this.value = value;
 	}
 
-	/**
-	 * @return the voltType
-	 */
-	public int getVoltType() {
-		return voltType;
+	public int getType() {
+		return type;
 	}
 
-	/**
-	 * @param voltType the voltType to set
-	 */
-	public void setVoltType(int voltType) {
-		this.voltType = voltType;
+	public void setType(int type) {
+		this.type = type;
 	}
 
 	/**
@@ -111,7 +105,7 @@ public class Voltage implements Cloneable {
 		result = prime * result + ((env == null) ? 0 : env.hashCode());
 		result = prime * result + phase;
 		result = prime * result + Float.floatToIntBits(value);
-		result = prime * result + voltType;
+		result = prime * result + type;
 		return result;
 	}
 
@@ -144,7 +138,7 @@ public class Voltage implements Cloneable {
 		if (Float.floatToIntBits(value) != Float.floatToIntBits(other.value)) {
 			return false;
 		}
-		if (voltType != other.voltType) {
+		if (type != other.type) {
 			return false;
 		}
 		return true;
@@ -172,7 +166,7 @@ public class Voltage implements Cloneable {
 	 */
 	@Override
 	public String toString() {
-		return "env=" + env + ", voltType=" + voltType + ", value=" + value + ", phase=" + phase;
+		return "env=" + env + ", voltType=" + type + ", value=" + value + ", phase=" + phase;
 	}
 
 	/**

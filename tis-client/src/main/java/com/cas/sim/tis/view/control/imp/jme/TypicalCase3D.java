@@ -8,9 +8,11 @@ import org.slf4j.LoggerFactory;
 
 import com.cas.sim.tis.app.JmeApplication;
 import com.cas.sim.tis.app.state.TypicalCaseState;
+import com.cas.sim.tis.entity.ElecComp;
 import com.cas.sim.tis.entity.TypicalCase;
 import com.cas.sim.tis.view.control.IContent;
 import com.jme3x.jfx.injfx.JmeToJFXIntegrator;
+import com.jme3x.jfx.injfx.input.JFXMouseInput;
 
 import javafx.beans.value.ChangeListener;
 import javafx.fxml.FXMLLoader;
@@ -31,6 +33,7 @@ public class TypicalCase3D implements IContent {
 //		创建一个Canvas层，用于显示JME
 		canvas = new Canvas();
 //		canvas.setStyle("-fx-background-size: cover");
+		canvas.getProperties().put(JFXMouseInput.PROP_USE_LOCAL_COORDS, true);
 		canvas.parentProperty().addListener((ChangeListener<Parent>) (s, o, n) -> {
 			if (o == null && n != null) {
 				Pane parent = (Pane) n;
@@ -70,10 +73,18 @@ public class TypicalCase3D implements IContent {
 		jmeApp.stop(true);
 	}
 
-	public void setCase(TypicalCase typicalCase) {
+	public void setupCase(TypicalCase typicalCase) {
 //		找到典型案例的状态机
 		TypicalCaseState appState = jmeApp.getStateManager().getState(TypicalCaseState.class);
 //		修改元器件模型
 		appState.setupCase(typicalCase);
 	}
+
+	public void selectedElecComp(ElecComp elecComp) {
+//		找到典型案例的状态机
+		TypicalCaseState appState = jmeApp.getStateManager().getState(TypicalCaseState.class);
+//		
+		jmeApp.enqueue(() -> appState.hold(elecComp));
+	}
+
 }
