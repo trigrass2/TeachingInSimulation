@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 import com.cas.sim.tis.services.CollectionService;
 
 @Component
-public class CollectionAction {
+public class CollectionAction extends BaseAction<CollectionService> {
 	@Resource
 	@Qualifier("collectionServiceFactory")
 	private RmiProxyFactoryBean collectionServiceFactory;
@@ -18,7 +18,11 @@ public class CollectionAction {
 		if (rid == null) {
 			return false;
 		}
-		CollectionService service = (CollectionService) collectionServiceFactory.getObject();
-		return service.checkCollected(rid);
+		return getService().checkCollected(rid);
+	}
+
+	@Override
+	protected RmiProxyFactoryBean getRmiProxyFactoryBean() {
+		return collectionServiceFactory;
 	}
 }

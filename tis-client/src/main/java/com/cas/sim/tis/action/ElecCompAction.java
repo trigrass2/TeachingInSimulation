@@ -10,20 +10,23 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.remoting.rmi.RmiProxyFactoryBean;
 import org.springframework.stereotype.Component;
 
+import com.cas.circuit.vo.ElecCompDef;
 import com.cas.sim.tis.entity.ElecComp;
 import com.cas.sim.tis.services.ElecCompService;
+import com.cas.sim.tis.util.HTTPUtils;
+import com.cas.sim.tis.xml.util.JaxbUtil;
 
 @Component
-public class ElecCompAction {
+public class ElecCompAction extends BaseAction<ElecCompService> {
+	@Resource
+	private HTTPUtils httpUtils;
+
 	@Resource
 	@Qualifier("elecCompServiceFactory")
 	private RmiProxyFactoryBean elecCompServiceFactory;
 
 	public List<ElecComp> getElecCompList() {
-
-		ElecCompService compService = (ElecCompService) elecCompServiceFactory.getObject();
-
-		return compService.findAll();
+		return getService().findAll();
 	}
 
 	/**
@@ -31,15 +34,20 @@ public class ElecCompAction {
 	 * @return
 	 */
 	public Map<String, List<ElecComp>> getElecCompMap() {
-
-		ElecCompService compService = (ElecCompService) elecCompServiceFactory.getObject();
-
-		return compService.findElecCompGroupByType();
+		return getService().findElecCompGroupByType();
 	}
 
-	@Nullable public ElecComp getElecComp(String model) {
-		ElecCompService compService = (ElecCompService) elecCompServiceFactory.getObject();
-		return compService.findElecCompByModel(model);
+	@Nullable
+	public ElecComp getElecComp(String model) {
+		return getService().findElecCompByModel(model);
 	}
 
+	public ElecCompDef parse(String cfgPath) {
+		return JaxbUtil.converyToJavaBean(httpUtils.getUrl(cfgPath), ElecCompDef.class);
+	}
+
+	@Override
+	protected RmiProxyFactoryBean getRmiProxyFactoryBean() {
+		return elecCompServiceFactory;
+	}
 }

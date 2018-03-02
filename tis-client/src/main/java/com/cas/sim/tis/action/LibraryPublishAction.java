@@ -18,7 +18,7 @@ import com.cas.sim.tis.vo.SubmitInfo;
 import com.github.pagehelper.PageInfo;
 
 @Component
-public class LibraryPublishAction {
+public class LibraryPublishAction extends BaseAction<LibraryPublishService> {
 	@Resource
 	@Qualifier("libraryPublishServiceFactory")
 	private RmiProxyFactoryBean libraryPublishServiceFactory;
@@ -31,13 +31,11 @@ public class LibraryPublishAction {
 	 * @return
 	 */
 	public PageInfo<LibraryPublishForTeacher> findPublishForTeacher(int pageIndex, int pageSize, int creator) {
-		LibraryPublishService service = (LibraryPublishService) libraryPublishServiceFactory.getObject();
-		return service.findPublishForTeacher(pageIndex, pageSize, creator);
+		return getService().findPublishForTeacher(pageIndex, pageSize, creator);
 	}
 
 	public PageInfo<LibraryPublishForStudent> findPublishForStudent(int pageIndex, int pageSize, int type, int creator) {
-		LibraryPublishService service = (LibraryPublishService) libraryPublishServiceFactory.getObject();
-		return service.findPublishForStudent(pageIndex, pageSize, type, creator);
+		return getService().findPublishForStudent(pageIndex, pageSize, type, creator);
 	}
 
 	/**
@@ -46,37 +44,39 @@ public class LibraryPublishAction {
 	 * @return
 	 */
 	public LibraryPublish findPublishById(int id) {
-		LibraryPublishService service = (LibraryPublishService) libraryPublishServiceFactory.getObject();
-		return service.findPublishById(id);
+		return getService().findPublishById(id);
 	}
 
 	public List<SubmitInfo> findSubmitStateById(int id) {
-		LibraryPublishService service = (LibraryPublishService) libraryPublishServiceFactory.getObject();
-		return service.findSubmitStateById(id);
+		return getService().findSubmitStateById(id);
 	}
 
 	/**
 	 * 教师发布考核
 	 * @param rid 题库编号
 	 * @param cid 班级编号
-	 * @return 
+	 * @return
 	 */
 	public Integer publishLibraryToClass(Integer rid, Integer cid) {
-		LibraryPublishService service = (LibraryPublishService) libraryPublishServiceFactory.getObject();
 		LibraryPublish publish = new LibraryPublish();
 		publish.setLibraryId(rid);
 		publish.setClassId(cid);
 		publish.setCreator(Session.get(Session.KEY_LOGIN_ID));
 		publish.setType(LibraryPublishType.EXAM.getType());
-		return service.publishLibraryToClass(publish);
+		return getService().publishLibraryToClass(publish);
 	}
 
 	public int practiceLibraryByStudent(int rid) {
-		LibraryPublishService service = (LibraryPublishService) libraryPublishServiceFactory.getObject();
+
 		LibraryPublish publish = new LibraryPublish();
 		publish.setLibraryId(rid);
 		publish.setCreator(Session.get(Session.KEY_LOGIN_ID));
 		publish.setType(LibraryPublishType.PRACTICE.getType());
-		return service.practiceLibraryByStudent(publish);
+		return getService().practiceLibraryByStudent(publish);
+	}
+
+	@Override
+	protected RmiProxyFactoryBean getRmiProxyFactoryBean() {
+		return libraryPublishServiceFactory;
 	}
 }

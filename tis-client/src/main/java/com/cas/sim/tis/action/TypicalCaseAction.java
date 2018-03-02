@@ -12,16 +12,19 @@ import com.cas.sim.tis.entity.TypicalCase;
 import com.cas.sim.tis.services.TypicalCaseService;
 
 @Component
-public class TypicalCaseAction {
+public class TypicalCaseAction extends BaseAction<TypicalCaseService> {
 	@Resource
 	@Qualifier("typicalCaseServiceFactory")
 	private RmiProxyFactoryBean typicalCaseServiceFactory;
 
 	public List<TypicalCase> getTypicalCaseList() {
 
-		TypicalCaseService compService = (TypicalCaseService) typicalCaseServiceFactory.getObject();
+		return getService().findAll();
+	}
 
-		return compService.findAll();
+	@Override
+	protected RmiProxyFactoryBean getRmiProxyFactoryBean() {
+		return typicalCaseServiceFactory;
 	}
 
 }

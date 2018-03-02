@@ -14,19 +14,21 @@ import com.cas.sim.tis.entity.LibraryAnswer;
 import com.cas.sim.tis.services.LibraryAnswerService;
 
 @Component
-public class LibraryAnswerAction {
+public class LibraryAnswerAction extends BaseAction<LibraryAnswerService> {
 	@Resource
 	@Qualifier("libraryAnswerServiceFactory")
 	private RmiProxyFactoryBean libraryAnswerServiceFactory;
 
 	public List<LibraryAnswer> findAnswersByPublish(int pid, boolean onlyWrong) {
-		LibraryAnswerService service = (LibraryAnswerService) libraryAnswerServiceFactory.getObject();
-		return service.findAnswersByPublish(pid, onlyWrong);
+		return getService().findAnswersByPublish(pid, onlyWrong);
 	}
 
 	public Map<AnswerState, Integer> statisticsByQuestionId(int pid, int qid) {
-		LibraryAnswerService service = (LibraryAnswerService) libraryAnswerServiceFactory.getObject();
-		return service.statisticsByQuestionId(pid, qid);
+		return getService().statisticsByQuestionId(pid, qid);
 	}
 
+	@Override
+	protected RmiProxyFactoryBean getRmiProxyFactoryBean() {
+		return libraryAnswerServiceFactory;
+	}
 }

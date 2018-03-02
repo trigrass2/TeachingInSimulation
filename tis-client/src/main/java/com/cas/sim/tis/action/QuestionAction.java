@@ -13,7 +13,7 @@ import com.cas.sim.tis.services.QuestionService;
 import com.github.pagehelper.PageInfo;
 
 @Component
-public class QuestionAction {
+public class QuestionAction extends BaseAction<QuestionService> {
 	@Resource
 	@Qualifier("questionServiceFactory")
 	private RmiProxyFactoryBean questionServiceFactory;
@@ -26,8 +26,7 @@ public class QuestionAction {
 	 * @return
 	 */
 	public PageInfo<Question> findQuestionsByLibrary(int pageIndex, int pageSize, int rid) {
-		QuestionService service = (QuestionService) questionServiceFactory.getObject();
-		return service.findQuestionsByLibrary(pageIndex, pageSize, rid);
+		return getService().findQuestionsByLibrary(pageIndex, pageSize, rid);
 	}
 
 	/**
@@ -36,13 +35,11 @@ public class QuestionAction {
 	 * @return
 	 */
 	public List<Question> findQuestionsByLibraryAndQuestionType(int rid, int type) {
-		QuestionService service = (QuestionService) questionServiceFactory.getObject();
-		return service.findQuestionsByLibraryAndQuestionType(rid, type);
+		return getService().findQuestionsByLibraryAndQuestionType(rid, type);
 	}
 
 	public List<Question> findQuestionsByPublish(int pid, boolean mostWrong) {
-		QuestionService service = (QuestionService) questionServiceFactory.getObject();
-		return service.findQuestionsByPublish(pid, mostWrong);
+		return getService().findQuestionsByPublish(pid, mostWrong);
 	}
 
 	/**
@@ -50,8 +47,7 @@ public class QuestionAction {
 	 * @param questions
 	 */
 	public void addQuestions(int rid, List<Question> questions) {
-		QuestionService service = (QuestionService) questionServiceFactory.getObject();
-		service.addQuestions(rid, questions);
+		getService().addQuestions(rid, questions);
 	}
 
 	/**
@@ -60,8 +56,12 @@ public class QuestionAction {
 	 * @return
 	 */
 	public boolean checkImportOrExport(int rid) {
-		QuestionService service = (QuestionService) questionServiceFactory.getObject();
-		int total = service.countQuestionByLibrary(rid);
+		int total = getService().countQuestionByLibrary(rid);
 		return total > 0;
+	}
+
+	@Override
+	protected RmiProxyFactoryBean getRmiProxyFactoryBean() {
+		return questionServiceFactory;
 	}
 }

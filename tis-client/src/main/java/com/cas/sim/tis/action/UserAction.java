@@ -14,49 +14,42 @@ import com.cas.sim.tis.services.UserService;
 import com.github.pagehelper.PageInfo;
 
 @Component
-public class UserAction {
+public class UserAction extends BaseAction<UserService> {
 	@Resource
 	@Qualifier("userServiceFactory")
 	private RmiProxyFactoryBean userServiceFactory;
 
 	public int getTeacherIdByStudentId(Integer studentId) {
-		UserService service = (UserService) userServiceFactory.getObject();
-		User user = service.findById(studentId);
+		User user = getService().findById(studentId);
 		return user.getTeacherId();
 	}
 
 	public User findUserByID(int id) {
-		UserService service = (UserService) userServiceFactory.getObject();
-		return service.findById(id);
+		return getService().findById(id);
 	}
 
 	public List<User> findTeachers() {
-		UserService service = (UserService) userServiceFactory.getObject();
-		return service.findTeachers();
+		return getService().findTeachers();
 	}
 
 	public PageInfo<User> findTeachers(int pageIndex, int pageSize) {
-		UserService service = (UserService) userServiceFactory.getObject();
-		return service.findTeachers(pageIndex, pageSize);
+		return getService().findTeachers(pageIndex, pageSize);
 	}
-	
+
 	public PageInfo<User> findStudents(int pageIndex, int pageSize, int classId) {
-		UserService service = (UserService) userServiceFactory.getObject();
-		return service.findStudents(pageIndex, pageSize, classId);
+		return getService().findStudents(pageIndex, pageSize, classId);
 	}
 
 	public void addUsers(List<User> users) {
-		UserService service = (UserService) userServiceFactory.getObject();
-		service.save(users);
+		getService().save(users);
 	}
 
 	public void modifyUser(User user) {
-		UserService service = (UserService) userServiceFactory.getObject();
-		service.update(user);
+		getService().update(user);
 	}
 
 	public void deleteUser(int id) {
-		UserService service = (UserService) userServiceFactory.getObject();
+		UserService service = getService();
 		User user = service.findById(id);
 		if (user != null) {
 			user.setUpdater(Session.get(Session.KEY_LOGIN_ID));
@@ -64,4 +57,10 @@ public class UserAction {
 			service.update(user);
 		}
 	}
+
+	@Override
+	protected RmiProxyFactoryBean getRmiProxyFactoryBean() {
+		return userServiceFactory;
+	}
+
 }

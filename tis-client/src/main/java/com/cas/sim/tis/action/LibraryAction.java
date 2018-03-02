@@ -10,40 +10,41 @@ import com.cas.sim.tis.consts.Session;
 import com.cas.sim.tis.entity.Library;
 import com.cas.sim.tis.services.LibraryService;
 import com.github.pagehelper.PageInfo;
+
 @Component
-public class LibraryAction {
+public class LibraryAction extends BaseAction<LibraryService> {
 	@Resource
 	@Qualifier("libraryServiceFactory")
 	private RmiProxyFactoryBean libraryServiceFactory;
 
 	public PageInfo<Library> findLibraryByType(int pageIndex, int pageSize, int type) {
-		LibraryService service = (LibraryService) libraryServiceFactory.getObject();
-		return service.findLibraryByType(pageIndex, pageSize, type);
+		return getService().findLibraryByType(pageIndex, pageSize, type);
 	}
-	
+
 	public Library findLibraryByID(int id) {
-		LibraryService service = (LibraryService) libraryServiceFactory.getObject();
-		return service.findById(id);
+		return getService().findById(id);
 	}
-	
+
 	public void addLibrary(Library library) {
-		LibraryService service = (LibraryService) libraryServiceFactory.getObject();
 		library.setCreator(Session.get(Session.KEY_LOGIN_ID));
-		service.addLibrary(library);
+		getService().addLibrary(library);
 	}
-	
+
 	public void modifyLibrary(Library library) {
-		LibraryService service = (LibraryService) libraryServiceFactory.getObject();
 		library.setUpdater(Session.get(Session.KEY_LOGIN_ID));
-		service.modifyLibrary(library);
+		getService().modifyLibrary(library);
 	}
-	
+
 	public void deleteLibrary(int id) {
-		LibraryService service = (LibraryService) libraryServiceFactory.getObject();
+		LibraryService service = getService();
 		Library library = service.findById(id);
 		library.setDel(1);
 		library.setUpdater(Session.get(Session.KEY_LOGIN_ID));
 		service.modifyLibrary(library);
 	}
-	
+
+	@Override
+	protected RmiProxyFactoryBean getRmiProxyFactoryBean() {
+		return libraryServiceFactory;
+	}
 }

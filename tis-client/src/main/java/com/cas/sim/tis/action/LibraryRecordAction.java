@@ -14,7 +14,7 @@ import com.cas.sim.tis.services.LibraryRecordService;
 import com.cas.sim.tis.vo.LibraryRecordInfo;
 
 @Component
-public class LibraryRecordAction {
+public class LibraryRecordAction extends BaseAction<LibraryRecordService> {
 	@Resource
 	@Qualifier("libraryRecordServiceFactory")
 	private RmiProxyFactoryBean libraryRecordServiceFactory;
@@ -25,13 +25,15 @@ public class LibraryRecordAction {
 	 * @return
 	 */
 	public List<LibraryRecordInfo> findPublishForTeacher(int pid) {
-		LibraryRecordService service = (LibraryRecordService) libraryRecordServiceFactory.getObject();
-		return service.findRecordByPublishId(pid);
+		return getService().findRecordByPublishId(pid);
 	}
 
 	public void addRecord(LibraryRecord record, List<LibraryAnswer> answers) {
-		LibraryRecordService service = (LibraryRecordService) libraryRecordServiceFactory.getObject();
-		service.addRecord(record, answers);
+		getService().addRecord(record, answers);
 	}
-	
+
+	@Override
+	protected RmiProxyFactoryBean getRmiProxyFactoryBean() {
+		return libraryRecordServiceFactory;
+	}
 }
