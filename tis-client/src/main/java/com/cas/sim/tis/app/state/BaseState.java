@@ -1,5 +1,6 @@
 package com.cas.sim.tis.app.state;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -15,6 +16,7 @@ import com.jme3.app.Application;
 import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.AbstractAppState;
 import com.jme3.app.state.AppStateManager;
+import com.jme3.asset.AssetKey;
 import com.jme3.asset.AssetManager;
 import com.jme3.input.InputManager;
 import com.jme3.input.controls.InputListener;
@@ -48,7 +50,7 @@ public abstract class BaseState extends AbstractAppState {
 
 	private List<Spatial> candidates = new ArrayList<>();
 
-	private MouseEventState mouseEventState;
+	protected MouseEventState mouseEventState;
 
 	/**
 	 * @param string
@@ -78,6 +80,7 @@ public abstract class BaseState extends AbstractAppState {
 	protected void addListener(Spatial sp, MouseEventListener l) {
 		if (mouseEventState == null) {
 			LOG.warn("没有MouseEventState");
+			return;
 		}
 		candidates.add(sp);
 		mouseEventState.addCandidate(sp, l);
@@ -134,6 +137,19 @@ public abstract class BaseState extends AbstractAppState {
 		}
 
 		super.cleanup();
+	}
+
+	protected <T> T loadAsset(AssetKey<T> key) {
+		T t = null;
+		try {
+			t = assetManager.loadAsset(key);
+			LOG.info("成功加载资源{}", key);
+			return t;
+		} catch (Exception e) {
+			String errMsg = MessageFormat.format("加载{0}加载失败", key);
+			LOG.warn(errMsg, e);
+			throw new RuntimeException(MessageFormat.format("无法加载资源{0}", key));
+		}
 	}
 
 }

@@ -1,6 +1,5 @@
 package com.cas.sim.tis.app.state;
 
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -14,28 +13,21 @@ import com.cas.circuit.vo.ElecCompDef;
 import com.cas.circuit.vo.Jack;
 import com.cas.circuit.vo.LightIO;
 import com.cas.circuit.vo.Terminal;
+import com.cas.sim.tis.action.ElecCompAction;
 import com.cas.sim.tis.anno.JmeThread;
 import com.cas.sim.tis.app.event.MouseEvent;
 import com.cas.sim.tis.app.event.MouseEventAdapter;
 import com.cas.sim.tis.entity.ElecComp;
 import com.cas.sim.tis.util.AnimUtil;
-import com.cas.sim.tis.util.HTTPUtils;
 import com.cas.sim.tis.util.JmeUtil;
 import com.cas.sim.tis.util.SpringUtil;
 import com.cas.sim.tis.view.control.imp.jme.Recongnize3D;
 import com.cas.sim.tis.view.controller.PageController;
-import com.cas.sim.tis.xml.util.JaxbUtil;
 import com.cas.util.StringUtil;
-import com.jme3.input.CameraInput;
+import com.jme3.asset.ModelKey;
 import com.jme3.input.ChaseCamera;
-import com.jme3.input.MouseInput;
-import com.jme3.input.controls.ActionListener;
-import com.jme3.input.controls.AnalogListener;
-import com.jme3.input.controls.MouseAxisTrigger;
-import com.jme3.input.controls.MouseButtonTrigger;
 import com.jme3.light.PointLight;
 import com.jme3.math.ColorRGBA;
-import com.jme3.math.FastMath;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
@@ -53,9 +45,8 @@ public class ElecCompState extends BaseState {
 	private List<Spatial> shells = new ArrayList<>();
 	private boolean autoRotate;
 	private float scale = 1;
-	private PointLight pointLight;
-	private boolean moveable;
 	private Recongnize3D ui;
+	private PointLight pointLight;
 
 	@Override
 	protected void initializeLocal() {
@@ -64,11 +55,9 @@ public class ElecCompState extends BaseState {
 		LOG.debug("创建元器件状态机的根节点{}", root.getName());
 		rootNode.attachChild(root);
 
-//		设定相机：
-		setupCamera();
-
-//		光源：
 		setupLight();
+
+		stateManager.attach(new MyCameraState());
 
 ////		PBR indirect lighting
 //		final EnvironmentCamera envCam = new EnvironmentCamera(256, new Vector3f(0, 3f, 0));
@@ -97,82 +86,21 @@ public class ElecCompState extends BaseState {
 		rootNode.addLight(pointLight);
 	}
 
-	private void setupCamera() {
-//		1、禁用飞行视角
-		app.getFlyByCamera().setEnabled(false);
-//		2、启动跟随视角
-		chaser = new ChaseCamera(cam, root, inputManager);
-		chaser.setHideCursorOnRotate(false);
-//		3、设置垂直翻转
-		chaser.setInvertVerticalAxis(true);
-//		4、设置最大和最小仰角
-		chaser.setMaxVerticalRotation(FastMath.DEG_TO_RAD * 80);
-		chaser.setMinVerticalRotation(-FastMath.DEG_TO_RAD * 80);
-//		5、设置缩放与旋转的灵敏度
-		chaser.setZoomSensitivity(1);
-		chaser.setRotationSpeed(5);
-//		6、移除用于旋转相机的鼠标右键触发器
-		inputManager.deleteTrigger(CameraInput.CHASECAM_TOGGLEROTATE, new MouseButtonTrigger(MouseInput.BUTTON_RIGHT));
-//		7、模拟一个拖拽事件，通过修改相机观测点的偏移量实现的。
-		dragEvent();
-	}
-
-	private void dragEvent() {
-//		鼠标右键按下才能拖拽
-		addMapping("BTN_MOVE", new MouseButtonTrigger(MouseInput.BUTTON_RIGHT));
-		addListener((ActionListener) (name, isPressed, tpf) -> {
-			moveable = isPressed;
-			if (isPressed) {
-//				@Nullable
-//				Geometry picked = JmeUtil.getGeometryFromCursor(root, cam, inputManager);
-//				moveable = picked != null;
-//
-////				XXX for test
-//				@Nullable
-				Vector3f point = JmeUtil.getContactPointFromCursor(root, cam, inputManager);
-				if (point != null) {
-					Spatial ball = JmeUtil.getSphere(assetManager, 32, 0.1f, ColorRGBA.Red);
-					root.attachChild(ball);
-					ball.setLocalTranslation(point);
-				}
-//			} else {
-//				moveable = false;
-			}
-		}, "BTN_MOVE");
-
-//		鼠标拖拽的四个方向
-		addMapping("AXIS_X_RIGHT", new MouseAxisTrigger(MouseInput.AXIS_X, true));// 右
-		addMapping("AXIS_X_LEFT", new MouseAxisTrigger(MouseInput.AXIS_X, false));// 左
-		addMapping("AXIS_Y_UP", new MouseAxisTrigger(MouseInput.AXIS_Y, true));// 上
-		addMapping("AXIS_Y_DOWN", new MouseAxisTrigger(MouseInput.AXIS_Y, false));// 下
-		addListener((AnalogListener) (name, value, tpf) -> {
-			if (!moveable) {
-				return;
-			}
-			value *= 10;
-
-			if ("AXIS_X_LEFT".equals(name)) {
-				chaser.setLookAtOffset(chaser.getLookAtOffset().add(cam.getLeft().normalize().mult(value)));
-			}
-			if ("AXIS_X_RIGHT".equals(name)) {
-				chaser.setLookAtOffset(chaser.getLookAtOffset().add(cam.getLeft().normalize().mult(value).negate()));
-			}
-			if ("AXIS_Y_UP".equals(name)) {
-				chaser.setLookAtOffset(chaser.getLookAtOffset().add(cam.getUp().normalize().mult(value)));
-			}
-			if ("AXIS_Y_DOWN".equals(name)) {
-				chaser.setLookAtOffset(chaser.getLookAtOffset().add(cam.getUp().normalize().mult(value).negate()));
-			}
-		}, "AXIS_X_LEFT", "AXIS_X_RIGHT", "AXIS_Y_UP", "AXIS_Y_DOWN");
-	}
-
 	@JmeThread
 	public void setElecComp(ElecComp elecComp) {
+//		clean up
+		cleanRoot();
 //		加载模型
-		loadModel(elecComp.getMdlPath());
+		Spatial model = loadAsset(new ModelKey(elecComp.getMdlPath()));
 
+//		PBR能在系统中被照亮
+//		MikktspaceTangentGenerator.generate(model);
+//		将模型放大100倍
+		model.scale(100);
+		root.attachChild(model);
+//		
 //		获取相应元器件
-		ElecCompDef elecCompDef = JaxbUtil.converyToJavaBean(SpringUtil.getBean(HTTPUtils.class).getUrl(elecComp.getCfgPath()), ElecCompDef.class);
+		ElecCompDef elecCompDef = SpringUtil.getBean(ElecCompAction.class).parse(elecComp.getCfgPath());
 
 //		找出元器件外壳模型名称
 		loadShell(elecCompDef.getParam(ElecCompDef.PARAM_KEY_SHELL));
@@ -194,6 +122,14 @@ public class ElecCompState extends BaseState {
 				Platform.runLater(() -> ui.showName(e.getValue(), point.getX(), point.getY()));
 			}
 		}));
+
+		explode0();
+	}
+
+	private void cleanRoot() {
+		shells.clear();
+		LOG.debug("移除{}中所有模型", root.getName());
+		root.detachAllChildren();
 	}
 
 	private Map<Spatial, String> collectName(ElecCompDef elecCompDef) {
@@ -221,38 +157,6 @@ public class ElecCompState extends BaseState {
 		nameMap.putAll(lightMap);
 
 		return nameMap;
-	}
-
-//	@param path 模型路径
-	private void loadModel(String path) {
-//		clean up
-		shells.clear();
-		LOG.debug("移除{}中所有模型", root.getName());
-		root.detachAllChildren();
-
-//		检查参数
-		if (path == null) {
-			return;
-		}
-
-//		加载模型
-		Spatial model = null;
-		try {
-			model = assetManager.loadModel(path);
-			LOG.debug("加载模型{}", path);
-		} catch (Exception e) {
-			LOG.warn(MessageFormat.format("加载模型失败{0}", path), e);
-			throw e;
-		}
-
-//		FIXME 调用这一句,
-//		MikktspaceTangentGenerator.generate(model);
-
-//		将模型放大100倍
-		model.scale(100);
-		root.attachChild(model);
-//		
-		explode0();
 	}
 
 //	@param shell 元器件的外壳（由1个或多个节点组成）

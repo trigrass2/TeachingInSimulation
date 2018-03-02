@@ -18,8 +18,10 @@ import com.cas.circuit.CfgConst;
 import com.cas.circuit.ElecCompCPU;
 import com.cas.circuit.TermTeam;
 import com.cas.circuit.Voltage;
+import com.cas.circuit.xml.adapter.AxisAdapter;
 import com.cas.circuit.xml.adapter.StringArrayAdapter;
 import com.cas.circuit.xml.adapter.VoltageAdapter;
+import com.jme3.math.Vector3f;
 import com.jme3.scene.Spatial;
 
 @XmlAccessorType(XmlAccessType.NONE)
@@ -32,7 +34,8 @@ public class Terminal extends SwitchCtrl {// <TerminalPO> implements Savable, IL
 	@XmlAttribute
 	private String mdlName;
 	@XmlAttribute
-	private String direction;
+	@XmlJavaTypeAdapter(value = AxisAdapter.class)
+	private Vector3f direction;
 //	如果该端子是某个插孔上拓展出来的,则在对应插孔中哪一个针脚(编号)
 	@XmlAttribute
 	private String mark;
@@ -66,10 +69,6 @@ public class Terminal extends SwitchCtrl {// <TerminalPO> implements Savable, IL
 	private Map<String, IP> isopotential = new HashMap<String, IP>();
 //	清电势后残余的电势值
 	private Map<String, Voltage> residualVolt = new HashMap<String, Voltage>();
-
-	private String axis;
-
-	private boolean positive;
 
 	private TermTeam termTeam;
 
@@ -110,14 +109,6 @@ public class Terminal extends SwitchCtrl {// <TerminalPO> implements Savable, IL
 		this.contacted = contacted;
 	}
 
-	public boolean isPositive() {
-		return positive;
-	}
-
-	public String getAxis() {
-		return axis;
-	}
-
 	public void setSpatial(Spatial spatial) {
 		if (spatial == null) {
 			LOG.error("没有找到Terminal::ID为{}的模型{}", getId(), mdlName);
@@ -133,6 +124,13 @@ public class Terminal extends SwitchCtrl {// <TerminalPO> implements Savable, IL
 
 	public Spatial getSpatial() {
 		return spatial;
+	}
+
+	public Vector3f getDirection() {
+		if (direction == null) {
+			direction = Vector3f.UNIT_Z;
+		}
+		return direction;
 	}
 
 	public List<VoltageIO> getVoltIOs() {

@@ -19,7 +19,10 @@ public class MsgUtil implements MessageSourceAware {
 	}
 
 	public void setMessageSource(MessageSource messageSource) {
-		MsgUtil.messageSource = messageSource;
+		setMessageSource0(messageSource);
 	}
 
+	public static void setMessageSource0(MessageSource messageSource) {
+		MsgUtil.messageSource = messageSource;
+	}
 }

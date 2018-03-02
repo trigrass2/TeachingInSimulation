@@ -7,8 +7,10 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
+import com.cas.circuit.Voltage;
 import com.cas.circuit.consts.IOType;
 import com.cas.circuit.xml.adapter.StringArrayAdapter;
+import com.cas.circuit.xml.adapter.VoltageAdapter;
 
 @XmlAccessorType(XmlAccessType.NONE)
 public class VoltageIO extends SwitchCtrl {
@@ -19,9 +21,8 @@ public class VoltageIO extends SwitchCtrl {
 	@XmlAttribute
 	private String term2Id;
 	@XmlAttribute
-	private Integer voltType; // Voltage.IS_DC/Voltage.IS_AC
-	@XmlAttribute
-	private Float value;
+	@XmlJavaTypeAdapter(VoltageAdapter.class)
+	private Voltage voltage;
 	@XmlAttribute
 	@XmlJavaTypeAdapter(StringArrayAdapter.class)
 	private String[] switchIn;
@@ -106,8 +107,8 @@ public class VoltageIO extends SwitchCtrl {
 		this.term2 = term2;
 	}
 
-	public int getVoltType() {
-		return voltType;
+	public Voltage getVoltage() {
+		return voltage;
 	}
 
 	@Override

@@ -86,17 +86,16 @@ public class LoginController implements Initializable {
 			return;
 		}
 
-		String address = null;
+		String address = "";
 		int port = 0;
 		Properties prop = new Properties();
 		try {
 			prop.load(new FileInputStream("cfg.properties"));
 			address = prop.getProperty("server.base.address");
 			port = Integer.parseInt(prop.getProperty("server.base.port"));
-		} catch (FileNotFoundException e) {
-			LOG.error("文件cfg.properties不存在");
-		} catch (IOException e) {
-			LOG.error("文件cfg.properties读取失败");
+		} catch (Exception e) {
+			LOG.error("文件cfg.properties读取失败", e);
+			throw new RuntimeException(e);
 		}
 
 		boolean success = SocketUtil.INSTENCE.connect(address, port);

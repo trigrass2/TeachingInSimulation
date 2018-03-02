@@ -178,14 +178,14 @@ public class ServoDrive extends BaseElectricCompLogic {
 		MesureResult result = R.matchRequiredVolt(Voltage.IS_DC, _OPC1, _PULS2, 24, 2);
 		boolean tmp = result != null;
 		if (tmp && !receivedPulse) {
-			log.info("伺服放大器收到脉冲信号");
+			LOG.info("伺服放大器收到脉冲信号");
 			receivedPulse = true;
 			Float f = MathUtil.parseFloat(result.getData("pulseFrequency"), 0f) / rate;
 			if (f != frequency) {
 				frequency = f;
 			}
 		} else if (!tmp && receivedPulse) {
-			log.warn("伺服放大器脉冲信号停止");
+			LOG.warn("伺服放大器脉冲信号停止");
 			receivedPulse = false;
 			if (frequency != 0) {
 				frequency = 0;
@@ -200,11 +200,11 @@ public class ServoDrive extends BaseElectricCompLogic {
 		MesureResult resultwu = R.matchRequiredVolt(Voltage.IS_AC, _L3, _L1, 380, 10);
 		boolean matchRequiredVolt = Util.notEmpty(resultuv) && Util.notEmpty(resultwu) && Util.notEmpty(resultvw);
 		if (matchRequiredVolt && !outputEnable) {
-			log.info("伺服放大器能够输出电压");
+			LOG.info("伺服放大器能够输出电压");
 			outputEnable = true;
 			rotateChange();
 		} else if (!matchRequiredVolt && outputEnable) {
-			log.info("伺服放大器无法输出电压");
+			LOG.info("伺服放大器无法输出电压");
 			outputEnable = false;
 			rotateChange();
 		}
@@ -215,7 +215,7 @@ public class ServoDrive extends BaseElectricCompLogic {
 		boolean tmp = result != null;
 		if (tmp && !workable) {
 			workable = true;
-			log.info("伺服放大器开始工作");
+			LOG.info("伺服放大器开始工作");
 
 			R r = R.getR(encoderEnv);
 			if (r == null) {
@@ -223,7 +223,7 @@ public class ServoDrive extends BaseElectricCompLogic {
 			}
 			r.shareVoltage();
 		} else if (!tmp && workable) {
-			log.info("伺服放大器停止工作");
+			LOG.info("伺服放大器停止工作");
 			workable = false;
 
 			List<R> rs = R.get3Phase(controlVoltEnv);

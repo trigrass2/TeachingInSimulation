@@ -14,4 +14,6 @@ import java.lang.annotation.Target;
 @Documented
 @Retention(RetentionPolicy.CLASS)
 @Target(ElementType.METHOD)
-public @interface JmeThread {}
+public @interface JmeThread {
+	String name() default "JME";
+}

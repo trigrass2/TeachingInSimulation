@@ -25,10 +25,9 @@ import com.jme3.scene.Spatial;
 /**
  * 注意：在使用ChaseCamera时候，要调用chaser.setHideCursorOnRotate(false);否则会影响本类的运行
  * @author Administrator
- *
  */
 public class MouseEventState extends BaseState {
-	private static final String TO_MOUSE_VISIBLE = "ToMouseVisible";
+	public static final String TO_MOUSE_VISIBLE = "ToMouseVisible";
 
 	/**
 	 * 能看成一次点击事件(click)的最大划过距离
@@ -297,32 +296,32 @@ public class MouseEventState extends BaseState {
 		}
 	}
 
-	public void setToMouseTransprent(Spatial... ignor) {
-		if (ignor == null) {
-			return;
-		}
-		for (Spatial spatial : ignor) {
-			transparent(spatial);
-		}
-
-//		if (Util.isEmpty(ignor)) {
+//	public void setToMouseTransprent(Spatial... ignor) {
+//		if (ignor == null) {
 //			return;
 //		}
-//		for (int i = 0; i < ignor.length; i++) {
-//			if (this.ignorModelList.contains(ignor[i])) {
-//				continue;
-//			}
-//			this.ignorModelList.add(ignor[i]);
+//		for (Spatial spatial : ignor) {
+//			transparent(spatial);
 //		}
-	}
-
-	private void transparent(Spatial spatial) {
-		if (spatial instanceof Node) {
-			((Node) spatial).getChildren().forEach(child -> transparent(child));
-		} else {
-			spatial.setUserData(TO_MOUSE_VISIBLE, false);
-		}
-	}
+//
+////		if (Util.isEmpty(ignor)) {
+////			return;
+////		}
+////		for (int i = 0; i < ignor.length; i++) {
+////			if (this.ignorModelList.contains(ignor[i])) {
+////				continue;
+////			}
+////			this.ignorModelList.add(ignor[i]);
+////		}
+//	}
+//
+//	private void transparent(Spatial spatial) {
+//		if (spatial instanceof Node) {
+//			((Node) spatial).getChildren().forEach(child -> transparent(child));
+//		} else {
+//			spatial.setUserData(TO_MOUSE_VISIBLE, false);
+//		}
+//	}
 
 	@NotNull
 	private List<MouseEventListener> getListenerList(Spatial key) {

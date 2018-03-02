@@ -4,9 +4,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.cas.sim.tis.app.event.MouseEventState;
-import com.cas.sim.tis.util.HTTPUtils;
-import com.cas.sim.tis.util.SpringUtil;
-import com.jme3.asset.plugins.UrlLocator;
+import com.jme3.app.DebugKeysAppState;
+import com.jme3.asset.plugins.FileLocator;
 import com.jme3.system.AppSettings;
 import com.jme3x.jfx.injfx.JmeToJFXApplication;
 import com.jme3x.jfx.injfx.JmeToJFXIntegrator;
@@ -33,14 +32,15 @@ public class JmeApplication extends JmeToJFXApplication {
 	@Override
 	public void simpleInitApp() {
 		super.simpleInitApp();
-
+		stateManager.attach(new DebugKeysAppState());
 		stateManager.attach(new MouseEventState());
 
-//		注册资源路径
-		String assetPath = SpringUtil.getBean(HTTPUtils.class).getFullPath("assets/");
-		LOG.debug("注册资源路径:{}", assetPath);
-		assetManager.registerLocator(assetPath, UrlLocator.class);
-//		assetManager.registerLocator("E:\\JME_SDKPROJ_HOME\\ESimulation3D\\assets", HttpZipLocator.class);
+//		String assetPath = SpringUtil.getBean(HTTPUtils.class).getFullPath("assets/");
+//		LOG.debug("注册资源路径:{}", assetPath); // http://192.168.x.x:port/***/assests/
+////		注册资源路径
+//		assetManager.registerLocator(assetPath, UrlLocator.class);
+		
+		assetManager.registerLocator("E:\\JME_SDKPROJ_HOME\\ESimulation3D\\assets", FileLocator.class);
 
 ////		创建天空盒
 ////		Spatial sky = SkyFactory.createSky(assetManager, "Model/Sky/noon_grass_2k.hdr", SkyFactory.EnvMapType.EquirectMap);

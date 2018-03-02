@@ -26,7 +26,6 @@ import com.cas.circuit.util.MesureResult;
 import com.cas.circuit.util.R;
 import com.cas.circuit.xml.adapter.CompLogicAdapter;
 import com.jme3.scene.Node;
-import com.jme3.scene.Spatial;
 import com.sun.tools.internal.xjc.runtime.ZeroOneBooleanAdapter;
 
 @XmlAccessorType(XmlAccessType.NONE)
@@ -55,7 +54,7 @@ public class ElecCompDef {// extends BaseVO<ElecCompDefPO> {
 	@XmlJavaTypeAdapter(CompLogicAdapter.class)
 	private BaseElectricCompLogic logic;
 	@XmlElement(name = "Param")
-	@XmlElementWrapper(name="Params")
+	@XmlElementWrapper(name = "Params")
 	private List<Param> params = new ArrayList<>();
 	@XmlJavaTypeAdapter(ZeroOneBooleanAdapter.class)
 	@XmlAttribute
@@ -159,28 +158,19 @@ public class ElecCompDef {// extends BaseVO<ElecCompDefPO> {
 	}
 
 	public void bindModel(Node elecCompMdl) {
+		this.spatial = elecCompMdl;
+
 //		遍历元气件中所有插座
-		jackList.forEach(jack -> jack.setSpatial(getChild(elecCompMdl, jack.getMdlName(), jack)));
+		jackList.forEach(jack -> jack.setSpatial(elecCompMdl.getChild(jack.getMdlName())));
 //		遍历元气件中所有连接头
-		terminalList.forEach(t -> t.setSpatial(getChild(elecCompMdl, t.getMdlName(), t)));
+		terminalList.forEach(t -> t.setSpatial(elecCompMdl.getChild(t.getMdlName())));
 //		TODO 加入元气件按钮开关...
 		magnetismList.forEach(m -> {
-			m.getControlIOList().forEach(c -> c.setSpatial(getChild(elecCompMdl, c.getMdlName(), c)));
-			m.getLightIOList().forEach(l -> l.setSpatial(getChild(elecCompMdl, l.getMdlName(), l)));
+			m.getControlIOList().forEach(c -> c.setSpatial(elecCompMdl.getChild(c.getMdlName())));
+			m.getLightIOList().forEach(l -> l.setSpatial(elecCompMdl.getChild(l.getMdlName())));
 		});
 //		遍历元气件中所有指示灯
-		lightIOList.forEach(l -> l.setSpatial(getChild(elecCompMdl, l.getMdlName(), l)));
-	}
-
-	private Spatial getChild(final Node parent, final String childName, final Object obj) {
-		if (parent == null) {
-			return null;
-		}
-		Spatial child = parent.getChild(childName);
-		if (child == null) {
-//			log.error(parent + "中找不到名字为" + childName + "的模型" + obj);
-		}
-		return child;
+		lightIOList.forEach(l -> l.setSpatial(elecCompMdl.getChild(l.getMdlName())));
 	}
 
 	// 电生磁->磁生电或力3版
@@ -200,7 +190,7 @@ public class ElecCompDef {// extends BaseVO<ElecCompDefPO> {
 //				String termIds = voltageIO.getTerm1Id() + "-" + voltageIO.getTerm2Id();
 				// 需求电压值和类型
 				float requireVolt = voltageIO.getRequireVolt();
-				int requireType = voltageIO.getVoltType();
+				int requireType = voltageIO.getVoltage().getType();
 				MesureResult realVolt = R.matchRequiredVolt(requireType, voltageIO.getTerm1(), voltageIO.getTerm2(), requireVolt, voltageIO.getDeviation(), ElecCompCPU.Power_Evn_Filter);
 				// 电生磁成功-- 不是自己创建的点才符合接入条件
 				if (realVolt != null && (createdEnv == null || !createdEnv.contains(realVolt.getEvn()))) {
@@ -219,12 +209,12 @@ public class ElecCompDef {// extends BaseVO<ElecCompDefPO> {
 				outputVoltIOs.addAll(magnetism.getOutputVoltageIOs());
 				outputVoltIOs.remove(effectVoltageIO);
 				for (VoltageIO outputVoltIO : outputVoltIOs) {
-					MesureResult checkVolt = R.matchRequiredVolt(outputVoltIO.getVoltType(), outputVoltIO.getTerm1(), outputVoltIO.getTerm2(), outputVoltIO.getRequireVolt() * bili, outputVoltIO.getDeviation(), ElecCompCPU.Power_Evn_Filter);
+					MesureResult checkVolt = R.matchRequiredVolt(outputVoltIO.getVoltage().getType(), outputVoltIO.getTerm1(), outputVoltIO.getTerm2(), outputVoltIO.getRequireVolt() * bili, outputVoltIO.getDeviation(), ElecCompCPU.Power_Evn_Filter);
 					if (checkVolt == null) {
 						String env = env_prefix + outputVoltIO.getTerm1Id() + "-" + outputVoltIO.getTerm2Id();
 //						System.out.println("ElecCompDef.doMagnetism()");
 						addCreatedEnv(env);
-						r = R.create(env, outputVoltIO.getVoltType(), outputVoltIO.getTerm1(), outputVoltIO.getTerm2(), outputVoltIO.getRequireVolt() * bili);
+						r = R.create(env, outputVoltIO.getVoltage().getType(), outputVoltIO.getTerm1(), outputVoltIO.getTerm2(), outputVoltIO.getRequireVolt() * bili);
 						r.shareVoltage();
 //					}else{
 //						if("VC1".equals(ref.getTagName())){
@@ -455,10 +445,4 @@ public class ElecCompDef {// extends BaseVO<ElecCompDefPO> {
 	public void setTagName(String tagName) {
 		this.tagName = tagName;
 	}
-
-	public void build(Node spatial, String tagName) {
-		this.spatial = spatial;
-		this.tagName = tagName;
-	}
-
 }
