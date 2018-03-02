@@ -125,7 +125,7 @@ public class Dialog<R> {
 	public void show() {
 		Toolkit.getToolkit().checkFxUserThread();
 
-		if (dialogPane.getWidth() == Double.NaN && dialogPane.getHeight() == Double.NaN) {
+		if (Double.isNaN(dialogPane.getWidth()) && Double.isNaN(dialogPane.getHeight())) {
 			sizeToScene();
 		}
 
@@ -141,7 +141,7 @@ public class Dialog<R> {
 			throw new IllegalStateException("showAndWait is not allowed during animation or layout processing");
 		}
 
-		if (dialogPane.getWidth() == Double.NaN && dialogPane.getHeight() == Double.NaN) {
+		if (Double.isNaN(dialogPane.getWidth()) && Double.isNaN(dialogPane.getHeight())) {
 			sizeToScene();
 		}
 

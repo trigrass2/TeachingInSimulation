@@ -2,6 +2,7 @@ package com.cas.sim.tis.view.control.imp;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.ResourceBundle;
 
 import com.cas.sim.tis.action.UserAction;
 import com.cas.sim.tis.consts.Session;
@@ -14,6 +15,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
@@ -21,7 +23,7 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 
-public abstract class LeftMenu extends VBox implements ILeftContent {
+public abstract class LeftMenu extends VBox implements ILeftContent, Initializable {
 
 	@FXML
 	private Label name;
@@ -51,10 +53,14 @@ public abstract class LeftMenu extends VBox implements ILeftContent {
 				items.selectToggle(o);
 			}
 		});
+		initMenu();
+	}
+
+	@Override
+	public void initialize(URL location, ResourceBundle resources) {
 		User user = SpringUtil.getBean(UserAction.class).findUserByID(Session.get(Session.KEY_LOGIN_ID));
 		name.setText(user.getName());
 		code.setText(user.getCode());
-		initMenu();
 	}
 
 	protected abstract void initMenu();

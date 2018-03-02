@@ -29,7 +29,6 @@ import javafx.stage.Stage;
  *
  * @author Felix Roske
  */
-@SuppressWarnings("WeakerAccess")
 public abstract class AbstractJavaFxApplicationSupport extends Application {
     private static Logger LOGGER = LoggerFactory.getLogger(AbstractJavaFxApplicationSupport.class);
 
@@ -196,9 +195,13 @@ public abstract class AbstractJavaFxApplicationSupport extends Application {
      * Launch application view.
      */
     public void launchApplicationView(final ConfigurableApplicationContext ctx) {
-        AbstractJavaFxApplicationSupport.applicationContext = ctx;
+    	setApplicationContext(ctx);
         appCtxLoaded.set(true);
     }
+    
+    private static void setApplicationContext(ConfigurableApplicationContext applicationContext) {
+		AbstractJavaFxApplicationSupport.applicationContext = applicationContext;
+	}
 
     /**
      * Show view.
@@ -364,7 +367,7 @@ public abstract class AbstractJavaFxApplicationSupport extends Application {
 //
 //    }
 
-    public Collection<Image> loadDefaultIcons() {
+    public final Collection<Image> loadDefaultIcons() {
         return Arrays.asList(new Image(getClass().getResource("/icons/gear_16x16.png").toExternalForm()),
                 new Image(getClass().getResource("/icons/gear_24x24.png").toExternalForm()),
                 new Image(getClass().getResource("/icons/gear_36x36.png").toExternalForm()),

@@ -200,7 +200,7 @@ public class JFXKeyInput extends JFXInput implements KeyInput {
 	protected void updateImpl() {
 		while (!keyInputEvents.isEmpty()) {
 			KeyInputEvent e = keyInputEvents.poll();
-			listener.onKeyEvent(e);
+			getListener().onKeyEvent(e);
 		}
 	}
 
