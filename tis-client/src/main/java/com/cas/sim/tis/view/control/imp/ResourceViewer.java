@@ -20,7 +20,6 @@ import com.cas.sim.tis.vo.ResourceInfo;
 import com.cas.util.DateUtil;
 import com.teamdev.jxbrowser.chromium.Browser;
 import com.teamdev.jxbrowser.chromium.BrowserType;
-import com.teamdev.jxbrowser.chromium.Refine;
 import com.teamdev.jxbrowser.chromium.javafx.BrowserView;
 
 import javafx.beans.property.DoubleProperty;
@@ -204,7 +203,7 @@ public class ResourceViewer extends VBox implements IContent {
 	 */
 	private void createVLCViewer() {
 		HTTPUtils utils = SpringUtil.getBean(HTTPUtils.class);
-		String url = utils.getFullPath(resource.getPath());
+		String url = utils.getFullPath(ResourceConsts.FTP_RES_PATH + resource.getPath());
 		if (url == null) {
 			return;
 		}
@@ -221,7 +220,7 @@ public class ResourceViewer extends VBox implements IContent {
 	 */
 	private void createPDFViewer() {
 		HTTPUtils utils = SpringUtil.getBean(HTTPUtils.class);
-		String url = utils.getFullPath(resource.getPath());
+		String url = utils.getFullPath(ResourceConsts.FTP_RES_PATH + resource.getPath());
 		if (url == null) {
 			return;
 		}
@@ -239,7 +238,7 @@ public class ResourceViewer extends VBox implements IContent {
 	 */
 	private void createSWFViewer() {
 		HTTPUtils utils = SpringUtil.getBean(HTTPUtils.class);
-		String url = utils.getFullPath(resource.getPath());
+		String url = utils.getFullPath(ResourceConsts.FTP_RES_PATH + resource.getPath());
 		if (url == null) {
 			return;
 		}
