@@ -12,14 +12,19 @@ import com.cas.sim.tis.entity.Catalog;
 import com.cas.sim.tis.services.CatalogService;
 
 @Component
-public class CatalogAction {
+public class CatalogAction extends BaseAction<CatalogService> {
 	@Resource
 	@Qualifier("catalogServiceFactory")
 	private RmiProxyFactoryBean catalogServiceFactory;
 
 	public List<Catalog> findCatalogsByParentId(Integer id) {
-		CatalogService service = (CatalogService) catalogServiceFactory.getObject();
+		CatalogService service = getService();
 		return service.findCatalogsByParentId(id);
+	}
+
+	@Override
+	protected RmiProxyFactoryBean getRmiProxyFactoryBean() {
+		return catalogServiceFactory;
 	}
 
 }

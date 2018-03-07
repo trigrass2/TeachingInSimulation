@@ -43,7 +43,7 @@ public class ClassAction extends BaseAction<ClassService> {
 	public void modifyClass(Class clazz) {
 		ClassService service = getService();
 		clazz.setUpdater(Session.get(Session.KEY_LOGIN_ID));
-		service.update(clazz);
+		service.modifyClass(clazz);
 	}
 
 	public void deleteClass(int id) {

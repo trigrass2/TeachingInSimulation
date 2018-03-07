@@ -6,14 +6,17 @@ import java.util.List;
 
 import com.cas.sim.tis.action.CatalogAction;
 import com.cas.sim.tis.entity.Catalog;
+import com.cas.sim.tis.util.MsgUtil;
 import com.cas.sim.tis.util.SpringUtil;
 import com.cas.sim.tis.view.control.ILeftContent;
+import com.cas.sim.tis.view.control.imp.dialog.Dialog;
+import com.cas.sim.tis.view.controller.PageController;
+import com.cas.sim.tis.view.controller.PageController.PageLevel;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
 import javafx.scene.control.Accordion;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TitledPane;
 import javafx.scene.control.ToggleButton;
@@ -28,7 +31,7 @@ import javafx.scene.paint.Color;
 public class PreparationMenu extends VBox implements ILeftContent {
 
 	@FXML
-	private Button subject;
+	private Label subject;
 	@FXML
 	private Accordion projects;
 
@@ -59,6 +62,7 @@ public class PreparationMenu extends VBox implements ILeftContent {
 	 */
 	private void initialize(Catalog subject) {
 		this.subject.setText(subject.getName());
+		this.projects.getPanes().clear();
 
 		List<Catalog> projects = SpringUtil.getBean(CatalogAction.class).findCatalogsByParentId(subject.getId());
 		for (Catalog project : projects) {
@@ -66,11 +70,33 @@ public class PreparationMenu extends VBox implements ILeftContent {
 			pane.setOnMousePressed(e -> {
 				if (pane.getContent() == null) {
 					initializeContent(pane, project);
+					pane.setOnMousePressed(null);
 				}
 			});
 			pane.setGraphic(createGraphicTitle(project));
 			this.projects.getPanes().add(pane);
 		}
+	}
+
+	private void initializeContent(TitledPane pane, Catalog project) {
+		List<Catalog> tasks = SpringUtil.getBean(CatalogAction.class).findCatalogsByParentId(project.getId());
+		VBox box = new VBox(10);
+		ToggleGroup group = new ToggleGroup();
+		for (Catalog task : tasks) {
+			ToggleButton taskBtn = new ToggleButton(task.getName());
+			taskBtn.setGraphic(createGraphicTitle(task));
+			taskBtn.getStyleClass().add("titled-content-btn");
+			taskBtn.getStyleClass().remove("toggle-button");
+			taskBtn.setOnAction(e -> {
+				// TODO 加载备课详情
+				PageController controller = SpringUtil.getBean(PageController.class);
+				controller.loadContent(new PreparationDetail(task), PageLevel.Level1);
+				
+			});
+			box.getChildren().add(taskBtn);
+			group.getToggles().add(taskBtn);
+		}
+		pane.setContent(box);
 	}
 
 	private HBox createGraphicTitle(Catalog catalog) {
@@ -95,24 +121,22 @@ public class PreparationMenu extends VBox implements ILeftContent {
 		return title;
 	}
 
-	private void initializeContent(TitledPane pane, Catalog project) {
-		List<Catalog> tasks = SpringUtil.getBean(CatalogAction.class).findCatalogsByParentId(project.getId());
-		VBox box = new VBox(10);
-		ToggleGroup group = new ToggleGroup();
-		for (Catalog task : tasks) {
-			ToggleButton taskBtn = new ToggleButton(task.getName());
-			taskBtn.setGraphic(createGraphicTitle(task));
-			taskBtn.getStyleClass().add("titled-content-btn");
-			taskBtn.getStyleClass().remove("toggle-button");
-			taskBtn.setOnAction(e -> {
-				// TODO 加载备课详情
-			});
-			box.getChildren().add(taskBtn);
-			group.getToggles().add(taskBtn);
-		}
-		pane.setContent(box);
-	}
+	@FXML
+	private void switchSubject() {
+		List<Catalog> catalogs = SpringUtil.getBean(CatalogAction.class).findCatalogsByParentId(0);
 
+		Dialog<Catalog> dialog = new Dialog<>();
+		dialog.setDialogPane(new CatalogSelectDialog(catalogs));
+		dialog.setTitle(MsgUtil.getMessage("class.dialog.select"));
+		dialog.setPrefSize(652, 420);
+		dialog.showAndWait().ifPresent(subject -> {
+			if (subject == null) {
+				return;
+			}
+			initialize(subject);
+		});
+	}
+	
 	@Override
 	public Region getLeftContent() {
 		return this;

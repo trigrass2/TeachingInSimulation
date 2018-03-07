@@ -18,6 +18,9 @@ import com.cas.sim.tis.services.LibraryAnswerService;
 import com.cas.sim.tis.services.LibraryPublishService;
 import com.cas.sim.tis.services.LibraryRecordService;
 import com.cas.sim.tis.services.LibraryService;
+import com.cas.sim.tis.services.PreparationQuizService;
+import com.cas.sim.tis.services.PreparationResourceService;
+import com.cas.sim.tis.services.PreparationService;
 import com.cas.sim.tis.services.QuestionService;
 import com.cas.sim.tis.services.ResourceService;
 import com.cas.sim.tis.services.TypicalCaseService;
@@ -164,6 +167,33 @@ public class RMIConfig {
 		bean.setServiceUrl("rmi://" + host + ":" + port + "/catalogService");
 		LOG.info("远程访问路径：{}", bean.getServiceUrl());
 		bean.setServiceInterface(CatalogService.class);
+		return bean;
+	}
+	@Bean
+	@Qualifier("preparationServiceFactory")
+	public RmiProxyFactoryBean buildPreparationServiceFactory() {
+		RmiProxyFactoryBean bean = new RmiProxyFactoryBean();
+		bean.setServiceUrl("rmi://" + host + ":" + port + "/preparationService");
+		LOG.info("远程访问路径：{}", bean.getServiceUrl());
+		bean.setServiceInterface(PreparationService.class);
+		return bean;
+	}
+	@Bean
+	@Qualifier("preparationResourceServiceFactory")
+	public RmiProxyFactoryBean buildPreparationResourceServiceFactory() {
+		RmiProxyFactoryBean bean = new RmiProxyFactoryBean();
+		bean.setServiceUrl("rmi://" + host + ":" + port + "/preparationResourceService");
+		LOG.info("远程访问路径：{}", bean.getServiceUrl());
+		bean.setServiceInterface(PreparationResourceService.class);
+		return bean;
+	}
+	@Bean
+	@Qualifier("preparationQuizServiceFactory")
+	public RmiProxyFactoryBean buildPreparationQuizServiceFactory() {
+		RmiProxyFactoryBean bean = new RmiProxyFactoryBean();
+		bean.setServiceUrl("rmi://" + host + ":" + port + "/preparationQuizService");
+		LOG.info("远程访问路径：{}", bean.getServiceUrl());
+		bean.setServiceInterface(PreparationQuizService.class);
 		return bean;
 	}
 }

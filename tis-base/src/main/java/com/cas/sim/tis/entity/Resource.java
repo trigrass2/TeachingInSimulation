@@ -48,8 +48,8 @@ public class Resource implements Serializable {
 //	默认资源没有被删除
 	protected Boolean del = Boolean.FALSE;
 
-	private Integer browsedTimes;
-	private Integer collectedTimes;
+	private Integer browsedTimes = 0;
+	private Integer collectedTimes = 0;
 
 	public Integer getId() {
 		return id;

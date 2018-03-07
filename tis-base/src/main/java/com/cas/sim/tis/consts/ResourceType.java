@@ -34,7 +34,11 @@ public enum ResourceType {
 	/**
 	 * Pdf
 	 */
-	PDF(7, "iconfont.svg.pdf", Color.web("#dd3a2e"), new String[] { "*.pdf" }, false);
+	PDF(7, "iconfont.svg.pdf", Color.web("#dd3a2e"), new String[] { "*.pdf" }, false),
+	/**
+	 * 在备案中使用的元件认知、典型案例、故障维修的图标
+	 */
+	LINK(8, "iconfont.svg.link", Color.web("#22678f"), null, false);
 
 //	资源类型代号
 	private int type;

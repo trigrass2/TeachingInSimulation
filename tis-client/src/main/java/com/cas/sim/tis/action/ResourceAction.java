@@ -19,7 +19,7 @@ public class ResourceAction extends BaseAction<ResourceService> {
 	@Qualifier("resourceServiceFactory")
 	private RmiProxyFactoryBean resourceServiceFactory;
 
-	public boolean addResource(Resource resource) {
+	public Integer addResource(Resource resource) {
 		ResourceService service = getService();
 		resource.setCreator(Session.get(Session.KEY_LOGIN_ID));
 		return service.addResource(resource);
@@ -53,6 +53,10 @@ public class ResourceAction extends BaseAction<ResourceService> {
 
 	public Resource findResourceByID(Integer id) {
 		return getService().findById(id);
+	}
+
+	public List<Resource> findPreparationResources(String keyword) {
+		return getService().findPreparationResources(Session.get(Session.KEY_LOGIN_ID), keyword);
 	}
 
 	public void browsed(Integer id) {

@@ -7,8 +7,4 @@ public interface LibraryService extends BaseService<Library> {
 
 	PageInfo<Library> findLibraryByType(int pageIndex, int pageSize, int type);
 
-	void addLibrary(Library library);
-
-	void modifyLibrary(Library library);
-
 }

@@ -15,13 +15,15 @@ public interface ResourceService extends BaseService<Resource> {
 
 	PageInfo<Resource> findResourcesByCollection(int pagination, int pageSize, List<Integer> resourceTypes, String keyword, String orderByClause, Integer creater);
 
+	List<Resource> findPreparationResources(Integer creator, String keyword);
+
 	int countResourceByType(int type, String keyword, Integer creator);
 
 	int countBrowseResourceByType(int type, String keyword, Integer creator);
 
 	int countCollectionResourceByType(int type, String keyword, Integer creator);
 
-	boolean addResource(Resource resource);
+	Integer addResource(Resource resource);
 
 	void browsed(Integer id, Integer userId);
 

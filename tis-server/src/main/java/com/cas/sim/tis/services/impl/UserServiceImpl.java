@@ -6,7 +6,9 @@ import org.apache.ibatis.exceptions.TooManyResultsException;
 import org.springframework.stereotype.Service;
 
 import com.cas.sim.tis.consts.RoleConst;
+import com.cas.sim.tis.entity.Class;
 import com.cas.sim.tis.entity.User;
+import com.cas.sim.tis.mapper.UserMapper;
 import com.cas.sim.tis.services.UserService;
 import com.cas.sim.tis.services.exception.ServerException;
 import com.cas.sim.tis.services.exception.ServiceException;
@@ -77,5 +79,11 @@ public class UserServiceImpl extends AbstractService<User> implements UserServic
 		PageInfo<User> page = new PageInfo<>(result);
 		LOG.info("成功查找到{}条资源,当前页码{},每页{}条资源,共{}页", result.size(), pageIndex, pageSize, page.getPages());
 		return page;
+	}
+
+	@Override
+	public void updateTeacherIdByClassId(Class clazz) {
+		UserMapper mapper = (UserMapper) this.mapper;
+		mapper.updateTeacherIdByClassId(clazz.getId(), clazz.getTeacherId());
 	}
 }

@@ -139,7 +139,7 @@ public class ResourceViewer extends VBox implements IContent {
 	public void createImageViewer() {
 		HTTPUtils utils = SpringUtil.getBean(HTTPUtils.class);
 //		Image image = new Image("http://192.168.1.19:8082/Test/1516772514400.png");
-		String url = utils.getFullPath(resource.getPath());
+		String url = utils.getFullPath(ResourceConsts.FTP_RES_PATH + resource.getPath());
 		if (url == null) {
 			return;
 		}

@@ -15,4 +15,8 @@
 		<result column="UPDATE_DATE" jdbcType="TIMESTAMP" property="updateDate" />
 		<result column="DEL" jdbcType="INTEGER" property="del" />
 	</resultMap>
+	
+	<update id="updateTeacherIdByClassId">
+		update user set tid=#{teacherId} where cid=#{classId}
+	</update>
 </mapper>

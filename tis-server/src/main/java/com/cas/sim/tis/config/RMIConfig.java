@@ -16,6 +16,9 @@ import com.cas.sim.tis.services.LibraryAnswerService;
 import com.cas.sim.tis.services.LibraryPublishService;
 import com.cas.sim.tis.services.LibraryRecordService;
 import com.cas.sim.tis.services.LibraryService;
+import com.cas.sim.tis.services.PreparationQuizService;
+import com.cas.sim.tis.services.PreparationResourceService;
+import com.cas.sim.tis.services.PreparationService;
 import com.cas.sim.tis.services.QuestionService;
 import com.cas.sim.tis.services.ResourceService;
 import com.cas.sim.tis.services.StudentService;
@@ -59,6 +62,12 @@ public class RMIConfig {
 	private LibraryAnswerService libraryAnswerService;
 	@Resource
 	private CatalogService catalogService;
+	@Resource
+	private PreparationService preparationService;
+	@Resource
+	private PreparationResourceService preparationResourceService;
+	@Resource
+	private PreparationQuizService preparationQuizService;
 
 	@Value("${server.rmi.registry}")
 	private Integer registPort;
@@ -267,6 +276,54 @@ public class RMIConfig {
 		exporter.setServiceInterface(CatalogService.class);
 		exporter.setServiceName("catalogService");
 		exporter.setService(catalogService);
+		
+		if (servicePort != null) {
+			exporter.setServicePort(servicePort);
+		}
+		if (registPort != null) {
+			exporter.setRegistryPort(registPort);
+		}
+		return exporter;
+	}
+	
+	@Bean
+	public RmiServiceExporter preparationServiceExporter() {
+		RmiServiceExporter exporter = new RmiServiceExporter();
+		exporter.setServiceInterface(PreparationService.class);
+		exporter.setServiceName("preparationService");
+		exporter.setService(preparationService);
+		
+		if (servicePort != null) {
+			exporter.setServicePort(servicePort);
+		}
+		if (registPort != null) {
+			exporter.setRegistryPort(registPort);
+		}
+		return exporter;
+	}
+	
+	@Bean
+	public RmiServiceExporter preparationResourceServiceExporter() {
+		RmiServiceExporter exporter = new RmiServiceExporter();
+		exporter.setServiceInterface(PreparationResourceService.class);
+		exporter.setServiceName("preparationResourceService");
+		exporter.setService(preparationResourceService);
+		
+		if (servicePort != null) {
+			exporter.setServicePort(servicePort);
+		}
+		if (registPort != null) {
+			exporter.setRegistryPort(registPort);
+		}
+		return exporter;
+	}
+	
+	@Bean
+	public RmiServiceExporter preparationQuizServiceExporter() {
+		RmiServiceExporter exporter = new RmiServiceExporter();
+		exporter.setServiceInterface(PreparationQuizService.class);
+		exporter.setServiceName("preparationQuizService");
+		exporter.setService(preparationQuizService);
 		
 		if (servicePort != null) {
 			exporter.setServicePort(servicePort);

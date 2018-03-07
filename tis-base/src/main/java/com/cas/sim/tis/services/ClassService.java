@@ -13,4 +13,6 @@ public interface ClassService extends BaseService<com.cas.sim.tis.entity.Class> 
 	List<Class> findClassesByTeacher(int teacherId);
 
 	void saveClasses(List<ClassInfo> infos, Integer creator);
+
+	void modifyClass(Class clazz);
 }

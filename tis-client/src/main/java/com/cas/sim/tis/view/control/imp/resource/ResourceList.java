@@ -479,8 +479,8 @@ public class ResourceList extends HBox implements IContent {
 			throw e;
 		}
 		// 记录到数据库
-		boolean converter = action.addResource(resource);
-		if (converter) {
+		Integer id = action.addResource(resource);
+		if (id != null) {
 			AlertUtil.showAlert(AlertType.INFORMATION, MsgUtil.getMessage("ftp.upload.success"));
 		} else {
 			AlertUtil.showAlert(AlertType.ERROR, MsgUtil.getMessage("ftp.upload.converter.failure"));

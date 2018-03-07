@@ -13,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.alibaba.fastjson.JSONArray;
+import com.cas.sim.tis.action.ClassAction;
 import com.cas.sim.tis.action.UserAction;
 import com.cas.sim.tis.consts.RoleConst;
 import com.cas.sim.tis.consts.Session;
@@ -166,6 +167,7 @@ public class StudentList extends HBox implements IContent {
 		if (source == null) {
 			return;
 		}
+		com.cas.sim.tis.entity.Class clazz = SpringUtil.getBean(ClassAction.class).findClass(classId);
 		List<User> users = new ArrayList<User>();
 		Object[][] result = ExcelUtil.readExcelSheet(source.getAbsolutePath(), "Sheet1", 2);
 		for (int i = 2; i < result.length; i++) {
@@ -197,6 +199,7 @@ public class StudentList extends HBox implements IContent {
 			user.setCode(code);
 			user.setName(name);
 			user.setClassId(classId);
+			user.setTeacherId(clazz.getTeacherId());
 			user.setRole(RoleConst.STUDENT);
 			user.setCreator(Session.get(Session.KEY_LOGIN_ID));
 			users.add(user);

@@ -9,6 +9,7 @@ import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 
+import com.alibaba.druid.util.StringUtils;
 import com.cas.sim.tis.consts.ResourceType;
 import com.cas.sim.tis.entity.BrowseHistory;
 import com.cas.sim.tis.entity.Collection;
@@ -108,6 +109,23 @@ public class ResourceServiceImpl extends AbstractService<Resource> implements Re
 	}
 
 	@Override
+	public List<Resource> findPreparationResources(Integer creator, String keyword) {
+		Condition condition = new Condition(Resource.class);
+		Criteria criteria = condition.createCriteria();
+		criteria.andEqualTo("del", 0);
+		if (!StringUtils.isEmpty(keyword)) {
+			criteria.andLike("keyword", "%" + keyword + "%");
+		}
+		Criteria criteria2 = condition.createCriteria();
+		criteria2.andEqualTo("creator", 1);
+		if (creator != 1) {
+			criteria2.orEqualTo("creator", creator);
+		}
+		condition.and(criteria2);
+		return findByCondition(condition);
+	}
+
+	@Override
 	public int countResourceByType(int type, String keyword, Integer creator) {
 //		获取当前登陆者身份信息
 		Condition condition = new Condition(Resource.class);
@@ -142,14 +160,14 @@ public class ResourceServiceImpl extends AbstractService<Resource> implements Re
 	}
 
 	@Override
-	public boolean addResource(Resource resource) {
+	public Integer addResource(Resource resource) {
 		// 判断是否需要转化
 		ResourceType type = ResourceType.getResourceType(resource.getType());
 		if (type.isConvertable()) {
 			converter.resourceConverter(resource.getPath());
 		}
-		save(resource);
-		return true;
+		saveUseGeneratedKeys(resource);
+		return resource.getId();
 	}
 
 	@Override

@@ -27,12 +27,12 @@ public class LibraryAction extends BaseAction<LibraryService> {
 
 	public void addLibrary(Library library) {
 		library.setCreator(Session.get(Session.KEY_LOGIN_ID));
-		getService().addLibrary(library);
+		getService().save(library);
 	}
 
 	public void modifyLibrary(Library library) {
 		library.setUpdater(Session.get(Session.KEY_LOGIN_ID));
-		getService().modifyLibrary(library);
+		getService().update(library);
 	}
 
 	public void deleteLibrary(int id) {
@@ -40,7 +40,7 @@ public class LibraryAction extends BaseAction<LibraryService> {
 		Library library = service.findById(id);
 		library.setDel(1);
 		library.setUpdater(Session.get(Session.KEY_LOGIN_ID));
-		service.modifyLibrary(library);
+		service.update(library);
 	}
 
 	@Override

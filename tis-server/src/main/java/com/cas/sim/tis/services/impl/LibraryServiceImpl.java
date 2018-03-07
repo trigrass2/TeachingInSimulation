@@ -1,6 +1,5 @@
 package com.cas.sim.tis.services.impl;
 
-import java.util.Date;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -28,18 +27,6 @@ public class LibraryServiceImpl extends AbstractService<Library> implements Libr
 		PageInfo<Library> page = new PageInfo<Library>(result);
 		LOG.info("成功查找到{}条资源,当前页码{},每页{}条资源,共{}页", result.size(), pageIndex, pageSize, page.getPages());
 		return page;
-	}
-
-	@Override
-	public void addLibrary(Library library) {
-		library.setCreateDate(new Date());
-		save(library);
-	}
-
-	@Override
-	public void modifyLibrary(Library library) {
-		library.setUpdateDate(new Date());
-		update(library);
 	}
 
 }

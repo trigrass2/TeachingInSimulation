@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cas.sim.tis.mapper.PreparationQuizMapper">
+	<resultMap id="BaseResultMap" type="com.cas.sim.tis.entity.PreparationQuiz">
+		<id column="ID" jdbcType="INTEGER" property="id" />
+		<result column="TYPE" jdbcType="INTEGER" property="type" />
+		<result column="PID" jdbcType="INTEGER" property="preparationId" />
+		<result column="RID" jdbcType="INTEGER" property="relationId" />
+		<result column="CREATOR" jdbcType="VARCHAR" property="creator" />
+		<result column="CREATE_DATE" jdbcType="TIMESTAMP" property="createDate" />
+		<result column="UPDATER" jdbcType="VARCHAR" property="updater" />
+		<result column="UPDATE_DATE" jdbcType="TIMESTAMP" property="updateDate" />
+		<result column="DEL" jdbcType="INTEGER" property="del" />
+	</resultMap>
+	<resultMap id="ResultInfoMap" type="com.cas.sim.tis.vo.PreparationInfo">
+		<id column="ID" jdbcType="INTEGER" property="id" />
+		<result column="ICON" jdbcType="INTEGER" property="icon" />
+		<result column="NAME" jdbcType="VARCHAR" property="name" />
+	</resultMap>
+	<resultMap id="QuizInfoMap" type="com.cas.sim.tis.vo.PreparationQuizInfo">
+		<id column="ID" jdbcType="INTEGER" property="id" />
+		<association property="question" javaType="com.cas.sim.tis.entity.Question">
+			<id column="QID" jdbcType="INTEGER" property="id" />
+			<result column="TITLE" jdbcType="VARCHAR" property="title" />
+			<result column="OPTIONS" jdbcType="VARCHAR" property="options" />
+			<result column="REFERENCE" jdbcType="VARCHAR" property="reference" />
+			<result column="ANALYSIS" jdbcType="VARCHAR" property="analysis" />
+			<result column="POINT" jdbcType="FLOAT" property="point" />
+			<result column="TYPE" jdbcType="INTEGER" property="type" />
+		</association>
+	</resultMap>
+	<select id="findQuizsByPreparationId" resultMap="QuizInfoMap">
+		select 
+			pq.id,q.id as qid,q.title,q.options,q.reference,q.analysis,q.point,q.type 
+		from 
+			(select * from preparation_quiz where pid=#{pid} and del=0 and type=1) pq 
+		left join 
+			question q 
+		on pq.rid=q.id
+	</select>
+	<select id="findTestsByPreparationId" resultMap="ResultInfoMap">
+		select q1.id,8 as icon,b.name from (select * from preparation_quiz where pid=#{pid} and del=0 and type=2) q1 left join broken_case b on q1.rid=b.id
+		union
+		select q2.id,8 as icon,'自由接线'as name from (select * from preparation_quiz where pid=#{pid} and del=0 and type=3) q2;
+	</select>
+</mapper>

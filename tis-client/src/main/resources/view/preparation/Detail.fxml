@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Accordion?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.SeparatorMenuItem?>
+<?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import com.cas.sim.tis.view.control.imp.Title?>
+<?import com.cas.sim.tis.view.control.imp.table.Table?>
+
+<fx:root style="-fx-background-color: #ffffff;" type="HBox" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
+	<children>
+		<VBox spacing="20" HBox.hgrow="ALWAYS">
+			<padding>
+				<Insets bottom="20.0" right="20.0" top="20.0" />
+			</padding>
+			<children>
+				<HBox alignment="CENTER_LEFT" spacing="10">
+					<children>
+						<Title fx:id="title" HBox.hgrow="ALWAYS" />
+						<MenuBar>
+							<menus>
+								<Menu mnemonicParsing="false" text="%menu.button.add.resc">
+									<items>
+										<MenuItem mnemonicParsing="false" text="%menu.item.cognition" onAction="#cognition"/>
+										<SeparatorMenuItem mnemonicParsing="false" />
+										<MenuItem mnemonicParsing="false" text="%menu.item.typical" onAction="#typicalCase" />
+										<SeparatorMenuItem mnemonicParsing="false" />
+										<MenuItem mnemonicParsing="false" text="%menu.item.local" onAction="#loadResource"/>
+										<SeparatorMenuItem mnemonicParsing="false" />
+										<MenuItem mnemonicParsing="false" text="%menu.item.resource" onAction="#resource"/>
+									</items>
+								</Menu>
+								<Menu mnemonicParsing="false" text="%menu.button.add.quiz">
+									<items>
+										<MenuItem mnemonicParsing="false" text="%menu.item.quiz" onAction="#quiz"/>
+										<SeparatorMenuItem mnemonicParsing="false" />
+										<MenuItem mnemonicParsing="false" text="%menu.item.repair" />
+										<SeparatorMenuItem mnemonicParsing="false" />
+										<MenuItem mnemonicParsing="false" text="%menu.item.free" />
+									</items>
+								</Menu>
+							</menus>
+						</MenuBar>
+					</children>
+				</HBox>
+				<ScrollPane fitToWidth="true" hbarPolicy="NEVER" VBox.vgrow="ALWAYS">
+					<content>
+						<VBox spacing="10.0">
+							<children>
+								<Accordion styleClass="white-accordion">
+									<panes>
+										<TitledPane animated="false" styleClass="preparation-titled-pane" text="%preparation.points">
+											<content>
+												<ScrollPane fitToWidth="true" hbarPolicy="NEVER">
+													<content>
+														<FlowPane fx:id="points" prefWrapLength="680.0" hgap="10" vgap="10"/>
+													</content>
+												</ScrollPane>
+											</content>
+										</TitledPane>
+									</panes>
+								</Accordion>
+								<Accordion styleClass="white-accordion">
+									<panes>
+										<TitledPane animated="false" text="%preparation.rescs">
+											<content>
+												<ScrollPane fitToWidth="true" hbarPolicy="NEVER">
+													<content>
+														<Table fx:id="resces" serial="true" rowHeight="45" spacing="10" headerable="false" separatorable="false" normalStyleClass="table-row" hoverStyleClass="table-row-hover" selectedStyleClass="table-row-selected" />
+													</content>
+												</ScrollPane>
+											</content>
+										</TitledPane>
+									</panes>
+								</Accordion>
+								<Accordion styleClass="white-accordion">
+									<panes>
+										<TitledPane animated="false" text="%preparation.test">
+											<content>
+												<ScrollPane fitToWidth="true" hbarPolicy="NEVER">
+													<content>
+														<VBox>
+															<children>
+																<VBox fx:id="quizs" />
+																<Table fx:id="tests" serial="true" rowHeight="45" spacing="10" headerable="false" separatorable="false" normalStyleClass="table-row" hoverStyleClass="table-row-hover" selectedStyleClass="table-row-selected" />
+															</children>
+														</VBox>
+													</content>
+												</ScrollPane>
+											</content>
+										</TitledPane>
+									</panes>
+								</Accordion>
+							</children>
+						</VBox>
+					</content>
+					<padding>
+						<Insets left="10.0" />
+					</padding>
+				</ScrollPane>
+			</children>
+		</VBox>
+		<VBox prefWidth="435.0" style="-fx-background-color: #fbfbfb;" HBox.hgrow="ALWAYS">
+			<padding>
+				<Insets bottom="20.0" top="20.0" />
+			</padding>
+			<children>
+				<Title title="%preparation.title.goals" />
+				<VBox id="asks">
+					<VBox fx:id="a" spacing="10.0">
+						<children>
+							<Label text="职业素质目标（A）" />
+							<CheckBox disable="true" mnemonicParsing="false" styleClass="ask-check-box" text="学会对旋钮凸模进行工艺分析" />
+						</children>
+						<padding>
+							<Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+						</padding>
+					</VBox>
+					<VBox fx:id="k" spacing="10.0">
+						<children>
+							<Label text="知识目标（K）" />
+							<CheckBox disable="true" mnemonicParsing="false" selected="true" styleClass="ask-check-box" text="学会型腔铣、等高铣等多种加工方法在凸模   零件中的应用。" />
+							<CheckBox disable="true" mnemonicParsing="false" selected="true" styleClass="ask-check-box" text="学会合理设置加工参数" />
+						</children>
+						<padding>
+							<Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+						</padding>
+					</VBox>
+					<VBox fx:id="s" spacing="10.0">
+						<children>
+							<Label text="技能目标（S）" />
+							<CheckBox disable="true" mnemonicParsing="false" styleClass="ask-check-box" text="学会型腔铣、等高铣等多种加工方法在凸模   零件中的应用。" />
+							<CheckBox disable="true" mnemonicParsing="false" styleClass="ask-check-box" text="学会合理设置加工参数" />
+						</children>
+						<padding>
+							<Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+						</padding>
+					</VBox>
+				</VBox>
+			</children>
+		</VBox>
+	</children>
+</fx:root>
