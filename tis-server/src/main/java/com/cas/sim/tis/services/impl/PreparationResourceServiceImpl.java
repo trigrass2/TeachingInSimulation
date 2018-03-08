@@ -9,6 +9,8 @@ import com.cas.sim.tis.mapper.PreparationResourceMapper;
 import com.cas.sim.tis.services.PreparationResourceService;
 import com.cas.sim.tis.vo.PreparationInfo;
 
+import tk.mybatis.mapper.entity.Condition;
+
 @Service
 public class PreparationResourceServiceImpl extends AbstractService<PreparationResource> implements PreparationResourceService {
 

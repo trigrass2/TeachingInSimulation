@@ -28,7 +28,7 @@ public class PreparationResourceAction extends BaseAction<PreparationResourceSer
 		PreparationResourceService service = getService();
 		return service.findById(id);
 	}
-
+	
 	public void detele(Integer rid) {
 		PreparationResourceService service = getService();
 		PreparationResource resource = service.findById(rid);

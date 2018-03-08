@@ -1,7 +1,7 @@
 package com.cas.sim.tis.consts;
 
 public enum PreparationQuizType {
-	QUESTION(1), BROKEN_CASE(2), FREE(3);
+	LIBRARY(1), BROKEN_CASE(2), FREE(3);
 
 	private int type;
 

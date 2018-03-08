@@ -137,7 +137,7 @@ public class LibraryList extends HBox implements IContent {
 		Column<String> view = new Column<String>();
 		view.setCellFactory(BtnCell.forTableColumn(MsgUtil.getMessage("button.view"), Priority.ALWAYS, "blue-btn", id -> {
 			PageController controller = SpringUtil.getBean(PageController.class);
-			controller.loadContent(new PreviewQuestionPaper(menuType, (int) id), PageLevel.Level2);
+			controller.loadContent(new PreviewQuestionPaper((Integer) id, menuType.isEditable()), PageLevel.Level2);
 		}));
 		view.setAlignment(Pos.CENTER_RIGHT);
 		table.getColumns().add(view);

@@ -2,7 +2,6 @@ package com.cas.sim.tis.view.control.imp.preparation;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
@@ -15,13 +14,11 @@ import com.cas.sim.tis.action.ElecCompAction;
 import com.cas.sim.tis.action.PreparationAction;
 import com.cas.sim.tis.action.PreparationQuizAction;
 import com.cas.sim.tis.action.PreparationResourceAction;
-import com.cas.sim.tis.action.QuestionAction;
 import com.cas.sim.tis.action.ResourceAction;
 import com.cas.sim.tis.action.TypicalCaseAction;
 import com.cas.sim.tis.action.UserAction;
 import com.cas.sim.tis.consts.PreparationQuizType;
 import com.cas.sim.tis.consts.PreparationResourceType;
-import com.cas.sim.tis.consts.QuestionType;
 import com.cas.sim.tis.consts.ResourceType;
 import com.cas.sim.tis.consts.RoleConst;
 import com.cas.sim.tis.consts.Session;
@@ -31,7 +28,6 @@ import com.cas.sim.tis.entity.ElecComp;
 import com.cas.sim.tis.entity.Preparation;
 import com.cas.sim.tis.entity.PreparationQuiz;
 import com.cas.sim.tis.entity.PreparationResource;
-import com.cas.sim.tis.entity.Question;
 import com.cas.sim.tis.entity.Resource;
 import com.cas.sim.tis.entity.TypicalCase;
 import com.cas.sim.tis.entity.User;
@@ -45,7 +41,7 @@ import com.cas.sim.tis.view.control.imp.Title;
 import com.cas.sim.tis.view.control.imp.dialog.Dialog;
 import com.cas.sim.tis.view.control.imp.jme.Recongnize3D;
 import com.cas.sim.tis.view.control.imp.jme.TypicalCase3D;
-import com.cas.sim.tis.view.control.imp.question.PreviewQuestionItem;
+import com.cas.sim.tis.view.control.imp.question.PreviewQuestionPaper;
 import com.cas.sim.tis.view.control.imp.table.BtnCell;
 import com.cas.sim.tis.view.control.imp.table.Column;
 import com.cas.sim.tis.view.control.imp.table.SVGIconCell;
@@ -53,7 +49,6 @@ import com.cas.sim.tis.view.control.imp.table.Table;
 import com.cas.sim.tis.view.controller.PageController;
 import com.cas.sim.tis.view.controller.PageController.PageLevel;
 import com.cas.sim.tis.vo.PreparationInfo;
-import com.cas.sim.tis.vo.PreparationQuizInfo;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -77,9 +72,7 @@ public class PreparationDetail extends HBox implements IContent {
 	@FXML
 	private Table resces;
 	@FXML
-	private Table tests;
-	@FXML
-	private VBox quizs;
+	private Table quizs;
 	@FXML
 	private VBox asks;
 	@FXML
@@ -117,14 +110,13 @@ public class PreparationDetail extends HBox implements IContent {
 		this.title.setTitle(task.getName());
 
 		createResourceTable();
-		createTestTable();
+		createQuizTable();
 
 		loadPreparation();
 
 		loadPoints();
 		loadResources();
 		loadQuizs();
-		loadTests();
 	}
 
 	private void createResourceTable() {
@@ -194,7 +186,7 @@ public class PreparationDetail extends HBox implements IContent {
 		}
 	}
 
-	private void createTestTable() {
+	private void createQuizTable() {
 		// 数据库唯一表示
 		Column<Integer> id = new Column<>();
 		id.setPrimary(true);
@@ -214,7 +206,7 @@ public class PreparationDetail extends HBox implements IContent {
 					return null;
 				}
 				ResourceType resourceType = ResourceType.getResourceType(type);
-				return new SVGGlyph(resourceType.getIcon(), resourceType.getColor(), 22, 25);
+				return new SVGGlyph(resourceType.getIcon(), resourceType.getColor(), 22);
 			}
 		};
 		icon.setCellFactory(SVGIconCell.forTableColumn(converter));
@@ -224,14 +216,22 @@ public class PreparationDetail extends HBox implements IContent {
 		name.setKey("name");
 		name.setText(MsgUtil.getMessage("resource.name"));
 		name.setMaxWidth(250);
-		tests.getColumns().addAll(id, icon, name);
+		quizs.getColumns().addAll(id, icon, name);
 		// 查看按钮
 		Column<String> view = new Column<String>();
 		view.setCellFactory(BtnCell.forTableColumn(MsgUtil.getMessage("button.view"), Priority.ALWAYS, "blue-btn", rid -> {
-			// TODO 打开故障练习、自由接线
+			PreparationQuiz preparationQuiz = SpringUtil.getBean(PreparationQuizAction.class).findQuizById((Integer) rid);
+			int type = preparationQuiz.getType();
+			if (PreparationQuizType.LIBRARY.getType() == type) {
+				openLibrary(preparationQuiz.getRelationId());
+			} else if (PreparationQuizType.BROKEN_CASE.getType() == type) {
+				openBrokenCase(preparationQuiz.getRelationId());
+			} else if (PreparationQuizType.FREE.getType() == type) {
+				openFreeMode();
+			}
 		}));
 		view.setAlignment(Pos.CENTER_RIGHT);
-		tests.getColumns().add(view);
+		quizs.getColumns().add(view);
 		if (RoleConst.TEACHER == Session.get(Session.KEY_LOGIN_ROLE, -1)) {
 			// 删除按钮
 			Column<String> delete = new Column<String>();
@@ -245,7 +245,7 @@ public class PreparationDetail extends HBox implements IContent {
 			}));
 			delete.setAlignment(Pos.CENTER_RIGHT);
 			delete.setMaxWidth(58);
-			tests.getColumns().add(delete);
+			quizs.getColumns().add(delete);
 		}
 	}
 
@@ -294,25 +294,11 @@ public class PreparationDetail extends HBox implements IContent {
 		if (preparation == null) {
 			return;
 		}
-		int index = 1;
-		List<PreparationQuizInfo> quizs = SpringUtil.getBean(PreparationQuizAction.class).findQuizsByPreparationId(preparation.getId());
-		for (PreparationQuizInfo quiz : quizs) {
-			Question question = quiz.getQuestion();
-			PreviewQuestionItem item = new PreviewQuestionItem(index++, QuestionType.getQuestionType(question.getType()), question, RoleConst.TEACHER == Session.get(Session.KEY_LOGIN_ROLE, 0));
-			item.setUserData(quiz.getId());
-			this.quizs.getChildren().add(item);
-		}
-	}
-
-	private void loadTests() {
-		if (preparation == null) {
-			return;
-		}
-		List<PreparationInfo> tests = SpringUtil.getBean(PreparationQuizAction.class).findTestsByPreparationId(preparation.getId());
+		List<PreparationInfo> quizs = SpringUtil.getBean(PreparationQuizAction.class).findQuizsByPreparationId(preparation.getId());
 		JSONArray array = new JSONArray();
-		array.addAll(tests);
-		this.tests.setItems(array);
-		this.tests.build();
+		array.addAll(quizs);
+		this.quizs.setItems(array);
+		this.quizs.build();
 	}
 
 	private void createPointItem(Catalog point) {
@@ -400,7 +386,7 @@ public class PreparationDetail extends HBox implements IContent {
 			if (id == null) {
 				return;
 			}
-			addQuizs(id, PreparationQuizType.QUESTION.getType());
+			addQuiz(id, PreparationQuizType.LIBRARY.getType());
 		});
 	}
 
@@ -422,7 +408,11 @@ public class PreparationDetail extends HBox implements IContent {
 
 	@FXML
 	private void free() {
-
+		if (SpringUtil.getBean(PreparationQuizAction.class).checkFreeQuiz(preparation.getId())) {
+			AlertUtil.showAlert(AlertType.WARNING, MsgUtil.getMessage("alert.warning.exsit", MsgUtil.getMessage("reparation.free.case")));
+			return;
+		}
+		addQuiz(null, PreparationQuizType.FREE.getType());
 	}
 
 	private void addResource(Integer id, int type) {
@@ -447,27 +437,6 @@ public class PreparationDetail extends HBox implements IContent {
 		quiz.setType(type);
 		try {
 			SpringUtil.getBean(PreparationQuizAction.class).addQuiz(quiz);
-			loadTests();
-			AlertUtil.showAlert(AlertType.INFORMATION, MsgUtil.getMessage("data.add.success"));
-		} catch (Exception e) {
-			e.printStackTrace();
-			AlertUtil.showAlert(AlertType.ERROR, e.getMessage());
-		}
-	}
-
-	private void addQuizs(Integer id, int type) {
-		List<Question> questions = SpringUtil.getBean(QuestionAction.class).findQuestionsByLibrary(id);
-		List<PreparationQuiz> quizs = new ArrayList<>();
-		for (Question question : questions) {
-			PreparationQuiz quiz = new PreparationQuiz();
-			quiz.setRelationId(question.getId());
-			quiz.setPreparationId(preparation.getId());
-			quiz.setType(type);
-			quiz.setCreator(Session.get(Session.KEY_LOGIN_ID));
-			quizs.add(quiz);
-		}
-		try {
-			SpringUtil.getBean(PreparationQuizAction.class).addQuizs(quizs);
 			loadQuizs();
 			AlertUtil.showAlert(AlertType.INFORMATION, MsgUtil.getMessage("data.add.success"));
 		} catch (Exception e) {
@@ -511,6 +480,19 @@ public class PreparationDetail extends HBox implements IContent {
 		});
 	}
 
+	private void openLibrary(Integer id) {
+		PageController controller = SpringUtil.getBean(PageController.class);
+		controller.loadContent(new PreviewQuestionPaper(id, false, true), PageLevel.Level2);
+	}
+
+	private void openBrokenCase(Integer id) {
+		
+	}
+	
+	private void openFreeMode() {
+		
+	}
+	
 	@Override
 	public void distroy() {
 

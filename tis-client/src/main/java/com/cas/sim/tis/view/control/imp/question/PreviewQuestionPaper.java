@@ -34,7 +34,6 @@ import com.cas.sim.tis.view.control.ILeftContent;
 import com.cas.sim.tis.view.control.IPublish;
 import com.cas.sim.tis.view.control.imp.classes.ClassSelectDialog;
 import com.cas.sim.tis.view.control.imp.dialog.Dialog;
-import com.cas.sim.tis.view.control.imp.library.LibraryList.LibraryMenuType;
 import com.cas.sim.tis.view.controller.ExamController;
 import com.cas.sim.tis.view.controller.PageController;
 import com.cas.util.FileUtil;
@@ -81,14 +80,22 @@ public class PreviewQuestionPaper extends HBox implements IContent {
 	@FXML
 	private Label tip;
 
-	private int rid;
+	private Integer rid;
+	private boolean editable;
+	private boolean readonly;
 
-	private LibraryMenuType menuType;
-
-	public PreviewQuestionPaper(LibraryMenuType menuType, int rid) {
+	public PreviewQuestionPaper(Integer rid, boolean editable) {
 		loadFXML();
 		this.rid = rid;
-		this.menuType = menuType;
+		this.editable = editable;
+		initialize();
+	}
+
+	public PreviewQuestionPaper(Integer rid, boolean editable, boolean readonly) {
+		loadFXML();
+		this.rid = rid;
+		this.editable = editable;
+		this.readonly = readonly;
 		initialize();
 	}
 
@@ -116,16 +123,21 @@ public class PreviewQuestionPaper extends HBox implements IContent {
 		Library library = SpringUtil.getBean(LibraryAction.class).findLibraryByID(rid);
 		this.libName.setText(library.getName());
 
-		if (!menuType.isEditable()) {
+		if (readonly) {
 			this.options.getChildren().removeAll(templateBtn, importBtn, exportBtn);
-		}
-		int role = Session.get(Session.KEY_LOGIN_ROLE);
-		if (RoleConst.ADMIN == role) {
 			this.submits.getChildren().removeAll(practiceBtn, publishBtn);
-		} else if (RoleConst.TEACHER == role) {
-			this.submits.getChildren().removeAll(practiceBtn);
-		} else if (RoleConst.STUDENT == role) {
-			this.submits.getChildren().removeAll(publishBtn);
+		} else {
+			if (!editable) {
+				this.options.getChildren().removeAll(templateBtn, importBtn, exportBtn);
+			}
+			int role = Session.get(Session.KEY_LOGIN_ROLE);
+			if (RoleConst.ADMIN == role) {
+				this.submits.getChildren().removeAll(practiceBtn, publishBtn);
+			} else if (RoleConst.TEACHER == role) {
+				this.submits.getChildren().removeAll(practiceBtn);
+			} else if (RoleConst.STUDENT == role) {
+				this.submits.getChildren().removeAll(publishBtn);
+			}
 		}
 
 		chart.setOnMouseMoved(e -> {
@@ -161,7 +173,7 @@ public class PreviewQuestionPaper extends HBox implements IContent {
 		for (int i = 0; i < questions.size(); i++) {
 			int index = i + 1;
 			Question question = questions.get(i);
-			PreviewQuestionItem item = new PreviewQuestionItem(index, QuestionType.getQuestionType(question.getType()), question, menuType.isEditable());
+			PreviewQuestionItem item = new PreviewQuestionItem(index, QuestionType.getQuestionType(question.getType()), question, editable);
 			paper.getChildren().add(item);
 		}
 		ObservableList<Data> datas = FXCollections.observableArrayList(//

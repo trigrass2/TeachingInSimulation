@@ -12,7 +12,6 @@ import com.cas.sim.tis.consts.Session;
 import com.cas.sim.tis.entity.PreparationQuiz;
 import com.cas.sim.tis.services.PreparationQuizService;
 import com.cas.sim.tis.vo.PreparationInfo;
-import com.cas.sim.tis.vo.PreparationQuizInfo;
 
 @Component
 public class PreparationQuizAction extends BaseAction<PreparationQuizService> {
@@ -20,14 +19,14 @@ public class PreparationQuizAction extends BaseAction<PreparationQuizService> {
 	@Qualifier("preparationQuizServiceFactory")
 	private RmiProxyFactoryBean preparationQuizServiceFactory;
 
-	public List<PreparationQuizInfo> findQuizsByPreparationId(Integer pid) {
+	public List<PreparationInfo> findQuizsByPreparationId(Integer pid) {
 		PreparationQuizService service = getService();
 		return service.findQuizsByPreparationId(pid);
 	}
 
-	public List<PreparationInfo> findTestsByPreparationId(Integer pid) {
+	public PreparationQuiz findQuizById(Integer id) {
 		PreparationQuizService service = getService();
-		return service.findTestsByPreparationId(pid);
+		return service.findById(id);
 	}
 
 	public void addQuiz(PreparationQuiz quiz) {
@@ -36,9 +35,10 @@ public class PreparationQuizAction extends BaseAction<PreparationQuizService> {
 		service.save(quiz);
 	}
 
-	public void addQuizs(List<PreparationQuiz> quizs) {
+	public boolean checkFreeQuiz(Integer pid) {
 		PreparationQuizService service = getService();
-		service.save(quizs);
+		int num = service.countFreeQuizByPreparationId(pid);
+		return num > 0;
 	}
 
 	@Override

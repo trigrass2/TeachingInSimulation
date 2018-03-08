@@ -218,7 +218,7 @@
 	-fx-background-color:#51bfcf;
 }
 .toggle-button:selected {
-	-fx-background-color: #22678f;
+	-fx-background-color: #f6a23f;
 	-fx-background-insets: 0.0 0.0 -2.0 0.0;
 	-fx-border-color: none;
 }
@@ -638,7 +638,7 @@
 	-fx-background-color:#51bfcf;
 }
 .point-check-box:selected{
-	-fx-background-color:#22678f;
+	-fx-background-color:#f6a23f;
 }
 .point-check-box > .box {
 	-fx-opacity: 0.0;
