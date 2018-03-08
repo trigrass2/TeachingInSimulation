@@ -8,6 +8,7 @@ import java.util.ResourceBundle;
 import java.util.function.Function;
 
 import com.alibaba.fastjson.JSONArray;
+import com.cas.sim.tis.action.BrokenCaseAction;
 import com.cas.sim.tis.action.CatalogAction;
 import com.cas.sim.tis.action.ElecCompAction;
 import com.cas.sim.tis.action.PreparationAction;
@@ -16,14 +17,17 @@ import com.cas.sim.tis.action.PreparationResourceAction;
 import com.cas.sim.tis.action.ResourceAction;
 import com.cas.sim.tis.action.TypicalCaseAction;
 import com.cas.sim.tis.action.UserAction;
+import com.cas.sim.tis.consts.PreparationQuizType;
 import com.cas.sim.tis.consts.PreparationResourceType;
 import com.cas.sim.tis.consts.QuestionType;
 import com.cas.sim.tis.consts.ResourceType;
 import com.cas.sim.tis.consts.RoleConst;
 import com.cas.sim.tis.consts.Session;
+import com.cas.sim.tis.entity.BrokenCase;
 import com.cas.sim.tis.entity.Catalog;
 import com.cas.sim.tis.entity.ElecComp;
 import com.cas.sim.tis.entity.Preparation;
+import com.cas.sim.tis.entity.PreparationQuiz;
 import com.cas.sim.tis.entity.PreparationResource;
 import com.cas.sim.tis.entity.Question;
 import com.cas.sim.tis.entity.Resource;
@@ -37,6 +41,8 @@ import com.cas.sim.tis.view.control.IContent;
 import com.cas.sim.tis.view.control.imp.ResourceViewer;
 import com.cas.sim.tis.view.control.imp.Title;
 import com.cas.sim.tis.view.control.imp.dialog.Dialog;
+import com.cas.sim.tis.view.control.imp.jme.Recongnize3D;
+import com.cas.sim.tis.view.control.imp.jme.TypicalCase3D;
 import com.cas.sim.tis.view.control.imp.question.PreviewQuestionItem;
 import com.cas.sim.tis.view.control.imp.table.BtnCell;
 import com.cas.sim.tis.view.control.imp.table.Column;
@@ -162,9 +168,9 @@ public class PreparationDetail extends HBox implements IContent {
 			if (PreparationResourceType.RESOURCE.getType() == type) {
 				openResource(preparationResource.getRelationId());
 			} else if (PreparationResourceType.COGNITION.getType() == type) {
-				// TODO
+				openCognition(preparationResource.getRelationId());
 			} else if (PreparationResourceType.TYPICAL.getType() == type) {
-				// TODO
+				openTypicalCase(preparationResource.getRelationId());
 			}
 		}));
 		view.setAlignment(Pos.CENTER_RIGHT);
@@ -387,6 +393,27 @@ public class PreparationDetail extends HBox implements IContent {
 
 	}
 
+	@FXML
+	private void repair() {
+		List<BrokenCase> cases = SpringUtil.getBean(BrokenCaseAction.class).getBrokenCaseList();
+
+		Dialog<Integer> dialog = new Dialog<>();
+		dialog.setDialogPane(new BrokenCaseSelectDialog(cases));
+		dialog.setTitle(MsgUtil.getMessage("preparation.typical.case"));
+		dialog.setPrefSize(640, 500);
+		dialog.showAndWait().ifPresent(id -> {
+			if (id == null) {
+				return;
+			}
+			addQuiz(id, PreparationQuizType.BROKEN_CASE.getType());
+		});
+	}
+
+	@FXML
+	private void free() {
+
+	}
+
 	private void addResource(Integer id, int type) {
 		PreparationResource resource = new PreparationResource();
 		resource.setRelationId(id);
@@ -402,6 +429,22 @@ public class PreparationDetail extends HBox implements IContent {
 		}
 	}
 
+	private void addQuiz(Integer id, int type) {
+		PreparationQuiz quiz = new PreparationQuiz();
+		quiz.setRelationId(id);
+		quiz.setPreparationId(preparation.getId());
+		quiz.setType(type);
+		try {
+			SpringUtil.getBean(PreparationQuizAction.class).addQuiz(quiz);
+			loadQuizs();
+			loadTests();
+			AlertUtil.showAlert(AlertType.INFORMATION, MsgUtil.getMessage("data.add.success"));
+		} catch (Exception e) {
+			e.printStackTrace();
+			AlertUtil.showAlert(AlertType.ERROR, e.getMessage());
+		}
+	}
+
 	private void openResource(Integer id) {
 		ResourceAction action = SpringUtil.getBean(ResourceAction.class);
 		action.browsed(id);
@@ -409,6 +452,32 @@ public class PreparationDetail extends HBox implements IContent {
 		// 跳转到查看页面
 		PageController controller = SpringUtil.getBean(PageController.class);
 		controller.loadContent(new ResourceViewer(resource), PageLevel.Level2);
+	}
+
+	private void openCognition(Integer id) {
+		ElecComp comp = SpringUtil.getBean(ElecCompAction.class).findElecCompById(id);
+
+		PageController controller = SpringUtil.getBean(PageController.class);
+		Recongnize3D content = new Recongnize3D();
+
+		controller.loadContent(content, PageLevel.Level2);
+		controller.showLoading();
+		controller.setEndHideLoading((v) -> {
+			content.setElecComp(comp);
+		});
+	}
+
+	private void openTypicalCase(Integer id) {
+		TypicalCase typicalCase = SpringUtil.getBean(TypicalCaseAction.class).findTypicalCaseById(id);
+
+		PageController controller = SpringUtil.getBean(PageController.class);
+		TypicalCase3D content = new TypicalCase3D();
+
+		controller.loadContent(content, PageLevel.Level2);
+		controller.showLoading();
+		controller.setEndHideLoading((v) -> {
+			content.setupCase(typicalCase);
+		});
 	}
 
 	@Override

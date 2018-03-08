@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.remoting.rmi.RmiProxyFactoryBean;
 
+import com.cas.sim.tis.services.BrokenCaseService;
 import com.cas.sim.tis.services.BrowseHistoryService;
 import com.cas.sim.tis.services.CatalogService;
 import com.cas.sim.tis.services.ClassService;
@@ -147,6 +148,16 @@ public class RMIConfig {
 		bean.setServiceUrl("rmi://" + host + ":" + port + "/typicalCaseService");
 		LOG.info("远程访问路径：{}", bean.getServiceUrl());
 		bean.setServiceInterface(TypicalCaseService.class);
+		return bean;
+	}
+	
+	@Bean
+	@Qualifier("brokenCaseServiceFactory")
+	public RmiProxyFactoryBean buildBrokenCaseServiceFactory() {
+		RmiProxyFactoryBean bean = new RmiProxyFactoryBean();
+		bean.setServiceUrl("rmi://" + host + ":" + port + "/brokenCaseService");
+		LOG.info("远程访问路径：{}", bean.getServiceUrl());
+		bean.setServiceInterface(BrokenCaseService.class);
 		return bean;
 	}
 

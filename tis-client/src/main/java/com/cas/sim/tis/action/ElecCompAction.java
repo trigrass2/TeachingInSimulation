@@ -46,6 +46,10 @@ public class ElecCompAction extends BaseAction<ElecCompService> {
 		return JaxbUtil.converyToJavaBean(httpUtils.getUrl(cfgPath), ElecCompDef.class);
 	}
 
+	public ElecComp findElecCompById(Integer id) {
+		return getService().findById(id);
+	}
+
 	@Override
 	protected RmiProxyFactoryBean getRmiProxyFactoryBean() {
 		return elecCompServiceFactory;

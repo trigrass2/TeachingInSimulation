@@ -17,6 +17,10 @@ public class TypicalCaseAction extends BaseAction<TypicalCaseService> {
 	@Qualifier("typicalCaseServiceFactory")
 	private RmiProxyFactoryBean typicalCaseServiceFactory;
 
+	public TypicalCase findTypicalCaseById(Integer id) {
+		return getService().findById(id);
+	}
+
 	public List<TypicalCase> getTypicalCaseList() {
 
 		return getService().findAll();

@@ -2,6 +2,7 @@ package com.cas.sim.tis.view.controller;
 
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.function.Consumer;
 
 import com.cas.sim.tis.Application;
 import com.cas.sim.tis.anno.FxThread;
@@ -12,6 +13,7 @@ import com.cas.sim.tis.view.control.ILeftContent;
 
 import de.felixroske.jfxsupport.FXMLController;
 import de.felixroske.jfxsupport.GUIState;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.ProgressIndicator;
@@ -24,6 +26,18 @@ import javafx.scene.layout.StackPane;
 public class PageController implements Initializable {
 
 	private boolean visible = true;
+
+	private SimpleBooleanProperty loading = new SimpleBooleanProperty(false) {
+		public void set(boolean newValue) {
+			if (!newValue) {
+				if (endHideLoading != null) {
+					endHideLoading.accept(null);
+				}
+			}
+		};
+	};
+
+	private Consumer<Void> endHideLoading;
 
 	@FXML
 	private Pane handle;
@@ -47,7 +61,7 @@ public class PageController implements Initializable {
 	private Pane loadingLayer;
 	@FXML
 	private StackPane container;
-	
+
 	private ILeftContent left;
 	/**
 	 * 上一层内容
@@ -190,6 +204,8 @@ public class PageController implements Initializable {
 //        progressIndicator.setId(CssIds.EDITOR_LOADING_PROGRESS);
 		loadingLayer.getChildren().add(progressIndicator);
 		container.setDisable(true);
+
+		setLoading(true);
 	}
 
 	/**
@@ -203,6 +219,24 @@ public class PageController implements Initializable {
 		progressIndicator = null;
 
 		container.setDisable(false);
+
+		setLoading(false);
+	}
+
+	public final SimpleBooleanProperty loadinglProperty() {
+		return loading;
+	}
+
+	public final boolean getLoading() {
+		return loading.get();
+	}
+
+	public final void setLoading(boolean loading) {
+		this.loading.set(loading);
+	}
+
+	public void setEndHideLoading(Consumer<Void> endHideLoading) {
+		this.endHideLoading = endHideLoading;
 	}
 
 	public ILeftContent getLeftMenu() {

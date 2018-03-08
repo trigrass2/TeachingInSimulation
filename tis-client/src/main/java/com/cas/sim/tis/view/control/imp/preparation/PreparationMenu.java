@@ -35,6 +35,8 @@ public class PreparationMenu extends VBox implements ILeftContent {
 	@FXML
 	private Accordion projects;
 
+	private ToggleGroup group = new ToggleGroup();
+	
 	public PreparationMenu(Catalog subject) {
 		loadFXML();
 		initialize(subject);
@@ -63,6 +65,7 @@ public class PreparationMenu extends VBox implements ILeftContent {
 	private void initialize(Catalog subject) {
 		this.subject.setText(subject.getName());
 		this.projects.getPanes().clear();
+		this.group.getToggles().clear();
 
 		List<Catalog> projects = SpringUtil.getBean(CatalogAction.class).findCatalogsByParentId(subject.getId());
 		for (Catalog project : projects) {
@@ -81,7 +84,6 @@ public class PreparationMenu extends VBox implements ILeftContent {
 	private void initializeContent(TitledPane pane, Catalog project) {
 		List<Catalog> tasks = SpringUtil.getBean(CatalogAction.class).findCatalogsByParentId(project.getId());
 		VBox box = new VBox(10);
-		ToggleGroup group = new ToggleGroup();
 		for (Catalog task : tasks) {
 			ToggleButton taskBtn = new ToggleButton(task.getName());
 			taskBtn.setGraphic(createGraphicTitle(task));

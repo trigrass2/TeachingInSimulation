@@ -3,7 +3,7 @@ package com.cas.sim.tis.view.control.imp.preparation;
 import java.util.List;
 
 import com.alibaba.fastjson.JSONArray;
-import com.cas.sim.tis.entity.TypicalCase;
+import com.cas.sim.tis.entity.BrokenCase;
 import com.cas.sim.tis.util.MsgUtil;
 import com.cas.sim.tis.view.control.imp.dialog.DialogPane;
 import com.cas.sim.tis.view.control.imp.table.Column;
@@ -19,9 +19,9 @@ import javafx.scene.control.ScrollPane.ScrollBarPolicy;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 
-public class TypicalCaseSelectDialog extends DialogPane<Integer> {
+public class BrokenCaseSelectDialog extends DialogPane<Integer> {
 
-	public TypicalCaseSelectDialog(List<TypicalCase> cases) {
+	public BrokenCaseSelectDialog(List<BrokenCase> cases) {
 		VBox box = new VBox(25);
 		VBox.setVgrow(box, Priority.ALWAYS);
 		box.setAlignment(Pos.TOP_CENTER);
@@ -30,23 +30,22 @@ public class TypicalCaseSelectDialog extends DialogPane<Integer> {
 		Table table = new Table("table-row", "table-row-hover", "table-row-selected");
 		table.setSerial(true);
 		table.setRowHeight(45);
-		table.setSeparatorable(false);
+		table.setHeaderable(false);
 		// 数据库唯一表示
 		Column<Integer> id = new Column<>();
 		id.setPrimary(true);
 		id.setVisible(false);
 		id.setKey("id");
-		// 典型案例
+		// 资源图标
 		Column<Integer> name = new Column<>();
+		name.setAlignment(Pos.CENTER_RIGHT);
 		name.setKey("name");
-		name.setText(MsgUtil.getMessage("preparation.typical.case"));
 		table.getColumns().addAll(id, name);
 		JSONArray array = new JSONArray();
 		array.addAll(cases);
-		table.setItems(array);
 		table.build();
 
-		ScrollPane scroll = new ScrollPane(table);
+		ScrollPane scroll = new ScrollPane();
 		scroll.setHbarPolicy(ScrollBarPolicy.NEVER);
 		scroll.setFitToWidth(true);
 		VBox.setVgrow(scroll, Priority.ALWAYS);
@@ -61,7 +60,7 @@ public class TypicalCaseSelectDialog extends DialogPane<Integer> {
 		ok.setOnAction(e -> {
 			Row row = table.getSelectedRow();
 			if (row == null) {
-				error.setText(MsgUtil.getMessage("alert.warning.must.select", MsgUtil.getMessage("preparation.typical.case")));
+				error.setText(MsgUtil.getMessage("alert.warning.must.select", MsgUtil.getMessage("preparation.broken.case")));
 				return;
 			}
 			this.setResult(row.getItems().getInteger("id"));

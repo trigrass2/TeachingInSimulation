@@ -43,9 +43,9 @@
 									<items>
 										<MenuItem mnemonicParsing="false" text="%menu.item.quiz" onAction="#quiz"/>
 										<SeparatorMenuItem mnemonicParsing="false" />
-										<MenuItem mnemonicParsing="false" text="%menu.item.repair" />
+										<MenuItem mnemonicParsing="false" text="%menu.item.repair" onAction="#repair"/>
 										<SeparatorMenuItem mnemonicParsing="false" />
-										<MenuItem mnemonicParsing="false" text="%menu.item.free" />
+										<MenuItem mnemonicParsing="false" text="%menu.item.free" onAction="#free"/>
 									</items>
 								</Menu>
 							</menus>

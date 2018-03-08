@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.remoting.rmi.RmiServiceExporter;
 
+import com.cas.sim.tis.services.BrokenCaseService;
 import com.cas.sim.tis.services.BrowseHistoryService;
 import com.cas.sim.tis.services.CatalogService;
 import com.cas.sim.tis.services.ClassService;
@@ -50,6 +51,8 @@ public class RMIConfig {
 	private ElecCompService elecCompService;
 	@Resource
 	private TypicalCaseService typicalCaseService;
+	@Resource
+	private BrokenCaseService brokenCaseService;
 	@Resource
 	private LibraryService libraryService;
 	@Resource
@@ -165,6 +168,18 @@ public class RMIConfig {
 		exporter.setServiceInterface(TypicalCaseService.class);
 		exporter.setServiceName("typicalCaseService");
 		exporter.setService(typicalCaseService);
+		
+		exporter.setServicePort(servicePort);
+		exporter.setRegistryPort(registPort);
+		return exporter;
+	}
+	
+	@Bean
+	public RmiServiceExporter brokenCaseServiceExporter() {
+		RmiServiceExporter exporter = new RmiServiceExporter();
+		exporter.setServiceInterface(BrokenCaseService.class);
+		exporter.setServiceName("brokenCaseService");
+		exporter.setService(brokenCaseService);
 		
 		exporter.setServicePort(servicePort);
 		exporter.setRegistryPort(registPort);
