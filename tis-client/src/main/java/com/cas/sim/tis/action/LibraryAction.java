@@ -1,5 +1,7 @@
 package com.cas.sim.tis.action;
 
+import java.util.List;
+
 import javax.annotation.Resource;
 
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -19,6 +21,10 @@ public class LibraryAction extends BaseAction<LibraryService> {
 
 	public PageInfo<Library> findLibraryByType(int pageIndex, int pageSize, int type) {
 		return getService().findLibraryByType(pageIndex, pageSize, type);
+	}
+
+	public List<Library> findLibraryByType(int type, String key) {
+		return getService().findLibraryByType(type, key);
 	}
 
 	public Library findLibraryByID(int id) {

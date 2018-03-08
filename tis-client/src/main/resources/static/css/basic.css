@@ -448,8 +448,6 @@
 }
 .accordion > .titled-pane {
     -fx-text-fill: #ffffff;
-    -fx-font-size: 14.0px;
-    -fx-font-weight: bold;
 }
 .accordion > .titled-pane > .title > * {
     -fx-text-fill: #ffffff;
@@ -486,10 +484,6 @@
     -fx-background-radius: 0.0;
     -fx-text-fill: #333333;
     -fx-padding: 10.0px;
-}
-.white-accordion > .titled-pane > .title > *.label {
-    -fx-text-fill: #333333;
-    -fx-font-size: 14.0px;
 }
 .white-accordion > .titled-pane > .title > .arrow-button > .arrow {
     -fx-background-color: #bebebe;

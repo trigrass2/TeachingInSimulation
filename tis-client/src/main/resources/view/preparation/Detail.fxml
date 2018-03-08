@@ -90,7 +90,7 @@
 													<content>
 														<VBox>
 															<children>
-																<VBox fx:id="quizs" />
+																<VBox fx:id="quizs" spacing="10"/>
 																<Table fx:id="tests" serial="true" rowHeight="45" spacing="10" headerable="false" separatorable="false" normalStyleClass="table-row" hoverStyleClass="table-row-hover" selectedStyleClass="table-row-selected" />
 															</children>
 														</VBox>

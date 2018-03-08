@@ -2,6 +2,7 @@ package com.cas.sim.tis.view.control.imp.preparation;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
@@ -14,6 +15,7 @@ import com.cas.sim.tis.action.ElecCompAction;
 import com.cas.sim.tis.action.PreparationAction;
 import com.cas.sim.tis.action.PreparationQuizAction;
 import com.cas.sim.tis.action.PreparationResourceAction;
+import com.cas.sim.tis.action.QuestionAction;
 import com.cas.sim.tis.action.ResourceAction;
 import com.cas.sim.tis.action.TypicalCaseAction;
 import com.cas.sim.tis.action.UserAction;
@@ -390,7 +392,16 @@ public class PreparationDetail extends HBox implements IContent {
 
 	@FXML
 	private void quiz() {
-
+		Dialog<Integer> dialog = new Dialog<>();
+		dialog.setDialogPane(new LibrarySelectDialog());
+		dialog.setTitle(MsgUtil.getMessage("preparation.question.library"));
+		dialog.setPrefSize(640, 500);
+		dialog.showAndWait().ifPresent(id -> {
+			if (id == null) {
+				return;
+			}
+			addQuizs(id, PreparationQuizType.QUESTION.getType());
+		});
 	}
 
 	@FXML
@@ -436,8 +447,28 @@ public class PreparationDetail extends HBox implements IContent {
 		quiz.setType(type);
 		try {
 			SpringUtil.getBean(PreparationQuizAction.class).addQuiz(quiz);
-			loadQuizs();
 			loadTests();
+			AlertUtil.showAlert(AlertType.INFORMATION, MsgUtil.getMessage("data.add.success"));
+		} catch (Exception e) {
+			e.printStackTrace();
+			AlertUtil.showAlert(AlertType.ERROR, e.getMessage());
+		}
+	}
+
+	private void addQuizs(Integer id, int type) {
+		List<Question> questions = SpringUtil.getBean(QuestionAction.class).findQuestionsByLibrary(id);
+		List<PreparationQuiz> quizs = new ArrayList<>();
+		for (Question question : questions) {
+			PreparationQuiz quiz = new PreparationQuiz();
+			quiz.setRelationId(question.getId());
+			quiz.setPreparationId(preparation.getId());
+			quiz.setType(type);
+			quiz.setCreator(Session.get(Session.KEY_LOGIN_ID));
+			quizs.add(quiz);
+		}
+		try {
+			SpringUtil.getBean(PreparationQuizAction.class).addQuizs(quizs);
+			loadQuizs();
 			AlertUtil.showAlert(AlertType.INFORMATION, MsgUtil.getMessage("data.add.success"));
 		} catch (Exception e) {
 			e.printStackTrace();

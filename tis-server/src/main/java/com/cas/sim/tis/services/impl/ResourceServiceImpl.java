@@ -9,7 +9,6 @@ import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 
-import com.alibaba.druid.util.StringUtils;
 import com.cas.sim.tis.consts.ResourceType;
 import com.cas.sim.tis.entity.BrowseHistory;
 import com.cas.sim.tis.entity.Collection;
@@ -81,6 +80,34 @@ public class ResourceServiceImpl extends AbstractService<Resource> implements Re
 	}
 
 	@Override
+	public List<Resource> findResourcesByCreator(List<Integer> resourceTypes, String keyword, Integer creator) {
+//		获取当前登陆者身份信息
+		Condition condition = new Condition(Resource.class);
+		// 筛选创建人
+//		条件1、查找用户指定的几种资源类型
+		if (resourceTypes.size() == 0) {
+			return new ArrayList<Resource>();
+		} else {
+			Criteria criteria = condition.createCriteria();
+			criteria.andIn("type", resourceTypes);
+		}
+//		条件2、关键字搜索
+		if (keyword != null && !"".equals(keyword)) {
+			Criteria criteria = condition.createCriteria();
+			List<String> words = StringUtil.split(keyword, ' ');
+			for (String word : words) {
+				criteria.orLike("keyword", "%" + word + "%");
+			}
+			condition.and(criteria);
+		}
+		Criteria criteria = condition.createCriteria();
+		criteria.andEqualTo("creator", creator);
+		condition.and(criteria);
+		List<Resource> result = findByCondition(condition);
+		return result;
+	}
+
+	@Override
 	public PageInfo<Resource> findResourcesByBrowseHistory(int pagination, int pageSize, List<Integer> resourceTypes, String keyword, String orderByClause, Integer creator) {
 		ResourceMapper resourceMapper = (ResourceMapper) mapper;
 		// 开始分页查询
@@ -106,23 +133,6 @@ public class ResourceServiceImpl extends AbstractService<Resource> implements Re
 //		result.size()：是当前页中的数据量 <= pageSize
 		LOG.info("成功查找到{}条资源,当前页码{},每页{}条资源,共{}页", result.size(), pagination, pageSize, page.getPages());
 		return page;
-	}
-
-	@Override
-	public List<Resource> findPreparationResources(Integer creator, String keyword) {
-		Condition condition = new Condition(Resource.class);
-		Criteria criteria = condition.createCriteria();
-		criteria.andEqualTo("del", 0);
-		if (!StringUtils.isEmpty(keyword)) {
-			criteria.andLike("keyword", "%" + keyword + "%");
-		}
-		Criteria criteria2 = condition.createCriteria();
-		criteria2.andEqualTo("creator", 1);
-		if (creator != 1) {
-			criteria2.orEqualTo("creator", creator);
-		}
-		condition.and(criteria2);
-		return findByCondition(condition);
 	}
 
 	@Override

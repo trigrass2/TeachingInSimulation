@@ -57,7 +57,6 @@ public class ResourceSelectedDialog extends DialogPane<Integer> {
 		mine.setStyle("-fx-font-size:14px");
 		mine.setUserData(Session.get(Session.KEY_LOGIN_ID));
 		group.getToggles().addAll(sys, mine);
-		group.selectToggle(sys);
 		group.selectedToggleProperty().addListener((b, o, n) -> {
 			if (n == null) {
 				group.selectToggle(o);
@@ -73,8 +72,8 @@ public class ResourceSelectedDialog extends DialogPane<Integer> {
 			}
 		});
 		HBox searchBox = new HBox();
-		searchBox.setAlignment(Pos.CENTER_RIGHT);
 		searchBox.getChildren().add(search);
+		searchBox.setAlignment(Pos.CENTER_RIGHT);
 		HBox.setHgrow(searchBox, Priority.ALWAYS);
 		
 		HBox toggleBox = new HBox(10);
@@ -162,6 +161,8 @@ public class ResourceSelectedDialog extends DialogPane<Integer> {
 
 		box.getChildren().addAll(toggleBox, filterBox, scroll, error, ok);
 		getChildren().add(box);
+		
+		group.selectToggle(sys);
 	}
 
 	private void reload() {

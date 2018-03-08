@@ -1,5 +1,6 @@
 package com.cas.sim.tis.services.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -46,7 +47,12 @@ public class QuestionServiceImpl extends AbstractService<Question> implements Qu
 		Criteria criteria = condition.createCriteria();
 		criteria.andEqualTo("relateId", rid);
 		condition.orderBy("type").asc();
-		return findByCondition(condition);
+		List<Question> result = findByCondition(condition);
+		if (result == null) {
+			return new ArrayList<>();
+		} else {
+			return result;
+		}
 	}
 
 	@Override

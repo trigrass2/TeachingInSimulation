@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.remoting.rmi.RmiProxyFactoryBean;
 import org.springframework.stereotype.Component;
 
+import com.cas.sim.tis.consts.Session;
 import com.cas.sim.tis.entity.PreparationQuiz;
 import com.cas.sim.tis.services.PreparationQuizService;
 import com.cas.sim.tis.vo.PreparationInfo;
@@ -31,7 +32,13 @@ public class PreparationQuizAction extends BaseAction<PreparationQuizService> {
 
 	public void addQuiz(PreparationQuiz quiz) {
 		PreparationQuizService service = getService();
+		quiz.setCreator(Session.get(Session.KEY_LOGIN_ID));
 		service.save(quiz);
+	}
+
+	public void addQuizs(List<PreparationQuiz> quizs) {
+		PreparationQuizService service = getService();
+		service.save(quizs);
 	}
 
 	@Override

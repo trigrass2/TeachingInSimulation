@@ -29,6 +29,10 @@ public class QuestionAction extends BaseAction<QuestionService> {
 		return getService().findQuestionsByLibrary(pageIndex, pageSize, rid);
 	}
 
+	public List<Question> findQuestionsByLibrary(Integer rid) {
+		return getService().findQuestionsByLibrary(rid);
+	}
+
 	/**
 	 * 根据试题库查询试题库下的所有试题
 	 * @param rid
