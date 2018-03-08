@@ -22,7 +22,6 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.control.ScrollPane.ScrollBarPolicy;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
-import javafx.scene.input.KeyCode;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
@@ -56,10 +55,8 @@ public class LibrarySelectDialog extends DialogPane<Integer> {
 			}
 		});
 		search = new SearchBox();
-		search.setOnKeyPressed(event -> {
-			if (event.getCode() == KeyCode.ENTER) {
-				reload();
-			}
+		search.setOnSearch(event -> {
+			reload();
 		});
 		HBox searchBox = new HBox();
 		searchBox.getChildren().add(search);
@@ -109,7 +106,7 @@ public class LibrarySelectDialog extends DialogPane<Integer> {
 
 		box.getChildren().addAll(toggleBox, scroll, error, ok);
 		getChildren().add(box);
-		
+
 		group.selectToggle(group.getToggles().get(0));
 
 	}

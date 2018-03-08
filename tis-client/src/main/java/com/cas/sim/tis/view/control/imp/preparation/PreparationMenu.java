@@ -36,10 +36,15 @@ public class PreparationMenu extends VBox implements ILeftContent {
 	private Accordion projects;
 
 	private ToggleGroup group = new ToggleGroup();
-	
+
 	public PreparationMenu(Catalog subject) {
 		loadFXML();
 		initialize(subject);
+		this.group.selectedToggleProperty().addListener((b, o, n) -> {
+			if (n == null) {
+				this.group.selectToggle(o);
+			}
+		});
 	}
 
 	/**
@@ -88,12 +93,11 @@ public class PreparationMenu extends VBox implements ILeftContent {
 			ToggleButton taskBtn = new ToggleButton(task.getName());
 			taskBtn.setGraphic(createGraphicTitle(task));
 			taskBtn.getStyleClass().add("titled-content-btn");
-			taskBtn.getStyleClass().remove("toggle-button");
 			taskBtn.setOnAction(e -> {
 				// TODO 加载备课详情
 				PageController controller = SpringUtil.getBean(PageController.class);
 				controller.loadContent(new PreparationDetail(task), PageLevel.Level1);
-				
+
 			});
 			box.getChildren().add(taskBtn);
 			group.getToggles().add(taskBtn);
@@ -138,7 +142,7 @@ public class PreparationMenu extends VBox implements ILeftContent {
 			initialize(subject);
 		});
 	}
-	
+
 	@Override
 	public Region getLeftContent() {
 		return this;

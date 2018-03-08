@@ -60,7 +60,6 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
-import javafx.scene.input.KeyCode;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
@@ -225,10 +224,8 @@ public class ResourceList extends HBox implements IContent {
 			List<String> words = StringUtil.split(text);
 			show.setText(StringUtil.combine(words, ' '));
 		});
-		search.setOnKeyPressed(event -> {
-			if (event.getCode() == KeyCode.ENTER) {
-				pagination.reload();
-			}
+		search.setOnSearch(text -> {
+			pagination.reload();
 		});
 		pagination.setContent(pageIndex -> {
 			reload(pageIndex);

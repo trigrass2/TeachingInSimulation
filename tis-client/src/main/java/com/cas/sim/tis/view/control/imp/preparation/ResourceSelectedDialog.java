@@ -26,10 +26,9 @@ import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.ScrollPane.ScrollBarPolicy;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
-import javafx.scene.control.ScrollPane.ScrollBarPolicy;
-import javafx.scene.input.KeyCode;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
@@ -64,18 +63,16 @@ public class ResourceSelectedDialog extends DialogPane<Integer> {
 				reload();
 			}
 		});
-		
+
 		search = new SearchBox();
-		search.setOnKeyPressed(event -> {
-			if (event.getCode() == KeyCode.ENTER) {
-				reload();
-			}
+		search.setOnSearch(text -> {
+			reload();
 		});
 		HBox searchBox = new HBox();
 		searchBox.getChildren().add(search);
 		searchBox.setAlignment(Pos.CENTER_RIGHT);
 		HBox.setHgrow(searchBox, Priority.ALWAYS);
-		
+
 		HBox toggleBox = new HBox(10);
 		toggleBox.getChildren().addAll(sys, mine, searchBox);
 
@@ -90,11 +87,12 @@ public class ResourceSelectedDialog extends DialogPane<Integer> {
 			checkBox.setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
 			checkBox.getStyleClass().add("img-check-box");
 			checkBox.setSelected(true);
+			checkBox.setUserData(type);
 			checkBox.setOnAction(e -> {
 				if (!checkBox.isSelected()) {
-					types.remove(type);
-				} else if (!types.contains(type)) {
-					types.add(type);
+					types.remove(checkBox.getUserData());
+				} else if (!types.contains(checkBox.getUserData())) {
+					types.add((Integer) checkBox.getUserData());
 				}
 				reload();
 			});
@@ -161,7 +159,7 @@ public class ResourceSelectedDialog extends DialogPane<Integer> {
 
 		box.getChildren().addAll(toggleBox, filterBox, scroll, error, ok);
 		getChildren().add(box);
-		
+
 		group.selectToggle(sys);
 	}
 
