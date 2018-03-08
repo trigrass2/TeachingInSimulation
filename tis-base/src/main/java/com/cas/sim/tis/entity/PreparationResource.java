@@ -37,6 +37,8 @@ public class PreparationResource implements Serializable {
 //	修改时间
 	@DateTimeFormat(pattern = "yyyy-MM-dd hh:mm:ss")
 	private Date updateDate;
+	
+	private Boolean del = false;
 
 	public Integer getId() {
 		return id;
@@ -92,5 +94,13 @@ public class PreparationResource implements Serializable {
 
 	public Date getUpdateDate() {
 		return updateDate;
+	}
+
+	public Boolean getDel() {
+		return del;
+	}
+
+	public void setDel(Boolean del) {
+		this.del = del;
 	}
 }

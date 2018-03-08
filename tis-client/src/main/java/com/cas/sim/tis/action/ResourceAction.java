@@ -55,8 +55,8 @@ public class ResourceAction extends BaseAction<ResourceService> {
 		return getService().findById(id);
 	}
 
-	public List<Resource> findPreparationResources(String keyword) {
-		return getService().findPreparationResources(Session.get(Session.KEY_LOGIN_ID), keyword);
+	public List<Resource> findResourcesByCreator(List<Integer> types, String keyword, Integer creator) {
+		return getService().findResourcesByCreator(types, keyword, creator);
 	}
 
 	public void browsed(Integer id) {

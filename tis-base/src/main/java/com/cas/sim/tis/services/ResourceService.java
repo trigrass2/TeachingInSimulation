@@ -11,11 +11,11 @@ public interface ResourceService extends BaseService<Resource> {
 
 	PageInfo<Resource> findResourcesByCreator(int pagination, int pageSize, List<Integer> resourceTypes, String keyword, String orderByClause, Integer creator);
 
+	List<Resource> findResourcesByCreator(List<Integer> resourceTypes, String keyword, Integer creator);
+
 	PageInfo<Resource> findResourcesByBrowseHistory(int pagination, int pageSize, List<Integer> resourceTypes, String keyword, String orderByClause, Integer creater);
 
 	PageInfo<Resource> findResourcesByCollection(int pagination, int pageSize, List<Integer> resourceTypes, String keyword, String orderByClause, Integer creater);
-
-	List<Resource> findPreparationResources(Integer creator, String keyword);
 
 	int countResourceByType(int type, String keyword, Integer creator);
 

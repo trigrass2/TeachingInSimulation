@@ -30,7 +30,11 @@ public class PreparationResourceAction extends BaseAction<PreparationResourceSer
 	}
 
 	public void detele(Integer rid) {
-
+		PreparationResourceService service = getService();
+		PreparationResource resource = service.findById(rid);
+		resource.setDel(true);
+		resource.setUpdater(Session.get(Session.KEY_LOGIN_ID));
+		service.update(resource);
 	}
 
 	public void addResource(PreparationResource resource) {
