@@ -396,7 +396,7 @@ public class PreparationDetail extends HBox implements IContent {
 
 		Dialog<Integer> dialog = new Dialog<>();
 		dialog.setDialogPane(new BrokenCaseSelectDialog(cases));
-		dialog.setTitle(MsgUtil.getMessage("preparation.typical.case"));
+		dialog.setTitle(MsgUtil.getMessage("preparation.broken.case"));
 		dialog.setPrefSize(640, 500);
 		dialog.showAndWait().ifPresent(id -> {
 			if (id == null) {
@@ -409,7 +409,7 @@ public class PreparationDetail extends HBox implements IContent {
 	@FXML
 	private void free() {
 		if (SpringUtil.getBean(PreparationQuizAction.class).checkFreeQuiz(preparation.getId())) {
-			AlertUtil.showAlert(AlertType.WARNING, MsgUtil.getMessage("alert.warning.exsit", MsgUtil.getMessage("reparation.free.case")));
+			AlertUtil.showAlert(AlertType.WARNING, MsgUtil.getMessage("alert.warning.exsit", MsgUtil.getMessage("preparation.free.case")));
 			return;
 		}
 		addQuiz(null, PreparationQuizType.FREE.getType());

@@ -38,6 +38,8 @@ public class PreparationQuiz implements Serializable {
 	@DateTimeFormat(pattern = "yyyy-MM-dd hh:mm:ss")
 	private Date updateDate;
 
+	private Boolean del = false;
+	
 	public Integer getId() {
 		return id;
 	}
@@ -92,5 +94,13 @@ public class PreparationQuiz implements Serializable {
 
 	public Date getUpdateDate() {
 		return updateDate;
+	}
+
+	public Boolean getDel() {
+		return del;
+	}
+
+	public void setDel(Boolean del) {
+		this.del = del;
 	}
 }
