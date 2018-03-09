@@ -55,7 +55,7 @@
 										<String fx:value="font18" />
 									</styleClass>
 								</Label>
-								<Button mnemonicParsing="false" styleClass="img-btn">
+								<Button mnemonicParsing="false" styleClass="img-btn" onAction="#setting">
 									<graphic>
 										<ImageView fitHeight="75.0" fitWidth="75.0" pickOnBounds="true" preserveRatio="true">
 											<image>

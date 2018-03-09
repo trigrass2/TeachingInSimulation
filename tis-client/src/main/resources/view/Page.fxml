@@ -13,7 +13,7 @@
 <?import com.cas.sim.tis.view.control.imp.Decoration?>
 <?import javafx.scene.control.ProgressIndicator?>
 
-<VBox prefHeight="768.0" prefWidth="1366.0" style="-fx-background-image: url(/static/images/basic/bg.png);" stylesheets="@../static/css/basic.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.cas.sim.tis.view.controller.PageController">
+<VBox prefHeight="768.0" prefWidth="1366.0" style="-fx-background-image: url(/static/images/basic/bg.png);-fx-background-size:stretch;" stylesheets="@../static/css/basic.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.cas.sim.tis.view.controller.PageController">
 	<children>
 		<HBox fx:id="handle" alignment="CENTER_LEFT" prefHeight="75.0" minHeight="75.0" styleClass="top-cover">
 			<children>
@@ -61,16 +61,16 @@
 								</padding>
 								<children>
 									<StackPane fx:id="leftContent" VBox.vgrow="ALWAYS" alignment="TOP_CENTER" />
-									<Button mnemonicParsing="false" styleClass="left-menu" text="系统设置" textFill="WHITE">
-										<graphic>
-											<!-- <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true"> -->
-											<!-- <image> -->
-											<!-- <Image url="@../static/images/basic/setting.png" /> -->
-											<!-- </image> -->
-											<!-- </ImageView> -->
-											<SVGGlyph name="iconfont.svg.setting" size="25" fill="WHITE" />
-										</graphic>
-									</Button>
+<!-- 									<Button mnemonicParsing="false" styleClass="left-menu" text="系统设置" textFill="WHITE" onAction="#setting"> -->
+<!-- 										<graphic> -->
+<!-- 											<ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true"> -->
+<!-- 											<image> -->
+<!-- 											<Image url="@../static/images/basic/setting.png" /> -->
+<!-- 											</image> -->
+<!-- 											</ImageView> -->
+<!-- 											<SVGGlyph name="iconfont.svg.setting" size="25" fill="WHITE" /> -->
+<!-- 										</graphic> -->
+<!-- 									</Button> -->
 								</children>
 							</VBox>
 							<Button mnemonicParsing="false" onAction="#toggle" styleClass="left-menu-btn">

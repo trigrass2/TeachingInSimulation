@@ -24,6 +24,11 @@ public class Title extends HBox {
 			e.printStackTrace();
 		}
 	}
+	
+	public Title(String title) {
+		this();
+		setTitle(title);
+	}
 
 	public String getTitle() {
 		return title.getText();

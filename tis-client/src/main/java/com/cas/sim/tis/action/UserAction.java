@@ -45,6 +45,7 @@ public class UserAction extends BaseAction<UserService> {
 	}
 
 	public void modifyUser(User user) {
+		user.setUpdater(Session.get(Session.KEY_LOGIN_ID));
 		getService().update(user);
 	}
 
@@ -52,9 +53,8 @@ public class UserAction extends BaseAction<UserService> {
 		UserService service = getService();
 		User user = service.findById(id);
 		if (user != null) {
-			user.setUpdater(Session.get(Session.KEY_LOGIN_ID));
 			user.setDel(true);
-			service.update(user);
+			modifyUser(user);
 		}
 	}
 

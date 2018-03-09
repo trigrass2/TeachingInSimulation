@@ -1,9 +1,12 @@
 package com.cas.sim.tis.app;
 
+import java.util.prefs.Preferences;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.cas.sim.tis.app.event.MouseEventState;
+import com.cas.sim.tis.consts.SettingConsts;
 import com.jme3.app.DebugKeysAppState;
 import com.jme3.asset.plugins.FileLocator;
 import com.jme3.system.AppSettings;
@@ -14,7 +17,7 @@ public class JmeApplication extends JmeToJFXApplication {
 	public static final Logger LOG = LoggerFactory.getLogger(JmeApplication.class);
 
 	public JmeApplication() {
-		AppSettings settings = new AppSettings(true);
+		AppSettings settings = getAppSetting();
         settings.setGammaCorrection(true);
         settings.setResizable(true);
 
@@ -74,4 +77,15 @@ public class JmeApplication extends JmeToJFXApplication {
 		super.destroy();
 	}
 
+	public AppSettings getAppSetting() {
+		Preferences prefs = Preferences.userRoot().node(SettingConsts.REG_APP_PATH);
+		AppSettings settings = new AppSettings(true);
+//		分辨率
+		int width = prefs.getInt(SettingConsts.RESOLUTION_WIDTH, 1366);
+		int height = prefs.getInt(SettingConsts.RESOLUTION_HEIGHT, 768);
+		
+		settings.setResolution(width, height);
+		settings.setFullscreen(prefs.getBoolean(SettingConsts.SCREEN_MODE, false));
+		return settings;
+	}
 }

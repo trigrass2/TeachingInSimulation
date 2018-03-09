@@ -6,9 +6,11 @@ import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
+import java.util.prefs.Preferences;
 
 import org.slf4j.bridge.SLF4JBridgeHandler;
 
+import com.cas.sim.tis.consts.SettingConsts;
 import com.cas.sim.tis.svg.SVGHelper;
 import com.cas.sim.tis.view.controller.LoginController;
 import com.cas.sim.tis.view.controller.NetworkController;
@@ -24,7 +26,7 @@ public class LoginApp extends javafx.application.Application {
 	private double yOffset;
 
 	public static void main(String[] args) {
-		Locale.setDefault(Locale.CHINA);
+		loadConfiguration();
 		
 		initSVG();
 
@@ -84,6 +86,15 @@ public class LoginApp extends javafx.application.Application {
 		SLF4JBridgeHandler.removeHandlersForRootLogger();
 		Logger.getLogger("").setLevel(Level.FINEST);
 		SLF4JBridgeHandler.install();
+	}
+	
+	private static void loadConfiguration() {
+		Preferences prefs = Preferences.userRoot().node(SettingConsts.REG_APP_PATH);
+//		设置语言下拉框的默认值
+		String userLang = prefs.get(SettingConsts.LANGUAGE, Locale.CHINA.toString());
+		String[] arr = userLang.split("_");
+		Locale userLocale = new Locale(arr[0], arr[1]);
+		Locale.setDefault(userLocale);
 	}
 
 }

@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import com.cas.sim.tis.view.control.imp.Title?>
+<?import com.cas.sim.tis.view.control.imp.dialog.DialogPane?>
+
+
+<fx:root maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" alignment="TOP_CENTER" type="DialogPane" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
+	<children>
+		<VBox spacing="25.0" alignment="TOP_CENTER">
+			<Title title="%setting.title.password" />
+			<VBox alignment="TOP_CENTER" spacing="25.0">
+				<children>
+					<GridPane hgap="25.0" vgap="25.0" alignment="CENTER">
+						<columnConstraints>
+							<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" maxWidth="100" />
+							<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="200.0" maxWidth="200" />
+						</columnConstraints>
+						<rowConstraints>
+							<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+							<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+							<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+						</rowConstraints>
+						<children>
+							<Label text="%setting.password.old" />
+							<Label text="%setting.password.new" GridPane.rowIndex="1" />
+							<Label text="%setting.password.again" GridPane.rowIndex="2" />
+							<PasswordField fx:id="oldPwd" prefHeight="40.0" GridPane.columnIndex="1" />
+							<PasswordField fx:id="newPwd" prefHeight="40.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+							<PasswordField fx:id="pwdAgain" prefHeight="40.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+						</children>
+					</GridPane>
+					<Button mnemonicParsing="false" onAction="#modifyPwd" prefHeight="40.0" prefWidth="325.0" text="%button.modify" styleClass="blue-btn" />
+				</children>
+			</VBox>
+			<Title title="%setting.title.system" />
+			<VBox alignment="TOP_CENTER" spacing="25.0">
+				<children>
+					<GridPane hgap="25.0" vgap="25.0" alignment="CENTER">
+						<columnConstraints>
+							<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" maxWidth="100" />
+							<ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="200.0" maxWidth="200" />
+						</columnConstraints>
+						<rowConstraints>
+							<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+							<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+							<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+						</rowConstraints>
+						<children>
+							<Label text="%setting.language" />
+							<Label text="%setting.resolution" GridPane.rowIndex="1" />
+							<Label text="%setting.screen.mode" GridPane.rowIndex="2" />
+							<ComboBox fx:id="language" prefHeight="40.0" prefWidth="200.0" GridPane.columnIndex="1" />
+							<ComboBox fx:id="resolution" prefHeight="40.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+							<HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="30.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
+								<children>
+									<RadioButton fx:id="win" mnemonicParsing="false" selected="true" text="%setting.screen.win">
+										<toggleGroup>
+											<ToggleGroup fx:id="screenMode" />
+										</toggleGroup>
+									</RadioButton>
+									<RadioButton fx:id="full" mnemonicParsing="false" text="%setting.screen.full" toggleGroup="$screenMode" />
+								</children>
+							</HBox>
+						</children>
+					</GridPane>
+					<Button mnemonicParsing="false" prefHeight="40.0" prefWidth="325.0" text="%button.save" onAction="#saveSetting" styleClass="blue-btn" />
+				</children>
+			</VBox>
+			<padding>
+				<Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+			</padding>
+		</VBox>
+	</children>
+</fx:root>

@@ -13,10 +13,12 @@ import com.cas.sim.tis.util.MsgUtil;
 import com.cas.sim.tis.util.SpringUtil;
 import com.cas.sim.tis.view.PageView;
 import com.cas.sim.tis.view.control.imp.HomeMenu;
+import com.cas.sim.tis.view.control.imp.dialog.Dialog;
 import com.cas.sim.tis.view.control.imp.jme.Recongnize3D;
 import com.cas.sim.tis.view.control.imp.jme.RecongnizeMenu;
 import com.cas.sim.tis.view.control.imp.jme.TypicalCase3D;
 import com.cas.sim.tis.view.control.imp.jme.TypicalCaseMenu;
+import com.cas.sim.tis.view.control.imp.setting.SettingDialog;
 import com.cas.sim.tis.view.controller.PageController.PageLevel;
 
 import de.felixroske.jfxsupport.FXMLController;
@@ -128,5 +130,12 @@ public class HomeController implements Initializable {
 	 */
 	public void repair() {
 	}
-
+	
+	@FXML
+	private void setting() {
+		Dialog<Boolean> dialog = new Dialog<>();
+		dialog.setDialogPane(new SettingDialog());
+		dialog.setPrefSize(400, 650);
+		dialog.show();
+	}
 }
