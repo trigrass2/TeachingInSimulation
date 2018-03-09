@@ -14,6 +14,7 @@ import com.cas.sim.tis.services.BrowseHistoryService;
 import com.cas.sim.tis.services.CatalogService;
 import com.cas.sim.tis.services.ClassService;
 import com.cas.sim.tis.services.CollectionService;
+import com.cas.sim.tis.services.DrawService;
 import com.cas.sim.tis.services.ElecCompService;
 import com.cas.sim.tis.services.LibraryAnswerService;
 import com.cas.sim.tis.services.LibraryPublishService;
@@ -130,7 +131,7 @@ public class RMIConfig {
 		bean.setServiceInterface(LibraryRecordService.class);
 		return bean;
 	}
-	
+
 	@Bean
 	@Qualifier("libraryAnswerServiceFactory")
 	public RmiProxyFactoryBean buildLibraryAnswerServiceFactory() {
@@ -150,7 +151,7 @@ public class RMIConfig {
 		bean.setServiceInterface(TypicalCaseService.class);
 		return bean;
 	}
-	
+
 	@Bean
 	@Qualifier("brokenCaseServiceFactory")
 	public RmiProxyFactoryBean buildBrokenCaseServiceFactory() {
@@ -158,6 +159,16 @@ public class RMIConfig {
 		bean.setServiceUrl("rmi://" + host + ":" + port + "/brokenCaseService");
 		LOG.info("远程访问路径：{}", bean.getServiceUrl());
 		bean.setServiceInterface(BrokenCaseService.class);
+		return bean;
+	}
+
+	@Bean
+	@Qualifier("drawServiceFactory")
+	public RmiProxyFactoryBean buildDrawServiceFactory() {
+		RmiProxyFactoryBean bean = new RmiProxyFactoryBean();
+		bean.setServiceUrl("rmi://" + host + ":" + port + "/drawService");
+		LOG.info("远程访问路径：{}", bean.getServiceUrl());
+		bean.setServiceInterface(DrawService.class);
 		return bean;
 	}
 
@@ -180,6 +191,7 @@ public class RMIConfig {
 		bean.setServiceInterface(CatalogService.class);
 		return bean;
 	}
+
 	@Bean
 	@Qualifier("preparationServiceFactory")
 	public RmiProxyFactoryBean buildPreparationServiceFactory() {
@@ -189,6 +201,7 @@ public class RMIConfig {
 		bean.setServiceInterface(PreparationService.class);
 		return bean;
 	}
+
 	@Bean
 	@Qualifier("preparationResourceServiceFactory")
 	public RmiProxyFactoryBean buildPreparationResourceServiceFactory() {
@@ -198,6 +211,7 @@ public class RMIConfig {
 		bean.setServiceInterface(PreparationResourceService.class);
 		return bean;
 	}
+
 	@Bean
 	@Qualifier("preparationQuizServiceFactory")
 	public RmiProxyFactoryBean buildPreparationQuizServiceFactory() {

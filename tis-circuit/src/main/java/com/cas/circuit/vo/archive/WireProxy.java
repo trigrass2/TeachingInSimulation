@@ -26,7 +26,10 @@ public class WireProxy {
 	@XmlAttribute
 	private String ternimalId2;
 
-	private List<Vector3f[]> pointList = new ArrayList<>();
+	private List<Vector3f> pointList = new ArrayList<>();
+
+	@XmlAttribute
+	private String number;
 
 	@XmlAttribute
 	@XmlJavaTypeAdapter(value = ColorRGBAAdapter.class)
@@ -78,12 +81,20 @@ public class WireProxy {
 		return width;
 	}
 
-	public List<Vector3f[]> getPointList() {
+	public List<Vector3f> getPointList() {
 		return pointList;
 	}
 
 	public void setWidth(float width) {
 		this.width = width;
+	}
+
+	public String getNumber() {
+		return number;
+	}
+
+	public void setNumber(String number) {
+		this.number = number;
 	}
 
 }

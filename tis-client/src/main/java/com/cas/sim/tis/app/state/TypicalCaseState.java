@@ -1,10 +1,6 @@
 package com.cas.sim.tis.app.state;
 
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
 
@@ -12,8 +8,6 @@ import org.jetbrains.annotations.Nullable;
 
 import com.cas.circuit.vo.Archive;
 import com.cas.circuit.vo.ElecCompDef;
-import com.cas.circuit.vo.Terminal;
-import com.cas.circuit.vo.Wire;
 import com.cas.sim.tis.action.ArchiveAction;
 import com.cas.sim.tis.action.ElecCompAction;
 import com.cas.sim.tis.anno.JmeThread;
@@ -34,15 +28,11 @@ import com.jme3.light.PointLight;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
 import com.jme3.math.Vector3f;
-import com.jme3.scene.Geometry;
-import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
-import com.jme3.scene.shape.Line;
 import com.jme3.util.mikktspace.MikktspaceTangentGenerator;
 
 import javafx.application.Platform;
-import jme3tools.optimize.GeometryBatchFactory;
 
 public class TypicalCaseState extends BaseState {
 
@@ -56,11 +46,11 @@ public class TypicalCaseState extends BaseState {
 	private Spatial desktop;
 	private ElecComp elecComp;
 
-	private Map<String, ElecCompDef> taggedCompMap = new HashMap<>();
 	private PointLight pointLight;
 
 	private MyCameraState cameraState;
 	private boolean moved_before_putdown;
+
 	private CircuitState circuitState;
 
 	@Override
@@ -76,8 +66,8 @@ public class TypicalCaseState extends BaseState {
 		cameraState = new MyCameraState();
 		stateManager.attach(cameraState);
 
-		circuitState = new CircuitState(root);
-		stateManager.attach(circuitState);
+//		circuitState = new CircuitState(root);
+//		stateManager.attach(circuitState);
 
 //		三、事件
 		bindEvents();
@@ -151,45 +141,56 @@ public class TypicalCaseState extends BaseState {
 	private void arrangementScene() {
 //		1、加载桌子
 		desktop = loadAsset(new ModelKey("Model/Desktop/desktop.j3o"));
+		desktop.setName("Circuit-Desktop");
 		MikktspaceTangentGenerator.generate(desktop);
 		root.attachChild(desktop);
 	}
 
 	public void setupCase(TypicalCase typicalCase) {
-//		解析出存档对象
-		Archive archive = SpringUtil.getBean(ArchiveAction.class).parse(typicalCase.getArchivePath());
+//		1、清理垃圾
+		if (circuitState != null) {
+			stateManager.detach(circuitState);
+		}
+//		创建新的circuitState
+		circuitState = new CircuitState(typicalCase, root);
+		stateManager.attach(circuitState);
 
+//		尝试解析出存档对象
+		Archive archive = SpringUtil.getBean(ArchiveAction.class).parse(typicalCase.getArchivePath());
+		if (archive == null) {
+			return;
+		}
 		ElecCompAction action = SpringUtil.getBean(ElecCompAction.class);
 
 //		一、开始加载元器件
 		archive.getCompList().forEach(c -> {
 //			1、根据元器件型号（model字段），查找数据库中的元器件实体对象
 			ElecComp elecComp = action.getElecComp(c.getModel());
+
 //			2、加载模型，同时设置好坐标与旋转
 			Future<Node> task = app.enqueue((Callable<Node>) () -> {
-				Spatial elecCompMdl = loadAsset(new ModelKey(elecComp.getMdlPath()));
-//				设置transform信息：location、rotation
-				elecCompMdl.setLocalTranslation(c.getLocation());
-				elecCompMdl.setLocalRotation(c.getRotation());
-				return (Node) elecCompMdl;
+				return (Node) loadAsset(new ModelKey(elecComp.getMdlPath()));
 			});
 			Node load = null;
 			try {
 				load = task.get();
-				root.attachChild(load);
 			} catch (Exception e) {
-				LOG.error("无法加载元器件模型{}", elecComp.getMdlPath());
-				LOG.error("错误详情", e);
+				LOG.error("无法加载元器件模型{}:{}", elecComp.getMdlPath(), e);
 				throw new RuntimeException(e);
 			}
-//			3、初始化元器件逻辑对象
-			HTTPUtils httpUtil = SpringUtil.getBean(HTTPUtils.class);
-			URL cfgPath = httpUtil.getUrl(elecComp.getCfgPath());
-			ElecCompDef def = JaxbUtil.converyToJavaBean(cfgPath, ElecCompDef.class);
-//			构建元器件逻辑类
-//			def.build(load, c.getTagName());
+//			设置transform信息：location、rotation
+			load.setLocalTranslation(c.getLocation());
+			load.setLocalRotation(c.getRotation());
+			load.scale(25);
+			root.attachChild(load);
 
-			taggedCompMap.put(c.getTagName(), def);
+//			3、初始化元器件逻辑对象
+			URL cfgUrl = SpringUtil.getBean(HTTPUtils.class).getUrl(elecComp.getCfgPath());
+			ElecCompDef def = JaxbUtil.converyToJavaBean(cfgUrl, ElecCompDef.class);
+			def.bindModel(load);
+
+//			4、将读取到的元器件放入电路板中。
+			circuitState.bindElecCompEvent(c.getTagName(), def);
 		});
 //		FIXME
 ////		给元器件模型加上监听
@@ -199,39 +200,8 @@ public class TypicalCaseState extends BaseState {
 //			comp.getTerminalList().forEach(t -> addListener(t.getSpatial(), new TypicalCaseTermianlListener(t)));
 //		});
 
-//		加载导线
-		archive.getWireList().forEach(w -> {
-			ElecCompDef taggedComp1 = taggedCompMap.get(w.getTagName1());
-			Terminal term1 = taggedComp1.getTerminal(w.getTernimalId1());
-
-			ElecCompDef taggedComp2 = taggedCompMap.get(w.getTagName2());
-			Terminal term2 = taggedComp2.getTerminal(w.getTernimalId2());
-
-			Wire wire = new Wire();
-			wire.bind(term1);
-			wire.bind(term2);
-
-			Future<Geometry> task = app.enqueue((Callable<Geometry>) () -> {
-				List<Geometry> geoList = new ArrayList<>();
-				w.getPointList().forEach(a -> {
-//					创建导线的某一段导线。
-					Line line = new Line(a[0], a[1]);
-					geoList.add(new Geometry("", line));
-				});
-				Mesh outMesh = new Mesh();
-				GeometryBatchFactory.mergeGeometries(geoList, outMesh);
-//				创建一根导线
-				Geometry lineGeo = new Geometry("Wire", outMesh);
-//				TODO 给导线上色、调整粗细
-
-				return lineGeo;
-			});
-			try {
-				task.get();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		});
+//		元器件放置完成后，用导线连接。
+//		circuitState.bindWires(archive.getWireList());
 	}
 
 	/**
@@ -271,7 +241,8 @@ public class TypicalCaseState extends BaseState {
 //			2、绑定模型对象
 			elecCompDef.bindModel((Node) holding);
 //			3、添加事件
-			circuitState.bindElecCompEvent(elecCompDef);
+//			FIXME TagName 
+			circuitState.bindElecCompEvent("", elecCompDef);
 		} catch (Exception e) {
 //			删除出错的模型
 			holding.removeFromParent();
@@ -295,6 +266,20 @@ public class TypicalCaseState extends BaseState {
 
 	public Spatial getHolding() {
 		return holding;
+	}
+
+	public void save() {
+		if (circuitState != null) {
+			circuitState.save();
+		}
+	}
+
+	public void createCase(String name) {
+
+	}
+
+	public CircuitState getCircuitState() {
+		return circuitState;
 	}
 
 }

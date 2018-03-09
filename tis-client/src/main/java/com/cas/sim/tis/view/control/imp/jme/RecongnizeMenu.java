@@ -3,6 +3,7 @@ package com.cas.sim.tis.view.control.imp.jme;
 import com.cas.sim.tis.view.control.ILeftContent;
 
 import javafx.scene.layout.Region;
+import javafx.scene.layout.VBox;
 
 public class RecongnizeMenu implements ILeftContent {
 
@@ -14,6 +15,7 @@ public class RecongnizeMenu implements ILeftContent {
 
 	@Override
 	public Region getLeftContent() {
-		return new ElecCompTree(comp -> recongnize3D.setElecComp(comp));
+		VBox vb = new VBox(new ElecCompTree(comp -> recongnize3D.setElecComp(comp)));
+		return vb;
 	}
 }

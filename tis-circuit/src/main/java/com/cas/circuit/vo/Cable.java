@@ -367,20 +367,20 @@ public class Cable {
 		}
 	}
 
-	/**
-	 * 特殊绑定线缆端子
-	 */
-	public void bindTerm(ILinkTarget target, Spatial mdl) {
-		if (target instanceof Terminal) {
-			Terminal terminal = (Terminal) target;
-			if (nowConnectingWire.isBothBinded()) {
-				return;
-			}
-			nowConnectingWire.bind(terminal);
-			nowConnectingWire.getModels().put(mdl, terminal);
-			switchPlugOrTrem();
-		}
-	}
+//	/**
+//	 * 特殊绑定线缆端子
+//	 */
+//	public void bindTerm(ILinkTarget target, Spatial mdl) {
+//		if (target instanceof Terminal) {
+//			Terminal terminal = (Terminal) target;
+//			if (nowConnectingWire.isBothBinded()) {
+//				return;
+//			}
+//			nowConnectingWire.bind(terminal);
+//			nowConnectingWire.getModels().put(mdl, terminal);
+//			switchPlugOrTrem();
+//		}
+//	}
 
 	public void unbind() {
 		plugOut();

@@ -20,9 +20,11 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Label;
+import javafx.scene.effect.DropShadow;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
+import javafx.scene.paint.Color;
 
 public class Recongnize3D implements IContent {
 
@@ -64,6 +66,9 @@ public class Recongnize3D implements IContent {
 		nameLabel = new Label();
 //		TODO 调样式
 		nameLabel.setId("RecognizeNameLabel");
+		nameLabel.setTextFill(Color.WHITE);
+		nameLabel.setEffect(new DropShadow(3, Color.BLACK));
+		
 		pane = new AnchorPane(nameLabel);
 		pane.setPickOnBounds(false);
 		pane.setMouseTransparent(true);
@@ -96,6 +101,7 @@ public class Recongnize3D implements IContent {
 	}
 
 	public void setElecComp(ElecComp eComp) {
+		nameLabel.setText("");
 //		加载元器件模型
 //		找到元器件认知的状态机
 		ElecCompState appState = jmeApp.getStateManager().getState(ElecCompState.class);

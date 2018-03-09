@@ -2,7 +2,6 @@ package com.cas.circuit.xml.adapter;
 
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 
-import com.jme3.math.FastMath;
 import com.jme3.math.Vector3f;
 
 public class Vector3fAdapter extends XmlAdapter<String, Vector3f> {
@@ -26,8 +25,6 @@ public class Vector3fAdapter extends XmlAdapter<String, Vector3f> {
 		if (v == null) {
 			return null;
 		}
-		v.multLocal(FastMath.RAD_TO_DEG);
-
 		return v.x + "," + v.y + "," + v.z;
 	}
 

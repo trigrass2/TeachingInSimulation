@@ -931,3 +931,23 @@
 .menu-item:hover {
     -fx-background-color: #19b0c6;
 }
+ /*******************************************************************************
+ *                                                                             *
+ * 导线选择面板                                                          *
+ *                                                                             *
+ ******************************************************************************/
+.picker-item {
+	-fx-pref-width: 80.0px;
+	-fx-pref-height: 30.0px;
+}
+.picker-item > Circle{
+	
+}
+.picker-item:hover  {
+	-fx-border-color: rgb(48.0,118.0,165.0);
+ 	-fx-border-insets: -5.0px;
+}
+.picker-item-selected{
+	-fx-border-color: rgb(48.0,118.0,165.0);
+	-fx-border-insets: -5.0px;
+}
