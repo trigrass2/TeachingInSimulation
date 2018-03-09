@@ -7,7 +7,8 @@ import java.util.UUID;
 
 import javax.swing.filechooser.FileSystemView;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.cas.sim.tis.action.ResourceAction;
 import com.cas.sim.tis.consts.ResourceConsts;
@@ -34,7 +35,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 
 public class ResourceUploadDialog extends DialogPane<Integer> {
-	private Logger LOG = Logger.getLogger(ResourceUploadDialog.class);
+	private Logger LOG = LoggerFactory.getLogger(ResourceUploadDialog.class);
 
 	private TextField filePath;
 	private Label size;
