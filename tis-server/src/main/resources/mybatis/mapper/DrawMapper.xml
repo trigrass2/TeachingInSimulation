@@ -6,5 +6,7 @@
 		<result column="NAME" jdbcType="VARCHAR" property="name" />
 		<result column="PATHS" jdbcType="VARCHAR" property="paths" />
 		<result column="CREATOR_ID" jdbcType="INTEGER" property="creatorId" />
+		<result column="CREATE_DATE" jdbcType="VARCHAR" property="createDate" />
+		<result column="DEL" jdbcType="INTEGER" property="del" />
 	</resultMap>
 </mapper>

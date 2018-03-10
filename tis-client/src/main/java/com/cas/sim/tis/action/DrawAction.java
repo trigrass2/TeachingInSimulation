@@ -29,10 +29,10 @@ public class DrawAction extends BaseAction<DrawService> {
 	}
 
 	public List<Draw> getDrawBySystem() {
-		return getService().findBySystem();
+		return getService().findByCreatorId(1);
 	}
 
 	public List<Draw> getDrawByMine() {
-		return getService().findByMine(Session.get(Session.KEY_LOGIN_ID));
+		return getService().findByCreatorId(Session.get(Session.KEY_LOGIN_ID));
 	}
 }

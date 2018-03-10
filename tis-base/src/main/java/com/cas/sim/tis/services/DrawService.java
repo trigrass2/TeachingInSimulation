@@ -6,8 +6,6 @@ import com.cas.sim.tis.entity.Draw;
 
 public interface DrawService extends BaseService<Draw> {
 
-	List<Draw> findBySystem();
-
-	List<Draw> findByMine(int id);
+	List<Draw> findByCreatorId(int creatorId);
 
 }

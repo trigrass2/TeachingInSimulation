@@ -1,5 +1,7 @@
 package com.cas.sim.tis.entity;
 
+import java.util.Date;
+
 import javax.persistence.Id;
 
 //图纸
@@ -12,6 +14,10 @@ public class Draw {
 	private String paths;
 
 	private Integer creatorId;
+	
+	private Date createDate;
+	
+	private Boolean del = false;
 
 	public Integer getId() {
 		return id;
@@ -44,5 +50,16 @@ public class Draw {
 	public void setCreatorId(Integer creatorId) {
 		this.creatorId = creatorId;
 	}
+	
+	public Date getCreateDate() {
+		return createDate;
+	}
 
+	public Boolean getDel() {
+		return del;
+	}
+
+	public void setDel(Boolean del) {
+		this.del = del;
+	}
 }
