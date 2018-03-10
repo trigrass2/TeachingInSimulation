@@ -2,30 +2,23 @@ package com.cas.sim.tis.view.control.imp.jme;
 
 import com.alibaba.fastjson.JSONArray;
 import com.cas.sim.tis.action.DrawAction;
-import com.cas.sim.tis.action.LibraryAction;
 import com.cas.sim.tis.action.TypicalCaseAction;
 import com.cas.sim.tis.entity.ElecComp;
 import com.cas.sim.tis.entity.TypicalCase;
 import com.cas.sim.tis.svg.SVGGlyph;
-import com.cas.sim.tis.util.AlertUtil;
 import com.cas.sim.tis.util.MsgUtil;
 import com.cas.sim.tis.util.SpringUtil;
 import com.cas.sim.tis.view.control.ILeftContent;
 import com.cas.sim.tis.view.control.imp.SearchBox;
 import com.cas.sim.tis.view.control.imp.dialog.Dialog;
 import com.cas.sim.tis.view.control.imp.dialog.DialogPane;
-import com.cas.sim.tis.view.control.imp.question.PreviewQuestionPaper;
-import com.cas.sim.tis.view.control.imp.table.BtnCell;
 import com.cas.sim.tis.view.control.imp.table.Column;
 import com.cas.sim.tis.view.control.imp.table.Table;
-import com.cas.sim.tis.view.controller.PageController;
-import com.cas.sim.tis.view.controller.PageController.PageLevel;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
@@ -85,8 +78,7 @@ public class TypicalCaseMenu implements ILeftContent {
 	private void showCaseDialog() {
 		Dialog<ElecComp> dialog = new Dialog<>();
 		DialogPane<ElecComp> dialogPane = new DialogPane<>();
-//		FIXME dialog.title.case-list
-		dialogPane.setTitle("dialog.title.case-list");
+		dialogPane.setTitle(MsgUtil.getMessage("typical.case.title.list"));
 		dialogPane.getChildren().add(createCaseListUI());
 		dialog.setDialogPane(dialogPane);
 		dialog.setPrefSize(300, 400);
@@ -116,8 +108,7 @@ public class TypicalCaseMenu implements ILeftContent {
 		DialogPane<ElecComp> dialogPane = new DialogPane<>();
 		dialogPane.setSpacing(15);
 
-//		FIXME i18n dialog.title.draw-list
-		dialogPane.setTitle("dialog.title.draw-list");
+		dialogPane.setTitle(MsgUtil.getMessage("typical.case.title.drawings"));
 
 		HBox hbox = new HBox(15);
 		hbox.setPadding(new Insets(0, 10, 0, 10));
@@ -126,9 +117,8 @@ public class TypicalCaseMenu implements ILeftContent {
 		HBox.setHgrow(menu, Priority.ALWAYS);
 
 		ToggleGroup tg = new ToggleGroup();
-//		FIXME i18n dialog.title.draw-list
-		ToggleButton sys = new ToggleButton("系统图纸");
-		ToggleButton mine = new ToggleButton("我的图纸");
+		ToggleButton sys = new ToggleButton(MsgUtil.getMessage("typical.case.sys.drawing"));
+		ToggleButton mine = new ToggleButton(MsgUtil.getMessage("typical.case.min.drawing"));
 		tg.getToggles().add(sys);
 		tg.getToggles().add(mine);
 //		系统图库
@@ -148,12 +138,10 @@ public class TypicalCaseMenu implements ILeftContent {
 		dialogPane.getChildren().add(createDrawListUI());
 //		案例名称
 		TextField textField = new TextField();
-//		FIXME i18n
-		textField.setPromptText("请输入案例名称");
+		textField.setPromptText(MsgUtil.getMessage("typical.case.prompt.input.case"));
 		dialogPane.getChildren().add(textField);
 
-//		FIXME i18n
-		dialogPane.getChildren().add(new Button("OK"));
+		dialogPane.getChildren().add(new Button(MsgUtil.getMessage("button.ok")));
 
 		dialog.setDialogPane(dialogPane);
 		dialog.setPrefSize(380, 600);
