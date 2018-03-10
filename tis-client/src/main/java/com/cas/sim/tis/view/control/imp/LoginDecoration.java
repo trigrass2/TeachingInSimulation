@@ -4,12 +4,16 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import com.cas.sim.tis.util.AlertUtil;
+import com.cas.sim.tis.util.MsgUtil;
+
 import javafx.animation.RotateTransition;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Point3D;
 import javafx.scene.Parent;
+import javafx.scene.control.ButtonType;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.stage.Stage;
@@ -75,8 +79,12 @@ public class LoginDecoration extends HBox {
 
 	@FXML
 	private void close() {
-		Platform.exit();
-		System.exit(0);
+		AlertUtil.showConfirm(MsgUtil.getMessage("alert.confirmation.exit"), resp -> {
+			if (resp == ButtonType.YES) {
+				Platform.exit();
+				System.exit(0);
+			}
+		});
 	}
 
 	public void setSettingView(Region settingView) {

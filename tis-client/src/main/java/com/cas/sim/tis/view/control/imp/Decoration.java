@@ -6,6 +6,7 @@ import java.util.ResourceBundle;
 
 import com.cas.sim.tis.Application;
 import com.cas.sim.tis.svg.SVGGlyph;
+import com.cas.sim.tis.util.AlertUtil;
 import com.cas.sim.tis.util.MsgUtil;
 
 import de.felixroske.jfxsupport.GUIState;
@@ -16,6 +17,7 @@ import javafx.geometry.Bounds;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
@@ -100,7 +102,11 @@ public class Decoration extends HBox {
 	 */
 	@FXML
 	private void close() {
-		Platform.exit();
-		System.exit(0);
+		AlertUtil.showConfirm(MsgUtil.getMessage("alert.confirmation.exit"), resp -> {
+			if (resp == ButtonType.YES) {
+				Platform.exit();
+				System.exit(0);
+			}
+		});
 	}
 }
