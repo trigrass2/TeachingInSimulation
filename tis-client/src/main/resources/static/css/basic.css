@@ -315,17 +315,19 @@
 	-fx-font-size:14.0px;
  	-fx-min-height: 40.0px;
 }
-.login-field:fouces{
-	-fx-background-color:derive(#064276,50.0%);
+.login-field:focused{
+	-fx-background-color:#064276,#06427688,#06427644;
+	-fx-background-insets:-0.4, 1, 2;
 	-fx-border-color:transparent;
-	-fx-effect: dropshadow(three-pass-box , #373634, 5.0, 0.0 , 0.0, 0.0);
 }
 .login-btn{
 	-fx-background-color:#0993e3;
+	-fx-background-radius: 0;
 	-fx-text-fill: #ffffff;
 }
 .login-cancel-btn{
 	-fx-background-color:tansparent;
+	-fx-background-radius: 0;
 	-fx-border-color:#ffffff;
 	-fx-text-fill: #ffffff;
 }
