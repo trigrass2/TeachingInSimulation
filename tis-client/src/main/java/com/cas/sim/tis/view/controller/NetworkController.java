@@ -15,6 +15,8 @@ import java.util.ResourceBundle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.cas.sim.tis.view.control.imp.LoginDecoration;
+
 import javafx.animation.RotateTransition;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -22,6 +24,7 @@ import javafx.geometry.Point3D;
 import javafx.scene.Parent;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Region;
+import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 
 /**
@@ -35,14 +38,22 @@ import javafx.util.Duration;
 public class NetworkController implements Initializable {
 	
 	private static final Logger LOG = LoggerFactory.getLogger(NetworkController.class);
-	
 	@FXML
-	private Region pane;
-	
+	private VBox pane;
 	@FXML
-	private TextField ip;
+	private LoginDecoration loginDecoration;
 	@FXML
-	private TextField port;
+	private TextField baseIP;
+	@FXML
+	private TextField basePort;
+	@FXML
+	private TextField ftpIP;
+	@FXML
+	private TextField ftpPort;
+	@FXML
+	private TextField httpdIP;
+	@FXML
+	private TextField httpdPort;
 
 //	@Value("${server.base.address}")
 //	private String address;
@@ -63,17 +74,25 @@ public class NetworkController implements Initializable {
 			e.printStackTrace();
 		}
 		
-		ip.setText(prop.getProperty("server.base.address", "127.0.0.1"));
-		port.setText(prop.getProperty("server.base.port", "9000"));
+		baseIP.setText(prop.getProperty("server.base.address", "127.0.0.1"));
+		basePort.setText(prop.getProperty("server.base.port", "9000"));
+		ftpIP.setText(prop.getProperty("server.ftp.address", "127.0.0.1"));
+		ftpPort.setText(prop.getProperty("server.ftp.port", "21"));
+		httpdIP.setText(prop.getProperty("server.httpd.address", "127.0.0.1"));
+		httpdPort.setText(prop.getProperty("server.httpd.port", "8082"));
 	}
 	
 	@FXML
 	public void ok() throws FileNotFoundException, IOException {
 		// 记录服务器信息
-		prop.setProperty("server.base.address", ip.getText());
-		prop.setProperty("server.base.port", port.getText());
+		prop.setProperty("server.base.address", baseIP.getText());
+		prop.setProperty("server.base.port", basePort.getText());
+		prop.setProperty("server.ftp.address", ftpIP.getText());
+		prop.setProperty("server.ftp.port", ftpPort.getText());
+		prop.setProperty("server.httpd.address", httpdIP.getText());
+		prop.setProperty("server.httpd.port", httpdPort.getText());
 		
-		LOG.info("修改与服务器的连接配置，修改后的服务器地址:{}, 端口:{}", ip.getText(), port.getText());
+		LOG.info("修改与服务器的连接配置，修改后的服务器地址:{}, 端口:{}", baseIP.getText(), basePort.getText());
 //		服务器信息保存
 		prop.store(new FileOutputStream("cfg.properties"), "");
 		back();
@@ -115,5 +134,10 @@ public class NetworkController implements Initializable {
 	
 	public void setLoginView(Region loginScene) {
 		this.loginScene = loginScene;
+		setSettingView(loginScene);
+	}
+	
+	private void setSettingView(Region settingView) {
+		this.loginDecoration.setSettingView(settingView);
 	}
 }

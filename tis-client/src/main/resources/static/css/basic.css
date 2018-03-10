@@ -308,9 +308,9 @@
  	-fx-pref-height: 540.0px;
 }
 .login-field{
-	-fx-background-color:derive(#064276,50.0%);
+	-fx-background-color:#06427688;
 	-fx-border-color:transparent;
-	-fx-prompt-text-fill:#ffffff;
+	-fx-prompt-text-fill:#ffffff88;
 	-fx-text-fill: #ffffff;
 	-fx-font-size:14.0px;
  	-fx-min-height: 40.0px;
@@ -319,6 +319,15 @@
 	-fx-background-color:derive(#064276,50.0%);
 	-fx-border-color:transparent;
 	-fx-effect: dropshadow(three-pass-box , #373634, 5.0, 0.0 , 0.0, 0.0);
+}
+.login-btn{
+	-fx-background-color:#0993e3;
+	-fx-text-fill: #ffffff;
+}
+.login-cancel-btn{
+	-fx-background-color:tansparent;
+	-fx-border-color:#ffffff;
+	-fx-text-fill: #ffffff;
 }
 /*******************************************************************************
  *                                                                             *
