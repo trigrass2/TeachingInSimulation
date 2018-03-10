@@ -43,14 +43,14 @@ public class TypicalCaseMenu implements ILeftContent {
 	public Region getLeftContent() {
 		VBox vb = new VBox();
 //		vb.getStyleClass().add("cover");
-		Label create = createMenu(MsgUtil.getMessage("menu.button.new"), new SVGGlyph("iconfont.svg.image", Color.WHITE, 16));
+		Label create = createMenu(MsgUtil.getMessage("menu.button.new"), new SVGGlyph("iconfont.svg.new", Color.WHITE, 16));
 //		create.setOnMouseClicked(e -> showDrawDialog());
 		create.setOnMouseClicked(e -> newCase());
 
-		Label open = createMenu(MsgUtil.getMessage("menu.button.open"), new SVGGlyph("iconfont.svg.setting", Color.WHITE, 16));
+		Label open = createMenu(MsgUtil.getMessage("menu.button.open"), new SVGGlyph("iconfont.svg.open", Color.WHITE, 16));
 		open.setOnMouseClicked(e -> showCaseDialog());
 
-		Label save = createMenu(MsgUtil.getMessage("menu.button.save"), new SVGGlyph("iconfont.svg.setting", Color.WHITE, 16));
+		Label save = createMenu(MsgUtil.getMessage("menu.button.save"), new SVGGlyph("iconfont.svg.save", Color.WHITE, 16));
 		save.setOnMouseClicked(e -> saveCase());
 
 		HBox menu = new HBox(15, create, open, save);
