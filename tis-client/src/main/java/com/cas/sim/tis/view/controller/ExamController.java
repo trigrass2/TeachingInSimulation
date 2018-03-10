@@ -21,6 +21,7 @@ import com.cas.sim.tis.util.AlertUtil;
 import com.cas.sim.tis.util.MsgUtil;
 import com.cas.sim.tis.util.SpringUtil;
 import com.cas.sim.tis.view.HomeView;
+import com.cas.sim.tis.view.control.imp.Decoration;
 import com.cas.sim.tis.view.control.imp.Title;
 import com.cas.sim.tis.view.control.imp.exam.BlankOption;
 import com.cas.sim.tis.view.control.imp.exam.ChoiceOption;
@@ -47,7 +48,8 @@ import javafx.util.Duration;
 
 @FXMLController
 public class ExamController {
-
+	@FXML
+	private Decoration decoration;
 	@FXML
 	private Title libraryName;
 	@FXML
@@ -362,5 +364,11 @@ public class ExamController {
 
 	public LibraryPublish getLibraryPublish() {
 		return publish;
+	}
+
+	public void refresh() {
+		if (decoration != null) {
+			decoration.maximize();
+		}
 	}
 }

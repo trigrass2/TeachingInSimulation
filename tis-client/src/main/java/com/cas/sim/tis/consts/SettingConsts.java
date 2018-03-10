@@ -1,6 +1,6 @@
 package com.cas.sim.tis.consts;
 
-public interface SettingConsts {
+public final class SettingConsts {
 	public final static String REG_APP_PATH = "/com/cas/TeachingInSimulation";
 	public static final String LANGUAGE = "language";
 	public static final String RESOLUTION_WIDTH = "width";

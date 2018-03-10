@@ -37,7 +37,7 @@
 				</Button>
 				<HBox alignment="TOP_RIGHT" HBox.hgrow="ALWAYS">
 					<children>
-						<Decoration />
+						<Decoration fx:id="decoration"/>
 					</children>
 				</HBox>
 			</children>

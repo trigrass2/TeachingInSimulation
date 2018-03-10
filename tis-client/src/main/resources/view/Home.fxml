@@ -33,7 +33,7 @@
 								<Insets left="15" top="10" />
 							</padding>
 						</HBox>
-						<Decoration />
+						<Decoration fx:id="decoration"/>
 					</children>
 				</HBox>
 				<HBox>

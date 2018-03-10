@@ -226,9 +226,7 @@ public class ResourceViewer extends VBox implements IContent {
 		}
 
 		Browser browser = new Browser(BrowserType.LIGHTWEIGHT);
-		// FIXME
 		browser.loadURL(url);
-//		browser.loadURL("http://192.168.1.19:8082/Test/Fanuc0i参数说明书.pdf");
 		BrowserView view = new BrowserView(browser);
 		viewer.getChildren().add(view);
 	}
@@ -244,9 +242,7 @@ public class ResourceViewer extends VBox implements IContent {
 		}
 
 		SWFBrowser browser = new SWFBrowser(BrowserType.LIGHTWEIGHT);
-		// FIXME
 		browser.loadHTML(url);
-//		browser.loadHTML("http://192.168.1.19:8082/Test/teachResources.swf");
 		BrowserView view = new BrowserView(browser);
 		viewer.getChildren().add(view);
 	}

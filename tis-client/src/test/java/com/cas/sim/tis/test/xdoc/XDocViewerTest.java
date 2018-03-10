@@ -11,7 +11,7 @@ public class XDocViewerTest extends AbstractJavaFxApplicationSupport {
 //		XDocViewer docViewer = new XDocViewer();
 //		docViewer.setBarVisible(false);
 //		System.out.println(docViewer.isLightweight());
-//		// FIXME
+		
 //		docViewer.open("http://192.168.1.19:8082/Test/魔方墙.xlsx");
 //		SwingNode node = new SwingNode();
 //		JPanel panel = new JPanel();

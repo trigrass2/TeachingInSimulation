@@ -12,6 +12,7 @@ import com.cas.sim.tis.consts.Session;
 import com.cas.sim.tis.util.MsgUtil;
 import com.cas.sim.tis.util.SpringUtil;
 import com.cas.sim.tis.view.PageView;
+import com.cas.sim.tis.view.control.imp.Decoration;
 import com.cas.sim.tis.view.control.imp.HomeMenu;
 import com.cas.sim.tis.view.control.imp.dialog.Dialog;
 import com.cas.sim.tis.view.control.imp.jme.Recongnize3D;
@@ -34,6 +35,9 @@ public class HomeController implements Initializable {
 	private HBox menu;
 	@FXML
 	private Pane handle;
+	@FXML
+	private Decoration decoration;
+
 	private List<HomeMenu> homeMenus = new ArrayList<HomeMenu>();
 	private double xOffset;
 	private double yOffset;
@@ -130,12 +134,18 @@ public class HomeController implements Initializable {
 	 */
 	public void repair() {
 	}
-	
+
 	@FXML
 	private void setting() {
 		Dialog<Boolean> dialog = new Dialog<>();
 		dialog.setDialogPane(new SettingDialog());
 		dialog.setPrefSize(400, 650);
 		dialog.show();
+	}
+
+	public void refresh() {
+		if (decoration != null) {
+			decoration.maximize();
+		}
 	}
 }

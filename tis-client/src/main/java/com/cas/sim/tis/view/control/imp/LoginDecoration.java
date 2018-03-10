@@ -5,6 +5,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 import javafx.animation.RotateTransition;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Point3D;
@@ -74,7 +75,7 @@ public class LoginDecoration extends HBox {
 
 	@FXML
 	private void close() {
-		// FIXME
+		Platform.exit();
 		System.exit(0);
 	}
 

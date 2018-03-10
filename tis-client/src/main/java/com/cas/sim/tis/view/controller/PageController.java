@@ -10,6 +10,7 @@ import com.cas.sim.tis.view.HomeView;
 import com.cas.sim.tis.view.control.IContent;
 import com.cas.sim.tis.view.control.IDistory;
 import com.cas.sim.tis.view.control.ILeftContent;
+import com.cas.sim.tis.view.control.imp.Decoration;
 
 import de.felixroske.jfxsupport.FXMLController;
 import de.felixroske.jfxsupport.GUIState;
@@ -39,6 +40,9 @@ public class PageController implements Initializable {
 
 	private Consumer<Void> endHideLoading;
 
+	@FXML
+	private Decoration decoration;
+	
 	@FXML
 	private Pane handle;
 
@@ -241,5 +245,11 @@ public class PageController implements Initializable {
 
 	public ILeftContent getLeftMenu() {
 		return left;
+	}
+
+	public void refresh() {
+		if (decoration != null) {
+			decoration.maximize();
+		}
 	}
 }
