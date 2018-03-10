@@ -2,34 +2,61 @@
 
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.Pane?>
-<?import javafx.scene.control.CheckBox?>
-<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.image.Image?>
-<?import com.sun.javafx.event.BasicEventDispatcher?>
-<?import com.cas.sim.tis.svg.SVGGlyph?>
+<?import javafx.scene.shape.Circle?>
 
-<VBox pickOnBounds="false" xmlns:fx="http://javafx.com/fxml/1"  fx:controller="com.cas.sim.tis.view.control.imp.jme.TypicalCaseBtnController">
+<?import com.cas.sim.tis.svg.SVGGlyph?>
+<?import org.controlsfx.control.PopOver?>
+
+<VBox pickOnBounds="false" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.cas.sim.tis.view.control.imp.jme.TypicalCaseBtnController">
 	<VBox VBox.vgrow="ALWAYS" mouseTransparent="true" />
 
-	<HBox prefHeight="50" spacing="20">
-		<HBox spacing="10">
-			<CheckBox  fx:id="intro" text="%rec.ckb.intro" styleClass="recognize-btn" />
-			<CheckBox fx:id="showName" text="%rec.ckb.showName" styleClass="recognize-btn" />
-			<CheckBox fx:id="autoRoate" text="%rec.ckb.autoRoate" styleClass="recognize-btn" />
-		</HBox>
-		<HBox spacing="10">
-			<Label fx:id="zoomIn" text="%rec.lbl.zoom.in" styleClass="recognize-btn"><!-- 放大 -->
-				<graphic>
-					<SVGGlyph name="iconfont.svg.image" size="16" fill="WHITE" />
-				</graphic>
-			</Label>
-			<Label fx:id="zoomOut" text="%rec.lbl.zoom.out" styleClass="recognize-btn"><!-- 缩小 -->
-				<graphic>
-					<SVGGlyph name="iconfont.svg.image" size="16" fill="WHITE" />
-				</graphic>
-			</Label>
-		</HBox>
+	<HBox prefHeight="50" spacing="10">
+		<Label fx:id="draw" text="%rec.lbl.zoom.in" styleClass="recognize-btn"><!-- 电路图 -->
+			<graphic>
+				<SVGGlyph name="iconfont.svg.image" size="16" fill="WHITE" />
+			</graphic>
+		</Label>
+		<Label fx:id="wire" text="%rec.lbl.zoom.in" styleClass="recognize-btn"><!-- 导线 -->
+			<graphic>
+				<SVGGlyph name="iconfont.svg.image" size="16" fill="WHITE" />
+			</graphic>
+		</Label>
 	</HBox>
+<!-- 	<PopOver fx:id="wirePicker" title="导线选择" arrowSize="10" arrowLocation="BOTTOM_CENTER"> -->
+<!-- 		<HBox> -->
+<!-- 			<VBox> -->
+<!-- 				<Label fx:id="draw" text="%rec.lbl.zoom.in" styleClass="recognize-btn">电路图 -->
+<!-- 					<graphic> -->
+<!-- 						<Circle fill="RED" radius="10"/> -->
+<!-- 					</graphic> -->
+<!-- 				</Label> -->
+<!-- 				<Label fx:id="draw" text="%rec.lbl.zoom.in" styleClass="recognize-btn">电路图 -->
+<!-- 					<graphic> -->
+<!-- 						<Circle fill="RED" radius="10"/> -->
+<!-- 					</graphic> -->
+<!-- 				</Label> -->
+<!-- 				<Label fx:id="draw" text="%rec.lbl.zoom.in" styleClass="recognize-btn">电路图 -->
+<!-- 					<graphic> -->
+<!-- 						<Circle fill="RED" radius="10"/> -->
+<!-- 					</graphic> -->
+<!-- 				</Label> -->
+<!-- 				<Label fx:id="draw" text="%rec.lbl.zoom.in" styleClass="recognize-btn">电路图 -->
+<!-- 					<graphic> -->
+<!-- 						<Circle fill="RED" radius="10"/> -->
+<!-- 					</graphic> -->
+<!-- 				</Label> -->
+<!-- 				<Label fx:id="draw" text="%rec.lbl.zoom.in" styleClass="recognize-btn">电路图 -->
+<!-- 					<graphic> -->
+<!-- 						<Circle fill="RED" radius="10"/> -->
+<!-- 					</graphic> -->
+<!-- 				</Label> -->
+<!-- 				<Label fx:id="draw" text="%rec.lbl.zoom.in" styleClass="recognize-btn">电路图 -->
+<!-- 					<graphic> -->
+<!-- 						<Circle fill="RED" radius="10"/> -->
+<!-- 					</graphic> -->
+<!-- 				</Label> -->
+<!-- 			</VBox> -->
+<!-- 		</HBox> -->
+<!-- 	</PopOver> -->
 </VBox>

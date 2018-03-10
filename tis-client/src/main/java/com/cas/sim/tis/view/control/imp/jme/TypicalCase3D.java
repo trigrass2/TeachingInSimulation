@@ -87,4 +87,11 @@ public class TypicalCase3D implements IContent {
 		jmeApp.enqueue(() -> appState.hold(elecComp));
 	}
 
+	public void save() {
+//		找到典型案例的状态机
+		TypicalCaseState appState = jmeApp.getStateManager().getState(TypicalCaseState.class);
+//		
+		appState.save();
+
+	}
 }

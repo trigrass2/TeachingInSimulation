@@ -10,10 +10,10 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.cas.sim.tis.app.JmeApplication;
 import com.cas.sim.tis.app.event.MouseEventListener;
 import com.cas.sim.tis.app.event.MouseEventState;
 import com.jme3.app.Application;
-import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.AbstractAppState;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.asset.AssetKey;
@@ -30,7 +30,7 @@ public abstract class BaseState extends AbstractAppState {
 
 	protected static final Logger LOG = LoggerFactory.getLogger(BaseState.class);
 
-	protected SimpleApplication app;
+	protected JmeApplication app;
 
 	protected InputManager inputManager;
 
@@ -94,7 +94,7 @@ public abstract class BaseState extends AbstractAppState {
 
 	@Override
 	public final void initialize(AppStateManager stateManager, Application app) {
-		this.app = (SimpleApplication) app;
+		this.app = (JmeApplication) app;
 		inputManager = app.getInputManager();
 		assetManager = app.getAssetManager();
 		cam = app.getCamera();

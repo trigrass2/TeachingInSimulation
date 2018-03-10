@@ -1,10 +1,6 @@
 package com.cas.circuit.vo;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -41,12 +37,11 @@ public class Wire {
 	private Terminal term1;
 	private Terminal term2;
 
-//	导线模型，用List是因为可能存在两段线在不同的节点中
-	private Map<Spatial, Terminal> models = new HashMap<>();
-
 	private boolean brokenBreak = false;
 
 	private String wireNum;
+
+	private Spatial spatial;
 
 	public Wire() {
 	}
@@ -190,15 +185,15 @@ public class Wire {
 		return term2;
 	}
 
-	public List<Spatial> getLinkMdlByTarget(Terminal target) {
-		List<Spatial> linkMdls = new ArrayList<Spatial>();
-		for (Entry<Spatial, Terminal> model : models.entrySet()) {
-			if (model.getValue().equals(target)) {
-				linkMdls.add(model.getKey());
-			}
-		}
-		return linkMdls;
-	}
+//	public List<Spatial> getLinkMdlByTarget(Terminal target) {
+//		List<Spatial> linkMdls = new ArrayList<Spatial>();
+//		for (Entry<Spatial, Terminal> model : models.entrySet()) {
+//			if (model.getValue().equals(target)) {
+//				linkMdls.add(model.getKey());
+//			}
+//		}
+//		return linkMdls;
+//	}
 
 	public float getWidth() {
 		return width;
@@ -212,12 +207,16 @@ public class Wire {
 		this.wireNum = wireNum;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see com.cas.circuit.ILinker#getModel()
-	 */
-	public Map<Spatial, Terminal> getModels() {
-		return models;
+	public ColorRGBA getColor() {
+		return color;
+	}
+
+	public Spatial getSpatial() {
+		return spatial;
+	}
+
+	public void setSpatial(Spatial spatial) {
+		this.spatial = spatial;
 	}
 
 	@Override

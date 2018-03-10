@@ -1,5 +1,9 @@
 package com.cas.sim.tis;
 
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.concurrent.FutureTask;
+
 import javax.annotation.Resource;
 
 import org.apache.ftpserver.FtpServer;
@@ -9,13 +13,17 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+import com.cas.authority.Consts;
+import com.cas.authority.validate.ValidateThread;
 import com.cas.sim.tis.config.ServerConfig;
+import com.cas.sim.tis.consts.SystemInfo;
 import com.cas.sim.tis.message.ExamMessage;
 import com.cas.sim.tis.message.LoginMessage;
 import com.cas.sim.tis.message.handler.ExamMessageHandler;
 import com.cas.sim.tis.message.handler.LoginMessageHandler;
 import com.cas.sim.tis.util.SpringUtil;
 import com.jme3.network.Server;
+import com.softkey.SoftKey;
 
 @SpringBootApplication
 //开始事物
@@ -46,71 +54,55 @@ public class Application implements CommandLineRunner {
 //		将JUL（Java-Util-Logging）的日志转接给slf4j
 		jul2slf4j();
 
-//		try {
-////			UIManager.setLookAndFeel(com.sun.java.swing.plaf.windows.WindowsLookAndFeel.class.getName());
-//			UIManager.setLookAndFeel(javax.swing.plaf.nimbus.NimbusLookAndFeel.class.getName());
-//		} catch (Exception e) {
-//		}
-//
 ////		加密验证
-//		LockThread lt = new LockThread(new ILockResult() {
-//			@Override
-//			public void doLockWrong(String cause) {
-////				告知用户加密锁错误。
-//				showErrorMsg("错误原因：" + cause);
-////				点击对话框中的确定按钮后，立即退出系统。
-//				System.exit(0);
-//			}
+//		SoftKey sk = new SoftKey(SoftKey.KEY_FOR_SALER);
+//		boolean success = sk.CheckKeyByReadEprom() == 0 && sk.CheckKeyByEncstring() == 0;
+//		if (success) {
+//			ValidateThread validation = new ValidateThread(SystemInfo.APP_ID);
+//			// 加密锁验证通过
+//			FutureTask<Integer> task = new FutureTask<>(validation);
+//			new Thread(task).start();
 //
-//			@Override
-//			public void doLockRight() {
-//				ValidateThread validation = new ValidateThread(SystemInfo.APP_ID);
-//				// 加密锁验证通过
-//				FutureTask<Integer> task = new FutureTask<>(validation);
-//				new Thread(task).start();
-//
-//				try {
-//					Integer result = task.get();
-////					证书没问题
-//					if (Consts.AUTHORITY_FILE_AVAILABLE == result) {
-//						创建服务器
-//		CoreServer.getIns().setMaxClientNum(2);
-//		Application.start();
-		SpringApplication.run(Application.class);
-//
-////						启动时间验证定时器
-//						Timer timer = new Timer();
-//						timer.scheduleAtFixedRate(new TimerTask() {
-//							@Override
-//							public void run() {
-//								try {
-//									validation.getTimerClock().validate();
-//								} catch (Exception e) {
-//									timer.cancel();
-////									停止一切服务
-//									Application.stop();
-//									showErrorMsg(e.getMessage());
-//									System.exit(0);
-//								}
-//							}
-//						}, 1000, 1000); // 每一分钟验证一次
-//					} else {
-//						showErrorMsg("错误代码：" + result);
-//						System.exit(0);
+//			try {
+//				Integer result = task.get();
+////				证书没问题
+//				if (Consts.AUTHORITY_FILE_AVAILABLE == result) {
+////					创建服务器
+//					try {
+						SpringApplication.run(Application.class);
+//					} catch (Exception e) {
+//						LoggerFactory.getLogger(Application.class).error("服务器启动失败", e);
+//						e.printStackTrace();
 //					}
-//				} catch (Exception e) {
-//					LoggerFactory.getLogger(Application.class).error("加密锁验证过程出现错误。{}", e.getMessage());
+//
+////					启动时间验证定时器
+//					Timer timer = new Timer();
+//					timer.scheduleAtFixedRate(new TimerTask() {
+//						@Override
+//						public void run() {
+//							try {
+//								validation.getTimerClock().validate();
+//							} catch (Exception e) {
+//								LoggerFactory.getLogger(Application.class).error("错误代码:{}", result);
+//								timer.cancel();
+////								停止一切服务
+//								System.exit(0);
+//							}
+//						}
+//					}, 1000 * 60 * 10, 1000 * 60 * 10); // 10分钟后开始验证，然后每10分钟验证1次
+//				} else {
+//					LoggerFactory.getLogger(Application.class).error("错误代码:{}", result);
 //				}
+//			} catch (Exception e) {
+//				LoggerFactory.getLogger(Application.class).error("加密锁验证过程出现错误。{}", e.getMessage());
 //			}
-//		}, SoftKey.KEY_FOR_SALER);
-////		启动加密锁验证线程
-//		lt.start();
+//		} else {
+////			告知用户加密锁错误。
+//			LoggerFactory.getLogger(Application.class).error("程序启动失败:{}", "未找到合适的加密锁设备");
+////			点击对话框中的确定按钮后，立即退出系统。
+//			System.exit(0);
+//		}
 	}
-
-//	private static void showErrorMsg(String msg) {
-//		LoggerFactory.getLogger(Application.class).warn("程序启动失败,{}", msg);
-//		JOptionPane.showMessageDialog(null, msg, "程序启动失败", JOptionPane.ERROR_MESSAGE);
-//	}
 
 	@Override
 	public void run(String... args) throws Exception {

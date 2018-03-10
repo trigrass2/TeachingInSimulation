@@ -1,5 +1,6 @@
 package com.cas.sim.tis.util;
 
+import java.nio.FloatBuffer;
 import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
@@ -24,8 +25,14 @@ import com.jme3.renderer.queue.RenderQueue.Bucket;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
+import com.jme3.scene.VertexBuffer;
 import com.jme3.scene.Spatial.CullHint;
+import com.jme3.scene.VertexBuffer.Type;
+import com.jme3.scene.shape.Line;
 import com.jme3.scene.shape.Sphere;
+import com.jme3.util.BufferUtils;
+
+import javafx.scene.paint.Color;
 
 public final class JmeUtil {
 
@@ -123,7 +130,7 @@ public final class JmeUtil {
 	@Nullable
 	public static Vector3f getContactPointFromCursor(@NotNull final Spatial spatial, @NotNull final Camera camera, @NotNull InputManager inputManager) {
 		final Vector2f cursor = inputManager.getCursorPosition();
-		return getContactPointFromScreenPos(spatial, camera, cursor.getX(), cursor.getY());
+		return getContactPointFromScreen(spatial, camera, cursor.getX(), cursor.getY());
 	}
 
 	/**
@@ -134,8 +141,8 @@ public final class JmeUtil {
 	 * @return the contact point or null.
 	 */
 	@Nullable
-	public static Vector3f getContactPointFromScreenPos(@NotNull final Spatial spatial, @NotNull final Camera camera, final float screenX, final float screenY) {
-		final CollisionResult collision = getCollisionFromScreenPos(spatial, camera, screenX, screenY);
+	public static Vector3f getContactPointFromScreen(@NotNull final Spatial spatial, @NotNull final Camera camera, final float screenX, final float screenY) {
+		final CollisionResult collision = getCollisionFromScreen(spatial, camera, screenX, screenY);
 		return collision == null ? null : collision.getContactPoint();
 	}
 
@@ -156,12 +163,12 @@ public final class JmeUtil {
 	@Nullable
 	public static Geometry getGeometryFromCursor(@NotNull final Spatial spatial, @NotNull final Camera camera, InputManager inputManager) {
 		final Vector2f cursor = inputManager.getCursorPosition();
-		return getGeometryFromScreenPos(spatial, camera, cursor.getX(), cursor.getY());
+		return getGeometryFromScreen(spatial, camera, cursor.getX(), cursor.getY());
 	}
 
 	@Nullable
 	public static Node getNodeFromScreenPos(@NotNull final Spatial spatial, @NotNull final Camera camera, final float screenX, final float screenY) {
-		Geometry geom = getGeometryFromScreenPos(spatial, camera, screenX, screenY);
+		Geometry geom = getGeometryFromScreen(spatial, camera, screenX, screenY);
 		if (geom != null) {
 			return geom.getParent();
 		}
@@ -176,8 +183,8 @@ public final class JmeUtil {
 	 * @return the geometry or null.
 	 */
 	@Nullable
-	public static Geometry getGeometryFromScreenPos(@NotNull final Spatial spatial, @NotNull final Camera camera, final float screenX, final float screenY) {
-		final CollisionResult collision = getCollisionFromScreenPos(spatial, camera, screenX, screenY);
+	public static Geometry getGeometryFromScreen(@NotNull final Spatial spatial, @NotNull final Camera camera, final float screenX, final float screenY) {
+		final CollisionResult collision = getCollisionFromScreen(spatial, camera, screenX, screenY);
 		return collision == null ? null : collision.getGeometry();
 	}
 
@@ -189,13 +196,13 @@ public final class JmeUtil {
 	 * @return the collision or null.
 	 */
 	@Nullable
-	public static CollisionResult getCollisionFromScreenPos(@NotNull final Spatial spatial, @NotNull final Camera camera, @NotNull InputManager inputManager) {
+	public static CollisionResult getCollisionFromCursor(@NotNull final Spatial spatial, @NotNull final Camera camera, @NotNull InputManager inputManager) {
 		final Vector2f cursor = inputManager.getCursorPosition();
-		return getCollisionFromScreenPos(spatial, camera, cursor.getX(), cursor.getY());
+		return getCollisionFromScreen(spatial, camera, cursor.getX(), cursor.getY());
 	}
 
 	@Nullable
-	public static CollisionResult getCollisionFromScreenPos(@NotNull final Spatial spatial, @NotNull final Camera camera, final float screenX, final float screenY) {
+	public static CollisionResult getCollisionFromScreen(@NotNull final Spatial spatial, @NotNull final Camera camera, final float screenX, final float screenY) {
 
 		final Vector2f point = new Vector2f(screenX, screenY);
 //		final Vector3f click3d = camera.getWorldCoordinates(point, 0f);
@@ -396,4 +403,30 @@ public final class JmeUtil {
 		return ballMod;
 	}
 
+	public static ColorRGBA convert(Color color) {
+		ColorRGBA colorRGBA = new ColorRGBA();
+		colorRGBA.set((float) color.getRed(), (float) color.getGreen(), (float) color.getBlue(), (float) color.getOpacity());
+//		colorRGBA.set(color.r, g, b, a);
+		return colorRGBA;
+	}
+
+	/**
+	 * 获取Mesh line的真实的Start点，预设
+	 * @param line com.jme3.scene.shape.Line
+	 */
+	public static Vector3f getLineStart(Line line) {
+		VertexBuffer position = line.getBuffer(Type.Position);
+		float[] arr = BufferUtils.getFloatArray((FloatBuffer) position.getDataReadOnly());
+		return new Vector3f(arr[0], arr[1], arr[2]);
+	}
+
+	/**
+	 * 获取Mesh line的真实的End点
+	 * @param line com.jme3.scene.shape.Line
+	 */
+	public static Vector3f getLineEnd(Line line) {
+		VertexBuffer position = line.getBuffer(Type.Position);
+		float[] arr = BufferUtils.getFloatArray((FloatBuffer) position.getDataReadOnly());
+		return new Vector3f(arr[3], arr[4], arr[5]);
+	}
 }

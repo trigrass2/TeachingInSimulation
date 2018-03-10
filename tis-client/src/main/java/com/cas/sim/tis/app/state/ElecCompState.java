@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 
 import com.cas.circuit.vo.ControlIO;
 import com.cas.circuit.vo.ElecCompDef;
@@ -25,7 +25,6 @@ import com.cas.sim.tis.view.control.imp.jme.Recongnize3D;
 import com.cas.sim.tis.view.controller.PageController;
 import com.cas.util.StringUtil;
 import com.jme3.asset.ModelKey;
-import com.jme3.input.ChaseCamera;
 import com.jme3.light.PointLight;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
@@ -38,7 +37,6 @@ public class ElecCompState extends BaseState {
 
 	private static final String ROOT_NAME = "ELEC_COMP_ROOT";
 	private Node root;
-	private ChaseCamera chaser;
 	private boolean pickEnable;
 	private boolean transparent;
 	private boolean explode;
@@ -47,6 +45,7 @@ public class ElecCompState extends BaseState {
 	private float scale = 1;
 	private Recongnize3D ui;
 	private PointLight pointLight;
+	private MyCameraState chaserState;
 
 	@Override
 	protected void initializeLocal() {
@@ -57,7 +56,7 @@ public class ElecCompState extends BaseState {
 
 		setupLight();
 
-		stateManager.attach(new MyCameraState());
+		stateManager.attach(chaserState = new MyCameraState());
 
 ////		PBR indirect lighting
 //		final EnvironmentCamera envCam = new EnvironmentCamera(256, new Vector3f(0, 3f, 0));
@@ -117,6 +116,7 @@ public class ElecCompState extends BaseState {
 				if (!pickEnable) {
 					return;
 				}
+//				FilterUtil.showOutlineEffect(evt.getSpatial());
 				System.out.println("ElecCompState.setElecComp(...).new MouseEventAdapter() {...}.mouseClicked()");
 				Vector3f point = cam.getScreenCoordinates(evt.getContactPoint());
 				Platform.runLater(() -> ui.showName(e.getValue(), point.getX(), point.getY()));
@@ -187,7 +187,6 @@ public class ElecCompState extends BaseState {
 		}
 
 		shells.clear();
-		chaser.cleanupWithInput(inputManager);
 		super.cleanup();
 	}
 
@@ -201,7 +200,7 @@ public class ElecCompState extends BaseState {
 		super.update(tpf);
 	}
 
-	public void explode(@NotNull Boolean n) {
+	public void explode(@Nonnull Boolean n) {
 		this.explode = n.booleanValue();
 		explode0();
 	}
@@ -215,7 +214,7 @@ public class ElecCompState extends BaseState {
 		}
 	}
 
-	public void transparent(@NotNull Boolean n) {
+	public void transparent(@Nonnull Boolean n) {
 		this.transparent = n.booleanValue();
 		app.enqueue(() -> {
 			transparentShell0();
@@ -231,7 +230,7 @@ public class ElecCompState extends BaseState {
 		}
 	}
 
-	public void setNameVisible(@NotNull Boolean n) {
+	public void setNameVisible(@Nonnull Boolean n) {
 		this.pickEnable = n.booleanValue();
 	}
 
@@ -240,7 +239,9 @@ public class ElecCompState extends BaseState {
 	}
 
 	public void reset() {
-		chaser.setLookAtOffset(Vector3f.ZERO);
+		if (chaserState.isInitialized()) {
+			chaserState.getChaser().setLookAtOffset(Vector3f.ZERO);
+		}
 		scale = 1;
 	}
 

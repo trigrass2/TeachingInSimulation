@@ -1,19 +1,42 @@
 package com.cas.sim.tis.view.control.imp.jme;
 
+import com.alibaba.fastjson.JSONArray;
+import com.cas.sim.tis.action.DrawAction;
+import com.cas.sim.tis.action.LibraryAction;
 import com.cas.sim.tis.action.TypicalCaseAction;
 import com.cas.sim.tis.entity.ElecComp;
+import com.cas.sim.tis.entity.TypicalCase;
+import com.cas.sim.tis.svg.SVGGlyph;
+import com.cas.sim.tis.util.AlertUtil;
 import com.cas.sim.tis.util.MsgUtil;
 import com.cas.sim.tis.util.SpringUtil;
 import com.cas.sim.tis.view.control.ILeftContent;
+import com.cas.sim.tis.view.control.imp.SearchBox;
 import com.cas.sim.tis.view.control.imp.dialog.Dialog;
 import com.cas.sim.tis.view.control.imp.dialog.DialogPane;
+import com.cas.sim.tis.view.control.imp.question.PreviewQuestionPaper;
+import com.cas.sim.tis.view.control.imp.table.BtnCell;
+import com.cas.sim.tis.view.control.imp.table.Column;
+import com.cas.sim.tis.view.control.imp.table.Table;
+import com.cas.sim.tis.view.controller.PageController;
+import com.cas.sim.tis.view.controller.PageController.PageLevel;
 
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.ContentDisplay;
+import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TextField;
+import javafx.scene.control.ToggleButton;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 
 public class TypicalCaseMenu implements ILeftContent {
 
@@ -26,13 +49,20 @@ public class TypicalCaseMenu implements ILeftContent {
 	@Override
 	public Region getLeftContent() {
 		VBox vb = new VBox();
+//		vb.getStyleClass().add("cover");
+		Label create = createMenu(MsgUtil.getMessage("menu.button.new"), new SVGGlyph("iconfont.svg.image", Color.WHITE, 16));
+//		create.setOnMouseClicked(e -> showDrawDialog());
+		create.setOnMouseClicked(e -> newCase());
 
-		Button create = new Button(MsgUtil.getMessage("menu.button.new"));
-		Button open = new Button(MsgUtil.getMessage("menu.button.open"));
-		open.setOnAction(e -> showCaseDialog());
-		Button save = new Button(MsgUtil.getMessage("menu.button.save"));
+		Label open = createMenu(MsgUtil.getMessage("menu.button.open"), new SVGGlyph("iconfont.svg.setting", Color.WHITE, 16));
+		open.setOnMouseClicked(e -> showCaseDialog());
+
+		Label save = createMenu(MsgUtil.getMessage("menu.button.save"), new SVGGlyph("iconfont.svg.setting", Color.WHITE, 16));
+		save.setOnMouseClicked(e -> saveCase());
+
 		HBox menu = new HBox(15, create, open, save);
-
+		menu.setAlignment(Pos.CENTER);
+//		menu.getStyleClass().add("cover");
 //		菜单
 		vb.getChildren().add(menu);
 
@@ -41,11 +71,21 @@ public class TypicalCaseMenu implements ILeftContent {
 		return vb;
 	}
 
-	//open打开案例选择面板
+	private Label createMenu(String text, Node graphic) {
+		Label label = new Label(text, graphic);
+		label.setContentDisplay(ContentDisplay.TOP);
+		label.setPrefSize(45, 45);
+		label.setAlignment(Pos.CENTER);
+		label.getStyleClass().add("home-menu");
+		label.setTextFill(Color.WHITE);
+		return label;
+	}
+
+	// open打开案例选择面板
 	private void showCaseDialog() {
 		Dialog<ElecComp> dialog = new Dialog<>();
 		DialogPane<ElecComp> dialogPane = new DialogPane<>();
-//		dialog.title.case-list
+//		FIXME dialog.title.case-list
 		dialogPane.setTitle("dialog.title.case-list");
 		dialogPane.getChildren().add(createCaseListUI());
 		dialog.setDialogPane(dialogPane);
@@ -70,4 +110,96 @@ public class TypicalCaseMenu implements ILeftContent {
 
 		return sp;
 	}
+
+	private void showDrawDialog() {
+		Dialog<ElecComp> dialog = new Dialog<>();
+		DialogPane<ElecComp> dialogPane = new DialogPane<>();
+		dialogPane.setSpacing(15);
+
+//		FIXME i18n dialog.title.draw-list
+		dialogPane.setTitle("dialog.title.draw-list");
+
+		HBox hbox = new HBox(15);
+		hbox.setPadding(new Insets(0, 10, 0, 10));
+
+		HBox menu = new HBox(15);
+		HBox.setHgrow(menu, Priority.ALWAYS);
+
+		ToggleGroup tg = new ToggleGroup();
+//		FIXME i18n dialog.title.draw-list
+		ToggleButton sys = new ToggleButton("系统图纸");
+		ToggleButton mine = new ToggleButton("我的图纸");
+		tg.getToggles().add(sys);
+		tg.getToggles().add(mine);
+//		系统图库
+		menu.getChildren().add(sys);
+//		我的图库
+		menu.getChildren().add(mine);
+
+		hbox.getChildren().add(menu);
+//		搜索框
+		SearchBox search = new SearchBox();
+		search.setPrefWidth(128);
+		hbox.getChildren().add(search);
+
+		dialogPane.getChildren().add(hbox);
+
+//		图纸列表
+		dialogPane.getChildren().add(createDrawListUI());
+//		案例名称
+		TextField textField = new TextField();
+//		FIXME i18n
+		textField.setPromptText("请输入案例名称");
+		dialogPane.getChildren().add(textField);
+
+//		FIXME i18n
+		dialogPane.getChildren().add(new Button("OK"));
+
+		dialog.setDialogPane(dialogPane);
+		dialog.setPrefSize(380, 600);
+		dialog.showAndWait();
+	}
+
+	private Node createDrawListUI() {
+//		serial="true" rowHeight="45" spacing="10" separatorable="false" normalStyleClass="table-row" hoverStyleClass="table-row-hover" selectedStyleClass="table-row-selected" 
+		Table table = new Table("table-row", "table-row-hover", "table-row-selected");
+		table.setSerial(true);
+		table.setRowHeight(35);
+		table.setSpacing(5);
+//		table.setSeparatorable(false);
+
+		DrawAction action = SpringUtil.getBean(DrawAction.class);
+
+		// 数据库唯一表示
+		Column<Integer> primary = new Column<>();
+		primary.setPrimary(true);
+		primary.setVisible(false);
+		primary.setKey("id");
+		// 题库名称
+		Column<String> name = new Column<>();
+		name.setAlignment(Pos.CENTER_LEFT);
+		name.setKey("name");
+		name.setText(MsgUtil.getMessage("library.name"));
+		name.setPrefWidth(250);
+		table.getColumns().addAll(primary, name);
+
+		JSONArray array = new JSONArray();
+		array.addAll(action.getDrawListAll());
+		table.setItems(array);
+		table.build();
+
+		return table;
+	}
+
+	private void newCase() {
+		TypicalCase t = new TypicalCase();
+		t.setName("NonName");
+
+		typicalCase3D.setupCase(t);
+	}
+
+	private void saveCase() {
+		typicalCase3D.save();
+	}
+
 }

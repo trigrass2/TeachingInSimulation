@@ -141,6 +141,13 @@
 				<version>3.17</version>
 			</dependency>
 
+			<!-- https://mvnrepository.com/artifact/org.controlsfx/controlsfx -->
+			<dependency>
+				<groupId>org.controlsfx</groupId>
+				<artifactId>controlsfx</artifactId>
+				<version>8.40.14</version>
+			</dependency>
+
 			<!-- https://mvnrepository.com/artifact/org.jodconverter/jodconverter-spring-boot-starter -->
 			<dependency>
 				<groupId>org.jodconverter</groupId>
@@ -224,6 +231,12 @@
 			<dependency>
 				<groupId>org.jmonkeyengine</groupId>
 				<artifactId>jme3-desktop</artifactId>
+				<version>${engine.version}</version>
+			</dependency>
+			<!-- https://mvnrepository.com/artifact/org.jmonkeyengine/jme3-blender -->
+			<dependency>
+				<groupId>org.jmonkeyengine</groupId>
+				<artifactId>jme3-blender</artifactId>
 				<version>${engine.version}</version>
 			</dependency>
 			<!-- https://mvnrepository.com/artifact/org.jmonkeyengine/jme3-lwjgl3 -->
