@@ -43,26 +43,26 @@ public class LoginMessageHandler implements ServerHandler<LoginMessage> {
 //				告诉这个用户，当前用户已满，
 				respMsg.setResult(LoginResult.MAX_SIZE);
 				source.send(respMsg);
-				throw new RuntimeException("客户端数量已经达到上限");
+				LOG.warn("客户端数量已经达到上限:{}", clients.size());
+				return;
+			}
+//			检查用户是否已经登录了
+			boolean exist = clients.stream().filter(c -> user.getId().equals(c.getAttribute(Session.KEY_LOGIN_ID.name()))).findAny().isPresent();
+			if (exist) {
+//				用户已经登录了
+				respMsg.setResult(LoginResult.DUPLICATE);
+				source.send(respMsg);
 			} else {
-//				检查用户是否已经登录了
-				boolean exist = clients.stream().filter(c -> user.getId().equals(c.getAttribute(Session.KEY_LOGIN_ID.name()))).findAny().isPresent();
-				if (exist) {
-//					用户已经登录了
-					respMsg.setResult(LoginResult.DUPLICATE);
-					source.send(respMsg);
-				} else {
-					source.setAttribute(Session.KEY_LOGIN_ID.name(), user.getId());
-					source.setAttribute(Session.KEY_LOGIN_CLASSID.name(), user.getClassId());
-					source.setAttribute(Session.KEY_LOGIN_ACCOUNT.name(), user.getCode());
-					clients.add(source);
-					LOG.info("客户端登录成功，当前客户端数量{}", clients.size());
-//					用户成功连接
-					respMsg.setResult(LoginResult.SUCCESS);
-					respMsg.setUserId(user.getId());
-					respMsg.setUserType(user.getRole());
-					source.send(respMsg);
-				}
+				source.setAttribute(Session.KEY_LOGIN_ID.name(), user.getId());
+				source.setAttribute(Session.KEY_LOGIN_CLASSID.name(), user.getClassId());
+				source.setAttribute(Session.KEY_LOGIN_ACCOUNT.name(), user.getCode());
+				clients.add(source);
+				LOG.info("客户端登录成功，当前客户端数量{}", clients.size());
+//				用户成功连接
+				respMsg.setResult(LoginResult.SUCCESS);
+				respMsg.setUserId(user.getId());
+				respMsg.setUserType(user.getRole());
+				source.send(respMsg);
 			}
 		} catch (ServiceException e) {
 //			登录失败：原因是登录信息错误
