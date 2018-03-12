@@ -3,16 +3,15 @@ package com.cas.circuit.vo;
 import java.util.List;
 import java.util.Set;
 
+import javax.annotation.Nonnull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import com.cas.circuit.util.R;
-import com.cas.circuit.xml.adapter.ColorRGBAAdapter;
+import com.cas.circuit.vo.archive.WireProxy;
 import com.cas.util.Util;
-import com.jme3.math.ColorRGBA;
-import com.jme3.scene.Spatial;
+import com.jme3.scene.Node;
 
 /**
  * 导线
@@ -28,11 +27,11 @@ public class Wire {
 	@XmlAttribute
 	private String mark;
 
-	@XmlAttribute
-	private Float width;
-	@XmlAttribute
-	@XmlJavaTypeAdapter(ColorRGBAAdapter.class)
-	private ColorRGBA color;
+//	@XmlAttribute
+//	private Float width;
+//	@XmlAttribute
+//	@XmlJavaTypeAdapter(ColorRGBAAdapter.class)
+//	private ColorRGBA color;
 
 	private Terminal term1;
 	private Terminal term2;
@@ -41,14 +40,11 @@ public class Wire {
 
 	private String wireNum;
 
-	private Spatial spatial;
+	private Node spatial;
+
+	private WireProxy proxy;
 
 	public Wire() {
-	}
-
-	public Wire(float width, ColorRGBA color) {
-		this.width = width;
-		this.color = color;
 	}
 
 	public void build() {
@@ -195,10 +191,6 @@ public class Wire {
 //		return linkMdls;
 //	}
 
-	public float getWidth() {
-		return width;
-	}
-
 	public String getWireNum() {
 		return wireNum;
 	}
@@ -207,15 +199,11 @@ public class Wire {
 		this.wireNum = wireNum;
 	}
 
-	public ColorRGBA getColor() {
-		return color;
-	}
-
-	public Spatial getSpatial() {
+	public Node getSpatial() {
 		return spatial;
 	}
 
-	public void setSpatial(Spatial spatial) {
+	public void setSpatial(Node spatial) {
 		this.spatial = spatial;
 	}
 
@@ -242,4 +230,17 @@ public class Wire {
 			r.shareVoltage();
 		}
 	}
+
+	@Nonnull
+	public WireProxy getProxy() {
+		if (proxy == null) {
+			proxy = new WireProxy();
+		}
+		return proxy;
+	}
+
+	public void setProxy(WireProxy proxy) {
+		this.proxy = proxy;
+	}
+
 }

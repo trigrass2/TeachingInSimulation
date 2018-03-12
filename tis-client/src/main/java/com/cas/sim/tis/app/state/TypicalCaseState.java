@@ -1,9 +1,5 @@
 package com.cas.sim.tis.app.state;
 
-import java.net.URL;
-import java.util.concurrent.Callable;
-import java.util.concurrent.Future;
-
 import org.jetbrains.annotations.Nullable;
 
 import com.cas.circuit.vo.Archive;
@@ -13,11 +9,9 @@ import com.cas.sim.tis.action.ElecCompAction;
 import com.cas.sim.tis.anno.JmeThread;
 import com.cas.sim.tis.entity.ElecComp;
 import com.cas.sim.tis.entity.TypicalCase;
-import com.cas.sim.tis.util.HTTPUtils;
 import com.cas.sim.tis.util.JmeUtil;
 import com.cas.sim.tis.util.SpringUtil;
 import com.cas.sim.tis.view.controller.PageController;
-import com.cas.sim.tis.xml.util.JaxbUtil;
 import com.jme3.asset.ModelKey;
 import com.jme3.input.MouseInput;
 import com.jme3.input.controls.ActionListener;
@@ -160,48 +154,7 @@ public class TypicalCaseState extends BaseState {
 		if (archive == null) {
 			return;
 		}
-		ElecCompAction action = SpringUtil.getBean(ElecCompAction.class);
-
-//		一、开始加载元器件
-		archive.getCompList().forEach(c -> {
-//			1、根据元器件型号（model字段），查找数据库中的元器件实体对象
-			ElecComp elecComp = action.getElecComp(c.getModel());
-
-//			2、加载模型，同时设置好坐标与旋转
-			Future<Node> task = app.enqueue((Callable<Node>) () -> {
-				return (Node) loadAsset(new ModelKey(elecComp.getMdlPath()));
-			});
-			Node load = null;
-			try {
-				load = task.get();
-			} catch (Exception e) {
-				LOG.error("无法加载元器件模型{}:{}", elecComp.getMdlPath(), e);
-				throw new RuntimeException(e);
-			}
-//			设置transform信息：location、rotation
-			load.setLocalTranslation(c.getLocation());
-			load.setLocalRotation(c.getRotation());
-			load.scale(25);
-			root.attachChild(load);
-
-//			3、初始化元器件逻辑对象
-			URL cfgUrl = SpringUtil.getBean(HTTPUtils.class).getUrl(elecComp.getCfgPath());
-			ElecCompDef def = JaxbUtil.converyToJavaBean(cfgUrl, ElecCompDef.class);
-			def.bindModel(load);
-
-//			4、将读取到的元器件放入电路板中。
-			circuitState.bindElecCompEvent(c.getTagName(), def);
-		});
-//		FIXME
-////		给元器件模型加上监听
-//		taggedCompMap.values().forEach(comp -> {
-//			addListener(comp.getSpatial(), new TypicalCaseCompListener(comp));
-////			给元器件中的连接头模型添加监听
-//			comp.getTerminalList().forEach(t -> addListener(t.getSpatial(), new TypicalCaseTermianlListener(t)));
-//		});
-
-//		元器件放置完成后，用导线连接。
-//		circuitState.bindWires(archive.getWireList());
+		circuitState.read(archive);
 	}
 
 	/**

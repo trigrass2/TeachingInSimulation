@@ -1,5 +1,7 @@
 package com.cas.circuit.vo.archive;
 
+import java.util.UUID;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -17,7 +19,7 @@ public class ElecCompProxy {
 	private String model;
 //	元器件ID
 	@XmlAttribute
-	private String tagName;
+	private String uuid;
 
 //	摆放位置
 	@XmlAttribute
@@ -37,12 +39,11 @@ public class ElecCompProxy {
 		this.model = model;
 	}
 
-	public String getTagName() {
-		return tagName;
-	}
-
-	public void setTagName(String tagName) {
-		this.tagName = tagName;
+	public String getUuid() {
+		if (uuid == null) {
+			uuid = UUID.randomUUID().toString();
+		}
+		return uuid;
 	}
 
 	public Vector3f getLocation() {

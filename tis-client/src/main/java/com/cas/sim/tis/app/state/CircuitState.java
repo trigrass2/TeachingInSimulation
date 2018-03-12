@@ -1,11 +1,12 @@
 package com.cas.sim.tis.app.state;
 
+import java.net.URL;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
+import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 
@@ -17,36 +18,41 @@ import com.cas.circuit.vo.Terminal;
 import com.cas.circuit.vo.Wire;
 import com.cas.circuit.vo.archive.ElecCompProxy;
 import com.cas.circuit.vo.archive.WireProxy;
+import com.cas.sim.tis.action.ElecCompAction;
 import com.cas.sim.tis.action.TypicalCaseAction;
 import com.cas.sim.tis.app.event.MouseEvent;
 import com.cas.sim.tis.app.event.MouseEventAdapter;
+import com.cas.sim.tis.entity.ElecComp;
 import com.cas.sim.tis.entity.TypicalCase;
+import com.cas.sim.tis.util.HTTPUtils;
 import com.cas.sim.tis.util.JmeUtil;
 import com.cas.sim.tis.util.SpringUtil;
+import com.cas.sim.tis.xml.util.JaxbUtil;
+import com.jme3.asset.ModelKey;
 import com.jme3.collision.CollisionResult;
 import com.jme3.input.MouseInput;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.AnalogListener;
 import com.jme3.input.controls.MouseAxisTrigger;
 import com.jme3.input.controls.MouseButtonTrigger;
-import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
-import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Line;
-
-import jme3tools.optimize.GeometryBatchFactory;
 
 public class CircuitState extends BaseState {
 //	导线工连接头接出的最小长度
 	private static final float minLen = 0.3f;
 //	导线与电路板的最小距离
 	private static final float minHeight = 0.1f;
+//	导线颜色
+	private static ColorRGBA color = ColorRGBA.Black;
+//	导线半径
+	private static float width = 0.01f;
 
 	static enum State {
 		Starting, Mid, Ending
@@ -69,12 +75,12 @@ public class CircuitState extends BaseState {
 	private Vector3f dir;
 	private Vector3f midAxis;
 	Quaternion roll90 = new Quaternion().fromAngleNormalAxis(FastMath.HALF_PI, Vector3f.UNIT_Y);
-	private ColorRGBA color = ColorRGBA.Black;
-	private float width = 5;
 
 	private TypicalCase typicalCase;
-	private Map<String, ElecCompDef> taggedCompMap = new HashMap<>();
-	private @Nullable CollisionResult collision;
+	private List<ElecCompDef> compList = new ArrayList<>();
+
+	@Nullable
+	private CollisionResult collision;
 
 	private Geometry desktop;
 
@@ -85,22 +91,18 @@ public class CircuitState extends BaseState {
 		desktop = (Geometry) root.getChild("Circuit-Desktop");
 	}
 
+	public static void setColor(ColorRGBA color) {
+		CircuitState.color = color;
+	}
+
+	public static void setWidth(float width) {
+//		考虑模型的显示比例。
+		CircuitState.width = width / 500;
+	}
+
 	@Override
 	protected void initializeLocal() {
 		bindCircuitBoardEvents();
-	}
-
-	private Geometry createLineGeo(Mesh line) {
-		Geometry geom = new Geometry("TempWire", line);
-
-		Material ballMat = new Material(assetManager, "Common/MatDefs/Light/Lighting.j3md");
-		ballMat.setColor("Diffuse", color);
-		ballMat.setFloat("Shininess", 10f);
-		ballMat.setColor("Specular", ColorRGBA.White);
-		ballMat.setBoolean("UseMaterialColors", true);
-		ballMat.getAdditionalRenderState().setLineWidth(width);
-		geom.setMaterial(ballMat);
-		return geom;
 	}
 
 	private void bindCircuitBoardEvents() {
@@ -189,7 +191,7 @@ public class CircuitState extends BaseState {
 		midLine1.getStart().set(startPoint);
 //		midLine1.getEnd().set(arr[3], arr[4], arr[5]);
 		midLine2 = new Line(startPoint, endPoint);
-		wireNode.attachChild(createLineGeo(midLine2));
+		wireNode.attachChild(JmeUtil.createLineGeo(assetManager, midLine2, color));
 
 		startLine1 = null;
 		startLine2 = null;
@@ -207,7 +209,7 @@ public class CircuitState extends BaseState {
 		midLine1.getStart().set(startPoint);
 		//
 		midLine2 = new Line(startPoint, endPoint);
-		wireNode.attachChild(createLineGeo(midLine2));
+		wireNode.attachChild(JmeUtil.createLineGeo(assetManager, midLine2, color));
 
 		midAxis = roll90.mult(midAxis);
 	}
@@ -239,8 +241,8 @@ public class CircuitState extends BaseState {
 			midLine1.updatePoints(midLine1.getStart(), last4);
 			midLine2.updatePoints(last4, last3);
 //			另外，还需要两根线
-			wireNode.attachChild(createLineGeo(new Line(last3, last2)));
-			wireNode.attachChild(createLineGeo(new Line(last2, dest)));
+			wireNode.attachChild(JmeUtil.createLineGeo(assetManager, new Line(last3, last2), color));
+			wireNode.attachChild(JmeUtil.createLineGeo(assetManager, new Line(last2, dest), color));
 		} else {
 //			倒数第二个点是midLine1上任意一点在dir上的投影点，这里取startPoint
 			Vector3f last2 = dest.add(startPoint.subtract(dest).project(dir));
@@ -250,28 +252,46 @@ public class CircuitState extends BaseState {
 			midLine1.updatePoints(midLine1.getStart(), last3);
 			midLine2.updatePoints(last3, last2);
 //			另外，还需要一根线
-			wireNode.attachChild(createLineGeo(new Line(last2, dest)));
+			wireNode.attachChild(JmeUtil.createLineGeo(assetManager, new Line(last2, dest), color));
 		}
 
 		wire.bind(t);
 		wireList.add(wire);
+		List<Vector3f> pointList = getPointList();
+		wire.getProxy().getPointList().addAll(pointList);
 
-		List<Spatial> children = wireNode.getChildren();
-//		矫正坐标点
-		Line line = null;
-		for (int i = 0; i < children.size(); i++) {
-			Geometry geo = (Geometry) children.get(i);
-			Line mesh = (Line) geo.getMesh();
+		List<Spatial> realLineList = JmeUtil.createCylinderLine(assetManager, pointList, width, color);
+//		其实：wireNode.getChildren()是SafeArrayList类型，自带同步功能。不会出现java.util.ConcurrentModificationException
+		wireNode.detachAllChildren();
+//		将所有的realLine加入到wireNode节点中
+		realLineList.forEach(wireNode::attachChild);
 
-			if (line != null) {
-				System.out.printf("%s==%s?%s\r\n", JmeUtil.getLineStart(mesh), JmeUtil.getLineEnd(line), JmeUtil.getLineStart(mesh).equals(JmeUtil.getLineEnd(line)));
-			}
-			line = mesh;
-		}
 		wire = null;
 		wireNode = null;
 
 		clean();
+	}
+
+//	获取当前导线的点坐标集合
+	@Nonnull
+	private List<Vector3f> getPointList() {
+		List<Vector3f> result = new ArrayList<>();
+
+		List<Spatial> children = wireNode.getChildren();
+		for (int i = 0; i < children.size() - 1; i++) {
+			Spatial spatial = (Spatial) children.get(i);
+			Geometry geo = (Geometry) spatial;
+			Line mesh = (Line) geo.getMesh();
+			result.add(JmeUtil.getLineStart(mesh));
+		}
+//		最后一段线
+		Spatial spatial = children.get(children.size() - 1);
+		Geometry geo = (Geometry) spatial;
+		Line mesh = (Line) geo.getMesh();
+		result.add(JmeUtil.getLineStart(mesh));
+		result.add(JmeUtil.getLineEnd(mesh));
+
+		return result;
 	}
 
 	private void clean() {
@@ -291,7 +311,7 @@ public class CircuitState extends BaseState {
 	}
 
 	public void bindElecCompEvent(String tagName, ElecCompDef def) {
-		taggedCompMap.put(tagName, def);
+		compList.add(def);
 
 		// 1、连接头监听事件
 		def.getTerminalList().forEach(t -> addListener(t.getSpatial(), new MouseEventAdapter() {
@@ -319,6 +339,10 @@ public class CircuitState extends BaseState {
 				root.attachChild(wireNode);
 //				创建一个导线逻辑对象
 				wire = new Wire();
+//				导线颜色和线宽
+				wire.getProxy().setColor(color);
+				wire.getProxy().setWidth(width);
+
 //				将模型与逻辑对象绑定
 				wire.setSpatial(wireNode);
 //				导线一头连接在当前连接头上
@@ -335,9 +359,9 @@ public class CircuitState extends BaseState {
 				startLine2 = new Line(dest, dest);
 				startLine3 = new Line(dest, dest);
 
-				wireNode.attachChild(createLineGeo(startLine1));
-				wireNode.attachChild(createLineGeo(startLine2));
-				wireNode.attachChild(createLineGeo(startLine3));
+				wireNode.attachChild(JmeUtil.createLineGeo(assetManager, startLine1, color));
+				wireNode.attachChild(JmeUtil.createLineGeo(assetManager, startLine2, color));
+				wireNode.attachChild(JmeUtil.createLineGeo(assetManager, startLine3, color));
 			}
 		}));
 		// 2、插孔监听事件
@@ -365,47 +389,77 @@ public class CircuitState extends BaseState {
 		});
 	}
 
-	public void bindWires(@Nonnull List<WireProxy> wireList) {
-		wireList.forEach(w -> {
-			ElecCompDef taggedComp1 = taggedCompMap.get(w.getTagName1());
-			Terminal term1 = taggedComp1.getTerminal(w.getTernimalId1());
+	public void read(Archive archive) {
+		readEleccomps(archive.getCompList());
+		readWires(archive.getWireList());
+	}
 
-			ElecCompDef taggedComp2 = taggedCompMap.get(w.getTagName2());
-			Terminal term2 = taggedComp2.getTerminal(w.getTernimalId2());
+	private void readEleccomps(@Nonnull List<ElecCompProxy> compProxyList) {
+		ElecCompAction action = SpringUtil.getBean(ElecCompAction.class);
+
+//		一、开始加载元器件
+		compProxyList.forEach(proxyComp -> {
+//			1、根据元器件型号（model字段），查找数据库中的元器件实体对象
+			ElecComp elecComp = action.getElecComp(proxyComp.getModel());
+
+//			2、加载模型，同时设置好坐标与旋转
+			Future<Node> task = app.enqueue((Callable<Node>) () -> {
+				return (Node) loadAsset(new ModelKey(elecComp.getMdlPath()));
+			});
+			Node load = null;
+			try {
+				load = task.get();
+			} catch (Exception e) {
+				LOG.error("无法加载元器件模型{}:{}", elecComp.getMdlPath(), e);
+				throw new RuntimeException(e);
+			}
+//			设置transform信息：location、rotation
+			load.setLocalTranslation(proxyComp.getLocation());
+			load.setLocalRotation(proxyComp.getRotation());
+			load.scale(25);
+			root.attachChild(load);
+
+//			3、初始化元器件逻辑对象
+			URL cfgUrl = SpringUtil.getBean(HTTPUtils.class).getUrl(elecComp.getCfgPath());
+			ElecCompDef def = JaxbUtil.converyToJavaBean(cfgUrl, ElecCompDef.class);
+			def.bindModel(load);
+			def.setProxy(proxyComp);
+
+//			4、将读取到的元器件放入电路板中。
+			bindElecCompEvent(proxyComp.getUuid(), def);
+		});
+	}
+
+	private void readWires(@Nonnull List<WireProxy> wireProxyList) {
+		Map<String, ElecCompDef> compMap = compList.stream().collect(Collectors.toMap(x -> x.getProxy().getUuid(), x -> x));
+
+		wireProxyList.forEach(proxy -> {
+			ElecCompDef taggedComp1 = compMap.get(proxy.getComp1Uuid());
+			Terminal term1 = taggedComp1.getTerminal(proxy.getTernimal1Id());
+
+			ElecCompDef taggedComp2 = compMap.get(proxy.getComp2Uuid());
+			Terminal term2 = taggedComp2.getTerminal(proxy.getTernimal2Id());
 
 			Wire wire = new Wire();
+			wire.setProxy(proxy);
+
 			wire.bind(term1);
 			wire.bind(term2);
 
-			Future<Geometry> task = app.enqueue((Callable<Geometry>) () -> {
-				List<Geometry> geoList = new ArrayList<>();
-				w.getPointList().forEach(a -> {
-					// 创建导线的某一段导线。
-//					Line line = new Line(a[0], a[1]);
-//					geoList.add(new Geometry("", line));
-				});
-				Mesh outMesh = new Mesh();
-				GeometryBatchFactory.mergeGeometries(geoList, outMesh);
-				// 创建一根导线
-				Geometry lineGeo = new Geometry("Wire", outMesh);
-				// TODO 给导线上色、调整粗细
+			Future<Node> task = app.enqueue((Callable<Node>) () -> {
+				Node wireNode = new Node();
+				List<Spatial> lineList = JmeUtil.createCylinderLine(assetManager, proxy.getPointList(), proxy.getWidth(), proxy.getColor());
+				lineList.forEach(wireNode::attachChild);
 
-				return lineGeo;
+				root.attachChild(wireNode);
+				return wireNode;
 			});
 			try {
-				task.get();
+				wire.setSpatial(task.get());
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		});
-	}
-
-	public void setColor(ColorRGBA color) {
-		this.color = color;
-	}
-
-	public void setWidth(float width) {
-		this.width = width;
 	}
 
 	public void save() {
@@ -413,40 +467,44 @@ public class CircuitState extends BaseState {
 //		保存元器件列表
 		saveEleccomps(archive);
 //		保存导线
-//		saveWires(archive);
+		saveWires(archive);
 
 		SpringUtil.getBean(TypicalCaseAction.class).save(typicalCase, archive);
 	}
 
 	private void saveEleccomps(Archive archive) {
-		taggedCompMap.entrySet().forEach(entry -> {
-			ElecCompProxy compProxy = new ElecCompProxy();
-			compProxy.setTagName(entry.getKey());
-			compProxy.setModel(entry.getValue().getModel());
-			compProxy.setLocation(entry.getValue().getSpatial().getLocalTranslation());
-			compProxy.setRotation(entry.getValue().getSpatial().getLocalRotation());
+		compList.forEach(comp -> {
+			ElecCompProxy compProxy = comp.getProxy();
+
+			compProxy.setModel(comp.getModel());
+			compProxy.setLocation(comp.getSpatial().getLocalTranslation());
+			compProxy.setRotation(comp.getSpatial().getLocalRotation());
 			archive.getCompList().add(compProxy);
 		});
 	}
 
 	private void saveWires(Archive archive) {
 		wireList.forEach(wire -> {
-			WireProxy wireProxy = new WireProxy();
-			wireProxy.setWidth(wire.getWidth());
-			wireProxy.setNumber(wire.getWireNum());
-			wireProxy.setColor(wire.getColor());
-			wireProxy.setTagName1(wire.getTerm1().getElecComp().getTagName());
-			wireProxy.setTernimalId1(wire.getTerm1().getId());
-			wireProxy.setTagName2(wire.getTerm2().getElecComp().getTagName());
-			wireProxy.setTernimalId2(wire.getTerm2().getId());
+			WireProxy wireProxy = wire.getProxy();
 
+			wireProxy.setNumber(wire.getWireNum());
+			wireProxy.setComp1Uuid(wire.getTerm1().getElecComp().getProxy().getUuid());
+			wireProxy.setTernimal1Id(wire.getTerm1().getId());
+			wireProxy.setComp2Uuid(wire.getTerm2().getElecComp().getProxy().getUuid());
+			wireProxy.setTernimal2Id(wire.getTerm2().getId());
+//			
 			archive.getWireList().add(wireProxy);
 		});
 	}
 
 	@Override
 	public void cleanup() {
+//		除了desktop，其余模型全部清除
 		root.detachAllChildren();
+		if (desktop != null) {
+			root.attachChild(desktop);
+		}
+
 		super.cleanup();
 	}
 }

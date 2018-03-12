@@ -1,6 +1,7 @@
 package com.cas.sim.tis.util;
 
 import java.nio.FloatBuffer;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
@@ -16,6 +17,7 @@ import com.jme3.material.MatParam;
 import com.jme3.material.Material;
 import com.jme3.material.RenderState.BlendMode;
 import com.jme3.math.ColorRGBA;
+import com.jme3.math.Matrix3f;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Ray;
 import com.jme3.math.Vector2f;
@@ -23,11 +25,13 @@ import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
 import com.jme3.renderer.queue.RenderQueue.Bucket;
 import com.jme3.scene.Geometry;
+import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.VertexBuffer;
 import com.jme3.scene.Spatial.CullHint;
 import com.jme3.scene.VertexBuffer.Type;
+import com.jme3.scene.shape.Cylinder;
 import com.jme3.scene.shape.Line;
 import com.jme3.scene.shape.Sphere;
 import com.jme3.util.BufferUtils;
@@ -429,4 +433,55 @@ public final class JmeUtil {
 		float[] arr = BufferUtils.getFloatArray((FloatBuffer) position.getDataReadOnly());
 		return new Vector3f(arr[3], arr[4], arr[5]);
 	}
+
+	public static Geometry createLineGeo(AssetManager assetManager, Mesh line, ColorRGBA color) {
+		Geometry geom = new Geometry("TempWire", line);
+
+		Material ballMat = new Material(assetManager, "Common/MatDefs/Light/Lighting.j3md");
+		ballMat.setColor("Diffuse", color);
+		ballMat.setFloat("Shininess", 10f);
+		ballMat.setColor("Specular", ColorRGBA.White);
+		ballMat.setBoolean("UseMaterialColors", true);
+//		ballMat.getAdditionalRenderState().setLineWidth(width);
+		geom.setMaterial(ballMat);
+		return geom;
+	}
+
+	// 使用Cylinder
+	public static List<Spatial> createCylinderLine(AssetManager assetManager, List<Vector3f> pointList, float redius, ColorRGBA color) {
+
+		List<Spatial> realLineList = new ArrayList<>();
+//		两点之间穿件一条线
+//		为了方便，将pointList集合转换为List<Vector3f[]>, Vector3f[]表示线段的两点
+		List<Vector3f[]> lineList = new ArrayList<>();
+		for (int i = 0; i < pointList.size() - 1; i++) {
+			lineList.add(new Vector3f[2]);
+		}
+		for (int i = 0; i < pointList.size() - 1; i++) {
+			lineList.get(i)[0] = pointList.get(i);
+		}
+		for (int i = 0; i < pointList.size() - 1; i++) {
+			lineList.get(i)[1] = pointList.get(i + 1);
+		}
+
+		lineList.forEach(line -> {
+			// 获取导线起始点和方向
+			Vector3f start = line[0];
+			Vector3f end = line[1];
+			Vector3f lineDir = end.subtract(start);
+			// 创建一段导线实体模型width / 500
+			Cylinder mesh = new Cylinder(6, 6, redius, start.distance(end));
+			Spatial real = createLineGeo(assetManager, mesh, color);
+			// 设置导线坐标
+			real.setLocalTranslation(start.add(end.subtract(start).mult(0.5f)));
+			// 设置导线旋转量。
+			Matrix3f rotation = new Matrix3f();
+			// 注意：Cylinder默认是水平方向的，任取X或Z轴作为参考。计算与导线方向lineDir的夹角
+			rotation.fromAngleAxis(lineDir.angleBetween(Vector3f.UNIT_Z), lineDir.cross(Vector3f.UNIT_Z));
+			real.setLocalRotation(rotation);
+			realLineList.add(real);
+		});
+		return realLineList;
+	}
+
 }
