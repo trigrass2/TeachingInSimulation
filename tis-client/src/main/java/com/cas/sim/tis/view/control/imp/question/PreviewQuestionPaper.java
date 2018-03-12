@@ -83,6 +83,7 @@ public class PreviewQuestionPaper extends HBox implements IContent {
 	private Integer rid;
 	private boolean editable;
 	private boolean readonly;
+	private boolean showReference;
 
 	public PreviewQuestionPaper(Integer rid, boolean editable) {
 		loadFXML();
@@ -133,8 +134,10 @@ public class PreviewQuestionPaper extends HBox implements IContent {
 			int role = Session.get(Session.KEY_LOGIN_ROLE);
 			if (RoleConst.ADMIN == role) {
 				this.submits.getChildren().removeAll(practiceBtn, publishBtn);
+				showReference = true;
 			} else if (RoleConst.TEACHER == role) {
 				this.submits.getChildren().removeAll(practiceBtn);
+				showReference = true;
 			} else if (RoleConst.STUDENT == role) {
 				this.submits.getChildren().removeAll(publishBtn);
 			}
@@ -173,7 +176,7 @@ public class PreviewQuestionPaper extends HBox implements IContent {
 		for (int i = 0; i < questions.size(); i++) {
 			int index = i + 1;
 			Question question = questions.get(i);
-			PreviewQuestionItem item = new PreviewQuestionItem(index, QuestionType.getQuestionType(question.getType()), question, editable);
+			PreviewQuestionItem item = new PreviewQuestionItem(index, QuestionType.getQuestionType(question.getType()), question, showReference);
 			paper.getChildren().add(item);
 		}
 		ObservableList<Data> datas = FXCollections.observableArrayList(//
@@ -423,7 +426,7 @@ public class PreviewQuestionPaper extends HBox implements IContent {
 			question.setOptions(options);
 			question.setAnalysis(analysis);
 			question.setPoint(Float.parseFloat(point));
-			question.setReference(analysis);
+			question.setReference(reference);
 			question.setType(QuestionType.CHOICE.getType());
 			question.setCreator(Session.get(Session.KEY_LOGIN_ID));
 			questions.add(question);
@@ -432,7 +435,7 @@ public class PreviewQuestionPaper extends HBox implements IContent {
 	}
 
 	private boolean loadJudgment(File source, List<Question> questions) {
-		Object[][] result = ExcelUtil.readExcelSheet(source.getAbsolutePath(), QuestionType.JUDGMENT.getSheetName(), 3);
+		Object[][] result = ExcelUtil.readExcelSheet(source.getAbsolutePath(), QuestionType.JUDGMENT.getSheetName(), 4);
 		for (int i = 2; i < result.length; i++) {
 			Object descObj = result[i][0];
 			if (Util.isEmpty(descObj)) {
@@ -465,7 +468,7 @@ public class PreviewQuestionPaper extends HBox implements IContent {
 				return false;
 			}
 			String point = String.valueOf(pointObj).trim();
-			if (Util.isNumeric(point)) {
+			if (!Util.isNumeric(point)) {
 				String reason = MsgUtil.getMessage("alert.warning.not.number", MsgUtil.getMessage("question.point"));
 				AlertUtil.showAlert(AlertType.WARNING, MsgUtil.getMessage("excel.import.error", i + 1, 3, reason));
 				return false;
@@ -482,7 +485,7 @@ public class PreviewQuestionPaper extends HBox implements IContent {
 			question.setTitle(title);
 			question.setAnalysis(analysis);
 			question.setPoint(Float.parseFloat(point));
-			question.setReference(analysis);
+			question.setReference(reference);
 			question.setType(QuestionType.JUDGMENT.getType());
 			question.setCreator(Session.get(Session.KEY_LOGIN_ID));
 			questions.add(question);
@@ -491,7 +494,7 @@ public class PreviewQuestionPaper extends HBox implements IContent {
 	}
 
 	private boolean loadBlank(File source, List<Question> questions) {
-		Object[][] result = ExcelUtil.readExcelSheet(source.getAbsolutePath(), QuestionType.BLANK.getSheetName(), 3);
+		Object[][] result = ExcelUtil.readExcelSheet(source.getAbsolutePath(), QuestionType.BLANK.getSheetName(), 4);
 		for (int i = 2; i < result.length; i++) {
 			Object descObj = result[i][0];
 			if (Util.isEmpty(descObj)) {
@@ -524,7 +527,7 @@ public class PreviewQuestionPaper extends HBox implements IContent {
 				return false;
 			}
 			String point = String.valueOf(pointObj).replace("\r\n", "|").replace("\n", "|").trim();
-			if (Util.isNumeric(point)) {
+			if (!Util.isNumeric(point)) {
 				String reason = MsgUtil.getMessage("alert.warning.not.number", MsgUtil.getMessage("question.point"));
 				AlertUtil.showAlert(AlertType.WARNING, MsgUtil.getMessage("excel.import.error", i + 1, 2, reason));
 				return false;
@@ -541,7 +544,7 @@ public class PreviewQuestionPaper extends HBox implements IContent {
 			question.setTitle(title);
 			question.setAnalysis(analysis);
 			question.setPoint(Float.parseFloat(point));
-			question.setReference(analysis);
+			question.setReference(reference);
 			question.setType(QuestionType.BLANK.getType());
 			question.setCreator(Session.get(Session.KEY_LOGIN_ID));
 			questions.add(question);
@@ -574,7 +577,7 @@ public class PreviewQuestionPaper extends HBox implements IContent {
 			Question question = new Question();
 			question.setRelateId(rid);
 			question.setTitle(title);
-			question.setReference(analysis);
+			question.setAnalysis(analysis);
 			question.setType(QuestionType.SUBJECTIVE.getType());
 			question.setCreator(Session.get(Session.KEY_LOGIN_ID));
 			questions.add(question);
