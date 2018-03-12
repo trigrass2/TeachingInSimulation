@@ -38,7 +38,7 @@ public enum ResourceType {
 	/**
 	 * 在备案中使用的元件认知、典型案例、故障维修的图标
 	 */
-	LINK(8, "iconfont.svg.link", Color.web("#22678f"), null, false);
+	LINK(8, "iconfont.svg.link", Color.web("#22678f"), new String[] {}, false);
 
 //	资源类型代号
 	private int type;
@@ -94,7 +94,7 @@ public enum ResourceType {
 		}
 		for (ResourceType type : values()) {
 			for (String string : type.suffixs) {
-				if (string.contains(suffix)) {
+				if (string.contains(suffix.toLowerCase())) {
 					return type.type;
 				}
 			}

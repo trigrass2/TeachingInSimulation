@@ -35,7 +35,7 @@ public class OfficeConverter {
 		try {
 			String ftpHome = userManager.getUserByName(userManager.getAdminName()).getHomeDirectory();
 			String des = src.substring(0, src.lastIndexOf(".")) + ".pdf";
-			converter(ftpHome + ResourceConsts.FTP_RES_PATH + src, ftpHome + ResourceConsts.FTP_CONVERT_PATH + des);
+			converter(ftpHome + File.separator + ResourceConsts.FTP_RES_PATH + src, ftpHome + File.separator + ResourceConsts.FTP_CONVERT_PATH + des);
 		} catch (FtpException e) {
 			e.printStackTrace();
 		}
