@@ -27,6 +27,8 @@ public class ElecComp implements Serializable {
 
 	private String cfgPath;
 
+	private String animPath;
+
 	public Integer getId() {
 		return id;
 	}
@@ -73,6 +75,14 @@ public class ElecComp implements Serializable {
 
 	public void setCfgPath(String cfgPath) {
 		this.cfgPath = cfgPath;
+	}
+
+	public String getAnimPath() {
+		return animPath;
+	}
+
+	public void setAnimPath(String animPath) {
+		this.animPath = animPath;
 	}
 
 	@Override
