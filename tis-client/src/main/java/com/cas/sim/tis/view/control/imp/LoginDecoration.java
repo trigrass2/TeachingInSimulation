@@ -29,7 +29,7 @@ import javafx.util.Duration;
 public class LoginDecoration extends HBox {
 
 	private Region settingView;
-	
+
 	public LoginDecoration() {
 		FXMLLoader loader = new FXMLLoader();
 		URL fxmlUrl = this.getClass().getResource("/view/LoginDecoration.fxml");
@@ -60,13 +60,13 @@ public class LoginDecoration extends HBox {
 		rotateTransition.setAxis(new Point3D(0, 1, 0));
 		rotateTransition.setFromAngle(0);
 		rotateTransition.setToAngle(90);
-		rotateTransition.setOnFinished(e->{
+		rotateTransition.setOnFinished(e -> {
 //			Application.showView(NetworkView.class);
-			
+
 			Parent root = getScene().getRoot();
 
 			getScene().setRoot(settingView);
-			
+
 			RotateTransition r = new RotateTransition(Duration.millis(200), root);
 			r.setNode(root);
 			r.setAxis(new Point3D(0, 1, 0));
@@ -79,12 +79,8 @@ public class LoginDecoration extends HBox {
 
 	@FXML
 	private void close() {
-		AlertUtil.showConfirm(MsgUtil.getMessage("alert.confirmation.exit"), resp -> {
-			if (resp == ButtonType.YES) {
-				Platform.exit();
-				System.exit(0);
-			}
-		});
+		Platform.exit();
+		System.exit(0);
 	}
 
 	public void setSettingView(Region settingView) {

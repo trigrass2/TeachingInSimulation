@@ -12,14 +12,14 @@
 	<VBox VBox.vgrow="ALWAYS" mouseTransparent="true" />
 
 	<HBox prefHeight="50" spacing="10">
-		<Label fx:id="draw" text="%rec.lbl.zoom.in" styleClass="recognize-btn"><!-- 电路图 -->
+		<Label fx:id="draw" text="%typical.case.drawings" styleClass="recognize-btn"><!-- 电路图 -->
 			<graphic>
-				<SVGGlyph name="iconfont.svg.image" size="16" fill="WHITE" />
+				<SVGGlyph name="iconfont.svg.drawing" size="20" fill="WHITE" />
 			</graphic>
 		</Label>
-		<Label fx:id="wire" text="%rec.lbl.zoom.in" styleClass="recognize-btn"><!-- 导线 -->
+		<Label fx:id="wire" text="%typical.case.wires" styleClass="recognize-btn"><!-- 导线 -->
 			<graphic>
-				<SVGGlyph name="iconfont.svg.image" size="16" fill="WHITE" />
+				<SVGGlyph name="iconfont.svg.wire" size="20" fill="WHITE" />
 			</graphic>
 		</Label>
 	</HBox>
