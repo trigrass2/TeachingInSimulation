@@ -9,6 +9,7 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import com.cas.circuit.xml.adapter.ColorRGBAAdapter;
+import com.cas.circuit.xml.adapter.Vector3fAdapter;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 
@@ -16,16 +17,17 @@ import com.jme3.math.Vector3f;
 public class WireProxy {
 //	元器件1的tagName
 	@XmlAttribute
-	private String tagName1;
+	private String comp1Uuid;
 	@XmlAttribute
-	private String ternimalId1;
+	private String ternimal1Id;
 
 //	元器件2的tagName
 	@XmlAttribute
-	private String tagName2;
+	private String comp2Uuid;
 	@XmlAttribute
-	private String ternimalId2;
-
+	private String ternimal2Id;
+	@XmlAttribute
+	@XmlJavaTypeAdapter(value = Vector3fAdapter.class)
 	private List<Vector3f> pointList = new ArrayList<>();
 
 	@XmlAttribute
@@ -35,38 +37,43 @@ public class WireProxy {
 	@XmlJavaTypeAdapter(value = ColorRGBAAdapter.class)
 	private ColorRGBA color = ColorRGBA.Black;
 
-	private float width = 1;
+	@XmlAttribute
+	private Float width;
 
-	public String getTagName1() {
-		return tagName1;
+	public String getComp1Uuid() {
+		return comp1Uuid;
 	}
 
-	public void setTagName1(String tagName1) {
-		this.tagName1 = tagName1;
+	public void setComp1Uuid(String comp1Uuid) {
+		this.comp1Uuid = comp1Uuid;
 	}
 
-	public String getTernimalId1() {
-		return ternimalId1;
+	public String getTernimal1Id() {
+		return ternimal1Id;
 	}
 
-	public void setTernimalId1(String ternimalId1) {
-		this.ternimalId1 = ternimalId1;
+	public void setTernimal1Id(String ternimal1Id) {
+		this.ternimal1Id = ternimal1Id;
 	}
 
-	public String getTagName2() {
-		return tagName2;
+	public String getComp2Uuid() {
+		return comp2Uuid;
 	}
 
-	public void setTagName2(String tagName2) {
-		this.tagName2 = tagName2;
+	public void setComp2Uuid(String comp2Uuid) {
+		this.comp2Uuid = comp2Uuid;
 	}
 
-	public String getTernimalId2() {
-		return ternimalId2;
+	public String getTernimal2Id() {
+		return ternimal2Id;
 	}
 
-	public void setTernimalId2(String ternimalId2) {
-		this.ternimalId2 = ternimalId2;
+	public void setTernimal2Id(String ternimal2Id) {
+		this.ternimal2Id = ternimal2Id;
+	}
+
+	public void setPointList(List<Vector3f> pointList) {
+		this.pointList = pointList;
 	}
 
 	public ColorRGBA getColor() {
@@ -77,16 +84,16 @@ public class WireProxy {
 		this.color = color;
 	}
 
-	public float getWidth() {
+	public Float getWidth() {
 		return width;
+	}
+
+	public void setWidth(Float width) {
+		this.width = width;
 	}
 
 	public List<Vector3f> getPointList() {
 		return pointList;
-	}
-
-	public void setWidth(float width) {
-		this.width = width;
 	}
 
 	public String getNumber() {

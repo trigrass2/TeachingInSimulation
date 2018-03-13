@@ -89,8 +89,8 @@ public class ElecCompState extends BaseState {
 	public void setElecComp(ElecComp elecComp) {
 //		clean up
 		cleanRoot();
-//		加载模型
-		Spatial model = loadAsset(new ModelKey(elecComp.getMdlPath()));
+//		加载模型(认知模块使用AnimPath的model)
+		Spatial model = loadAsset(new ModelKey(elecComp.getAnimPath()));
 
 //		PBR能在系统中被照亮
 //		MikktspaceTangentGenerator.generate(model);

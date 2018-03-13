@@ -10,6 +10,7 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import javax.annotation.Nonnull;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -24,6 +25,7 @@ import com.cas.circuit.ElecCompCPU;
 import com.cas.circuit.TermTeam;
 import com.cas.circuit.util.MesureResult;
 import com.cas.circuit.util.R;
+import com.cas.circuit.vo.archive.ElecCompProxy;
 import com.cas.circuit.xml.adapter.CompLogicAdapter;
 import com.jme3.scene.Node;
 import com.sun.tools.internal.xjc.runtime.ZeroOneBooleanAdapter;
@@ -96,6 +98,8 @@ public class ElecCompDef {// extends BaseVO<ElecCompDefPO> {
 //	标签名
 	private String tagName;
 
+	private ElecCompProxy proxy;
+
 	public ElecCompDef() {
 	}
 
@@ -141,6 +145,8 @@ public class ElecCompDef {// extends BaseVO<ElecCompDefPO> {
 				}
 			});
 		});
+
+		terminalList.forEach(t -> t.setElecComp(this));
 
 //		将所有连接头进行分类
 //		Key：分类的名称， List<Terminal>一组的连接头
@@ -444,5 +450,17 @@ public class ElecCompDef {// extends BaseVO<ElecCompDefPO> {
 
 	public void setTagName(String tagName) {
 		this.tagName = tagName;
+	}
+
+	public void setProxy(ElecCompProxy proxy) {
+		this.proxy = proxy;
+	}
+
+	@Nonnull
+	public ElecCompProxy getProxy() {
+		if (proxy == null) {
+			proxy = new ElecCompProxy();
+		}
+		return proxy;
 	}
 }
