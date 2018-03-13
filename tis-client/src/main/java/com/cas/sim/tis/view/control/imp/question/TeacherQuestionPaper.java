@@ -6,6 +6,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.cas.sim.tis.action.LibraryAnswerAction;
 import com.cas.sim.tis.action.LibraryPublishAction;
 import com.cas.sim.tis.action.QuestionAction;
@@ -42,6 +45,8 @@ import javafx.scene.text.Text;
  * @修改人 caowj
  */
 public class TeacherQuestionPaper extends HBox implements IContent {
+
+	private static final Logger LOG = LoggerFactory.getLogger(TeacherQuestionPaper.class);
 
 	@FXML
 	private Title title;
@@ -84,8 +89,10 @@ public class TeacherQuestionPaper extends HBox implements IContent {
 		loader.setResources(ResourceBundle.getBundle("i18n/messages"));
 		try {
 			loader.load();
+			LOG.debug("加载FXML界面{}完成", fxmlUrl);
 		} catch (IOException e) {
 			e.printStackTrace();
+			LOG.error("加载FXML界面{}失败，错误信息：{}", fxmlUrl, e.getMessage());
 		}
 	}
 
@@ -100,7 +107,7 @@ public class TeacherQuestionPaper extends HBox implements IContent {
 			tip.setTranslateX(e.getX());
 			tip.setTranslateY(e.getY());
 		});
-		
+
 		order.selectedToggleProperty().addListener((observe, oldVal, newVal) -> {
 			if (newVal == null) {
 				order.selectToggle(oldVal);

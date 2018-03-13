@@ -1,7 +1,5 @@
 package com.cas.sim.tis.services.impl;
 
-import java.util.Date;
-
 import org.springframework.stereotype.Service;
 
 import com.cas.sim.tis.entity.BrowseHistory;

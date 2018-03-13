@@ -4,8 +4,8 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-import com.cas.sim.tis.util.AlertUtil;
-import com.cas.sim.tis.util.MsgUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javafx.animation.RotateTransition;
 import javafx.application.Platform;
@@ -13,7 +13,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Point3D;
 import javafx.scene.Parent;
-import javafx.scene.control.ButtonType;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.stage.Stage;
@@ -28,6 +27,8 @@ import javafx.util.Duration;
  */
 public class LoginDecoration extends HBox {
 
+	private static final Logger LOG = LoggerFactory.getLogger(LoginDecoration.class);
+
 	private Region settingView;
 
 	public LoginDecoration() {
@@ -39,8 +40,10 @@ public class LoginDecoration extends HBox {
 		loader.setResources(ResourceBundle.getBundle("i18n/messages"));
 		try {
 			loader.load();
+			LOG.debug("加载FXML界面{}完成", fxmlUrl);
 		} catch (IOException e) {
 			e.printStackTrace();
+			LOG.error("加载FXML界面{}失败，错误信息：{}", fxmlUrl, e.getMessage());
 		}
 	}
 

@@ -190,6 +190,11 @@ public class ResourceList extends HBox implements IContent {
 		this.type = type;
 		this.creator = creator;
 
+		loadFXML();
+		initialize();
+	}
+
+	private void loadFXML() {
 		FXMLLoader loader = new FXMLLoader();
 		URL fxmlUrl = this.getClass().getResource("/view/resource/List.fxml");
 		loader.setLocation(fxmlUrl);
@@ -198,10 +203,11 @@ public class ResourceList extends HBox implements IContent {
 		loader.setResources(ResourceBundle.getBundle("i18n/messages"));
 		try {
 			loader.load();
+			LOG.debug("加载FXML界面{}完成", fxmlUrl);
 		} catch (IOException e) {
 			e.printStackTrace();
+			LOG.error("加载FXML界面{}失败，错误信息：{}", fxmlUrl, e.getMessage());
 		}
-		initialize();
 	}
 
 	/**

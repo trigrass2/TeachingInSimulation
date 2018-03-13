@@ -4,6 +4,9 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -14,7 +17,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.text.Text;
 
 public class HomeSelection extends HBox implements Initializable {
-
+	private static final Logger LOG = LoggerFactory.getLogger(HomeSelection.class);
 	@FXML
 	private ImageView icon;
 
@@ -32,8 +35,10 @@ public class HomeSelection extends HBox implements Initializable {
 		loader.setRoot(this);
 		try {
 			loader.load();
+			LOG.debug("加载FXML界面{}完成", fxmlUrl);
 		} catch (IOException e) {
 			e.printStackTrace();
+			LOG.error("加载FXML界面{}失败，错误信息：{}", fxmlUrl, e.getMessage());
 		}
 	}
 

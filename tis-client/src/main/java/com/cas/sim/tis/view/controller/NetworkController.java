@@ -36,7 +36,7 @@ import javafx.util.Duration;
  * @修改人 张振宇
  */
 public class NetworkController implements Initializable {
-	
+
 	private static final Logger LOG = LoggerFactory.getLogger(NetworkController.class);
 	@FXML
 	private VBox pane;
@@ -64,7 +64,7 @@ public class NetworkController implements Initializable {
 	private Properties prop = new Properties();
 
 	private Region loginScene;
-	
+
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		// 读取服务器信息配置
@@ -72,8 +72,9 @@ public class NetworkController implements Initializable {
 			prop.load(new FileInputStream("cfg.properties"));
 		} catch (IOException e) {
 			e.printStackTrace();
+			LOG.error("文件cfg.properties读取失败", e);
 		}
-		
+
 		baseIP.setText(prop.getProperty("server.base.address", "127.0.0.1"));
 		basePort.setText(prop.getProperty("server.base.port", "9000"));
 		ftpIP.setText(prop.getProperty("server.ftp.address", "127.0.0.1"));
@@ -81,7 +82,7 @@ public class NetworkController implements Initializable {
 		httpdIP.setText(prop.getProperty("server.httpd.address", "127.0.0.1"));
 		httpdPort.setText(prop.getProperty("server.httpd.port", "8082"));
 	}
-	
+
 	@FXML
 	public void ok() throws FileNotFoundException, IOException {
 		// 记录服务器信息
@@ -91,8 +92,8 @@ public class NetworkController implements Initializable {
 		prop.setProperty("server.ftp.port", ftpPort.getText());
 		prop.setProperty("server.httpd.address", httpdIP.getText());
 		prop.setProperty("server.httpd.port", httpdPort.getText());
-		
-		LOG.info("修改与服务器的连接配置，修改后的服务器地址:{}, 端口:{}", baseIP.getText(), basePort.getText());
+
+		LOG.info("修改与服务器的连接配置，修改后的主服务器地址：{}， 端口：{}；FTP服务器地址：{}，端口：{}；HTTPD服务器地址：{}，端口：{}", baseIP.getText(), basePort.getText(), ftpIP.getText(), ftpPort.getText(), httpdIP.getText(), httpdPort.getText());
 //		服务器信息保存
 		prop.store(new FileOutputStream("cfg.properties"), "");
 		back();
@@ -116,11 +117,11 @@ public class NetworkController implements Initializable {
 		rotateTransition.setToAngle(90);
 		rotateTransition.setOnFinished(e -> {
 //			Application.showView(LoginView.class);
-			
+
 			Parent root = pane.getScene().getRoot();
-			
+
 			pane.getScene().setRoot(loginScene);
-			
+
 			RotateTransition r = new RotateTransition(Duration.millis(200), root);
 			r.setAxis(new Point3D(0, 1, 0));
 			r.setFromAngle(90);
@@ -131,12 +132,12 @@ public class NetworkController implements Initializable {
 		});
 		rotateTransition.play();
 	}
-	
+
 	public void setLoginView(Region loginScene) {
 		this.loginScene = loginScene;
 		setSettingView(loginScene);
 	}
-	
+
 	private void setSettingView(Region settingView) {
 		this.loginDecoration.setSettingView(settingView);
 	}
