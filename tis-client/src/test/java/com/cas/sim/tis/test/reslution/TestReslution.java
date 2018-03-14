@@ -1,4 +1,4 @@
-package com.cas.sim.tis.test.lwjgl;
+package com.cas.sim.tis.test.reslution;
 
 import java.awt.DisplayMode;
 import java.awt.GraphicsDevice;
@@ -12,7 +12,7 @@ import org.lwjgl.glfw.GLFWVidMode;
 
 public class TestReslution {
 	@Test
-	public void Display2() {
+	public void display2() {
 		GLFW.glfwInit();
 		long monitor = GLFW.glfwGetPrimaryMonitor();
 		GLFWVidMode.Buffer modes = GLFW.glfwGetVideoModes(monitor);
@@ -23,7 +23,7 @@ public class TestReslution {
 	}
 
 	@Test
-	public void Display1() {
+	public void display1() {
 		GraphicsEnvironment g = GraphicsEnvironment.getLocalGraphicsEnvironment();
 		GraphicsDevice sd = g.getDefaultScreenDevice();
 		DisplayMode[] dm = sd.getDisplayModes();

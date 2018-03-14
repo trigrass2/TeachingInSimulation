@@ -91,7 +91,6 @@ public class TestReslution2 extends Application {
 	}
     
     public static void main(String[] args) {
-        System.setProperty("javafx.macosx.embedded", "true");
         java.awt.Toolkit.getDefaultToolkit();
         Application.launch(args);
     }

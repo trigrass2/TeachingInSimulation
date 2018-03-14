@@ -33,8 +33,8 @@ import mslinks.ShellLinkException;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest(classes = Application.class)
-public class LnkParser {
-	private Logger LOG = LoggerFactory.getLogger(LnkParser.class);
+public class LnkParser2 {
+	private Logger LOG = LoggerFactory.getLogger(LnkParser2.class);
 	@Autowired
 	@Qualifier("resourceServiceFactory")
 	private RmiProxyFactoryBean resourceServiceFactory;
