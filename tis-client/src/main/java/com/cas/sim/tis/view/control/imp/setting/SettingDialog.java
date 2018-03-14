@@ -1,5 +1,8 @@
 package com.cas.sim.tis.view.control.imp.setting;
 
+import java.awt.DisplayMode;
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -9,8 +12,6 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.prefs.Preferences;
 
-import org.lwjgl.glfw.GLFW;
-import org.lwjgl.glfw.GLFWVidMode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
@@ -175,15 +176,14 @@ public class SettingDialog extends DialogPane<Boolean> {
 	}
 
 	private void initResolution() {
-		GLFW.glfwInit();
-		long monitor = GLFW.glfwGetPrimaryMonitor();
-		GLFWVidMode.Buffer modes = GLFW.glfwGetVideoModes(monitor);
+		GraphicsEnvironment g = GraphicsEnvironment.getLocalGraphicsEnvironment();
+		GraphicsDevice sd = g.getDefaultScreenDevice();
+		DisplayMode[] modes = sd.getDisplayModes();
 		List<Resolution> resolutions = new ArrayList<Resolution>();
-		while (modes.hasRemaining()) {
-			GLFWVidMode mode = modes.get();
-			int width = mode.width();
-			int height = mode.height();
-			if (mode.refreshRate() != 60 || mode.redBits() != 8) {
+		for (DisplayMode mode : modes) {
+			int width = mode.getWidth();
+			int height = mode.getHeight();
+			if (mode.getRefreshRate() != 60 || mode.getBitDepth() != 32) {
 				continue;
 			}
 			if (width == 1366 && height == 768) {

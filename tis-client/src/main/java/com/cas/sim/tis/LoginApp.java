@@ -89,6 +89,10 @@ public class LoginApp extends javafx.application.Application {
 	}
 	
 	private static void loadConfiguration() {
+// 		设置使JavaFx中可以使用GraphicsEnvironment功能
+		System.setProperty("javafx.macosx.embedded", "true");
+        java.awt.Toolkit.getDefaultToolkit();
+		
 		Preferences prefs = Preferences.userRoot().node(SettingConsts.REG_APP_PATH);
 //		设置语言下拉框的默认值
 		String userLang = prefs.get(SettingConsts.LANGUAGE, Locale.CHINA.toString());
