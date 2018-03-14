@@ -8,23 +8,14 @@ import com.cas.sim.tis.svg.SVGGlyph;
 import com.cas.sim.tis.svg.SVGHelper;
 
 import javafx.animation.RotateTransition;
-
-import javafx.animation.Timeline;
-
 import javafx.application.Application;
 import javafx.scene.Node;
 import javafx.scene.Parent;
-
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.Pane;
-
 import javafx.scene.paint.Color;
-
-import javafx.scene.shape.Rectangle;
-
 import javafx.stage.Stage;
-
 import javafx.util.Duration;
 
 /**

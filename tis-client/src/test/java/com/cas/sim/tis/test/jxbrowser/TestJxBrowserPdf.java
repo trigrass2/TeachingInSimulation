@@ -4,9 +4,6 @@ import com.teamdev.jxbrowser.chromium.Browser;
 import com.teamdev.jxbrowser.chromium.BrowserType;
 import com.teamdev.jxbrowser.chromium.DownloadHandler;
 import com.teamdev.jxbrowser.chromium.DownloadItem;
-import com.teamdev.jxbrowser.chromium.PrintHandler;
-import com.teamdev.jxbrowser.chromium.PrintJob;
-import com.teamdev.jxbrowser.chromium.PrintStatus;
 import com.teamdev.jxbrowser.chromium.Refine;
 import com.teamdev.jxbrowser.chromium.javafx.BrowserView;
 

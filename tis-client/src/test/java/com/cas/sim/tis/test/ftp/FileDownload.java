@@ -14,7 +14,6 @@ import org.junit.Test;
 import org.springframework.util.StopWatch;
 
 import com.cas.sim.tis.util.FTPUtils;
-import com.cas.sim.tis.util.FTPUtils.TaskListener;
 
 public class FileDownload {
 
