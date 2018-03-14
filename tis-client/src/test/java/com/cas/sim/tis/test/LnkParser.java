@@ -24,6 +24,7 @@ import com.cas.sim.tis.consts.ResourceConsts;
 import com.cas.sim.tis.consts.ResourceType;
 import com.cas.sim.tis.entity.Resource;
 import com.cas.sim.tis.services.ResourceService;
+import com.cas.sim.tis.util.ExcelUtil;
 import com.cas.sim.tis.util.FTPUtils;
 import com.cas.util.FileUtil;
 
@@ -37,7 +38,7 @@ public class LnkParser {
 	@Autowired
 	@Qualifier("resourceServiceFactory")
 	private RmiProxyFactoryBean resourceServiceFactory;
-	
+
 	private static FTPUtils ftpUtils;
 
 	private FTPUtils getUtil(String user, String password) {
@@ -52,7 +53,7 @@ public class LnkParser {
 		util.setPassword(password);
 		return util;
 	}
-	
+
 	public void load(File file) {
 		if (file.isDirectory()) {
 			for (File child : file.listFiles()) {
@@ -60,13 +61,14 @@ public class LnkParser {
 			}
 		} else {
 			File uploadFile = parser(file);
-			upload(uploadFile);
+			String filePath = uploadFile.getAbsolutePath();
+			String fileName = FileUtil.getFileName(filePath);
+			upload(uploadFile, fileName, null);
 		}
 	}
 
-	private void upload(File uploadFile) {
+	private void upload(File uploadFile, String fileName, String keyword) {
 		String filePath = uploadFile.getAbsolutePath();
-		String fileName = FileUtil.getFileName(filePath);
 		String ext = FileUtil.getFileExt(filePath);
 		// 重命名
 		String rename = UUID.randomUUID() + "." + ext;
@@ -78,6 +80,7 @@ public class LnkParser {
 		resource.setPath(rename);
 		resource.setName(fileName);
 		resource.setCreator(1);
+		resource.setKeyword(keyword);
 		try {
 			resource.setType(type);
 		} catch (Exception e) {
@@ -133,10 +136,22 @@ public class LnkParser {
 		}
 		return false;
 	}
-	
+
 	@Test
 	public void test() {
 		ftpUtils = getUtil("admin", "admin");
 		load(new File("C:\\Users\\Administrator\\Desktop\\3D电工仿真软件 - 副本"));
+	}
+
+	@Test
+	public void excelImportTest() {
+		ftpUtils = getUtil("admin", "admin");
+		Object[][] results = ExcelUtil.readExcelSheet("", "Sheet1");
+		for (Object[] result : results) {
+			String fileName = String.valueOf(result[0]);
+			String path = String.valueOf(result[1]);
+			String keyword = String.valueOf(result[2]);
+			upload(parser(new File(path)), fileName, keyword);
+		}
 	}
 }

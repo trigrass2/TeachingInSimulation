@@ -76,8 +76,10 @@ public class ClassList extends HBox implements IContent {
 		loader.setResources(ResourceBundle.getBundle("i18n/messages"));
 		try {
 			loader.load();
+			LOG.debug("加载FXML界面{}完成", fxmlUrl);
 		} catch (IOException e) {
 			e.printStackTrace();
+			LOG.error("加载FXML界面{}失败，错误信息：{}", fxmlUrl, e.getMessage());
 		}
 	}
 
@@ -211,8 +213,8 @@ public class ClassList extends HBox implements IContent {
 			AlertUtil.showAlert(AlertType.INFORMATION, MsgUtil.getMessage("excel.import.success"));
 			pagination.reload();
 		} catch (Exception e) {
-			AlertUtil.showAlert(AlertType.ERROR, e.getMessage());
 			e.printStackTrace();
+			AlertUtil.showAlert(AlertType.ERROR, e.getMessage());
 		}
 	}
 
@@ -248,6 +250,7 @@ public class ClassList extends HBox implements IContent {
 			} catch (Exception e) {
 				e.printStackTrace();
 				AlertUtil.showAlert(AlertType.ERROR, e.getMessage());
+				LOG.error("修改Class对象失败，Class编号{}：{}", obj.getId(), e.getMessage());
 			}
 		});
 	}

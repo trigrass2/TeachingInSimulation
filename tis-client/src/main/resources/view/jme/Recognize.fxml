@@ -24,17 +24,17 @@
 		<HBox spacing="10">
 			<Label fx:id="reset" text="%rec.lbl.reset" styleClass="recognize-btn">
 				<graphic>
-					<SVGGlyph  name="iconfont.svg.image" size="16" fill="WHITE" />
+					<SVGGlyph  name="iconfont.svg.reset" size="20" fill="WHITE" />
 				</graphic>
 			</Label>
 			<Label fx:id="zoomIn" text="%rec.lbl.zoom.in" styleClass="recognize-btn"><!-- 放大 -->
 				<graphic>
-					<SVGGlyph name="iconfont.svg.image" size="16" fill="WHITE" />
+					<SVGGlyph name="iconfont.svg.zoom-in" size="20" fill="WHITE" />
 				</graphic>
 			</Label>
 			<Label fx:id="zoomOut" text="%rec.lbl.zoom.out" styleClass="recognize-btn"><!-- 缩小 -->
 				<graphic>
-					<SVGGlyph name="iconfont.svg.image" size="16" fill="WHITE" />
+					<SVGGlyph name="iconfont.svg.zoom-out" size="20" fill="WHITE" />
 				</graphic>
 			</Label>
 		</HBox>

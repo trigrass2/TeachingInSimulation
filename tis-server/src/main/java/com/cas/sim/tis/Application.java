@@ -1,9 +1,5 @@
 package com.cas.sim.tis;
 
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.concurrent.FutureTask;
-
 import javax.annotation.Resource;
 
 import org.apache.ftpserver.FtpServer;
@@ -13,17 +9,13 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-import com.cas.authority.Consts;
-import com.cas.authority.validate.ValidateThread;
 import com.cas.sim.tis.config.ServerConfig;
-import com.cas.sim.tis.consts.SystemInfo;
 import com.cas.sim.tis.message.ExamMessage;
 import com.cas.sim.tis.message.LoginMessage;
 import com.cas.sim.tis.message.handler.ExamMessageHandler;
 import com.cas.sim.tis.message.handler.LoginMessageHandler;
 import com.cas.sim.tis.util.SpringUtil;
 import com.jme3.network.Server;
-import com.softkey.SoftKey;
 
 @SpringBootApplication
 //开始事物

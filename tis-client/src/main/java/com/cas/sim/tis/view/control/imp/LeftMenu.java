@@ -4,6 +4,9 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.cas.sim.tis.action.UserAction;
 import com.cas.sim.tis.consts.Session;
 import com.cas.sim.tis.entity.User;
@@ -24,7 +27,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 
 public abstract class LeftMenu extends VBox implements ILeftContent, Initializable {
-
+	private static final Logger LOG = LoggerFactory.getLogger(LeftMenu.class);
 	@FXML
 	private Label name;
 	@FXML
@@ -38,6 +41,16 @@ public abstract class LeftMenu extends VBox implements ILeftContent, Initializab
 	 * 
 	 */
 	public LeftMenu() {
+		loadFXML();
+		items.selectedToggleProperty().addListener((b, o, n) -> {
+			if (n == null) {
+				items.selectToggle(o);
+			}
+		});
+		initMenu();
+	}
+
+	private void loadFXML() {
 		FXMLLoader loader = new FXMLLoader();
 		URL fxmlUrl = this.getClass().getResource("/view/LeftMenu.fxml");
 		loader.setLocation(fxmlUrl);
@@ -45,15 +58,11 @@ public abstract class LeftMenu extends VBox implements ILeftContent, Initializab
 		loader.setRoot(this);
 		try {
 			loader.load();
+			LOG.debug("加载FXML界面{}完成", fxmlUrl);
 		} catch (IOException e) {
 			e.printStackTrace();
+			LOG.error("加载FXML界面{}失败，错误信息：{}", fxmlUrl, e.getMessage());
 		}
-		items.selectedToggleProperty().addListener((b, o, n) -> {
-			if (n == null) {
-				items.selectToggle(o);
-			}
-		});
-		initMenu();
 	}
 
 	@Override

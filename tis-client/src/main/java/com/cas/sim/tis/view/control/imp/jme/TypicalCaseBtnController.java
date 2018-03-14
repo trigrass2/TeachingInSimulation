@@ -10,6 +10,7 @@ import org.controlsfx.control.PopOver.ArrowLocation;
 
 import com.cas.sim.tis.app.state.TypicalCaseState;
 import com.cas.sim.tis.util.JmeUtil;
+import com.cas.sim.tis.util.MsgUtil;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -22,6 +23,7 @@ import javafx.scene.control.Control;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -42,6 +44,7 @@ public class TypicalCaseBtnController implements Initializable {
 	private Label colorPicked;
 	private Label sectionPicked;
 	private Label preview;
+	private TextField num;
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
@@ -53,7 +56,7 @@ public class TypicalCaseBtnController implements Initializable {
 			wirePicker = new PopOver();
 			wirePicker.setArrowLocation(ArrowLocation.BOTTOM_CENTER);
 			wirePicker.setPrefSize(300, 400);
-			wirePicker.setTitle("导线选择面板");
+			wirePicker.setTitle(MsgUtil.getMessage("typical.case.wire.pane"	));
 			wirePicker.setContentNode(getWirePickContent());
 		}
 		Point2D point = wire.localToScreen(wire.getWidth() / 2, -10);
@@ -86,28 +89,29 @@ public class TypicalCaseBtnController implements Initializable {
 	private void initNumberPane(VBox number) {
 		number.setAlignment(Pos.TOP_CENTER);
 
-		number.getChildren().add(new Label("线号"));
+		number.getChildren().add(new Label(MsgUtil.getMessage("typical.case.wire.num")));
 
-		number.getChildren().add(new TextField());
+		number.getChildren().add(num = new TextField());
 
-		number.getChildren().add(new Label("预览"));
+		number.getChildren().add(new Label(MsgUtil.getMessage("typical.case.wire.preview")));
 
-		number.getChildren().add(preview = new Label("未选择", new StackPane(new Circle(1), new Circle(1))));
+		number.getChildren().add(preview = new Label("--", new WireRadius()));
 		preview.setPrefSize(80, 80);
 		preview.setAlignment(Pos.CENTER);
 		preview.setContentDisplay(ContentDisplay.TOP);
+		VBox.setVgrow(preview, Priority.ALWAYS);
 	}
 
 	private void initSectionPane(VBox section) {
-		section.setAlignment(Pos.CENTER);
+		section.setAlignment(Pos.TOP_CENTER);
 
-		section.getChildren().add(new Label("线径"));
+		section.getChildren().add(new Label(MsgUtil.getMessage("typical.case.wire.radius")));
 		List<Label> list = new ArrayList<>();
-		list.add(new Label("0.75mm", new Circle(2, Color.rgb(186, 100, 64)))); //
-		list.add(new Label("1.0mm", new Circle(3, Color.rgb(186, 100, 64)))); //
-		list.add(new Label("1.5mm", new Circle(4, Color.rgb(186, 100, 64)))); //
-		list.add(new Label("2.5mm", new Circle(6, Color.rgb(186, 100, 64)))); //
-		list.add(new Label("4.0mm", new Circle(8, Color.rgb(186, 100, 64))));//
+		list.add(new Label("0.75mm", new WireRadius(2, Color.rgb(186, 100, 64), 6, Color.TRANSPARENT))); //
+		list.add(new Label("1.00mm", new WireRadius(3, Color.rgb(186, 100, 64), 7, Color.TRANSPARENT))); //
+		list.add(new Label("1.50mm", new WireRadius(4, Color.rgb(186, 100, 64), 8, Color.TRANSPARENT))); //
+		list.add(new Label("2.50mm", new WireRadius(6, Color.rgb(186, 100, 64), 10, Color.TRANSPARENT))); //
+		list.add(new Label("4.00mm", new WireRadius(8, Color.rgb(186, 100, 64), 12, Color.TRANSPARENT)));//
 
 		onSectionSelected(list.get(0));
 
@@ -127,32 +131,29 @@ public class TypicalCaseBtnController implements Initializable {
 
 		preview.setText(sectionPicked.getText());
 
-		Circle cir = (Circle) sectionPicked.getGraphic();
+		WireRadius cir = (WireRadius) sectionPicked.getGraphic();
 
-		StackPane sp = (StackPane) preview.getGraphic();
-		Circle inner = (Circle) sp.getChildren().get(1);
+		WireRadius wr = (WireRadius) preview.getGraphic();
 
-		inner.setFill(cir.getFill());
-		inner.setRadius(cir.getRadius());
-
-		Circle outer = (Circle) sp.getChildren().get(0);
-		outer.setRadius(cir.getRadius() + 4);
+		wr.setInnerFill(cir.getInnerFill());
+		wr.setInnerRadius(cir.getInnerRadius());
+		wr.setOuterRadius(cir.getOuterRadius());
 
 		if (state != null && state.getCircuitState() != null) {
-			state.getCircuitState().setWidth((float) cir.getRadius() * 2);
+			state.getCircuitState().setWidth((float) cir.getInnerRadius() * 2);
 		}
 	}
 
 	private void initWireColorPane(VBox color) {
 		color.setAlignment(Pos.TOP_CENTER);
 
-		color.getChildren().add(new Label("线色"));
+		color.getChildren().add(new Label(MsgUtil.getMessage("typical.case.wire.color")));
 		List<Label> list = new ArrayList<>();
-		list.add(new Label("红色", new Circle(10, Color.RED))); //
-		list.add(new Label("黑色", new Circle(10, Color.BLACK))); //
-		list.add(new Label("绿色", new Circle(10, Color.GREEN))); //
-		list.add(new Label("黄色", new Circle(10, Color.YELLOW))); //
-		list.add(new Label("蓝色", new Circle(10, Color.BLUE)));//
+		list.add(new Label(MsgUtil.getMessage("typical.case.wire.red"), new Circle(10, Color.RED))); //
+		list.add(new Label(MsgUtil.getMessage("typical.case.wire.blank"), new Circle(10, Color.BLACK))); //
+		list.add(new Label(MsgUtil.getMessage("typical.case.wire.green"), new Circle(10, Color.GREEN))); //
+		list.add(new Label(MsgUtil.getMessage("typical.case.wire.yellow"), new Circle(10, Color.YELLOW))); //
+		list.add(new Label(MsgUtil.getMessage("typical.case.wire.blue"), new Circle(10, Color.BLUE)));//
 
 		onColorSelected(list.get(0));
 
@@ -171,11 +172,11 @@ public class TypicalCaseBtnController implements Initializable {
 		colorPicked = l;
 		colorPicked.getStyleClass().add("picker-item-selected");
 
-		StackPane sp = (StackPane) preview.getGraphic();
-		Circle outer = (Circle) sp.getChildren().get(0);
 		Circle cir = (Circle) colorPicked.getGraphic();
+		WireRadius wr = (WireRadius) preview.getGraphic();
+		
 		Color color = (Color) cir.getFill();
-		outer.setFill(color);
+		wr.setOuterFill(color);
 
 		if (state != null && state.getCircuitState() != null) {
 			state.getCircuitState().setColor(JmeUtil.convert(color));

@@ -43,16 +43,33 @@
 }
 /*******************************************************************************
  *                                                                             *
+ * 文本框样式                                                          *
+ *                                                                             *
+ ******************************************************************************/
+.text-input {
+	-fx-font-family: "微软雅黑";
+    -fx-background-color: #ffffff;
+    -fx-background-radius:0.0;
+    -fx-border-color:#d4d4d4;
+    -fx-border-radius: 0.0;
+    -fx-text-fill:#333333;
+    -fx-pref-height: 40.0px;
+}
+.text-input:focused {
+	-fx-border-color:#c4c4c4;
+}
+/*******************************************************************************
+ *                                                                             *
  * 下拉框样式                                                          *
  *                                                                             *
  ******************************************************************************/
 .combo-box > .list-cell {
-    -fx-text-fill: #5d5d5d;
+    -fx-text-fill: #333333;
 }
 .combo-box-base {
     -fx-background-radius: 0.0;
     -fx-background-color: #ffffff;
-    -fx-border-color: #e4e4e4;
+    -fx-border-color: #d4d4d4;
 }
 .combo-box-base > .arrow-button {
     -fx-background-radius: 0.0;
@@ -317,17 +334,17 @@
 }
 .login-field:focused{
 	-fx-background-color:#064276,#06427688,#06427644;
-	-fx-background-insets:-0.4, 1, 2;
+	-fx-background-insets:-0.4, 1.0, 2.0;
 	-fx-border-color:transparent;
 }
 .login-btn{
 	-fx-background-color:#0993e3;
-	-fx-background-radius: 0;
+	-fx-background-radius: 0.0;
 	-fx-text-fill: #ffffff;
 }
 .login-cancel-btn{
 	-fx-background-color:tansparent;
-	-fx-background-radius: 0;
+	-fx-background-radius: 0.0;
 	-fx-border-color:#ffffff;
 	-fx-text-fill: #ffffff;
 }
@@ -463,6 +480,7 @@
  ******************************************************************************/
  .titled-content-btn{
 	-fx-pref-width: 210.0px;
+	-fx-pref-height:40.0px;
 	-fx-text-fill: #ffffff;
 	-fx-font-weight: normal;
 	-fx-background-color:transparent;
@@ -470,9 +488,12 @@
  	-fx-border-width: 0.0 0.0 1.0 0.0;
  	-fx-border-style:dashed;
  	-fx-alignment: center-left;
+ 	-fx-font-size:14.0px;
+ 	-fx-cursor: hand;
 }
 .titled-content-btn:hover{
 	-fx-pref-width: 210.0px;
+	-fx-pref-height:40.0px;
 	-fx-text-fill: #ff9e2c;
 	-fx-background-color:transparent;
 	-fx-border-color:#ff9e2c;
@@ -482,6 +503,7 @@
 }
 .titled-content-btn:selected{
 	-fx-pref-width: 210.0px;
+	-fx-pref-height:40.0px;
 	-fx-text-fill: #ff9e2c;
 	-fx-background-color:transparent;
 	-fx-border-color:#ff9e2c;
@@ -736,9 +758,20 @@
  	-fx-pref-height: 40.0;
  	-fx-background-color: #19b0c6;
  	-fx-padding: 10.0,5.0;
+ 	-fx-text-fill:#ffffff;
+ 	-fx-font-size:14.0px;
  }
  .recognize-btn:hover{
- 	-fx-background-color: #31D6F2;
+ 	-fx-background-color: #2c70a2;
+ }
+ .recognize-btn>.box{
+ 	-fx-background-color: transparent;
+ 	-fx-border-color:#ffffff;
+	-fx-padding:0.0;
+ }
+ .recognize-btn:selected>.box>.mark{
+ 	-fx-background-color:#ffffff;
+ 	-fx-shape: "M0,4H2L3,6L6,0H8L4,8H2Z";
  }
  /*******************************************************************************
  *                                                                             *
@@ -969,17 +1002,16 @@
  *                                                                             *
  ******************************************************************************/
 .picker-item {
-	-fx-pref-width: 80.0px;
-	-fx-pref-height: 30.0px;
-}
-.picker-item > Circle{
-	
+	-fx-pref-height: 40.0px;
+	-fx-padding:5.0px;
 }
 .picker-item:hover  {
-	-fx-border-color: rgb(48.0,118.0,165.0);
- 	-fx-border-insets: -5.0px;
+	/*-fx-border-color: rgb(48.0,118.0,165.0);*/
+	-fx-background-color: #19b0c6;
+	-fx-text-fill:#ffffff;
 }
 .picker-item-selected{
-	-fx-border-color: rgb(48.0,118.0,165.0);
-	-fx-border-insets: -5.0px;
+	/*-fx-border-color: rgb(48.0,118.0,165.0);*/
+	-fx-background-color: #2c70a2;
+	-fx-text-fill:#ffffff;
 }

@@ -4,8 +4,8 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-import com.cas.sim.tis.util.AlertUtil;
-import com.cas.sim.tis.util.MsgUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javafx.animation.RotateTransition;
 import javafx.application.Platform;
@@ -13,7 +13,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Point3D;
 import javafx.scene.Parent;
-import javafx.scene.control.ButtonType;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.stage.Stage;
@@ -28,8 +27,10 @@ import javafx.util.Duration;
  */
 public class LoginDecoration extends HBox {
 
+	private static final Logger LOG = LoggerFactory.getLogger(LoginDecoration.class);
+
 	private Region settingView;
-	
+
 	public LoginDecoration() {
 		FXMLLoader loader = new FXMLLoader();
 		URL fxmlUrl = this.getClass().getResource("/view/LoginDecoration.fxml");
@@ -39,8 +40,10 @@ public class LoginDecoration extends HBox {
 		loader.setResources(ResourceBundle.getBundle("i18n/messages"));
 		try {
 			loader.load();
+			LOG.debug("加载FXML界面{}完成", fxmlUrl);
 		} catch (IOException e) {
 			e.printStackTrace();
+			LOG.error("加载FXML界面{}失败，错误信息：{}", fxmlUrl, e.getMessage());
 		}
 	}
 
@@ -60,13 +63,13 @@ public class LoginDecoration extends HBox {
 		rotateTransition.setAxis(new Point3D(0, 1, 0));
 		rotateTransition.setFromAngle(0);
 		rotateTransition.setToAngle(90);
-		rotateTransition.setOnFinished(e->{
+		rotateTransition.setOnFinished(e -> {
 //			Application.showView(NetworkView.class);
-			
+
 			Parent root = getScene().getRoot();
 
 			getScene().setRoot(settingView);
-			
+
 			RotateTransition r = new RotateTransition(Duration.millis(200), root);
 			r.setNode(root);
 			r.setAxis(new Point3D(0, 1, 0));
@@ -79,12 +82,8 @@ public class LoginDecoration extends HBox {
 
 	@FXML
 	private void close() {
-		AlertUtil.showConfirm(MsgUtil.getMessage("alert.confirmation.exit"), resp -> {
-			if (resp == ButtonType.YES) {
-				Platform.exit();
-				System.exit(0);
-			}
-		});
+		Platform.exit();
+		System.exit(0);
 	}
 
 	public void setSettingView(Region settingView) {

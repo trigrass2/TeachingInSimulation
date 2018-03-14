@@ -30,6 +30,7 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 
 public class TypicalCaseMenu implements ILeftContent {
 
@@ -41,19 +42,19 @@ public class TypicalCaseMenu implements ILeftContent {
 
 	@Override
 	public Region getLeftContent() {
-		VBox vb = new VBox();
+		VBox vb = new VBox(10);
 //		vb.getStyleClass().add("cover");
-		Label create = createMenu(MsgUtil.getMessage("menu.button.new"), new SVGGlyph("iconfont.svg.new", Color.WHITE, 16));
+		Button create = createMenu(MsgUtil.getMessage("menu.button.new"), new SVGGlyph("iconfont.svg.new", Color.WHITE, 32));
 //		create.setOnMouseClicked(e -> showDrawDialog());
 		create.setOnMouseClicked(e -> newCase());
 
-		Label open = createMenu(MsgUtil.getMessage("menu.button.open"), new SVGGlyph("iconfont.svg.open", Color.WHITE, 16));
+		Button open = createMenu(MsgUtil.getMessage("menu.button.open"), new SVGGlyph("iconfont.svg.open", Color.WHITE, 32));
 		open.setOnMouseClicked(e -> showCaseDialog());
 
-		Label save = createMenu(MsgUtil.getMessage("menu.button.save"), new SVGGlyph("iconfont.svg.save", Color.WHITE, 16));
+		Button save = createMenu(MsgUtil.getMessage("menu.button.save"), new SVGGlyph("iconfont.svg.save", Color.WHITE, 32));
 		save.setOnMouseClicked(e -> saveCase());
 
-		HBox menu = new HBox(15, create, open, save);
+		HBox menu = new HBox(22, create, open, save);
 		menu.setAlignment(Pos.CENTER);
 //		menu.getStyleClass().add("cover");
 //		菜单
@@ -64,14 +65,15 @@ public class TypicalCaseMenu implements ILeftContent {
 		return vb;
 	}
 
-	private Label createMenu(String text, Node graphic) {
-		Label label = new Label(text, graphic);
-		label.setContentDisplay(ContentDisplay.TOP);
-		label.setPrefSize(45, 45);
-		label.setAlignment(Pos.CENTER);
-		label.getStyleClass().add("home-menu");
-		label.setTextFill(Color.WHITE);
-		return label;
+	private Button createMenu(String text, Node graphic) {
+		Button btn = new Button(text, graphic);
+		btn.setContentDisplay(ContentDisplay.TOP);
+		btn.setPrefSize(45, 45);
+		btn.setAlignment(Pos.CENTER);
+		btn.getStyleClass().add("img-btn");
+		btn.setTextFill(Color.WHITE);
+		btn.setFont(new Font(14));
+		return btn;
 	}
 
 	// open打开案例选择面板

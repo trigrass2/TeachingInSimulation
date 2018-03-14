@@ -7,6 +7,9 @@ import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.function.Function;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.alibaba.fastjson.JSONArray;
 import com.cas.sim.tis.action.BrokenCaseAction;
 import com.cas.sim.tis.action.CatalogAction;
@@ -65,6 +68,8 @@ import javafx.scene.layout.VBox;
 
 public class PreparationDetail extends HBox implements IContent {
 
+	private static final Logger LOG = LoggerFactory.getLogger(PreparationDetail.class);
+	
 	@FXML
 	private Title title;
 	@FXML
@@ -101,8 +106,10 @@ public class PreparationDetail extends HBox implements IContent {
 		loader.setResources(ResourceBundle.getBundle("i18n/messages"));
 		try {
 			loader.load();
+			LOG.debug("加载FXML界面{}完成", fxmlUrl);
 		} catch (IOException e) {
 			e.printStackTrace();
+			LOG.error("加载FXML界面{}失败，错误信息：{}", fxmlUrl, e.getMessage());
 		}
 	}
 

@@ -4,6 +4,9 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.cas.sim.tis.action.CollectionAction;
 import com.cas.sim.tis.action.ResourceAction;
 import com.cas.sim.tis.consts.ResourceConsts;
@@ -49,6 +52,7 @@ import javafx.scene.paint.Color;
  * @修改人 Caowj
  */
 public class ResourceViewer extends VBox implements IContent {
+	private static final Logger LOG = LoggerFactory.getLogger(ResourceViewer.class);
 	@FXML
 	private StackPane viewer;
 	@FXML
@@ -84,8 +88,10 @@ public class ResourceViewer extends VBox implements IContent {
 		loader.setResources(ResourceBundle.getBundle("i18n/messages"));
 		try {
 			loader.load();
+			LOG.debug("加载FXML界面{}完成", fxmlUrl);
 		} catch (IOException e) {
 			e.printStackTrace();
+			LOG.error("加载FXML界面{}失败，错误信息：{}", fxmlUrl, e.getMessage());
 		}
 	}
 

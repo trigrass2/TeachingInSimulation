@@ -11,6 +11,9 @@ import java.util.ResourceBundle;
 
 import javax.swing.filechooser.FileSystemView;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.cas.sim.tis.Application;
 import com.cas.sim.tis.action.ClassAction;
 import com.cas.sim.tis.action.LibraryAction;
@@ -57,6 +60,8 @@ import javafx.stage.FileChooser;
 
 public class PreviewQuestionPaper extends HBox implements IContent {
 
+	private static final Logger LOG = LoggerFactory.getLogger(PreviewQuestionPaper.class);
+
 	@FXML
 	private HBox options;
 	@FXML
@@ -86,10 +91,7 @@ public class PreviewQuestionPaper extends HBox implements IContent {
 	private boolean showReference;
 
 	public PreviewQuestionPaper(Integer rid, boolean editable) {
-		loadFXML();
-		this.rid = rid;
-		this.editable = editable;
-		initialize();
+		this(rid, editable, false);
 	}
 
 	public PreviewQuestionPaper(Integer rid, boolean editable, boolean readonly) {
@@ -112,8 +114,10 @@ public class PreviewQuestionPaper extends HBox implements IContent {
 		loader.setResources(ResourceBundle.getBundle("i18n/messages"));
 		try {
 			loader.load();
+			LOG.debug("加载FXML界面{}完成", fxmlUrl);
 		} catch (IOException e) {
 			e.printStackTrace();
+			LOG.error("加载FXML界面{}失败，错误信息：{}", fxmlUrl, e.getMessage());
 		}
 	}
 
@@ -265,6 +269,7 @@ public class PreviewQuestionPaper extends HBox implements IContent {
 			AlertUtil.showAlert(AlertType.INFORMATION, MsgUtil.getMessage("excel.export.success"));
 		} catch (Exception e) {
 			AlertUtil.showAlert(AlertType.ERROR, e.getMessage());
+			LOG.error("Excel导出失败：{}", e.getMessage());
 		}
 	}
 
@@ -297,8 +302,8 @@ public class PreviewQuestionPaper extends HBox implements IContent {
 					((IPublish) content).publish(publishId);
 				}
 			} catch (Exception e) {
-				AlertUtil.showAlert(AlertType.ERROR, e.getMessage());
 				e.printStackTrace();
+				AlertUtil.showAlert(AlertType.ERROR, e.getMessage());
 			}
 		});
 	}

@@ -11,6 +11,8 @@ import java.util.prefs.Preferences;
 
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWVidMode;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
 
 import com.cas.sim.tis.action.UserAction;
@@ -31,6 +33,8 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 
 public class SettingDialog extends DialogPane<Boolean> {
+
+	private static final Logger LOG = LoggerFactory.getLogger(SettingDialog.class);
 
 	private static List<String> languages = new ArrayList<String>() {
 		/**
@@ -59,11 +63,11 @@ public class SettingDialog extends DialogPane<Boolean> {
 	private RadioButton full;
 
 	public SettingDialog() {
-		loadFxml();
+		loadFXML();
 		initialize();
 	}
 
-	private void loadFxml() {
+	private void loadFXML() {
 		VBox box = new VBox();
 		FXMLLoader loader = new FXMLLoader();
 		URL fxmlUrl = this.getClass().getResource("/view/Setting.fxml");
@@ -73,8 +77,10 @@ public class SettingDialog extends DialogPane<Boolean> {
 		loader.setResources(ResourceBundle.getBundle("i18n/messages"));
 		try {
 			loader.load();
+			LOG.debug("加载FXML界面{}完成", fxmlUrl);
 		} catch (IOException e) {
 			e.printStackTrace();
+			LOG.error("加载FXML界面{}失败，错误信息：{}", fxmlUrl, e.getMessage());
 		}
 		getChildren().add(box);
 	}
@@ -212,7 +218,7 @@ public class SettingDialog extends DialogPane<Boolean> {
 			height = 768;
 		}
 		resolution.getSelectionModel().select(new Resolution(width, height));
-	
+
 		boolean fullscreen = prefs.getBoolean(SettingConsts.SCREEN_MODE, false);
 		full.setSelected(fullscreen);
 	}

@@ -60,9 +60,9 @@ public class LibraryImportTest {
 		libraryService.save(library);
 
 		List<Library> librarys = libraryService.findAll();
-		library = librarys.get(librarys.size()-1);
-		
-		rid=library.getId();
+		library = librarys.get(librarys.size() - 1);
+
+		rid = library.getId();
 
 		List<Question> questions = new ArrayList<>();
 		if (!loadChoice(source, questions) || !loadJudgment(source, questions) || !loadBlank(source, questions) || !loadSubjective(source, questions)) {
