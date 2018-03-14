@@ -9,7 +9,7 @@ public class ColorRGBAAdapter extends XmlAdapter<String, ColorRGBA> {
 	@Override
 	public ColorRGBA unmarshal(String v) throws Exception {
 		if (v != null) {
-			String[] arr = v.split("\\|");
+			String[] arr = v.split(",");
 			if (arr.length != 4) {
 				throw new RuntimeException("无效的参数：" + v);
 			}
@@ -28,7 +28,7 @@ public class ColorRGBAAdapter extends XmlAdapter<String, ColorRGBA> {
 			return null;
 		}
 		float[] param = color.getColorArray();
-		return param[0] + "|" + param[1] + "|" + param[2] + "|" + param[3];
+		return param[0] + "," + param[1] + "," + param[2] + "," + param[3];
 	}
 
 }
