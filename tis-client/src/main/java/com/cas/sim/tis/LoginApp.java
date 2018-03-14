@@ -89,8 +89,7 @@ public class LoginApp extends javafx.application.Application {
 	}
 	
 	private static void loadConfiguration() {
-// 		设置使JavaFx中可以使用GraphicsEnvironment功能
-		System.setProperty("javafx.macosx.embedded", "true");
+// 		初始化awt工具包使JavaFx中可以使用GraphicsEnvironment功能获得屏幕可支持分辨率
         java.awt.Toolkit.getDefaultToolkit();
 		
 		Preferences prefs = Preferences.userRoot().node(SettingConsts.REG_APP_PATH);

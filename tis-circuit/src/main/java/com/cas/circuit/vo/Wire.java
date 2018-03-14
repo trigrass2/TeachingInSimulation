@@ -11,7 +11,7 @@ import javax.xml.bind.annotation.XmlAttribute;
 import com.cas.circuit.util.R;
 import com.cas.circuit.vo.archive.WireProxy;
 import com.cas.util.Util;
-import com.jme3.scene.Node;
+import com.jme3.scene.Spatial;
 
 /**
  * 导线
@@ -40,7 +40,7 @@ public class Wire {
 
 	private String wireNum;
 
-	private Node spatial;
+	private Spatial spatial;
 
 	private WireProxy proxy;
 
@@ -199,11 +199,11 @@ public class Wire {
 		this.wireNum = wireNum;
 	}
 
-	public Node getSpatial() {
+	public Spatial getSpatial() {
 		return spatial;
 	}
 
-	public void setSpatial(Node spatial) {
+	public void setSpatial(Spatial spatial) {
 		this.spatial = spatial;
 	}
 

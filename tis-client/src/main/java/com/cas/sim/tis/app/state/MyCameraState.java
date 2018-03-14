@@ -31,7 +31,7 @@ public class MyCameraState extends BaseState {
 		chaser.setInvertVerticalAxis(true);
 //		4、设置最大和最小仰角
 		chaser.setMaxVerticalRotation(FastMath.DEG_TO_RAD * 60);
-		chaser.setMinVerticalRotation(FastMath.DEG_TO_RAD * 20);
+		chaser.setMinVerticalRotation(FastMath.DEG_TO_RAD * 10);
 //		5、设置缩放与旋转的灵敏度
 		chaser.setZoomSensitivity(1);
 		chaser.setRotationSpeed(5);

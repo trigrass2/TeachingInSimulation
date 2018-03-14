@@ -2,8 +2,10 @@ package com.cas.sim.tis.app.state;
 
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
 import java.util.stream.Collectors;
@@ -42,6 +44,7 @@ import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
+import com.jme3.scene.Spatial.CullHint;
 import com.jme3.scene.shape.Line;
 
 public class CircuitState extends BaseState {
@@ -49,6 +52,9 @@ public class CircuitState extends BaseState {
 	private static final float minLen = 0.3f;
 //	导线与电路板的最小距离
 	private static final float minHeight = 0.1f;
+
+	private static final String COMP_ROOT = "comp_root_in_circuit_state";
+	private static final String WIRE_ROOT = "wire_root_in_circuit_state";
 //	导线颜色
 	private static ColorRGBA color = ColorRGBA.Black;
 //	导线半径
@@ -59,7 +65,7 @@ public class CircuitState extends BaseState {
 	}
 
 	private Node root;
-	private Node wireNode;
+	private Node tmpWireNode;
 	private Wire wire;
 	private List<Wire> wireList = new ArrayList<>();
 
@@ -84,6 +90,9 @@ public class CircuitState extends BaseState {
 
 	private Geometry desktop;
 
+	private Node rootCompNode;
+	private Node rootWireNode;
+
 	public CircuitState(TypicalCase typicalCase, Node root) {
 		this.typicalCase = typicalCase;
 		this.root = root;
@@ -102,6 +111,13 @@ public class CircuitState extends BaseState {
 
 	@Override
 	protected void initializeLocal() {
+		rootCompNode = new Node(COMP_ROOT);
+		rootWireNode = new Node(WIRE_ROOT);
+		rootWireNode.setCullHint(CullHint.Never);
+
+		root.attachChild(rootCompNode);
+		root.attachChild(rootWireNode);
+
 		bindCircuitBoardEvents();
 	}
 
@@ -116,7 +132,13 @@ public class CircuitState extends BaseState {
 			if (state == null) {
 				return;
 			}
-			collision = JmeUtil.getCollisionFromCursor(root, cam, inputManager);
+//			先判断鼠标是否在元器件上
+			collision = JmeUtil.getCollisionFromCursor(rootCompNode, cam, inputManager);
+//			如果没有宣导元器件
+			if (collision == null) {
+//				再尝试和桌面碰撞
+				collision = JmeUtil.getCollisionFromCursor(desktop, cam, inputManager);
+			}
 			if (collision == null) {
 				return;
 			}
@@ -191,7 +213,7 @@ public class CircuitState extends BaseState {
 		midLine1.getStart().set(startPoint);
 //		midLine1.getEnd().set(arr[3], arr[4], arr[5]);
 		midLine2 = new Line(startPoint, endPoint);
-		wireNode.attachChild(JmeUtil.createLineGeo(assetManager, midLine2, color));
+		tmpWireNode.attachChild(JmeUtil.createLineGeo(assetManager, midLine2, color));
 
 		startLine1 = null;
 		startLine2 = null;
@@ -209,67 +231,9 @@ public class CircuitState extends BaseState {
 		midLine1.getStart().set(startPoint);
 		//
 		midLine2 = new Line(startPoint, endPoint);
-		wireNode.attachChild(JmeUtil.createLineGeo(assetManager, midLine2, color));
+		tmpWireNode.attachChild(JmeUtil.createLineGeo(assetManager, midLine2, color));
 
 		midAxis = roll90.mult(midAxis);
-	}
-
-	private void connect_ending(ElecCompDef def, Terminal t) {
-//		终点
-		Vector3f dest = t.getSpatial().getWorldTranslation().clone();
-//		重点线头连出的方向
-		dir = def.getSpatial().getLocalRotation().mult(t.getDirection());
-//
-//		##最终是在终点dest和startPoint之间创建导线##
-		Vector3f startPoint = JmeUtil.getLineStart(midLine1);
-
-//		判断最后一段线与dir的向量积，从而知道是哪一种连接方式
-		Vector3f t1 = JmeUtil.getLineStart(midLine2);
-		Vector3f t2 = JmeUtil.getLineEnd(midLine2);
-
-		if (Math.round(t2.subtract(t1).dot(dir)) == 0) {
-//			表明是垂直的方向连接到终点的，这种情况稍微复杂一些
-//			倒数第二个点是终点在dir方向上的点，距离终点的长度是minLen
-			Vector3f last2 = dest.add(dir.normalize().mult(minLen));
-//			倒数第三个点是last2在电路板子上的投影点，y的值可以从取startPoint起点的y
-			Vector3f last3 = last2.clone().setY(startPoint.getY());
-//			倒数第四个点是last3在midLine1上的投影点
-			Vector3f endPoint = JmeUtil.getLineEnd(midLine1);
-			Vector3f last4 = startPoint.add(last3.subtract(startPoint).project(endPoint.subtract(startPoint)));
-
-//			四个点全部找齐，下面把midLine1和midLine2的重新设置
-			midLine1.updatePoints(midLine1.getStart(), last4);
-			midLine2.updatePoints(last4, last3);
-//			另外，还需要两根线
-			wireNode.attachChild(JmeUtil.createLineGeo(assetManager, new Line(last3, last2), color));
-			wireNode.attachChild(JmeUtil.createLineGeo(assetManager, new Line(last2, dest), color));
-		} else {
-//			倒数第二个点是midLine1上任意一点在dir上的投影点，这里取startPoint
-			Vector3f last2 = dest.add(startPoint.subtract(dest).project(dir));
-//			倒数第三个点是last2在电路板子上的投影点，y的值可以从取startPoint起点的y
-			Vector3f last3 = last2.clone().setY(startPoint.getY());
-//			三个点全部找齐，下面把midLine1和midLine2的重新设置
-			midLine1.updatePoints(midLine1.getStart(), last3);
-			midLine2.updatePoints(last3, last2);
-//			另外，还需要一根线
-			wireNode.attachChild(JmeUtil.createLineGeo(assetManager, new Line(last2, dest), color));
-		}
-
-		wire.bind(t);
-		wireList.add(wire);
-		List<Vector3f> pointList = getPointList();
-		wire.getProxy().getPointList().addAll(pointList);
-
-		List<Spatial> realLineList = JmeUtil.createCylinderLine(assetManager, pointList, width, color);
-//		其实：wireNode.getChildren()是SafeArrayList类型，自带同步功能。不会出现java.util.ConcurrentModificationException
-		wireNode.detachAllChildren();
-//		将所有的realLine加入到wireNode节点中
-		realLineList.forEach(wireNode::attachChild);
-
-		wire = null;
-		wireNode = null;
-
-		clean();
 	}
 
 //	获取当前导线的点坐标集合
@@ -277,20 +241,35 @@ public class CircuitState extends BaseState {
 	private List<Vector3f> getPointList() {
 		List<Vector3f> result = new ArrayList<>();
 
-		List<Spatial> children = wireNode.getChildren();
+		List<Spatial> children = tmpWireNode.getChildren();
+		Set<Vector3f> set = new HashSet<>();
 		for (int i = 0; i < children.size() - 1; i++) {
 			Spatial spatial = (Spatial) children.get(i);
 			Geometry geo = (Geometry) spatial;
 			Line mesh = (Line) geo.getMesh();
-			result.add(JmeUtil.getLineStart(mesh));
+			Vector3f point = JmeUtil.getLineStart(mesh);
+			if (!set.contains(point)) {
+				result.add(point);
+			}
 		}
 //		最后一段线
 		Spatial spatial = children.get(children.size() - 1);
 		Geometry geo = (Geometry) spatial;
 		Line mesh = (Line) geo.getMesh();
-		result.add(JmeUtil.getLineStart(mesh));
-		result.add(JmeUtil.getLineEnd(mesh));
 
+		Vector3f point = JmeUtil.getLineStart(mesh);
+		if (!set.contains(point)) {
+			result.add(point);
+		}
+
+		point = JmeUtil.getLineEnd(mesh);
+		if (!set.contains(point)) {
+			result.add(point);
+		}
+
+		if (result.size() == 1) {
+			result.clear();
+		}
 		return result;
 	}
 
@@ -304,15 +283,13 @@ public class CircuitState extends BaseState {
 		midLine1 = null;
 		midLine2 = null;
 
-		if (wireNode != null) {
-			wireNode.removeFromParent();
-			wireNode = null;
+		if (tmpWireNode != null) {
+			tmpWireNode.removeFromParent();
+			tmpWireNode = null;
 		}
 	}
 
 	public void bindElecCompEvent(String tagName, ElecCompDef def) {
-		compList.add(def);
-
 		// 1、连接头监听事件
 		def.getTerminalList().forEach(t -> addListener(t.getSpatial(), new MouseEventAdapter() {
 			@Override
@@ -331,20 +308,77 @@ public class CircuitState extends BaseState {
 				}
 			}
 
+			protected void connect_ending(ElecCompDef def, Terminal t) {
+//				终点
+				Vector3f dest = t.getSpatial().getWorldTranslation().clone();
+//				重点线头连出的方向
+				dir = def.getSpatial().getLocalRotation().mult(t.getDirection());
+				//
+//				##最终是在终点dest和startPoint之间创建导线##
+				Vector3f startPoint = JmeUtil.getLineStart(midLine1);
+
+//				判断最后一段线与dir的向量积，从而知道是哪一种连接方式
+				Vector3f t1 = JmeUtil.getLineStart(midLine2);
+				Vector3f t2 = JmeUtil.getLineEnd(midLine2);
+
+				if (Math.round(t2.subtract(t1).dot(dir)) == 0) {
+//					表明是垂直的方向连接到终点的，这种情况稍微复杂一些
+//					倒数第二个点是终点在dir方向上的点，距离终点的长度是minLen
+					Vector3f last2 = dest.add(dir.normalize().mult(minLen));
+//					倒数第三个点是last2在电路板子上的投影点，y的值可以从取startPoint起点的y
+					Vector3f last3 = last2.clone().setY(startPoint.getY());
+//					倒数第四个点是last3在midLine1上的投影点
+					Vector3f endPoint = JmeUtil.getLineEnd(midLine1);
+					Vector3f last4 = startPoint.add(last3.subtract(startPoint).project(endPoint.subtract(startPoint)));
+
+//					四个点全部找齐，下面把midLine1和midLine2的重新设置
+					midLine1.updatePoints(midLine1.getStart(), last4);
+					midLine2.updatePoints(last4, last3);
+//					另外，还需要两根线
+					tmpWireNode.attachChild(JmeUtil.createLineGeo(assetManager, new Line(last3, last2), color));
+					tmpWireNode.attachChild(JmeUtil.createLineGeo(assetManager, new Line(last2, dest), color));
+				} else {
+//					倒数第二个点是midLine1上任意一点在dir上的投影点，这里取startPoint
+					Vector3f last2 = dest.add(startPoint.subtract(dest).project(dir));
+//					倒数第三个点是last2在电路板子上的投影点，y的值可以从取startPoint起点的y
+					Vector3f last3 = last2.clone().setY(startPoint.getY());
+//					三个点全部找齐，下面把midLine1和midLine2的重新设置
+					midLine1.updatePoints(midLine1.getStart(), last3);
+					midLine2.updatePoints(last3, last2);
+//					另外，还需要一根线
+					tmpWireNode.attachChild(JmeUtil.createLineGeo(assetManager, new Line(last2, dest), color));
+				}
+
+				wire.bind(t);
+				wireList.add(wire);
+				List<Vector3f> pointList = getPointList();
+				wire.getProxy().getPointList().addAll(pointList);
+
+				Geometry realWire = JmeUtil.createCylinderLine(assetManager, pointList, width, color);
+//				其实：wireNode.getChildren()是SafeArrayList类型，自带同步功能。不会出现java.util.ConcurrentModificationException
+				rootWireNode.attachChild(realWire);
+//				将模型与逻辑对象绑定
+				wire.setSpatial(realWire);
+
+				tmpWireNode.removeFromParent();
+				wire = null;
+				tmpWireNode = null;
+
+				clean();
+			}
+
 //			点击连接头、开始接线之前的准备工作
 			protected void connect_pre(ElecCompDef def, Terminal t) {
 //				创建一个节点，存放当前一根导线的模型
-				wireNode = new Node();
+				tmpWireNode = new Node();
 //				将导线模型添加到root节点中以显示
-				root.attachChild(wireNode);
+				rootWireNode.attachChild(tmpWireNode);
 //				创建一个导线逻辑对象
 				wire = new Wire();
 //				导线颜色和线宽
 				wire.getProxy().setColor(color);
 				wire.getProxy().setWidth(width);
 
-//				将模型与逻辑对象绑定
-				wire.setSpatial(wireNode);
 //				导线一头连接在当前连接头上
 				wire.bind(t);
 
@@ -359,9 +393,9 @@ public class CircuitState extends BaseState {
 				startLine2 = new Line(dest, dest);
 				startLine3 = new Line(dest, dest);
 
-				wireNode.attachChild(JmeUtil.createLineGeo(assetManager, startLine1, color));
-				wireNode.attachChild(JmeUtil.createLineGeo(assetManager, startLine2, color));
-				wireNode.attachChild(JmeUtil.createLineGeo(assetManager, startLine3, color));
+				tmpWireNode.attachChild(JmeUtil.createLineGeo(assetManager, startLine1, color));
+				tmpWireNode.attachChild(JmeUtil.createLineGeo(assetManager, startLine2, color));
+				tmpWireNode.attachChild(JmeUtil.createLineGeo(assetManager, startLine3, color));
 			}
 		}));
 		// 2、插孔监听事件
@@ -387,6 +421,9 @@ public class CircuitState extends BaseState {
 				System.out.println(def.getName());
 			}
 		});
+
+//		最后将元器件加入列表中
+		compList.add(def);
 	}
 
 	public void read(Archive archive) {
@@ -401,31 +438,36 @@ public class CircuitState extends BaseState {
 		compProxyList.forEach(proxyComp -> {
 //			1、根据元器件型号（model字段），查找数据库中的元器件实体对象
 			ElecComp elecComp = action.getElecComp(proxyComp.getModel());
+			if (elecComp == null) {
+				LOG.warn("没玩找到型号为{}的元器件", proxyComp.getModel());
+			}
 
 //			2、加载模型，同时设置好坐标与旋转
 			Future<Node> task = app.enqueue((Callable<Node>) () -> {
-				return (Node) loadAsset(new ModelKey(elecComp.getMdlPath()));
+				Node node = (Node) loadAsset(new ModelKey(elecComp.getMdlPath()));
+//				设置transform信息：location、rotation
+				node.setLocalTranslation(proxyComp.getLocation());
+				node.setLocalRotation(proxyComp.getRotation());
+				node.scale(25);
+//				4、将读取到的元器件放入电路板中。
+				rootCompNode.attachChild(node);
+				return node;
 			});
-			Node load = null;
+			Node compMdl = null;
 			try {
-				load = task.get();
+				compMdl = task.get();
 			} catch (Exception e) {
 				LOG.error("无法加载元器件模型{}:{}", elecComp.getMdlPath(), e);
 				throw new RuntimeException(e);
 			}
-//			设置transform信息：location、rotation
-			load.setLocalTranslation(proxyComp.getLocation());
-			load.setLocalRotation(proxyComp.getRotation());
-			load.scale(25);
-			root.attachChild(load);
 
 //			3、初始化元器件逻辑对象
 			URL cfgUrl = SpringUtil.getBean(HTTPUtils.class).getUrl(elecComp.getCfgPath());
 			ElecCompDef def = JaxbUtil.converyToJavaBean(cfgUrl, ElecCompDef.class);
-			def.bindModel(load);
+
+			def.bindModel(compMdl);
 			def.setProxy(proxyComp);
 
-//			4、将读取到的元器件放入电路板中。
 			bindElecCompEvent(proxyComp.getUuid(), def);
 		});
 	}
@@ -446,12 +488,10 @@ public class CircuitState extends BaseState {
 			wire.bind(term1);
 			wire.bind(term2);
 
-			Future<Node> task = app.enqueue((Callable<Node>) () -> {
-				Node wireNode = new Node();
-				List<Spatial> lineList = JmeUtil.createCylinderLine(assetManager, proxy.getPointList(), proxy.getWidth(), proxy.getColor());
-				lineList.forEach(wireNode::attachChild);
+			Future<Geometry> task = app.enqueue((Callable<Geometry>) () -> {
+				Geometry wireNode = JmeUtil.createCylinderLine(assetManager, proxy.getPointList(), proxy.getWidth(), proxy.getColor());
 
-				root.attachChild(wireNode);
+				rootWireNode.attachChild(wireNode);
 				return wireNode;
 			});
 			try {
@@ -478,6 +518,7 @@ public class CircuitState extends BaseState {
 
 			compProxy.setModel(comp.getModel());
 			compProxy.setLocation(comp.getSpatial().getLocalTranslation());
+			System.out.println(comp.getSpatial().getLocalRotation());
 			compProxy.setRotation(comp.getSpatial().getLocalRotation());
 			archive.getCompList().add(compProxy);
 		});

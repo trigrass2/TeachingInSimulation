@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.LoggerFactory;
 
 import com.cas.sim.tis.app.event.MouseEventState;
 import com.cas.util.StringUtil;
@@ -28,8 +29,8 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
-import com.jme3.scene.Spatial.CullHint;
 import com.jme3.scene.VertexBuffer;
+import com.jme3.scene.Spatial.CullHint;
 import com.jme3.scene.VertexBuffer.Type;
 import com.jme3.scene.shape.Cylinder;
 import com.jme3.scene.shape.Line;
@@ -37,6 +38,7 @@ import com.jme3.scene.shape.Sphere;
 import com.jme3.util.BufferUtils;
 
 import javafx.scene.paint.Color;
+import jme3tools.optimize.GeometryBatchFactory;
 
 public final class JmeUtil {
 
@@ -448,9 +450,9 @@ public final class JmeUtil {
 	}
 
 	// 使用Cylinder
-	public static List<Spatial> createCylinderLine(AssetManager assetManager, List<Vector3f> pointList, float redius, ColorRGBA color) {
+	public static Geometry createCylinderLine(AssetManager assetManager, List<Vector3f> pointList, float radius, ColorRGBA color) {
 
-		List<Spatial> realLineList = new ArrayList<>();
+		List<Geometry> realLineList = new ArrayList<>();
 //		两点之间穿件一条线
 //		为了方便，将pointList集合转换为List<Vector3f[]>, Vector3f[]表示线段的两点
 		List<Vector3f[]> lineList = new ArrayList<>();
@@ -470,8 +472,9 @@ public final class JmeUtil {
 			Vector3f end = line[1];
 			Vector3f lineDir = end.subtract(start);
 			// 创建一段导线实体模型width / 500
-			Cylinder mesh = new Cylinder(6, 6, redius, start.distance(end));
-			Spatial real = createLineGeo(assetManager, mesh, color);
+			LoggerFactory.getLogger(JmeUtil.class).debug("线段半径:{} ,起点：{}, 中点：{}, 长度：{} ", radius, start, end, start.distance(end));
+			Cylinder mesh = new Cylinder(6, 6, radius, start.distance(end));
+			Geometry real = createLineGeo(assetManager, mesh, color);
 			// 设置导线坐标
 			real.setLocalTranslation(start.add(end.subtract(start).mult(0.5f)));
 			// 设置导线旋转量。
@@ -481,7 +484,26 @@ public final class JmeUtil {
 			real.setLocalRotation(rotation);
 			realLineList.add(real);
 		});
-		return realLineList;
+
+		pointList.forEach(point -> {
+			Geometry real = getSphere(assetManager, 6, radius, color);
+			real.setLocalTranslation(point);
+			realLineList.add(real);
+		});
+
+		Mesh outMesh = new Mesh();
+		GeometryBatchFactory.mergeGeometries(realLineList, outMesh);
+		Geometry ret = new Geometry("wireGeo", outMesh);
+
+		Material ballMat = new Material(assetManager, "Common/MatDefs/Light/Lighting.j3md");
+		ballMat.setColor("Diffuse", color);
+		ballMat.setFloat("Shininess", 10f);
+		ballMat.setColor("Specular", ColorRGBA.White);
+		ballMat.setBoolean("UseMaterialColors", true);
+//		ballMat.getAdditionalRenderState().setLineWidth(width);
+		ret.setMaterial(ballMat);
+
+		return ret;
 	}
 
 }
