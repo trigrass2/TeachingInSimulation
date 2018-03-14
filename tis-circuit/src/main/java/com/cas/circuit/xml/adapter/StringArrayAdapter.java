@@ -9,7 +9,7 @@ public class StringArrayAdapter extends XmlAdapter<String, String[]> {
 		if (v == null) {
 			return null;
 		}
-		String[] arr = v.split("\\|");
+		String[] arr = v.split(",");
 
 		String[] result = new String[arr.length];
 		for (int i = 0; i < arr.length; i++) {
@@ -28,7 +28,7 @@ public class StringArrayAdapter extends XmlAdapter<String, String[]> {
 		for (int i = 0; i < v.length; i++) {
 			buf.append(v[i]);
 			if (i < v.length - 1) {
-				buf.append("|");
+				buf.append(",");
 			}
 		}
 		return buf.toString();

@@ -15,7 +15,7 @@ public class FloatArrayAdapter extends XmlAdapter<String, float[]> {
 		if (v == null) {
 			return null;
 		}
-		String[] arr = v.split("\\|");
+		String[] arr = v.split(",");
 
 		float[] result = new float[arr.length];
 		for (int i = 0; i < arr.length; i++) {
@@ -34,7 +34,7 @@ public class FloatArrayAdapter extends XmlAdapter<String, float[]> {
 		for (int i = 0; i < v.length; i++) {
 			buf.append(v[i]);
 			if (i < v.length - 1) {
-				buf.append("|");
+				buf.append(",");
 			}
 		}
 		return buf.toString();
