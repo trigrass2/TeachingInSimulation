@@ -480,6 +480,7 @@
  ******************************************************************************/
  .titled-content-btn{
 	-fx-pref-width: 210.0px;
+	-fx-pref-height:40.0px;
 	-fx-text-fill: #ffffff;
 	-fx-font-weight: normal;
 	-fx-background-color:transparent;
@@ -487,9 +488,12 @@
  	-fx-border-width: 0.0 0.0 1.0 0.0;
  	-fx-border-style:dashed;
  	-fx-alignment: center-left;
+ 	-fx-font-size:14.0px;
+ 	-fx-cursor: hand;
 }
 .titled-content-btn:hover{
 	-fx-pref-width: 210.0px;
+	-fx-pref-height:40.0px;
 	-fx-text-fill: #ff9e2c;
 	-fx-background-color:transparent;
 	-fx-border-color:#ff9e2c;
@@ -499,6 +503,7 @@
 }
 .titled-content-btn:selected{
 	-fx-pref-width: 210.0px;
+	-fx-pref-height:40.0px;
 	-fx-text-fill: #ff9e2c;
 	-fx-background-color:transparent;
 	-fx-border-color:#ff9e2c;
@@ -998,7 +1003,7 @@
  ******************************************************************************/
 .picker-item {
 	-fx-pref-height: 40.0px;
-	-fx-padding:5px;
+	-fx-padding:5.0px;
 }
 .picker-item:hover  {
 	/*-fx-border-color: rgb(48.0,118.0,165.0);*/
