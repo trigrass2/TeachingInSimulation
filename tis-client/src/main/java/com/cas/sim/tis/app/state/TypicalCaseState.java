@@ -191,11 +191,8 @@ public class TypicalCaseState extends BaseState {
 		try {
 //			1、获取相应元器件
 			ElecCompDef elecCompDef = SpringUtil.getBean(ElecCompAction.class).parse(elecComp.getCfgPath());
-//			2、绑定模型对象
-			elecCompDef.bindModel((Node) holding);
-//			3、添加事件
-//			FIXME TagName 
-			circuitState.bindElecCompEvent("", elecCompDef);
+//			2、将元器件模型与元器件对象一起加入电路板中
+			circuitState.attachToCircuit(holding, elecCompDef);
 		} catch (Exception e) {
 //			删除出错的模型
 			holding.removeFromParent();

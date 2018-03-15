@@ -289,7 +289,7 @@ public class CircuitState extends BaseState {
 		}
 	}
 
-	public void bindElecCompEvent(String tagName, ElecCompDef def) {
+	public void bindElecCompEvent(ElecCompDef def) {
 		// 1、连接头监听事件
 		def.getTerminalList().forEach(t -> addListener(t.getSpatial(), new MouseEventAdapter() {
 			@Override
@@ -439,7 +439,7 @@ public class CircuitState extends BaseState {
 //			1、根据元器件型号（model字段），查找数据库中的元器件实体对象
 			ElecComp elecComp = action.getElecComp(proxyComp.getModel());
 			if (elecComp == null) {
-				LOG.warn("没玩找到型号为{}的元器件", proxyComp.getModel());
+				LOG.warn("没有找到型号为{}的元器件", proxyComp.getModel());
 			}
 
 //			2、加载模型，同时设置好坐标与旋转
@@ -464,11 +464,9 @@ public class CircuitState extends BaseState {
 //			3、初始化元器件逻辑对象
 			URL cfgUrl = SpringUtil.getBean(HTTPUtils.class).getUrl(elecComp.getCfgPath());
 			ElecCompDef def = JaxbUtil.converyToJavaBean(cfgUrl, ElecCompDef.class);
-
-			def.bindModel(compMdl);
 			def.setProxy(proxyComp);
-
-			bindElecCompEvent(proxyComp.getUuid(), def);
+//			加入电路板中
+			attachToCircuit(compMdl, def);
 		});
 	}
 
@@ -545,7 +543,18 @@ public class CircuitState extends BaseState {
 		if (desktop != null) {
 			root.attachChild(desktop);
 		}
-
 		super.cleanup();
+	}
+
+	public void attachToCircuit(Spatial holding, ElecCompDef elecCompDef) {
+//		将holding的模型加入“电路板”的环境中
+//		holding会先自动从原parent中剔除，成为孤儿节点，然后加入新的parent中
+		rootCompNode.attachChild(holding);
+
+//		2、绑定模型对象
+		elecCompDef.bindModel((Node) holding);
+
+//		3、添加事件
+		bindElecCompEvent(elecCompDef);
 	}
 }
