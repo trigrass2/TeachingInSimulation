@@ -70,13 +70,13 @@ public class Application extends AbstractJavaFxApplicationSupport implements App
 //			分辨率
 			int width = prefs.getInt(SettingConsts.RESOLUTION_WIDTH, 1366);
 			int height = prefs.getInt(SettingConsts.RESOLUTION_HEIGHT, 768);
-			
+
 			stage.setWidth(width);
 			stage.setHeight(height);
-			LoggerFactory.getLogger(getClass()).info("窗口大小：" + width + " x " + height);
+			LoggerFactory.getLogger(getClass()).info("窗口大小：{}x{}", width, height);
 			stage.setFullScreen(prefs.getBoolean(SettingConsts.SCREEN_MODE, false));
-			LoggerFactory.getLogger(getClass()).info("窗口全屏：" + stage.isFullScreen());
-			
+			LoggerFactory.getLogger(getClass()).info("窗口全屏：{}", stage.isFullScreen());
+
 			scene.setFill(null);
 			GUIState.setScene(scene);
 
