@@ -1,5 +1,7 @@
 package com.cas.sim.tis.view.control.imp.jme;
 
+import java.util.Optional;
+
 import com.alibaba.fastjson.JSONArray;
 import com.cas.sim.tis.action.DrawAction;
 import com.cas.sim.tis.action.TypicalCaseAction;
@@ -22,6 +24,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TextInputDialog;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.HBox;
@@ -180,9 +183,18 @@ public class TypicalCaseMenu implements ILeftContent {
 		return table;
 	}
 
+//	FIXME 临时这样写，后面要换成选择图纸面板。
 	private void newCase() {
 		TypicalCase t = new TypicalCase();
-		t.setName("NonName");
+		TextInputDialog steamIdDialog = new TextInputDialog();
+		steamIdDialog.setTitle("新增案例");
+		steamIdDialog.setHeaderText(null);
+		steamIdDialog.setContentText("请输入案例名称.");
+
+		Optional<String> steamID = steamIdDialog.showAndWait();
+		if (steamID.isPresent()) {
+			t.setName(steamID.get());
+		}
 
 		typicalCase3D.setupCase(t);
 	}
