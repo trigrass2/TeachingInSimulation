@@ -16,7 +16,9 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.ConfigurableApplicationContext;
 
 import com.cas.sim.tis.consts.SettingConsts;
+import com.cas.sim.tis.util.AlertUtil;
 import com.cas.sim.tis.util.FTPUtils;
+import com.cas.sim.tis.util.MsgUtil;
 import com.cas.sim.tis.view.HomeView;
 import com.teamdev.jxbrowser.chromium.Refine;
 
@@ -24,6 +26,7 @@ import de.felixroske.jfxsupport.AbstractJavaFxApplicationSupport;
 import de.felixroske.jfxsupport.GUIState;
 import javafx.application.Platform;
 import javafx.scene.Scene;
+import javafx.scene.control.ButtonType;
 import javafx.scene.layout.Region;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -76,6 +79,16 @@ public class Application extends AbstractJavaFxApplicationSupport implements App
 			LoggerFactory.getLogger(getClass()).info("窗口大小：{}x{}", width, height);
 			stage.setFullScreen(prefs.getBoolean(SettingConsts.SCREEN_MODE, false));
 			LoggerFactory.getLogger(getClass()).info("窗口全屏：{}", stage.isFullScreen());
+			stage.setOnCloseRequest(value -> {
+				AlertUtil.showConfirm(MsgUtil.getMessage("alert.confirmation.exit"), resp -> {
+					if (resp == ButtonType.YES) {
+						Platform.exit();
+						System.exit(0);
+					} else {
+						value.consume();
+					}
+				});
+			});
 
 			scene.setFill(null);
 			GUIState.setScene(scene);
