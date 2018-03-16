@@ -41,10 +41,9 @@ public class Recongnize3D implements IContent {
 //		=====================================================================
 //		IMPORTANT
 //		=====================================================================
+		canvas.setFocusTraversable(true);
+		canvas.setOnMouseClicked(event -> canvas.requestFocus());
 		canvas.getProperties().put(JFXMouseInput.PROP_USE_LOCAL_COORDS, true);
-//		canvas.getProperties().put(JFXMouseInput.PROP_INVERSE_Y_COORD, false);
-
-//		canvas.setStyle("-fx-background-size: cover");
 		LOG.info("给父容器添加尺寸监听");
 		canvas.parentProperty().addListener((ChangeListener<Parent>) (s, o, n) -> {
 			if (o == null && n != null) {

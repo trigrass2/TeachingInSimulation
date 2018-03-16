@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import com.cas.sim.tis.app.event.MouseEventState;
 import com.cas.sim.tis.consts.SettingConsts;
 import com.jme3.app.DebugKeysAppState;
+import com.jme3.app.FlyCamAppState;
 import com.jme3.asset.plugins.FileLocator;
 import com.jme3.system.AppSettings;
 import com.jme3x.jfx.injfx.JmeToJFXApplication;
@@ -37,6 +38,8 @@ public class JmeApplication extends JmeToJFXApplication {
 		super.simpleInitApp();
 		stateManager.attach(new DebugKeysAppState());
 		stateManager.attach(new MouseEventState());
+		
+		stateManager.detach(new FlyCamAppState());
 
 //		String assetPath = SpringUtil.getBean(HTTPUtils.class).getFullPath("assets/");
 //		LOG.debug("注册资源路径:{}", assetPath); // http://192.168.x.x:port/***/assests/

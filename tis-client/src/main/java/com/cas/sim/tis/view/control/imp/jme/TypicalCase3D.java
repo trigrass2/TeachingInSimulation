@@ -28,11 +28,14 @@ public class TypicalCase3D implements IContent {
 	private JmeApplication jmeApp;
 	private Region btns;
 	private Canvas canvas;
+	// 当前案例对象
+	private TypicalCase typicalCase;
 
 	public TypicalCase3D() {
 //		创建一个Canvas层，用于显示JME
 		canvas = new Canvas();
-//		canvas.setStyle("-fx-background-size: cover");
+		canvas.setFocusTraversable(true);
+		canvas.setOnMouseClicked(event -> canvas.requestFocus());
 		canvas.getProperties().put(JFXMouseInput.PROP_USE_LOCAL_COORDS, true);
 		canvas.parentProperty().addListener((ChangeListener<Parent>) (s, o, n) -> {
 			if (o == null && n != null) {
@@ -74,6 +77,7 @@ public class TypicalCase3D implements IContent {
 	}
 
 	public void setupCase(TypicalCase typicalCase) {
+		this.typicalCase = typicalCase;
 //		找到典型案例的状态机
 		TypicalCaseState appState = jmeApp.getStateManager().getState(TypicalCaseState.class);
 //		修改元器件模型
@@ -93,5 +97,9 @@ public class TypicalCase3D implements IContent {
 //		
 		appState.save();
 
+	}
+
+	public TypicalCase getTypicalCase() {
+		return typicalCase;
 	}
 }

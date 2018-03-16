@@ -139,6 +139,7 @@ public class HomeController implements Initializable {
 	private void setting() {
 		Dialog<Boolean> dialog = new Dialog<>();
 		dialog.setDialogPane(new SettingDialog());
+		dialog.setTitle(MsgUtil.getMessage("main.menu.setting"));
 		dialog.setPrefSize(400, 650);
 		dialog.show();
 	}

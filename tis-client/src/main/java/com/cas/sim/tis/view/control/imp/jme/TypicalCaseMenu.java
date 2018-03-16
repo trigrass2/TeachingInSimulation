@@ -183,23 +183,21 @@ public class TypicalCaseMenu implements ILeftContent {
 		return table;
 	}
 
-//	FIXME 临时这样写，后面要换成选择图纸面板。
 	private void newCase() {
 		TypicalCase t = new TypicalCase();
-		TextInputDialog steamIdDialog = new TextInputDialog();
-		steamIdDialog.setTitle("新增案例");
-		steamIdDialog.setHeaderText(null);
-		steamIdDialog.setContentText("请输入案例名称.");
-
-		Optional<String> steamID = steamIdDialog.showAndWait();
-		if (steamID.isPresent()) {
-			t.setName(steamID.get());
-		}
-
 		typicalCase3D.setupCase(t);
 	}
 
 	private void saveCase() {
+		TypicalCase t = typicalCase3D.getTypicalCase();
+		TextInputDialog steamIdDialog = new TextInputDialog();
+		steamIdDialog.setTitle(MsgUtil.getMessage("menu.button.save"));
+		steamIdDialog.setHeaderText(null);
+		steamIdDialog.setContentText(MsgUtil.getMessage("typical.case.prompt.input.case"));
+		Optional<String> steamID = steamIdDialog.showAndWait();
+		if (steamID.isPresent()) {
+			t.setName(steamID.get());
+		}
 		typicalCase3D.save();
 	}
 

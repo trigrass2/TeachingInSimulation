@@ -9,7 +9,7 @@
 
 <fx:root alignment="TOP_RIGHT" type="HBox" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
 	<children>
-		<Button mnemonicParsing="false" onAction="#min" styleClass="decoration">
+		<Button mnemonicParsing="false" onAction="#min" styleClass="decoration" focusTraversable="false">
 			<graphic>
 				<!-- <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true"> -->
 				<!-- <image> -->
@@ -22,7 +22,7 @@
 				<Tooltip text="%button.minimize" />
 			</tooltip>
 		</Button>
-		<Button fx:id="max" mnemonicParsing="false" onAction="#max" styleClass="decoration">
+		<Button fx:id="max" mnemonicParsing="false" onAction="#max" styleClass="decoration" focusTraversable="false">
 			<graphic>
 				<!-- <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true"> -->
 				<!-- <image> -->
@@ -35,7 +35,7 @@
 				<Tooltip fx:id="maxTip" text="%button.maximize" />
 			</tooltip>
 		</Button>
-		<Button mnemonicParsing="false" onAction="#close" styleClass="decoration">
+		<Button mnemonicParsing="false" onAction="#close" styleClass="decoration" focusTraversable="false">
 			<graphic>
 				<!-- <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true"> -->
 				<!-- <image> -->

@@ -41,6 +41,7 @@ public class SearchBox extends HBox {
 		searchButton = new Button();
 		searchButton.setGraphic(new SVGGlyph("iconfont.svg.search", Color.web("#d4d4d4"), 20));
 		searchButton.getStyleClass().add("img-btn");
+		searchButton.setFocusTraversable(false);
 		getChildren().addAll(textBox, searchButton);
 		
 		textBox.setOnKeyPressed(e -> {

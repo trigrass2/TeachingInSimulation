@@ -12,6 +12,7 @@ import com.cas.sim.tis.entity.TypicalCase;
 import com.cas.sim.tis.util.JmeUtil;
 import com.cas.sim.tis.util.SpringUtil;
 import com.cas.sim.tis.view.controller.PageController;
+import com.jme3.app.FlyCamAppState;
 import com.jme3.asset.ModelKey;
 import com.jme3.input.MouseInput;
 import com.jme3.input.controls.ActionListener;
@@ -42,7 +43,7 @@ public class TypicalCaseState extends BaseState {
 
 	private PointLight pointLight;
 
-	private MyCameraState cameraState;
+	private SceneCameraState cameraState;
 	private boolean moved_before_putdown;
 
 	private CircuitState circuitState;
@@ -57,9 +58,10 @@ public class TypicalCaseState extends BaseState {
 
 		setupLight();
 //		
-		cameraState = new MyCameraState();
+		cameraState = new SceneCameraState();
 		stateManager.attach(cameraState);
 
+		stateManager.detach(stateManager.getState(FlyCamAppState.class));
 //		circuitState = new CircuitState(root);
 //		stateManager.attach(circuitState);
 
@@ -67,6 +69,8 @@ public class TypicalCaseState extends BaseState {
 		bindEvents();
 
 		Platform.runLater(() -> SpringUtil.getBean(PageController.class).hideLoading());
+		
+		setupCase(new TypicalCase());
 	}
 
 	@Override
@@ -115,7 +119,18 @@ public class TypicalCaseState extends BaseState {
 				putDown();
 			}
 		}, "CLICKED_ON_DESKTOP");
-
+		addMapping("CLICKED_ON_HODING", new MouseButtonTrigger(MouseInput.BUTTON_RIGHT));
+		addListener((ActionListener) (name, isPressed, tpf) -> {
+			if (holding == null) {
+				return;
+			}
+			if (isPressed) {
+				holding.removeFromParent();
+				holding = null;
+				elecComp = null;
+				cameraState.setZoomEnable(true);
+			}
+		}, "CLICKED_ON_HODING");
 //		鼠标滚动事件
 		String[] rotateMapping = new String[] { MAP_ROTATE_LEFT, MAP_ROTATE_RIGHT };
 		addMapping(MAP_ROTATE_LEFT, new MouseAxisTrigger(MouseInput.AXIS_WHEEL, true));

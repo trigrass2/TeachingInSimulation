@@ -9,9 +9,9 @@
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.ProgressIndicator?>
 <?import com.cas.sim.tis.svg.SVGGlyph?>
 <?import com.cas.sim.tis.view.control.imp.Decoration?>
-<?import javafx.scene.control.ProgressIndicator?>
 
 <VBox prefHeight="768.0" prefWidth="1366.0" style="-fx-background-image: url(/static/images/basic/bg.png);-fx-background-size:stretch;" stylesheets="@../static/css/basic.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.cas.sim.tis.view.controller.PageController">
 	<children>
@@ -25,17 +25,12 @@
 						<Insets left="40" right="40" />
 					</HBox.margin>
 				</ImageView>
-				<Button mnemonicParsing="false" onAction="#back" styleClass="img-btn" text="返回" textFill="WHITE">
+				<Button mnemonicParsing="false" onAction="#back" styleClass="img-btn" text="返回" textFill="WHITE" focusTraversable="false">
 					<graphic>
-						<!-- <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true"> -->
-						<!-- <image> -->
-						<!-- <Image url="@../static/images/basic/back.png" /> -->
-						<!-- </image> -->
-						<!-- </ImageView> -->
 						<SVGGlyph name="iconfont.svg.back" size="16" fill="WHITE" />
 					</graphic>
 				</Button>
-				<HBox alignment="TOP_RIGHT" HBox.hgrow="ALWAYS">
+				<HBox alignment="TOP_RIGHT" HBox.hgrow="ALWAYS" >
 					<children>
 						<Decoration fx:id="decoration"/>
 					</children>
@@ -61,16 +56,6 @@
 								</padding>
 								<children>
 									<StackPane fx:id="leftContent" VBox.vgrow="ALWAYS" alignment="TOP_CENTER" />
-<!-- 									<Button mnemonicParsing="false" styleClass="left-menu" text="系统设置" textFill="WHITE" onAction="#setting"> -->
-<!-- 										<graphic> -->
-<!-- 											<ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true"> -->
-<!-- 											<image> -->
-<!-- 											<Image url="@../static/images/basic/setting.png" /> -->
-<!-- 											</image> -->
-<!-- 											</ImageView> -->
-<!-- 											<SVGGlyph name="iconfont.svg.setting" size="25" fill="WHITE" /> -->
-<!-- 										</graphic> -->
-<!-- 									</Button> -->
 								</children>
 							</VBox>
 							<Button mnemonicParsing="false" onAction="#toggle" styleClass="left-menu-btn">
