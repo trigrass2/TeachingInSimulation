@@ -39,7 +39,7 @@ public class JmeApplication extends JmeToJFXApplication {
 		stateManager.attach(new DebugKeysAppState());
 		stateManager.attach(new MouseEventState());
 		
-		stateManager.detach(new FlyCamAppState());
+		stateManager.detach(stateManager.getState(FlyCamAppState.class));
 
 //		String assetPath = SpringUtil.getBean(HTTPUtils.class).getFullPath("assets/");
 //		LOG.debug("注册资源路径:{}", assetPath); // http://192.168.x.x:port/***/assests/

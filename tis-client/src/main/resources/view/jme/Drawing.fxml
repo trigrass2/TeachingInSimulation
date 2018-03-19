@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.Tooltip?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import com.cas.sim.tis.view.control.imp.Decoration?>
+<?import com.cas.sim.tis.svg.SVGGlyph?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.Pane?>
+
+
+<VBox prefHeight="768.0" prefWidth="1366.0" style="-fx-background-image: url(/static/images/basic/bg.png);-fx-background-size:stretch;" stylesheets="static/css/basic.css" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8.0.141" fx:controller="com.cas.sim.tis.view.controller.DrawingController">
+	<children>
+		<HBox fx:id="handle" alignment="CENTER_LEFT" prefHeight="75.0" minHeight="75.0" styleClass="top-cover">
+			<children>
+				<ImageView fitHeight="30.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true">
+					<image>
+						<Image url="static/images/basic/logo.png" />
+					</image>
+					<HBox.margin>
+						<Insets left="40" right="40" />
+					</HBox.margin>
+				</ImageView>
+				<HBox alignment="TOP_RIGHT" HBox.hgrow="ALWAYS">
+					<children>
+						<Button mnemonicParsing="false" onAction="#min" styleClass="decoration" focusTraversable="false">
+							<graphic>
+								<SVGGlyph name="iconfont.svg.min" size="10" fill="#19b0c6" />
+							</graphic>
+							<tooltip>
+								<Tooltip text="%button.minimize" />
+							</tooltip>
+						</Button>
+						<Button fx:id="max" mnemonicParsing="false" onAction="#max" styleClass="decoration" focusTraversable="false">
+							<graphic>
+								<SVGGlyph name="iconfont.svg.max" size="10" fill="#19b0c6" />
+							</graphic>
+							<tooltip>
+								<Tooltip fx:id="maxTip" text="%button.maximize" />
+							</tooltip>
+						</Button>
+						<Button mnemonicParsing="false" onAction="#close" styleClass="decoration" focusTraversable="false">
+							<graphic>
+								<SVGGlyph name="iconfont.svg.close" size="10" fill="#19b0c6" />
+							</graphic>
+							<tooltip>
+								<Tooltip text="%button.close" />
+							</tooltip>
+						</Button>
+					</children>
+				</HBox>
+			</children>
+		</HBox>
+		<VBox VBox.vgrow="ALWAYS">
+			<ScrollPane fitToHeight="true" fitToWidth="true" VBox.vgrow="ALWAYS" pannable="true">
+				<content>
+					<HBox alignment="CENTER">
+						<children>
+							<ImageView fx:id="drawing" pickOnBounds="true" preserveRatio="true" />
+						</children>
+					</HBox>
+				</content>
+			</ScrollPane>
+			<VBox fx:id="expand" minHeight="140" maxHeight="140">
+				<children>
+					<HBox alignment="CENTER" spacing="10.0" style="-fx-background-color:#ffffffaa;">
+						<children>
+							<Button contentDisplay="RIGHT" mnemonicParsing="false" onAction="#toggle" styleClass="img-btn" text="%typical.case.drawings.list">
+								<graphic>
+									<SVGGlyph name="iconfont.svg.down" size="10" fill="#19b0c6" />
+								</graphic>
+							</Button>
+							<Separator orientation="VERTICAL" />
+							<Button fx:id="zoomOut" mnemonicParsing="false" onAction="#zoomOut" styleClass="img-btn" disable="true">
+								<graphic>
+									<SVGGlyph name="iconfont.svg.zoom-out" size="20" fill="#19b0c6" />
+								</graphic>
+							</Button>
+							<Label fx:id="scale" alignment="CENTER" prefWidth="50.0" text="100%" />
+							<Button fx:id="zoomIn" mnemonicParsing="false" onAction="#zoomIn" styleClass="img-btn" disable="true">
+								<graphic>
+									<SVGGlyph name="iconfont.svg.zoom-in" size="20" fill="#19b0c6" />
+								</graphic>
+							</Button>
+							<Separator orientation="VERTICAL" />
+							<!-- <Button mnemonicParsing="false" onAction="#showSelectDrawingDialog" styleClass="img-btn" text="%button.add"> -->
+							<!-- <graphic> -->
+							<!-- <SVGGlyph name="iconfont.svg.add" size="10" fill="#19b0c6" /> -->
+							<!-- </graphic> -->
+							<!-- </Button> -->
+							<Button mnemonicParsing="false" onAction="#showUploadDrawingDialog" styleClass="img-btn" text="%button.upload">
+								<graphic>
+									<SVGGlyph name="iconfont.svg.add" size="10" fill="#19b0c6" />
+								</graphic>
+							</Button>
+						</children>
+						<padding>
+							<Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+						</padding>
+					</HBox>
+					<HBox style="-fx-background-color: #fbfbfbaa;">
+						<children>
+							<Button fx:id="prev" mnemonicParsing="false" onAction="#prev" prefHeight="100.0" styleClass="img-btn" disable="true">
+								<graphic>
+									<SVGGlyph name="iconfont.svg.left" size="30" fill="#19b0c6" />
+								</graphic>
+							</Button>
+							<ScrollPane fitToHeight="true" prefHeight="100.0" vbarPolicy="NEVER" HBox.hgrow="ALWAYS">
+								<content>
+									<HBox fx:id="btns" spacing="10.0">
+										<padding>
+											<Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+										</padding>
+									</HBox>
+								</content>
+							</ScrollPane>
+							<Button fx:id="next" mnemonicParsing="false" onAction="#next" prefHeight="100.0" styleClass="img-btn" disable="true">
+								<graphic>
+									<SVGGlyph name="iconfont.svg.right" size="30" fill="#19b0c6" />
+								</graphic>
+							</Button>
+						</children>
+					</HBox>
+				</children>
+			</VBox>
+		</VBox>
+	</children>
+</VBox>

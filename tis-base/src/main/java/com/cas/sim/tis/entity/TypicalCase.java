@@ -1,6 +1,7 @@
 package com.cas.sim.tis.entity;
 
 import java.io.Serializable;
+import java.util.Date;
 
 import javax.persistence.Id;
 
@@ -19,8 +20,18 @@ public class TypicalCase implements Serializable {
 
 //	电路存档的路径
 	private String archivePath;
+	
+	private String drawings;
 
-	private Integer creatorId;
+	private Integer creator;
+	
+	private Date createDate;
+	
+	private Integer updater;
+	
+	private Date updateDate;
+	
+	private Boolean del = false;
 
 	public Integer getId() {
 		return id;
@@ -46,12 +57,43 @@ public class TypicalCase implements Serializable {
 		this.archivePath = archivePath;
 	}
 
-	public Integer getCreatorId() {
-		return creatorId;
+	public String getDrawings() {
+		return drawings;
 	}
 
-	public void setCreatorId(Integer creatorId) {
-		this.creatorId = creatorId;
+	public void setDrawings(String drawings) {
+		this.drawings = drawings;
 	}
 
+	public Integer getCreator() {
+		return creator;
+	}
+
+	public void setCreator(Integer creator) {
+		this.creator = creator;
+	}
+
+	public Date getCreateDate() {
+		return createDate;
+	}
+
+	public Integer getUpdater() {
+		return updater;
+	}
+
+	public void setUpdater(Integer updater) {
+		this.updater = updater;
+	}
+
+	public Date getUpdateDate() {
+		return updateDate;
+	}
+
+	public Boolean getDel() {
+		return del;
+	}
+
+	public void setDel(Boolean del) {
+		this.del = del;
+	}
 }

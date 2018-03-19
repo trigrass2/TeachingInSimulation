@@ -258,7 +258,7 @@ public class ResourceList extends HBox implements IContent {
 					return null;
 				}
 				ResourceType resourceType = ResourceType.getResourceType(type);
-				return new SVGGlyph(resourceType.getIcon(), resourceType.getColor(), 22, 25);
+				return new SVGGlyph(resourceType.getIcon(), resourceType.getColor(), 22);
 			}
 		};
 		icon.setCellFactory(SVGIconCell.forTableColumn(converter));
@@ -303,7 +303,7 @@ public class ResourceList extends HBox implements IContent {
 			// 删除按钮
 			Column<String> delete = new Column<String>();
 			delete.setCellFactory(BtnCell.forTableColumn(MsgUtil.getMessage("button.delete"), "blue-btn", rid -> {
-				AlertUtil.showConfirm(MsgUtil.getMessage("table.delete"), response -> {
+				AlertUtil.showConfirm(MsgUtil.getMessage("alert.confirmation.data.delete"), response -> {
 					if (response == ButtonType.YES) {
 						SpringUtil.getBean(ResourceAction.class).detele((Integer) rid);
 						pagination.reload();

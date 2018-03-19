@@ -1,6 +1,6 @@
 package com.cas.sim.tis.view.control.imp.jme;
 
-import java.net.URL;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -11,31 +11,35 @@ import org.controlsfx.control.PopOver.ArrowLocation;
 import com.cas.sim.tis.app.state.TypicalCaseState;
 import com.cas.sim.tis.util.JmeUtil;
 import com.cas.sim.tis.util.MsgUtil;
+import com.cas.sim.tis.view.control.IDistory;
+import com.cas.sim.tis.view.controller.DrawingController;
 
+import de.felixroske.jfxsupport.GUIState;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.ContentDisplay;
-import javafx.scene.control.Control;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
-public class TypicalCaseBtnController implements Initializable {
+public class TypicalCaseBtnController implements IDistory {
 	@FXML
 	private StackPane content;
-	@FXML
-	private Control draw;
-	@FXML
-	private Control wire;
 
 	private TypicalCaseState state;
 
@@ -46,17 +50,47 @@ public class TypicalCaseBtnController implements Initializable {
 	private Label preview;
 	private TextField num;
 
-	@Override
-	public void initialize(URL location, ResourceBundle resources) {
-		wire.setOnMouseClicked(e -> showWirePicker());
+	private Stage drawingWin;
+
+	private TypicalCase3D typicalCase3D;
+
+	@FXML
+	private void showDrawingWin(ActionEvent event) {
+		((Button) event.getSource()).setDisable(true);
+		try {
+			if (drawingWin == null) {
+				drawingWin = new Stage();
+				drawingWin.initStyle(StageStyle.TRANSPARENT);
+				drawingWin.setX(GUIState.getStage().getX() + 100);
+				drawingWin.setY(GUIState.getStage().getY() + 100);
+
+				FXMLLoader loader = new FXMLLoader();
+				loader.setResources(ResourceBundle.getBundle("i18n/messages"));
+				Region root = loader.load(TypicalCaseBtnController.class.getResourceAsStream("/view/jme/Drawing.fxml"));
+				DrawingController controller = loader.getController();
+				controller.setStage(drawingWin);
+				controller.setUI(typicalCase3D);
+
+				Scene scene = new Scene(root);
+				drawingWin.setScene(scene);
+				drawingWin.setOnHidden(e -> {
+					((Button) event.getSource()).setDisable(false);
+				});
+			}
+			drawingWin.show();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
-	private void showWirePicker() {
+	@FXML
+	private void showWirePicker(ActionEvent event) {
+		Button wire = (Button) event.getSource();
 		if (wirePicker == null) {
 			wirePicker = new PopOver();
 			wirePicker.setArrowLocation(ArrowLocation.BOTTOM_CENTER);
 			wirePicker.setPrefSize(300, 400);
-			wirePicker.setTitle(MsgUtil.getMessage("typical.case.wire.pane"	));
+			wirePicker.setTitle(MsgUtil.getMessage("typical.case.wire.pane"));
 			wirePicker.setContentNode(getWirePickContent());
 		}
 		Point2D point = wire.localToScreen(wire.getWidth() / 2, -10);
@@ -66,7 +100,6 @@ public class TypicalCaseBtnController implements Initializable {
 	private Node getWirePickContent() {
 		VBox node = new VBox(10);
 		node.setPadding(new Insets(10, 10, 10, 10));
-//		node.setPrefSize(330, 230);
 
 		HBox hbox = new HBox(15);
 
@@ -174,7 +207,7 @@ public class TypicalCaseBtnController implements Initializable {
 
 		Circle cir = (Circle) colorPicked.getGraphic();
 		WireRadius wr = (WireRadius) preview.getGraphic();
-		
+
 		Color color = (Color) cir.getFill();
 		wr.setOuterFill(color);
 
@@ -185,6 +218,15 @@ public class TypicalCaseBtnController implements Initializable {
 
 	public void setState(TypicalCaseState state) {
 		this.state = state;
+	}
+
+	@Override
+	public void distroy() {
+		drawingWin.close();
+	}
+
+	public void setUI(TypicalCase3D typicalCase3D) {
+		this.typicalCase3D = typicalCase3D;
 	}
 
 }

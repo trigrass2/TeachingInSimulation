@@ -124,7 +124,7 @@ public class ResourceSelectedDialog extends DialogPane<Integer> {
 					return null;
 				}
 				ResourceType resourceType = ResourceType.getResourceType(type);
-				return new SVGGlyph(resourceType.getIcon(), resourceType.getColor(), 22, 25);
+				return new SVGGlyph(resourceType.getIcon(), resourceType.getColor(), 22);
 			}
 		};
 		icon.setCellFactory(SVGIconCell.forTableColumn(converter));

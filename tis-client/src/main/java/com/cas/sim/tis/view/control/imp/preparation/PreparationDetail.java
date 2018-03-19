@@ -69,7 +69,7 @@ import javafx.scene.layout.VBox;
 public class PreparationDetail extends HBox implements IContent {
 
 	private static final Logger LOG = LoggerFactory.getLogger(PreparationDetail.class);
-	
+
 	@FXML
 	private Title title;
 	@FXML
@@ -146,11 +146,7 @@ public class PreparationDetail extends HBox implements IContent {
 					return null;
 				}
 				ResourceType resourceType = ResourceType.getResourceType(type);
-				if (ResourceType.LINK == resourceType) {
-					return new SVGGlyph(resourceType.getIcon(), resourceType.getColor(), 22);
-				} else {
-					return new SVGGlyph(resourceType.getIcon(), resourceType.getColor(), 22, 25);
-				}
+				return new SVGGlyph(resourceType.getIcon(), resourceType.getColor(), 22);
 			}
 		};
 		icon.setCellFactory(SVGIconCell.forTableColumn(converter));
@@ -180,7 +176,7 @@ public class PreparationDetail extends HBox implements IContent {
 			// 删除按钮
 			Column<String> delete = new Column<String>();
 			delete.setCellFactory(BtnCell.forTableColumn(MsgUtil.getMessage("button.delete"), "blue-btn", rid -> {
-				AlertUtil.showConfirm(MsgUtil.getMessage("table.delete"), response -> {
+				AlertUtil.showConfirm(MsgUtil.getMessage("alert.confirmation.data.delete"), response -> {
 					if (response == ButtonType.YES) {
 						SpringUtil.getBean(PreparationResourceAction.class).detele((Integer) rid);
 						loadResources();
@@ -243,7 +239,7 @@ public class PreparationDetail extends HBox implements IContent {
 			// 删除按钮
 			Column<String> delete = new Column<String>();
 			delete.setCellFactory(BtnCell.forTableColumn(MsgUtil.getMessage("button.delete"), "blue-btn", rid -> {
-				AlertUtil.showConfirm(MsgUtil.getMessage("table.delete"), response -> {
+				AlertUtil.showConfirm(MsgUtil.getMessage("alert.confirmation.data.delete"), response -> {
 					if (response == ButtonType.YES) {
 						SpringUtil.getBean(PreparationResourceAction.class).detele((Integer) rid);
 						loadResources();
@@ -340,10 +336,8 @@ public class PreparationDetail extends HBox implements IContent {
 
 	@FXML
 	private void typicalCase() {
-		List<TypicalCase> cases = SpringUtil.getBean(TypicalCaseAction.class).getTypicalCaseList();
-
 		Dialog<Integer> dialog = new Dialog<>();
-		dialog.setDialogPane(new TypicalCaseSelectDialog(cases));
+		dialog.setDialogPane(new TypicalCaseSelectDialog(false));
 		dialog.setTitle(MsgUtil.getMessage("preparation.typical.case"));
 		dialog.setPrefSize(640, 500);
 		dialog.showAndWait().ifPresent(id -> {
@@ -430,7 +424,7 @@ public class PreparationDetail extends HBox implements IContent {
 		try {
 			SpringUtil.getBean(PreparationResourceAction.class).addResource(resource);
 			loadResources();
-			AlertUtil.showAlert(AlertType.INFORMATION, MsgUtil.getMessage("data.add.success"));
+			AlertUtil.showAlert(AlertType.INFORMATION, MsgUtil.getMessage("alert.information.data.add.success"));
 		} catch (Exception e) {
 			e.printStackTrace();
 			AlertUtil.showAlert(AlertType.ERROR, e.getMessage());
@@ -445,7 +439,7 @@ public class PreparationDetail extends HBox implements IContent {
 		try {
 			SpringUtil.getBean(PreparationQuizAction.class).addQuiz(quiz);
 			loadQuizs();
-			AlertUtil.showAlert(AlertType.INFORMATION, MsgUtil.getMessage("data.add.success"));
+			AlertUtil.showAlert(AlertType.INFORMATION, MsgUtil.getMessage("alert.information.data.add.success"));
 		} catch (Exception e) {
 			e.printStackTrace();
 			AlertUtil.showAlert(AlertType.ERROR, e.getMessage());
@@ -493,13 +487,13 @@ public class PreparationDetail extends HBox implements IContent {
 	}
 
 	private void openBrokenCase(Integer id) {
-		
+
 	}
-	
+
 	private void openFreeMode() {
-		
+
 	}
-	
+
 	@Override
 	public void distroy() {
 

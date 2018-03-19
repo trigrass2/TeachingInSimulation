@@ -155,7 +155,7 @@ public class LibraryList extends HBox implements IContent {
 			// 删除按钮
 			Column<String> del = new Column<String>();
 			del.setCellFactory(BtnCell.forTableColumn(MsgUtil.getMessage("button.delete"), Priority.ALWAYS, "blue-btn", id -> {
-				AlertUtil.showConfirm(MsgUtil.getMessage("table.delete"), response -> {
+				AlertUtil.showConfirm(MsgUtil.getMessage("alert.confirmation.data.delete"), response -> {
 					if (response == ButtonType.YES) {
 						SpringUtil.getBean(LibraryAction.class).deleteLibrary((int) id);
 						pagination.reload();
@@ -198,7 +198,7 @@ public class LibraryList extends HBox implements IContent {
 			}
 			try {
 				SpringUtil.getBean(LibraryAction.class).addLibrary(library);
-				AlertUtil.showAlert(AlertType.INFORMATION, MsgUtil.getMessage("data.add.success"));
+				AlertUtil.showAlert(AlertType.INFORMATION, MsgUtil.getMessage("alert.information.data.add.success"));
 				pagination.reload();
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -220,7 +220,7 @@ public class LibraryList extends HBox implements IContent {
 			}
 			try {
 				SpringUtil.getBean(LibraryAction.class).modifyLibrary(lib);
-				AlertUtil.showAlert(AlertType.INFORMATION, MsgUtil.getMessage("data.update.success"));
+				AlertUtil.showAlert(AlertType.INFORMATION, MsgUtil.getMessage("alert.information.data.update.success"));
 				pagination.reload();
 			} catch (Exception e) {
 				e.printStackTrace();

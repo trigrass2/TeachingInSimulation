@@ -2,6 +2,7 @@ package com.cas.sim.tis.app.state;
 
 import org.jetbrains.annotations.NotNull;
 
+import com.cas.sim.tis.app.listener.WASDListener;
 import com.jme3.input.KeyInput;
 import com.jme3.input.MouseInput;
 import com.jme3.input.controls.ActionListener;
@@ -15,7 +16,7 @@ import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 
 public class SceneCameraState extends BaseState implements ActionListener, AnalogListener {
-	private WASDCamera camera;
+	private WASDListener camera;
 
 	protected Quaternion rot = new Quaternion();
 	protected Vector3f vector = new Vector3f(0, 0, 5);
@@ -74,7 +75,7 @@ public class SceneCameraState extends BaseState implements ActionListener, Analo
 		cam.setParallelProjection(false);
 		cam.setFrustumPerspective(45f, aspect, 0.01f, 1000);
 
-		camera = new WASDCamera(cam);
+		camera = new WASDListener(cam);
 		camera.registerWithInput(inputManager);
 	}
 

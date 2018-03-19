@@ -4,59 +4,64 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.shape.Circle?>
+<?import javafx.geometry.Insets?>
 
 <?import com.cas.sim.tis.svg.SVGGlyph?>
 <?import org.controlsfx.control.PopOver?>
+<?import javafx.scene.control.Button?>
 
 <VBox pickOnBounds="false" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.cas.sim.tis.view.control.imp.jme.TypicalCaseBtnController">
 	<VBox VBox.vgrow="ALWAYS" mouseTransparent="true" />
 
-	<HBox prefHeight="50" spacing="10">
-		<Label fx:id="draw" text="%typical.case.drawings" styleClass="recognize-btn"><!-- 电路图 -->
+	<HBox spacing="10">
+		<Button text="%typical.case.drawings" styleClass="recognize-btn" onAction="#showDrawingWin"><!-- 电路图 -->
 			<graphic>
 				<SVGGlyph name="iconfont.svg.drawing" size="20" fill="WHITE" />
 			</graphic>
-		</Label>
-		<Label fx:id="wire" text="%typical.case.wires" styleClass="recognize-btn"><!-- 导线 -->
+		</Button>
+		<Button text="%typical.case.wires" styleClass="recognize-btn" onAction="#showWirePicker"><!-- 导线 -->
 			<graphic>
 				<SVGGlyph name="iconfont.svg.wire" size="20" fill="WHITE" />
 			</graphic>
-		</Label>
+		</Button>
 	</HBox>
-<!-- 	<PopOver fx:id="wirePicker" title="导线选择" arrowSize="10" arrowLocation="BOTTOM_CENTER"> -->
-<!-- 		<HBox> -->
-<!-- 			<VBox> -->
-<!-- 				<Label fx:id="draw" text="%rec.lbl.zoom.in" styleClass="recognize-btn">电路图 -->
-<!-- 					<graphic> -->
-<!-- 						<Circle fill="RED" radius="10"/> -->
-<!-- 					</graphic> -->
-<!-- 				</Label> -->
-<!-- 				<Label fx:id="draw" text="%rec.lbl.zoom.in" styleClass="recognize-btn">电路图 -->
-<!-- 					<graphic> -->
-<!-- 						<Circle fill="RED" radius="10"/> -->
-<!-- 					</graphic> -->
-<!-- 				</Label> -->
-<!-- 				<Label fx:id="draw" text="%rec.lbl.zoom.in" styleClass="recognize-btn">电路图 -->
-<!-- 					<graphic> -->
-<!-- 						<Circle fill="RED" radius="10"/> -->
-<!-- 					</graphic> -->
-<!-- 				</Label> -->
-<!-- 				<Label fx:id="draw" text="%rec.lbl.zoom.in" styleClass="recognize-btn">电路图 -->
-<!-- 					<graphic> -->
-<!-- 						<Circle fill="RED" radius="10"/> -->
-<!-- 					</graphic> -->
-<!-- 				</Label> -->
-<!-- 				<Label fx:id="draw" text="%rec.lbl.zoom.in" styleClass="recognize-btn">电路图 -->
-<!-- 					<graphic> -->
-<!-- 						<Circle fill="RED" radius="10"/> -->
-<!-- 					</graphic> -->
-<!-- 				</Label> -->
-<!-- 				<Label fx:id="draw" text="%rec.lbl.zoom.in" styleClass="recognize-btn">电路图 -->
-<!-- 					<graphic> -->
-<!-- 						<Circle fill="RED" radius="10"/> -->
-<!-- 					</graphic> -->
-<!-- 				</Label> -->
-<!-- 			</VBox> -->
-<!-- 		</HBox> -->
-<!-- 	</PopOver> -->
+	<padding>
+		<Insets left="10" bottom="10" />
+	</padding>
+	<!-- <PopOver fx:id="wirePicker" title="导线选择" arrowSize="10" arrowLocation="BOTTOM_CENTER"> -->
+	<!-- <HBox> -->
+	<!-- <VBox> -->
+	<!-- <Label fx:id="draw" text="%rec.lbl.zoom.in" styleClass="recognize-btn">电路图 -->
+	<!-- <graphic> -->
+	<!-- <Circle fill="RED" radius="10"/> -->
+	<!-- </graphic> -->
+	<!-- </Label> -->
+	<!-- <Label fx:id="draw" text="%rec.lbl.zoom.in" styleClass="recognize-btn">电路图 -->
+	<!-- <graphic> -->
+	<!-- <Circle fill="RED" radius="10"/> -->
+	<!-- </graphic> -->
+	<!-- </Label> -->
+	<!-- <Label fx:id="draw" text="%rec.lbl.zoom.in" styleClass="recognize-btn">电路图 -->
+	<!-- <graphic> -->
+	<!-- <Circle fill="RED" radius="10"/> -->
+	<!-- </graphic> -->
+	<!-- </Label> -->
+	<!-- <Label fx:id="draw" text="%rec.lbl.zoom.in" styleClass="recognize-btn">电路图 -->
+	<!-- <graphic> -->
+	<!-- <Circle fill="RED" radius="10"/> -->
+	<!-- </graphic> -->
+	<!-- </Label> -->
+	<!-- <Label fx:id="draw" text="%rec.lbl.zoom.in" styleClass="recognize-btn">电路图 -->
+	<!-- <graphic> -->
+	<!-- <Circle fill="RED" radius="10"/> -->
+	<!-- </graphic> -->
+	<!-- </Label> -->
+	<!-- <Label fx:id="draw" text="%rec.lbl.zoom.in" styleClass="recognize-btn">电路图 -->
+	<!-- <graphic> -->
+	<!-- <Circle fill="RED" radius="10"/> -->
+	<!-- </graphic> -->
+	<!-- </Label> -->
+	<!-- </VBox> -->
+	<!-- </HBox> -->
+	<!-- </PopOver> -->
 </VBox>

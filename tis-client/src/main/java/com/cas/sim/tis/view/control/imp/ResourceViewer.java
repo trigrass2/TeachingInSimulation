@@ -159,6 +159,7 @@ public class ResourceViewer extends VBox implements IContent {
 		ScrollPane scrollPane = new ScrollPane(box);
 		scrollPane.setFitToWidth(true);
 		scrollPane.setFitToHeight(true);
+		scrollPane.setPannable(true);
 
 		double width = image.getWidth();
 		double height = image.getHeight();
@@ -266,10 +267,10 @@ public class ResourceViewer extends VBox implements IContent {
 		}
 		collected = SpringUtil.getBean(CollectionAction.class).checkCollected(resource.getId());
 		if (collected) {
-			this.collectedBtn.setGraphic(new SVGGlyph("iconfont.svg.collected", Color.web("#ff9e2c"), 25, 20));
+			this.collectedBtn.setGraphic(new SVGGlyph("iconfont.svg.collected", Color.web("#ff9e2c"), 25));
 			this.collectedBtn.setText(MsgUtil.getMessage("resource.collection.done"));
 		} else {
-			this.collectedBtn.setGraphic(new SVGGlyph("iconfont.svg.uncollect", Color.web("#ff9e2c"), 25, 20));
+			this.collectedBtn.setGraphic(new SVGGlyph("iconfont.svg.uncollect", Color.web("#ff9e2c"), 25));
 			this.collectedBtn.setText(MsgUtil.getMessage("resource.collection.todo"));
 		}
 	}
@@ -278,12 +279,12 @@ public class ResourceViewer extends VBox implements IContent {
 	private void collect() {
 		Integer rid = resource.getId();
 		if (collected) {
-			this.collectedBtn.setGraphic(new SVGGlyph("iconfont.svg.uncollect", Color.web("#ff9e2c"), 25, 20));
+			this.collectedBtn.setGraphic(new SVGGlyph("iconfont.svg.uncollect", Color.web("#ff9e2c"), 25));
 			this.collectedBtn.setText(MsgUtil.getMessage("resource.collection.todo"));
 			SpringUtil.getBean(ResourceAction.class).uncollect(rid);
 			collected = false;
 		} else {
-			this.collectedBtn.setGraphic(new SVGGlyph("iconfont.svg.collected", Color.web("#ff9e2c"), 25, 20));
+			this.collectedBtn.setGraphic(new SVGGlyph("iconfont.svg.collected", Color.web("#ff9e2c"), 25));
 			this.collectedBtn.setText(MsgUtil.getMessage("resource.collection.done"));
 			SpringUtil.getBean(ResourceAction.class).collected(rid);
 			collected = true;

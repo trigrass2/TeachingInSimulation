@@ -25,11 +25,15 @@ import javafx.scene.layout.Region;
 public class TypicalCase3D implements IContent {
 
 	private static final Logger LOG = LoggerFactory.getLogger(TypicalCase3D.class);
-	private JmeApplication jmeApp;
-	private Region btns;
-	private Canvas canvas;
 	// 当前案例对象
 	private TypicalCase typicalCase;
+	
+	private JmeApplication jmeApp;
+	
+	private Canvas canvas;
+	private Region btns;
+	
+	private TypicalCaseBtnController btnController;
 
 	public TypicalCase3D() {
 //		创建一个Canvas层，用于显示JME
@@ -57,8 +61,9 @@ public class TypicalCase3D implements IContent {
 		loader.setResources(ResourceBundle.getBundle("i18n/messages"));
 		try {
 			btns = loader.load(TypicalCase3D.class.getResourceAsStream("/view/jme/TypicalCase.fxml"));
-			TypicalCaseBtnController btnController = loader.getController();
+			btnController = loader.getController();
 			btnController.setState(compState);
+			btnController.setUI(this);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -74,6 +79,8 @@ public class TypicalCase3D implements IContent {
 		TypicalCaseState compState = jmeApp.getStateManager().getState(TypicalCaseState.class);
 		jmeApp.getStateManager().detach(compState);
 		jmeApp.stop(true);
+		
+		btnController.distroy();
 	}
 
 	public void setupCase(TypicalCase typicalCase) {

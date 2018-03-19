@@ -42,7 +42,7 @@ public class PageController implements Initializable {
 
 	@FXML
 	private Decoration decoration;
-	
+
 	@FXML
 	private Pane handle;
 
@@ -178,8 +178,6 @@ public class PageController implements Initializable {
 		arrow.getStyleClass().clear();
 		arrow.getStyleClass().add("hide");
 		visible = true;
-		this.leftMenu.layout();
-		this.leftBlock.getParent().layout();
 	}
 
 	private void clear() {
@@ -245,6 +243,15 @@ public class PageController implements Initializable {
 
 	public ILeftContent getLeftMenu() {
 		return left;
+	}
+
+	public IContent getIContent() {
+		if (PageLevel.Level1 == level) {
+			return level1Content;
+		} else if (PageLevel.Level2 == level) {
+			return level2Content;
+		}
+		return null;
 	}
 
 	public void refresh() {

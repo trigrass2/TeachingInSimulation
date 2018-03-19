@@ -38,7 +38,11 @@ public enum ResourceType {
 	/**
 	 * 在备案中使用的元件认知、典型案例、故障维修的图标
 	 */
-	LINK(8, "iconfont.svg.link", Color.web("#22678f"), new String[] {}, false);
+	LINK(8, "iconfont.svg.link", Color.web("#22678f"), new String[] {}, false),
+	/**
+	 * 图纸
+	 */
+	DRAWING(9, "iconfont.svg.image", Color.web("#2bc9f7"), new String[] { "*.png", "*.jpg" }, false);
 
 //	资源类型代号
 	private int type;

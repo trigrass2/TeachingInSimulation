@@ -1,16 +1,19 @@
 package com.cas.sim.tis.action;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.remoting.rmi.RmiProxyFactoryBean;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import com.cas.sim.tis.consts.Session;
 import com.cas.sim.tis.entity.Resource;
 import com.cas.sim.tis.services.ResourceService;
 import com.cas.sim.tis.view.control.imp.resource.ResourceList.ResourceMenuType;
 import com.cas.sim.tis.vo.ResourceInfo;
+import com.cas.util.StringUtil;
 import com.github.pagehelper.PageInfo;
 
 @Component
@@ -57,6 +60,17 @@ public class ResourceAction extends BaseAction<ResourceService> {
 
 	public List<Resource> findResourcesByCreator(List<Integer> types, String keyword, Integer creator) {
 		return getService().findResourcesByCreator(types, keyword, creator);
+	}
+
+	public List<Resource> findResourcesByIds(List<String> ids) {
+		if (StringUtils.isEmpty(ids)) {
+			return new ArrayList<>();
+		}
+		List<Resource> resources = getService().findByIds(StringUtil.combine(ids, ','));
+		if (resources == null) {
+			return new ArrayList<>();
+		}
+		return resources;
 	}
 
 	public void browsed(Integer id) {

@@ -44,6 +44,8 @@ public class ResourceUploadDialog extends DialogPane<Integer> {
 
 	private File uploadFile;
 
+	private ResourceType type;
+
 	public ResourceUploadDialog() {
 		VBox box = new VBox(10);
 		VBox.setVgrow(box, Priority.ALWAYS);
@@ -101,19 +103,28 @@ public class ResourceUploadDialog extends DialogPane<Integer> {
 		setAlignment(Pos.TOP_CENTER);
 	}
 
+	public ResourceUploadDialog(ResourceType type) {
+		this();
+		this.type = type;
+	}
+
 	private void browse() {
 		// 打开文件管理器
 		FileChooser chooser = new FileChooser();
 		chooser.setInitialDirectory(FileSystemView.getFileSystemView().getHomeDirectory());
-		chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter(MsgUtil.getMessage("resource.all"), "*.doc", "*.docx", "*.xls", "*.xlsx", "*.ppt", "*.pptx", "*.pdf", "*.png", "*.jpg", "*.swf", "*.mp4", "*.flv", "*.wmv", "*.rmvb", "*.avi", "*.txt"));
-		chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter(MsgUtil.getMessage("resource.word"), ResourceType.WORD.getSuffixs()));
-		chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter(MsgUtil.getMessage("resource.excel"), ResourceType.EXCEL.getSuffixs()));
-		chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter(MsgUtil.getMessage("resource.ppt"), ResourceType.PPT.getSuffixs()));
-		chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter(MsgUtil.getMessage("resource.pdf"), ResourceType.PDF.getSuffixs()));
-		chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter(MsgUtil.getMessage("resource.pic"), ResourceType.IMAGE.getSuffixs()));
-		chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter(MsgUtil.getMessage("resource.swf"), ResourceType.SWF.getSuffixs()));
-		chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter(MsgUtil.getMessage("resource.video"), ResourceType.VIDEO.getSuffixs()));
-		chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter(MsgUtil.getMessage("resource.txt"), ResourceType.TXT.getSuffixs()));
+		if (type == null) {
+			chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter(MsgUtil.getMessage("resource.all"), "*.doc", "*.docx", "*.xls", "*.xlsx", "*.ppt", "*.pptx", "*.pdf", "*.png", "*.jpg", "*.swf", "*.mp4", "*.flv", "*.wmv", "*.rmvb", "*.avi", "*.txt"));
+			chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter(MsgUtil.getMessage("resource.word"), ResourceType.WORD.getSuffixs()));
+			chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter(MsgUtil.getMessage("resource.excel"), ResourceType.EXCEL.getSuffixs()));
+			chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter(MsgUtil.getMessage("resource.ppt"), ResourceType.PPT.getSuffixs()));
+			chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter(MsgUtil.getMessage("resource.pdf"), ResourceType.PDF.getSuffixs()));
+			chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter(MsgUtil.getMessage("resource.pic"), ResourceType.IMAGE.getSuffixs()));
+			chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter(MsgUtil.getMessage("resource.swf"), ResourceType.SWF.getSuffixs()));
+			chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter(MsgUtil.getMessage("resource.video"), ResourceType.VIDEO.getSuffixs()));
+			chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter(MsgUtil.getMessage("resource.txt"), ResourceType.TXT.getSuffixs()));
+		} else {
+			chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter(MsgUtil.getMessage("resource.all"), type.getSuffixs()));
+		}
 		File target = chooser.showOpenDialog(GUIState.getStage());
 		if (target == null) {
 			return;
@@ -141,13 +152,17 @@ public class ResourceUploadDialog extends DialogPane<Integer> {
 			return;
 		}
 		// 封装资源记录
-		int type = ResourceType.parseType(ext);
 		Resource resource = new Resource();
 		resource.setKeyword(keywords.getText());
 		resource.setPath(rename);
 		resource.setName(fileName);
 		try {
-			resource.setType(type);
+			if (this.type == null) {
+				int type = ResourceType.parseType(ext);
+				resource.setType(type);
+			} else {
+				resource.setType(this.type.getType());
+			}
 		} catch (Exception e) {
 			LOG.warn("解析文件后缀名出现错误", e);
 			throw e;

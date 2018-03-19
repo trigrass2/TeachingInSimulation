@@ -137,7 +137,7 @@ public class ClassList extends HBox implements IContent {
 		// 删除按钮
 		Column<String> del = new Column<String>();
 		del.setCellFactory(BtnCell.forTableColumn(MsgUtil.getMessage("button.delete"), Priority.ALWAYS, "blue-btn", id -> {
-			AlertUtil.showConfirm(MsgUtil.getMessage("table.delete"), response -> {
+			AlertUtil.showConfirm(MsgUtil.getMessage("alert.confirmation.data.delete"), response -> {
 				if (response == ButtonType.YES) {
 					SpringUtil.getBean(ClassAction.class).deleteClass((int) id);
 					pagination.reload();
@@ -245,7 +245,7 @@ public class ClassList extends HBox implements IContent {
 			}
 			try {
 				SpringUtil.getBean(ClassAction.class).modifyClass(obj);
-				AlertUtil.showAlert(AlertType.INFORMATION, MsgUtil.getMessage("data.update.success"));
+				AlertUtil.showAlert(AlertType.INFORMATION, MsgUtil.getMessage("alert.information.data.update.success"));
 				pagination.reload();
 			} catch (Exception e) {
 				e.printStackTrace();

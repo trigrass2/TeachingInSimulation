@@ -7,13 +7,14 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.image.Image?>
+<?import javafx.geometry.Insets?>
 <?import com.sun.javafx.event.BasicEventDispatcher?>
 <?import com.cas.sim.tis.svg.SVGGlyph?>
 
 <VBox pickOnBounds="false" xmlns:fx="http://javafx.com/fxml/1"  fx:controller="com.cas.sim.tis.view.control.imp.jme.RecongnizeBtnController">
 	<VBox VBox.vgrow="ALWAYS" mouseTransparent="true" />
 
-	<HBox prefHeight="50" spacing="20">
+	<HBox spacing="20">
 		<HBox spacing="10">
 			<CheckBox  fx:id="intro" text="%rec.ckb.intro" styleClass="recognize-btn" />
 			<CheckBox fx:id="explode" text="%rec.ckb.explode" styleClass="recognize-btn" />
@@ -39,4 +40,7 @@
 			</Label>
 		</HBox>
 	</HBox>
+	<padding>
+		<Insets left="10" bottom="10" />
+	</padding>
 </VBox>

@@ -31,8 +31,7 @@ public class TypicalCaseAction extends BaseAction<TypicalCaseService> {
 	}
 
 	public List<TypicalCase> getTypicalCaseList() {
-
-		return getService().findAll();
+		return getService().findTypicalCases();
 	}
 
 	public void save(TypicalCase typicalCase, Archive archive) {
@@ -54,18 +53,32 @@ public class TypicalCaseAction extends BaseAction<TypicalCaseService> {
 //			待新增
 			success = SpringUtil.getBean(FTPUtils.class).uploadFile("/archives", path.toFile(), path.getFileName().toString());
 //			
-			typicalCase.setCreatorId(Session.get(Session.KEY_LOGIN_ID));
+			typicalCase.setCreator(Session.get(Session.KEY_LOGIN_ID));
 			typicalCase.setArchivePath(MessageFormat.format("/archives/{0}", path.getFileName().toString()));
 
 			getService().save(typicalCase);
 		} else {
 			success = SpringUtil.getBean(FTPUtils.class).uploadFile("/archives", path.toFile(), typicalCase.getArchivePath());
+			typicalCase.setUpdater(Session.get(Session.KEY_LOGIN_ID));
 			getService().update(typicalCase);
 		}
 		if (success) {
 			LOG.info("存档{}已保存到服务器", path);
 		}
 
+	}
+
+	public void modify(TypicalCase typicalCase) {
+		typicalCase.setUpdater(Session.get(Session.KEY_LOGIN_ID));
+		getService().update(typicalCase);
+	}
+
+	public void delete(Integer id) {
+		TypicalCase typicalCase = getService().findById(id);
+		SpringUtil.getBean(FTPUtils.class).deleteFile("/archives", typicalCase.getArchivePath());
+		typicalCase.setDel(true);
+		typicalCase.setUpdater(Session.get(Session.KEY_LOGIN_ID));
+		getService().update(typicalCase);
 	}
 
 	@Override

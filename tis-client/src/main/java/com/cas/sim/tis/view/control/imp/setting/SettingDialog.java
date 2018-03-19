@@ -256,7 +256,7 @@ public class SettingDialog extends DialogPane<Boolean> {
 		user.setPassword(newPwd);
 		SpringUtil.getBean(UserAction.class).modifyUser(user);
 		dialog.close();
-		AlertUtil.showAlert(AlertType.INFORMATION, MsgUtil.getMessage("data.update.success"));
+		AlertUtil.showAlert(AlertType.INFORMATION, MsgUtil.getMessage("alert.information.data.update.success"));
 	}
 
 	@FXML

@@ -73,13 +73,13 @@ public class SVGGlyph extends Pane {
 
 	public SVGGlyph(String name, double size) {
 		setName(name);
-		setSize(size, size);
+		setSizeRatio(size);
 	}
 
 	public SVGGlyph(String name, Paint fill, double size) {
 		setName(name);
 		setFill(fill);
-		setSize(size, size);
+		setSizeRatio(size);
 	}
 	
 	public SVGGlyph(String name, Paint fill, double width, double height) {

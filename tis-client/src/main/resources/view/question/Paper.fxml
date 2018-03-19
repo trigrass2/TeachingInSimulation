@@ -32,7 +32,7 @@
 				<HBox alignment="CENTER_LEFT" HBox.hgrow="ALWAYS" style="-fx-background-color:#f6f6f6;">
 					<Label fx:id="libName" styleClass="font14">
 						<graphic>
-							<SVGGlyph name="iconfont.svg.right" fill="#bebebe" size="10" />
+							<SVGGlyph name="iconfont.svg.triangle" fill="#bebebe" size="10" />
 						</graphic>
 					</Label>
 					<padding>
