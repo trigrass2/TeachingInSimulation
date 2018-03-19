@@ -93,6 +93,8 @@ public class TypicalCaseState extends BaseState {
 		// 尝试解析出存档对象
 		Archive archive = SpringUtil.getBean(ArchiveAction.class).parse(typicalCase.getArchivePath());
 		if (archive == null) {
+			// 结束加载界面
+			Platform.runLater(() -> SpringUtil.getBean(PageController.class).hideLoading());
 			return;
 		}
 		circuitState.read(archive);
