@@ -222,7 +222,9 @@ public class TypicalCaseBtnController implements IDistory {
 
 	@Override
 	public void distroy() {
-		drawingWin.close();
+		if (drawingWin != null) {
+			drawingWin.close();
+		}
 	}
 
 	public void setUI(TypicalCase3D typicalCase3D) {
