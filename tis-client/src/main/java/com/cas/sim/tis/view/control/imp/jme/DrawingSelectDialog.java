@@ -1,6 +1,6 @@
-package com.cas.sim.tis.view.control.imp.preparation;
+package com.cas.sim.tis.view.control.imp.jme;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
 
@@ -20,49 +20,27 @@ import com.cas.sim.tis.view.control.imp.table.SVGIconCell;
 import com.cas.sim.tis.view.control.imp.table.Table;
 
 import javafx.geometry.Insets;
-import javafx.geometry.NodeOrientation;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.ScrollPane.ScrollBarPolicy;
-import javafx.scene.control.ToggleButton;
-import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 
-public class ResourceSelectedDialog extends DialogPane<Integer> {
+public class DrawingSelectDialog extends DialogPane<Integer> {
 
 	private Table table;
 	private SearchBox search;
-	private ToggleGroup group = new ToggleGroup();
 
-	private List<Integer> types = new ArrayList<>();
-
-	public ResourceSelectedDialog() {
+	private List<Integer> types = Arrays.asList(ResourceType.DRAWING.getType());
+	
+	public DrawingSelectDialog() {
 		VBox box = new VBox(15);
 		VBox.setVgrow(box, Priority.ALWAYS);
 		box.setAlignment(Pos.TOP_CENTER);
 		box.setPadding(new Insets(20));
-
-		ToggleButton sys = new ToggleButton(MsgUtil.getMessage("resource.menu.sys"));
-		sys.setMinSize(100, 40);
-		sys.setStyle("-fx-font-size:14px");
-		sys.setUserData(1);
-		ToggleButton mine = new ToggleButton(MsgUtil.getMessage("resource.menu.mine"));
-		mine.setMinSize(100, 40);
-		mine.setStyle("-fx-font-size:14px");
-		mine.setUserData(Session.get(Session.KEY_LOGIN_ID));
-		group.getToggles().addAll(sys, mine);
-		group.selectedToggleProperty().addListener((b, o, n) -> {
-			if (n == null) {
-				group.selectToggle(o);
-			} else {
-				reload();
-			}
-		});
 
 		search = new SearchBox();
 		search.setOnSearch(text -> {
@@ -74,31 +52,7 @@ public class ResourceSelectedDialog extends DialogPane<Integer> {
 		HBox.setHgrow(searchBox, Priority.ALWAYS);
 
 		HBox toggleBox = new HBox(10);
-		toggleBox.getChildren().addAll(sys, mine, searchBox);
-
-		HBox filterBox = new HBox(10);
-		for (ResourceType resourceType : ResourceType.values()) {
-			if (ResourceType.LINK == resourceType || ResourceType.DRAWING == resourceType) {
-				continue;
-			}
-			int type = resourceType.getType();
-			CheckBox checkBox = new CheckBox();
-			checkBox.setGraphic(new SVGGlyph(resourceType.getIcon(), resourceType.getColor(), 22, 25));
-			checkBox.setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
-			checkBox.getStyleClass().add("img-check-box");
-			checkBox.setSelected(true);
-			checkBox.setUserData(type);
-			checkBox.setOnAction(e -> {
-				if (!checkBox.isSelected()) {
-					types.remove(checkBox.getUserData());
-				} else if (!types.contains(checkBox.getUserData())) {
-					types.add((Integer) checkBox.getUserData());
-				}
-				reload();
-			});
-			types.add(type);
-			filterBox.getChildren().add(checkBox);
-		}
+		toggleBox.getChildren().addAll(searchBox);
 
 		table = new Table("table-row", "table-row-hover", "table-row-selected");
 		table.setSerial(true);
@@ -151,20 +105,20 @@ public class ResourceSelectedDialog extends DialogPane<Integer> {
 		ok.setOnAction(e -> {
 			Row selected = table.getSelectedRow();
 			if (selected == null) {
-				error.setText(MsgUtil.getMessage("alert.warning.must.select", MsgUtil.getMessage("preparation.library.resource")));
+				error.setText(MsgUtil.getMessage("alert.warning.must.select", MsgUtil.getMessage("typical.case.drawings")));
 				return;
 			}
 			dialog.setResult(selected.getItems().getInteger("id"));
 		});
 
-		box.getChildren().addAll(toggleBox, filterBox, scroll, error, ok);
+		box.getChildren().addAll(toggleBox, scroll, error, ok);
 		getChildren().add(box);
-
-		group.selectToggle(sys);
+		
+		reload();
 	}
 
 	private void reload() {
-		List<Resource> resources = SpringUtil.getBean(ResourceAction.class).findResourcesByCreator(types, search.getText(), (Integer) group.getSelectedToggle().getUserData());
+		List<Resource> resources = SpringUtil.getBean(ResourceAction.class).findResourcesByCreator(types, search.getText(), Session.get(Session.KEY_LOGIN_ID));
 		JSONArray array = new JSONArray();
 		array.addAll(resources);
 		table.setItems(array);

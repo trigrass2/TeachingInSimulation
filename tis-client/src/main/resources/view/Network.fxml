@@ -12,61 +12,69 @@
 
 <?import com.cas.sim.tis.view.control.imp.LoginDecoration?>
 
-<VBox fx:id="pane" prefHeight="540.0" prefWidth="365.0" spacing="60.0" style="-fx-background-image:url(/static/images/basic/login.png);" stylesheets="static/css/basic.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.cas.sim.tis.view.controller.NetworkController">
+<VBox fx:id="pane" styleClass="network" stylesheets="static/css/basic.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.cas.sim.tis.view.controller.NetworkController">
 	<children>
-		<HBox alignment="TOP_RIGHT">
-			<LoginDecoration fx:id="loginDecoration" />
-		</HBox>
-		<VBox spacing="60.0" VBox.vgrow="ALWAYS">
-			<GridPane alignment="CENTER" hgap="20.0" vgap="35.0">
-				<columnConstraints>
-					<ColumnConstraints halignment="LEFT" maxWidth="180.0" minWidth="10.0" prefWidth="180.0" />
-					<ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" maxWidth="105.0" minWidth="10.0" prefWidth="105.0" />
-				</columnConstraints>
-				<rowConstraints>
-					<RowConstraints minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES" />
-					<RowConstraints minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES" />
-					<RowConstraints minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES" />
-				</rowConstraints>
-				<children>
-					<TextField fx:id="baseIP" prefHeight="40.0" promptText="%login.server.ip" styleClass="login-field">
-                  <tooltip>
-                     <Tooltip text="%login.server.ip" />
-                  </tooltip></TextField>
-					<TextField fx:id="basePort" prefHeight="40.0" promptText="%login.server.port" styleClass="login-field" GridPane.columnIndex="1">
-                  <tooltip>
-                     <Tooltip text="%login.server.port" />
-                  </tooltip></TextField>
-					<TextField fx:id="ftpIP" prefHeight="40.0" promptText="%login.ftp.ip" styleClass="login-field" GridPane.rowIndex="1">
-                  <tooltip>
-                     <Tooltip text="%login.ftp.ip" />
-                  </tooltip></TextField>
-					<TextField fx:id="ftpPort" prefHeight="40.0" promptText="%login.ftp.port" styleClass="login-field" GridPane.columnIndex="1" GridPane.rowIndex="1">
-                  <tooltip>
-                     <Tooltip text="%login.ftp.port" />
-                  </tooltip></TextField>
-					<TextField fx:id="httpdIP" prefHeight="40.0" promptText="%login.httpd.ip" styleClass="login-field" GridPane.rowIndex="2">
-                  <tooltip>
-                     <Tooltip text="%login.httpd.ip" />
-                  </tooltip></TextField>
-					<TextField fx:id="httpdPort" prefHeight="40.0" promptText="%login.httpd.port" styleClass="login-field" GridPane.columnIndex="1" GridPane.rowIndex="2">
-                  <tooltip>
-                     <Tooltip text="%login.httpd.port" />
-                  </tooltip></TextField>
-				</children>
-				<padding>
-					<Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-				</padding>
-			</GridPane>
-			<HBox alignment="BOTTOM_CENTER" spacing="30.0">
-				<children>
-					<Button mnemonicParsing="false" onAction="#ok" prefHeight="40.0" prefWidth="125.0" styleClass="login-btn" text="%button.ok" />
-					<Button mnemonicParsing="false" onAction="#cancel" prefHeight="40.0" prefWidth="125.0" styleClass="login-cancel-btn" text="%button.cancel" />
-				</children>
+		<VBox VBox.vgrow="ALWAYS" spacing="70.0">
+			<HBox alignment="TOP_RIGHT">
+				<LoginDecoration fx:id="loginDecoration" />
 			</HBox>
-			<padding>
-				<Insets left="30.0" right="30.0" />
-			</padding>
+			<VBox spacing="60.0" VBox.vgrow="ALWAYS">
+				<GridPane alignment="CENTER" hgap="20.0" vgap="35.0">
+					<columnConstraints>
+						<ColumnConstraints halignment="LEFT" maxWidth="180.0" minWidth="10.0" prefWidth="180.0" />
+						<ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" maxWidth="105.0" minWidth="10.0" prefWidth="105.0" />
+					</columnConstraints>
+					<rowConstraints>
+						<RowConstraints minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES" />
+						<RowConstraints minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES" />
+						<RowConstraints minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES" />
+					</rowConstraints>
+					<children>
+						<TextField fx:id="baseIP" prefHeight="40.0" promptText="%login.server.ip" styleClass="login-field">
+							<tooltip>
+								<Tooltip text="%login.server.ip" />
+							</tooltip>
+						</TextField>
+						<TextField fx:id="basePort" prefHeight="40.0" promptText="%login.server.port" styleClass="login-field" GridPane.columnIndex="1">
+							<tooltip>
+								<Tooltip text="%login.server.port" />
+							</tooltip>
+						</TextField>
+						<TextField fx:id="ftpIP" prefHeight="40.0" promptText="%login.ftp.ip" styleClass="login-field" GridPane.rowIndex="1">
+							<tooltip>
+								<Tooltip text="%login.ftp.ip" />
+							</tooltip>
+						</TextField>
+						<TextField fx:id="ftpPort" prefHeight="40.0" promptText="%login.ftp.port" styleClass="login-field" GridPane.columnIndex="1" GridPane.rowIndex="1">
+							<tooltip>
+								<Tooltip text="%login.ftp.port" />
+							</tooltip>
+						</TextField>
+						<TextField fx:id="httpdIP" prefHeight="40.0" promptText="%login.httpd.ip" styleClass="login-field" GridPane.rowIndex="2">
+							<tooltip>
+								<Tooltip text="%login.httpd.ip" />
+							</tooltip>
+						</TextField>
+						<TextField fx:id="httpdPort" prefHeight="40.0" promptText="%login.httpd.port" styleClass="login-field" GridPane.columnIndex="1" GridPane.rowIndex="2">
+							<tooltip>
+								<Tooltip text="%login.httpd.port" />
+							</tooltip>
+						</TextField>
+					</children>
+					<padding>
+						<Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+					</padding>
+				</GridPane>
+				<HBox alignment="BOTTOM_CENTER" spacing="30.0">
+					<children>
+						<Button mnemonicParsing="false" onAction="#ok" prefHeight="40.0" prefWidth="125.0" styleClass="login-btn" text="%button.ok" />
+						<Button mnemonicParsing="false" onAction="#cancel" prefHeight="40.0" prefWidth="125.0" styleClass="login-cancel-btn" text="%button.cancel" />
+					</children>
+				</HBox>
+				<padding>
+					<Insets left="30.0" right="30.0" />
+				</padding>
+			</VBox>
 		</VBox>
 	</children>
 </VBox>

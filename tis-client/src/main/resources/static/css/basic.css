@@ -329,9 +329,14 @@
  }
 
 .login{
- 	-fx-background-image: url(/static/images/basic/login.png),url(/static/images/basic/login2.png);
- 	-fx-pref-width:365.0px;
- 	-fx-pref-height: 540.0px;
+	-fx-background-color: transparent;
+ 	-fx-effect: dropshadow(three-pass-box , #373634, 5.0, 0.0 , 0.0, 0.0);
+ 	-fx-pref-width:375.0px;
+ 	-fx-pref-height: 550.0px;
+ 	-fx-padding: 5.0px;
+}
+.login>*{
+	-fx-background-image: url(/static/images/basic/login.png),url(/static/images/basic/login2.png);
 }
 .login-field{
 	-fx-background-color:#06427688;
@@ -395,9 +400,21 @@
  * 服务器设置样式                                                          *
  *                                                                             *
  ******************************************************************************/
+ /* 
  .network{
  	-fx-background-image: url(/static/images/basic/login-bg.png);
  	-fx-effect: dropshadow(three-pass-box , #373634, 5.0, 0.0 , 0.0, 0.0);
+ }
+ */
+ .network{
+ 	-fx-background-color: transparent;
+ 	-fx-effect: dropshadow(three-pass-box , #373634, 5.0, 0.0 , 0.0, 0.0);
+ 	-fx-pref-width:375.0px;
+ 	-fx-pref-height: 550.0px;
+ 	-fx-padding: 5.0px;
+ }
+ .network>*{
+ 	-fx-background-image: url(/static/images/basic/login.png);
  }
 /*******************************************************************************
  *                                                                             *
@@ -1032,11 +1049,11 @@
  *                                                                             *
  ******************************************************************************/
 .drawing-btn{
-	-fx-min-width: 70px;
-	-fx-min-height: 70px;
-	-fx-max-width: 70px;
-	-fx-max-height: 70px;
+	-fx-min-width: 70.0px;
+	-fx-min-height: 70.0px;
+	-fx-max-width: 70.0px;
+	-fx-max-height: 70.0px;
 	-fx-background-color: transparent;
 	-fx-border-color: #e4e4e4;
-	-fx-padding: 0;
+	-fx-padding: 0.0;
 }

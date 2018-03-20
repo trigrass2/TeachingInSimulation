@@ -18,6 +18,7 @@ import com.cas.sim.tis.util.HTTPUtils;
 import com.cas.sim.tis.util.MsgUtil;
 import com.cas.sim.tis.util.SpringUtil;
 import com.cas.sim.tis.view.control.imp.dialog.Dialog;
+import com.cas.sim.tis.view.control.imp.jme.DrawingSelectDialog;
 import com.cas.sim.tis.view.control.imp.jme.TypicalCase3D;
 import com.cas.sim.tis.view.control.imp.preparation.ResourceUploadDialog;
 import com.cas.util.MathUtil;
@@ -53,6 +54,8 @@ public class DrawingController implements Initializable {
 	private VBox expand;
 	@FXML
 	private HBox btns;
+	@FXML
+	private Label name;
 	@FXML
 	private ImageView drawing;
 	@FXML
@@ -110,7 +113,7 @@ public class DrawingController implements Initializable {
 			}
 			Resource resource = (Resource) n.getUserData();
 			String url = utils.getFullPath(ResourceConsts.FTP_RES_PATH + resource.getPath());
-			loadDrawing(url);
+			loadDrawing(resource.getName(), url);
 		});
 	}
 
@@ -142,10 +145,11 @@ public class DrawingController implements Initializable {
 		btns.getChildren().add(toggle);
 	}
 
-	private void loadDrawing(String url) {
+	private void loadDrawing(String name, String url) {
 		zoomIn.setDisable(true);
 		zoomOut.setDisable(false);
 		
+		this.name.setText(name);
 		drawing.setImage(new Image(url));
 		scale.setText(String.format("%d%%", 100));
 		scaleVal = 1;
@@ -214,21 +218,21 @@ public class DrawingController implements Initializable {
 		expanding = !expanding;
 	}
 
-//	@FXML
-//	private void showSelectDrawingDialog() {
-//		Dialog<Integer> dialog = new Dialog<>();
-//		dialog.setDialogPane(new ResourceSelectedDialog());
-//		dialog.setTitle(MsgUtil.getMessage("typical.case.drawings.select"));
-//		dialog.setPrefSize(640, 330);
-//		dialog.initOwner(stage);
-//		dialog.showAndWait().ifPresent(id -> {
-//			if (id == null) {
-//				return;
-//			}
-//			// 记录到数据库
-//			addDrawings(id);
-//		});
-//	}
+	@FXML
+	private void showSelectDrawingDialog() {
+		Dialog<Integer> dialog = new Dialog<>();
+		dialog.setDialogPane(new DrawingSelectDialog());
+		dialog.setTitle(MsgUtil.getMessage("typical.case.drawings.select"));
+		dialog.setPrefSize(640, 540);
+		dialog.initOwner(stage);
+		dialog.showAndWait().ifPresent(id -> {
+			if (id == null) {
+				return;
+			}
+			// 记录到数据库
+			addDrawings(id);
+		});
+	}
 
 	@FXML
 	private void showUploadDrawingDialog() {

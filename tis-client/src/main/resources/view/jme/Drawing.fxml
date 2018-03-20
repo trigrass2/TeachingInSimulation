@@ -32,7 +32,7 @@
 					<children>
 						<Button mnemonicParsing="false" onAction="#min" styleClass="decoration" focusTraversable="false">
 							<graphic>
-								<SVGGlyph name="iconfont.svg.min" size="10" fill="#19b0c6" />
+								<SVGGlyph name="iconfont.svg.min" size="10" fill="#A2CBF3" />
 							</graphic>
 							<tooltip>
 								<Tooltip text="%button.minimize" />
@@ -40,7 +40,7 @@
 						</Button>
 						<Button fx:id="max" mnemonicParsing="false" onAction="#max" styleClass="decoration" focusTraversable="false">
 							<graphic>
-								<SVGGlyph name="iconfont.svg.max" size="10" fill="#19b0c6" />
+								<SVGGlyph name="iconfont.svg.max" size="10" fill="#A2CBF3" />
 							</graphic>
 							<tooltip>
 								<Tooltip fx:id="maxTip" text="%button.maximize" />
@@ -48,7 +48,7 @@
 						</Button>
 						<Button mnemonicParsing="false" onAction="#close" styleClass="decoration" focusTraversable="false">
 							<graphic>
-								<SVGGlyph name="iconfont.svg.close" size="10" fill="#19b0c6" />
+								<SVGGlyph name="iconfont.svg.close" size="10" fill="#A2CBF3" />
 							</graphic>
 							<tooltip>
 								<Tooltip text="%button.close" />
@@ -58,7 +58,8 @@
 				</HBox>
 			</children>
 		</HBox>
-		<VBox VBox.vgrow="ALWAYS">
+		<VBox alignment="TOP_CENTER" VBox.vgrow="ALWAYS">
+			<Label fx:id="name" textFill="WHITE" styleClass="font14" />
 			<ScrollPane fitToHeight="true" fitToWidth="true" VBox.vgrow="ALWAYS" pannable="true">
 				<content>
 					<HBox alignment="CENTER">
@@ -90,11 +91,11 @@
 								</graphic>
 							</Button>
 							<Separator orientation="VERTICAL" />
-							<!-- <Button mnemonicParsing="false" onAction="#showSelectDrawingDialog" styleClass="img-btn" text="%button.add"> -->
-							<!-- <graphic> -->
-							<!-- <SVGGlyph name="iconfont.svg.add" size="10" fill="#19b0c6" /> -->
-							<!-- </graphic> -->
-							<!-- </Button> -->
+							<Button mnemonicParsing="false" onAction="#showSelectDrawingDialog" styleClass="img-btn" text="%button.add">
+								<graphic>
+									<SVGGlyph name="iconfont.svg.add" size="10" fill="#19b0c6" />
+								</graphic>
+							</Button>
 							<Button mnemonicParsing="false" onAction="#showUploadDrawingDialog" styleClass="img-btn" text="%button.upload">
 								<graphic>
 									<SVGGlyph name="iconfont.svg.add" size="10" fill="#19b0c6" />
