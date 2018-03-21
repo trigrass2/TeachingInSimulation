@@ -17,6 +17,10 @@ public interface MouseEventListener extends Savable {
 	 * Invoked when the mouse button has been clicked (pressed and released) on a Node.
 	 */
 	public void mouseClicked(MouseEvent e);
+	/**
+	 * Invoked when the right mouse button has been clicked (pressed and released) on a Node.
+	 */
+	public void mouseRightClicked(MouseEvent e);
 
 	/**
 	 * Invoked when the mouse enters a Node.

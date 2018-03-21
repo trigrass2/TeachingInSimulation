@@ -3,6 +3,8 @@ package com.cas.sim.tis.app.event;
 public enum MouseAction {
 	// 点击
 	MOUSE_CLICK,
+	// 点击
+	MOUSE_RIGHT_CLICK,
 	// 按下
 	MOUSE_PRESSED,
 	// 松开

@@ -33,7 +33,8 @@ public class MouseEventState extends BaseState {
 	 * 能看成一次点击事件(click)的最大划过距离
 	 */
 	protected static final float CLICK_MAX_AXIS_DISTANCE = 0.003f;
-	protected static final String MOUSE_BUTTON = "MOUSE_CLICK";
+	protected static final String MOUSE_PRIMARY_BUTTON = "MOUSE_PRIMARY_BUTTON";
+	protected static final String MOUSE_SECOND_BUTTON = "MOUSE_SECOND_BUTTON";
 	protected static final String MOUSE_AXIS_LEFT = "MOUSE_AXIS_LEFT";
 	protected static final String MOUSE_AXIS_RIGHT = "MOUSE_AXIS_RIGHT";
 	protected static final String MOUSE_AXIS_UP = "MOUSE_AXIS_UP";
@@ -57,7 +58,7 @@ public class MouseEventState extends BaseState {
 
 	@Override
 	protected void initializeLocal() {
-		addMapping(MOUSE_BUTTON, new MouseButtonTrigger(MouseInput.BUTTON_LEFT));
+		addMapping(MOUSE_PRIMARY_BUTTON, new MouseButtonTrigger(MouseInput.BUTTON_LEFT));
 		addListener(new ActionListener() {
 			@Override
 			public void onAction(String name, boolean isPressed, float tpf) {
@@ -90,7 +91,34 @@ public class MouseEventState extends BaseState {
 					notifyEventTrigged(e);
 				}
 			}
-		}, MOUSE_BUTTON);
+		}, MOUSE_PRIMARY_BUTTON);
+		addMapping(MOUSE_SECOND_BUTTON, new MouseButtonTrigger(MouseInput.BUTTON_RIGHT));
+		addListener(new ActionListener() {
+			@Override
+			public void onAction(String name, boolean isPressed, float tpf) {
+			mouseButtonPressed = isPressed;
+
+			if (isPressed) {
+				pickModel();
+				axis_distance = 0;
+//				记录当前鼠标按下时，所选中模型
+				pressed = picked;
+			} else {
+				pickModel();
+//				鼠标松开
+				Spatial oldPressed = pressed;
+				pressed = null;
+//				如果两次选择的不一样，则选择无效
+				if (picked == null || oldPressed != picked) {
+					return;
+				}
+				if (Math.abs(axis_distance) < CLICK_MAX_AXIS_DISTANCE) {
+					e.setAction(MouseAction.MOUSE_RIGHT_CLICK);
+					notifyEventTrigged(e);
+				}
+			}
+		}
+	}, MOUSE_SECOND_BUTTON);
 
 		addMapping(MOUSE_AXIS_LEFT, new MouseAxisTrigger(MouseInput.AXIS_X, true));
 		addMapping(MOUSE_AXIS_RIGHT, new MouseAxisTrigger(MouseInput.AXIS_X, false));
@@ -279,6 +307,9 @@ public class MouseEventState extends BaseState {
 					break;
 				case MOUSE_CLICK:
 					listener.mouseClicked(event);
+					break;
+				case MOUSE_RIGHT_CLICK:
+					listener.mouseRightClicked(event);
 					break;
 				default:
 					break;

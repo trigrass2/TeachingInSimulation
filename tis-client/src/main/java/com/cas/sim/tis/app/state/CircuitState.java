@@ -16,6 +16,7 @@ import org.jetbrains.annotations.Nullable;
 
 import com.cas.circuit.vo.Archive;
 import com.cas.circuit.vo.ElecCompDef;
+import com.cas.circuit.vo.Jack;
 import com.cas.circuit.vo.Terminal;
 import com.cas.circuit.vo.Wire;
 import com.cas.circuit.vo.archive.ElecCompProxy;
@@ -29,6 +30,9 @@ import com.cas.sim.tis.entity.TypicalCase;
 import com.cas.sim.tis.util.HTTPUtils;
 import com.cas.sim.tis.util.JmeUtil;
 import com.cas.sim.tis.util.SpringUtil;
+import com.cas.sim.tis.view.control.IContent;
+import com.cas.sim.tis.view.control.imp.jme.TypicalCase3D;
+import com.cas.sim.tis.view.controller.PageController;
 import com.cas.sim.tis.xml.util.JaxbUtil;
 import com.jme3.asset.ModelKey;
 import com.jme3.collision.CollisionResult;
@@ -41,11 +45,14 @@ import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
+import com.jme3.renderer.queue.RenderQueue.Bucket;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.Spatial.CullHint;
 import com.jme3.scene.shape.Line;
+
+import javafx.application.Platform;
 
 public class CircuitState extends BaseState {
 //	导线工连接头接出的最小长度
@@ -56,7 +63,7 @@ public class CircuitState extends BaseState {
 	private static final String COMP_ROOT = "comp_root_in_circuit_state";
 	private static final String WIRE_ROOT = "wire_root_in_circuit_state";
 //	导线颜色
-	private static ColorRGBA color = ColorRGBA.Black;
+	private static ColorRGBA color = ColorRGBA.Red;
 //	导线半径
 	private static float width = 0.01f;
 
@@ -289,7 +296,7 @@ public class CircuitState extends BaseState {
 		}
 	}
 
-	public void bindElecCompEvent(ElecCompDef def) {
+	private void bindElecCompEvent(ElecCompDef def) {
 		// 1、连接头监听事件
 		def.getTerminalList().forEach(t -> addListener(t.getSpatial(), new MouseEventAdapter() {
 			@Override
@@ -414,16 +421,34 @@ public class CircuitState extends BaseState {
 				}
 			}));
 		});
-		// 元器件本身的监听事件
+		// 4、元器件本身的监听事件
 		addListener(def.getSpatial(), new MouseEventAdapter() {
 			@Override
-			public void mouseClicked(MouseEvent e) {
-				System.out.println(def.getName());
+			public void mouseRightClicked(MouseEvent e) {
+				super.mouseRightClicked(e);
+				IContent content = SpringUtil.getBean(PageController.class).getIContent();
+				if (content instanceof TypicalCase3D) {
+					Platform.runLater(() -> {
+						((TypicalCase3D) content).showPopupMenu(def);
+					});
+				}
 			}
 		});
 
 //		最后将元器件加入列表中
 		compList.add(def);
+	}
+
+	private void unbindElecCompEvent(ElecCompDef elecCompDef) {
+		elecCompDef.getTerminalList().forEach(t -> mouseEventState.removeCandidate(t.getSpatial()));
+
+		elecCompDef.getJackList().forEach(j -> mouseEventState.removeCandidate(j.getSpatial()));
+
+		elecCompDef.getMagnetismList().forEach(m -> {
+			m.getControlIOList().forEach(c -> mouseEventState.removeCandidate(c.getSpatial()));
+		});
+
+		mouseEventState.removeCandidate(elecCompDef.getSpatial());
 	}
 
 	public void read(Archive archive) {
@@ -556,5 +581,25 @@ public class CircuitState extends BaseState {
 
 //		3、添加事件
 		bindElecCompEvent(elecCompDef);
+	}
+
+	public boolean detachFromCircuit(ElecCompDef elecCompDef) {
+//		0、判断元器件连接头是否接线
+		for (Terminal terminal : elecCompDef.getTerminalList()) {
+			if (terminal.getWires().size() > 0) {
+				return false;
+			}
+		}
+		for (Jack jack : elecCompDef.getJackList()) {
+			if (jack.getCable() != null) {
+				return false;
+			}
+		}
+// 		1、删除模型
+		rootCompNode.detachChild(elecCompDef.getSpatial());
+//		2、解绑监听事件
+		unbindElecCompEvent(elecCompDef);
+
+		return true;
 	}
 }

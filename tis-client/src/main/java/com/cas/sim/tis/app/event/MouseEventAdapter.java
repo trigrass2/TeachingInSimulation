@@ -26,6 +26,10 @@ public abstract class MouseEventAdapter implements MouseEventListener {
 	@Override
 	public void mouseClicked(MouseEvent e) {
 	}
+	
+	@Override
+	public void mouseRightClicked(MouseEvent e) {
+	}
 
 	@Override
 	public void mouseEntered(MouseEvent e) {
