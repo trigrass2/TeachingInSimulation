@@ -59,7 +59,7 @@ public class Recongnize3D implements IContent {
 		ElecCompState compState = new ElecCompState();
 		compState.setUI(this);
 		jmeApp.getStateManager().attach(compState);
-		JmeToJFXIntegrator.startAndBindMainViewPort(jmeApp, canvas, Thread::new);
+		JmeToJFXIntegrator.startAndBind(jmeApp, canvas, Thread::new);
 
 //		3、名称显示
 		nameLabel = new Label();

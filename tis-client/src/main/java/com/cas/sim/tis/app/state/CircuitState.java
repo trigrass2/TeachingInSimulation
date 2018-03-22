@@ -23,6 +23,7 @@ import com.cas.circuit.vo.archive.ElecCompProxy;
 import com.cas.circuit.vo.archive.WireProxy;
 import com.cas.sim.tis.action.ElecCompAction;
 import com.cas.sim.tis.action.TypicalCaseAction;
+import com.cas.sim.tis.app.control.TagNameControl;
 import com.cas.sim.tis.app.event.MouseEvent;
 import com.cas.sim.tis.app.event.MouseEventAdapter;
 import com.cas.sim.tis.entity.ElecComp;
@@ -36,6 +37,8 @@ import com.cas.sim.tis.view.controller.PageController;
 import com.cas.sim.tis.xml.util.JaxbUtil;
 import com.jme3.asset.ModelKey;
 import com.jme3.collision.CollisionResult;
+import com.jme3.font.BitmapFont;
+import com.jme3.font.BitmapText;
 import com.jme3.input.MouseInput;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.AnalogListener;
@@ -45,7 +48,6 @@ import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
-import com.jme3.renderer.queue.RenderQueue.Bucket;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
@@ -100,6 +102,12 @@ public class CircuitState extends BaseState {
 	private Node rootCompNode;
 	private Node rootWireNode;
 
+	private Node guiNode;
+	private BitmapFont tagFont;
+	private boolean tagVisible;
+	private boolean tempTagVisible;
+	private boolean tageChanged;
+
 	public CircuitState(TypicalCase typicalCase, Node root) {
 		this.typicalCase = typicalCase;
 		this.root = root;
@@ -125,7 +133,22 @@ public class CircuitState extends BaseState {
 		root.attachChild(rootCompNode);
 		root.attachChild(rootWireNode);
 
+		guiNode = app.getGuiNode();
+		tagFont = assetManager.loadFont("font/Font4TagName.fnt");
+
 		bindCircuitBoardEvents();
+	}
+
+	@Override
+	public void update(float tpf) {
+		super.update(tpf);
+		if (tagVisible != tempTagVisible) {
+			tagVisible = tempTagVisible;
+			toggleTagName();
+		} else if (tageChanged) {
+			toggleTagName();
+			tageChanged = false;
+		}
 	}
 
 	private void bindCircuitBoardEvents() {
@@ -191,7 +214,9 @@ public class CircuitState extends BaseState {
 			}
 
 			if ("CANCEL_ON_CONNECTING".equals(name) && isPressed) {
-				clean();
+				if (state == State.Starting || state == State.Mid) {
+					clean();
+				}
 			}
 
 			if ("CLICKED_ON_BOARD".equals(name) && isPressed) {
@@ -293,6 +318,12 @@ public class CircuitState extends BaseState {
 		if (tmpWireNode != null) {
 			tmpWireNode.removeFromParent();
 			tmpWireNode = null;
+		}
+
+		// 清理临时接线连接头
+		if (wire != null) {
+			wire.unbind();
+			wire = null;
 		}
 	}
 
@@ -452,6 +483,10 @@ public class CircuitState extends BaseState {
 	}
 
 	public void read(Archive archive) {
+		// 等待初始化完成
+		while (!initialized) {
+			LOG.debug("正在等待初始化完成。。。");
+		}
 		readEleccomps(archive.getCompList());
 		readWires(archive.getWireList());
 	}
@@ -519,6 +554,7 @@ public class CircuitState extends BaseState {
 			});
 			try {
 				wire.setSpatial(task.get());
+				wireList.add(wire);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -538,7 +574,6 @@ public class CircuitState extends BaseState {
 	private void saveEleccomps(Archive archive) {
 		compList.forEach(comp -> {
 			ElecCompProxy compProxy = comp.getProxy();
-
 			compProxy.setModel(comp.getModel());
 			compProxy.setLocation(comp.getSpatial().getLocalTranslation());
 			System.out.println(comp.getSpatial().getLocalRotation());
@@ -563,6 +598,10 @@ public class CircuitState extends BaseState {
 
 	@Override
 	public void cleanup() {
+		for (ElecCompDef elecCompDef : compList) {
+			detachElecComp(elecCompDef);
+		}
+		compList.clear();
 //		除了desktop，其余模型全部清除
 		root.detachAllChildren();
 		if (desktop != null) {
@@ -595,11 +634,43 @@ public class CircuitState extends BaseState {
 				return false;
 			}
 		}
-// 		1、删除模型
-		rootCompNode.detachChild(elecCompDef.getSpatial());
-//		2、解绑监听事件
-		unbindElecCompEvent(elecCompDef);
+		detachElecComp(elecCompDef);
 
 		return true;
+	}
+
+	private void detachElecComp(ElecCompDef elecCompDef) {
+		Spatial elecCompMdl = elecCompDef.getSpatial();
+//		1、移除Control
+		elecCompMdl.removeControl(TagNameControl.class);
+// 		2、删除模型
+		rootCompNode.detachChild(elecCompMdl);
+//		3、解绑监听事件
+		unbindElecCompEvent(elecCompDef);
+	}
+
+	public void setTagNameVisible(boolean tagVisible) {
+		this.tempTagVisible = tagVisible;
+	}
+
+	public void setTagNameChanged(boolean tagChanged) {
+		this.tageChanged = tagChanged;
+	}
+
+	private void toggleTagName() {
+		for (ElecCompDef elecCompDef : compList) {
+			Spatial elecCompMdl = elecCompDef.getSpatial();
+			TagNameControl control = elecCompMdl.getControl(TagNameControl.class);
+			if (control == null) {
+				BitmapText tag = new BitmapText(tagFont);
+				tag.setName(elecCompDef.getProxy().getUuid());
+				guiNode.attachChild(tag);
+
+				control = new TagNameControl(cam, tag);
+				elecCompMdl.addControl(control);
+			}
+			control.setTagName(elecCompDef.getProxy().getTagName());
+			control.setEnabled(tagVisible);
+		}
 	}
 }

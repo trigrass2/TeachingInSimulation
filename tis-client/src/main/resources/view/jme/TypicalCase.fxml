@@ -2,18 +2,20 @@
 
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.shape.Circle?>
 <?import javafx.geometry.Insets?>
 
 <?import com.cas.sim.tis.svg.SVGGlyph?>
 <?import org.controlsfx.control.PopOver?>
-<?import javafx.scene.control.Button?>
 
 <VBox pickOnBounds="false" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.cas.sim.tis.view.control.imp.jme.TypicalCaseBtnController">
 	<VBox VBox.vgrow="ALWAYS" mouseTransparent="true" />
 
 	<HBox spacing="10">
+		<CheckBox fx:id="showName"  text="%rec.ckb.showName" styleClass="recognize-btn" onAction="#toggleTagName" />
 		<Button text="%typical.case.drawings" styleClass="recognize-btn" onAction="#showDrawingWin"><!-- 电路图 -->
 			<graphic>
 				<SVGGlyph name="iconfont.svg.drawing" size="20" fill="WHITE" />

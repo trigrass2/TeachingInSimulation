@@ -95,8 +95,6 @@ public class ElecCompDef {// extends BaseVO<ElecCompDefPO> {
 
 //	元器件模型
 	private Node spatial;
-//	标签名
-	private String tagName;
 
 	private ElecCompProxy proxy;
 
@@ -442,14 +440,6 @@ public class ElecCompDef {// extends BaseVO<ElecCompDefPO> {
 
 	public Node getSpatial() {
 		return spatial;
-	}
-
-	public String getTagName() {
-		return tagName;
-	}
-
-	public void setTagName(String tagName) {
-		this.tagName = tagName;
 	}
 
 	public void setProxy(ElecCompProxy proxy) {

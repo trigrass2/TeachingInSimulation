@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,6 +40,7 @@ import javafx.scene.layout.Region;
 public class TypicalCase3D implements IContent {
 
 	private static final Logger LOG = LoggerFactory.getLogger(TypicalCase3D.class);
+	private static final String REGEX_CHINESE = "[\u4e00-\u9fa5·！￥……（）【】｛｝：；“”‘’？。，]";// 中文正则
 	// 当前案例对象
 	private TypicalCase typicalCase;
 
@@ -70,7 +73,7 @@ public class TypicalCase3D implements IContent {
 
 		TypicalCaseState compState = new TypicalCaseState();
 		jmeApp.getStateManager().attach(compState);
-		JmeToJFXIntegrator.startAndBindMainViewPort(jmeApp, canvas, Thread::new);
+		JmeToJFXIntegrator.startAndBind(jmeApp, canvas, Thread::new);
 
 //		2、创建一些界面控件
 		FXMLLoader loader = new FXMLLoader();
@@ -105,6 +108,8 @@ public class TypicalCase3D implements IContent {
 		TypicalCaseState appState = jmeApp.getStateManager().getState(TypicalCaseState.class);
 //		修改元器件模型
 		appState.setupCase(typicalCase);
+		
+		btnController.clean();
 	}
 
 	public void selectedElecComp(ElecComp elecComp) {
@@ -134,12 +139,24 @@ public class TypicalCase3D implements IContent {
 		} else {
 			MenuItem tag = new MenuItem(MsgUtil.getMessage("button.tag"));
 			tag.setOnAction(e -> {
-				TextInputDialog steamIdDialog = new TextInputDialog();
+				TextInputDialog steamIdDialog = new TextInputDialog(def.getProxy().getTagName());
 				steamIdDialog.setTitle(MsgUtil.getMessage("button.tag"));
 				steamIdDialog.setHeaderText(null);
+				steamIdDialog.getEditor().textProperty().addListener((b, o, n) -> {
+					Pattern pat = Pattern.compile(REGEX_CHINESE);
+					Matcher mat = pat.matcher(n);
+					if (mat.find()) {
+						steamIdDialog.getEditor().setText(o);
+					}
+				});
 				steamIdDialog.setContentText(MsgUtil.getMessage("typical.case.prompt.input.tag"));
 				steamIdDialog.showAndWait().ifPresent(tagName -> {
-					def.setTagName(tagName);
+					def.getProxy().setTagName(tagName);
+					CircuitState state = jmeApp.getStateManager().getState(CircuitState.class);
+					if (state == null) {
+						return;
+					}
+					state.setTagNameChanged(true);
 				});
 			});
 			MenuItem del = new MenuItem(MsgUtil.getMessage("button.delete"));

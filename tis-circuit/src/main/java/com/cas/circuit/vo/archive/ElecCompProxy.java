@@ -20,6 +20,9 @@ public class ElecCompProxy {
 //	元器件ID
 	@XmlAttribute
 	private String uuid;
+//	元器件Tag
+	@XmlAttribute
+	private String tagName;
 
 //	摆放位置
 	@XmlAttribute
@@ -44,6 +47,14 @@ public class ElecCompProxy {
 			uuid = UUID.randomUUID().toString();
 		}
 		return uuid;
+	}
+
+	public String getTagName() {
+		return tagName;
+	}
+
+	public void setTagName(String tagName) {
+		this.tagName = tagName;
 	}
 
 	public Vector3f getLocation() {

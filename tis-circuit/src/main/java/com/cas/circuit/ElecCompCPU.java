@@ -142,7 +142,7 @@ public abstract class ElecCompCPU extends BaseElectricCompLogic {
 	 * 产生信号电<br>
 	 */
 	protected void elecCompStart() {
-		LOG.info("开始启动" + elecComp.getTagName());
+		LOG.info("开始启动{}{}", elecComp.getName(), elecComp.getProxy().getTagName());
 //		System.err.println(this.getClass().getCanonicalName() + ".elecCompStart(start...)");
 		getElecComp().getLightIOList().forEach(l -> l.openLight());
 //		信号电压起源
@@ -219,7 +219,7 @@ public abstract class ElecCompCPU extends BaseElectricCompLogic {
 			}
 		}
 //		System.err.println(this.getClass().getCanonicalName() + ".elecCompStart(end...)");
-		LOG.info("{}启动完成!", elecComp.getTagName());
+		LOG.info("{}{}启动完成!", elecComp.getName(), elecComp.getProxy().getTagName());
 	}
 
 	/**
@@ -227,7 +227,7 @@ public abstract class ElecCompCPU extends BaseElectricCompLogic {
 	 * 关闭信号电<br>
 	 */
 	protected void elecCompEnd() {
-		LOG.info("shutdown {}", elecComp.getTagName());
+		LOG.info("shutdown {}{}", elecComp.getName(), elecComp.getProxy().getTagName());
 //		System.out.println(this.getClass().getCanonicalName() + ".elecCompEnd(start...)");
 		getElecComp().getLightIOList().forEach(l -> l.closeLight());
 
@@ -269,7 +269,7 @@ public abstract class ElecCompCPU extends BaseElectricCompLogic {
 				}
 			}
 		}
-		LOG.info("shutdown done {}", elecComp.getTagName());
+		LOG.info("shutdown done {}{}", elecComp.getName(), elecComp.getProxy().getTagName());
 //		System.out.println(this.getClass().getCanonicalName() + ".elecCompEnd(end...)");
 	}
 }

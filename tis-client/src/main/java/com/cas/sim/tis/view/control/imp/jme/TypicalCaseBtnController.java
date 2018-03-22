@@ -24,6 +24,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -40,6 +41,8 @@ import javafx.stage.StageStyle;
 public class TypicalCaseBtnController implements IDistory {
 	@FXML
 	private StackPane content;
+	@FXML
+	private CheckBox showName;
 
 	private TypicalCaseState state;
 
@@ -53,6 +56,14 @@ public class TypicalCaseBtnController implements IDistory {
 	private Stage drawingWin;
 
 	private TypicalCase3D typicalCase3D;
+
+	@FXML
+	private void toggleTagName() {
+		boolean visiable = showName.isSelected();
+		if (state != null && state.getCircuitState() != null) {
+			state.getCircuitState().setTagNameVisible(visiable);
+		}
+	}
 
 	@FXML
 	private void showDrawingWin(ActionEvent event) {
@@ -229,6 +240,18 @@ public class TypicalCaseBtnController implements IDistory {
 
 	public void setUI(TypicalCase3D typicalCase3D) {
 		this.typicalCase3D = typicalCase3D;
+	}
+
+	public void clean() {
+		if (drawingWin != null) {
+			drawingWin.close();
+		}
+
+		showName.setSelected(false);
+		
+		if (wirePicker != null) {
+			wirePicker.setContentNode(getWirePickContent());
+		}
 	}
 
 }

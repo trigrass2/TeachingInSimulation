@@ -7,7 +7,6 @@ import org.slf4j.LoggerFactory;
 
 import com.cas.sim.tis.app.event.MouseEventState;
 import com.cas.sim.tis.consts.SettingConsts;
-import com.jme3.app.DebugKeysAppState;
 import com.jme3.app.FlyCamAppState;
 import com.jme3.asset.plugins.FileLocator;
 import com.jme3.system.AppSettings;
@@ -23,8 +22,15 @@ public class JmeApplication extends JmeToJFXApplication {
         settings.setResizable(true);
 
 		JmeToJFXIntegrator.prepareSettings(settings, 60);
-		setSettings(settings);
-		setShowSettings(false);
+		this.setSettings(settings);
+//		不显示自带的设置界面
+		this.setShowSettings(false);
+//		失去焦点后暂停
+		this.setPauseOnLostFocus(true);
+//		不显示左下角状态栏
+		this.setDisplayStatView(false);
+//		不显示帧数
+		this.setDisplayFps(false);
 	}
 
 	@Override
@@ -36,17 +42,20 @@ public class JmeApplication extends JmeToJFXApplication {
 	@Override
 	public void simpleInitApp() {
 		super.simpleInitApp();
-		stateManager.attach(new DebugKeysAppState());
 		stateManager.attach(new MouseEventState());
 		
 		stateManager.detach(stateManager.getState(FlyCamAppState.class));
 
+		renderer.setMainFrameBufferSrgb(true);
+		
 //		String assetPath = SpringUtil.getBean(HTTPUtils.class).getFullPath("assets/");
 //		LOG.debug("注册资源路径:{}", assetPath); // http://192.168.x.x:port/***/assests/
 ////		注册资源路径
 //		assetManager.registerLocator(assetPath, UrlLocator.class);
-		
 		assetManager.registerLocator("assets", FileLocator.class);
+		
+		cam.setFrustumPerspective(45, (float) cam.getWidth() / cam.getHeight(), 0.01f, 100f);
+		
 
 ////		创建天空盒
 ////		Spatial sky = SkyFactory.createSky(assetManager, "Model/Sky/noon_grass_2k.hdr", SkyFactory.EnvMapType.EquirectMap);
