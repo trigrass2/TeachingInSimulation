@@ -511,6 +511,7 @@ public class CircuitState extends BaseState {
 				node.scale(25);
 //				4、将读取到的元器件放入电路板中。
 				rootCompNode.attachChild(node);
+				System.gc();
 				return node;
 			});
 			Node compMdl = null;

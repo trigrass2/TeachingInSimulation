@@ -58,7 +58,7 @@ public class TagNameControl extends AbstractControl {
 		} else {
 			// move it
 			tag.setCullHint(CullHint.Dynamic);
-			tag.setLocalTranslation(tmp.x - tag.getLineWidth(), tmp.y - tag.getHeight(), tmp.z);
+			tag.setLocalTranslation(tmp.x - tag.getLineWidth() / 2, tmp.y - tag.getHeight(), tmp.z);
 		}
 	}
 

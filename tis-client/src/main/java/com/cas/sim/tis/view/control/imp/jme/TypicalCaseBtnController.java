@@ -243,12 +243,12 @@ public class TypicalCaseBtnController implements IDistory {
 	}
 
 	public void clean() {
+		showName.setSelected(false);
+		
 		if (drawingWin != null) {
 			drawingWin.close();
 		}
 
-		showName.setSelected(false);
-		
 		if (wirePicker != null) {
 			wirePicker.setContentNode(getWirePickContent());
 		}
