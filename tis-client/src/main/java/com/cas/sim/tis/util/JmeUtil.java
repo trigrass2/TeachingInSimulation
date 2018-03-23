@@ -29,8 +29,8 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
-import com.jme3.scene.VertexBuffer;
 import com.jme3.scene.Spatial.CullHint;
+import com.jme3.scene.VertexBuffer;
 import com.jme3.scene.VertexBuffer.Type;
 import com.jme3.scene.shape.Cylinder;
 import com.jme3.scene.shape.Line;
@@ -452,7 +452,15 @@ public final class JmeUtil {
 	// 使用Cylinder
 	public static Geometry createCylinderLine(AssetManager assetManager, List<Vector3f> pointList, float radius, ColorRGBA color) {
 
-		List<Geometry> realLineList = new ArrayList<>();
+		Material ballMat = new Material(assetManager, "Common/MatDefs/Light/Lighting.j3md");
+		ballMat.setColor("Diffuse", color);
+		ballMat.setFloat("Shininess", 10f);
+		ballMat.setColor("Specular", ColorRGBA.White);
+		ballMat.setBoolean("UseMaterialColors", true);
+//		ballMat.getAdditionalRenderState().setLineWidth(width);
+		Node ret = new Node();
+		
+//		List<Geometry> realLineList = new ArrayList<>();
 //		两点之间穿件一条线
 //		为了方便，将pointList集合转换为List<Vector3f[]>, Vector3f[]表示线段的两点
 		List<Vector3f[]> lineList = new ArrayList<>();
@@ -482,28 +490,27 @@ public final class JmeUtil {
 			// 注意：Cylinder默认是水平方向的，任取X或Z轴作为参考。计算与导线方向lineDir的夹角
 			rotation.fromAngleAxis(lineDir.angleBetween(Vector3f.UNIT_Z), lineDir.cross(Vector3f.UNIT_Z));
 			real.setLocalRotation(rotation);
-			realLineList.add(real);
+			real.setMaterial(ballMat);
+//			realLineList.add(real);
+			ret.attachChild(real);
 		});
 
 		pointList.forEach(point -> {
 			Geometry real = getSphere(assetManager, 6, radius, color);
 			real.setLocalTranslation(point);
-			realLineList.add(real);
+			real.setMaterial(ballMat);
+//			realLineList.add(real);
+			ret.attachChild(real);
 		});
 
-		Mesh outMesh = new Mesh();
-		GeometryBatchFactory.mergeGeometries(realLineList, outMesh);
-		Geometry ret = new Geometry("wireGeo", outMesh);
-
-		Material ballMat = new Material(assetManager, "Common/MatDefs/Light/Lighting.j3md");
-		ballMat.setColor("Diffuse", color);
-		ballMat.setFloat("Shininess", 10f);
-		ballMat.setColor("Specular", ColorRGBA.White);
-		ballMat.setBoolean("UseMaterialColors", true);
-//		ballMat.getAdditionalRenderState().setLineWidth(width);
-		ret.setMaterial(ballMat);
-
-		return ret;
+//		Mesh outMesh = new Mesh();
+//		GeometryBatchFactory.mergeGeometries(realLineList, outMesh);
+//		Geometry ret = new Geometry("wireGeo", outMesh);
+		
+		GeometryBatchFactory.optimize(ret);
+		
+//		批处理后实际就是一个Geometry
+		return (Geometry) ret.getChild(0);
 	}
 
 }

@@ -1,5 +1,7 @@
 package com.cas.sim.tis.app.control;
 
+import org.springframework.util.StringUtils;
+
 import com.jme3.bounding.BoundingBox;
 import com.jme3.font.BitmapText;
 import com.jme3.math.Vector3f;
@@ -23,7 +25,7 @@ public class TagNameControl extends AbstractControl {
 	@Override
 	protected void controlUpdate(float tpf) {
 		BoundingBox bound = ((BoundingBox) spatial.getWorldBound());
-		Vector3f center = bound.getCenter().add(0, bound.getYExtent() + 0.75f, 0);
+		Vector3f center = bound.getCenter().add(0, bound.getYExtent(), 0);
 		Vector3f loc = camera.getScreenCoordinates(center);
 		moveMarker(loc);
 	}
@@ -58,11 +60,14 @@ public class TagNameControl extends AbstractControl {
 		} else {
 			// move it
 			tag.setCullHint(CullHint.Dynamic);
-			tag.setLocalTranslation(tmp.x - tag.getLineWidth() / 2, tmp.y - tag.getHeight(), tmp.z);
+			tag.setLocalTranslation(tmp.x - tag.getLineWidth() / 2, tmp.y + tag.getHeight(), tmp.z);
 		}
 	}
 
 	public void setTagName(String tagName) {
+		if (!StringUtils.isEmpty(tagName)) {
+			tagName = String.format(" %s ", tagName);
+		}
 		this.tag.setText(tagName);
 	}
 }

@@ -23,7 +23,9 @@ import com.cas.circuit.vo.archive.ElecCompProxy;
 import com.cas.circuit.vo.archive.WireProxy;
 import com.cas.sim.tis.action.ElecCompAction;
 import com.cas.sim.tis.action.TypicalCaseAction;
+import com.cas.sim.tis.app.control.HintControl;
 import com.cas.sim.tis.app.control.TagNameControl;
+import com.cas.sim.tis.app.control.WireNumberControl;
 import com.cas.sim.tis.app.event.MouseEvent;
 import com.cas.sim.tis.app.event.MouseEventAdapter;
 import com.cas.sim.tis.entity.ElecComp;
@@ -137,6 +139,8 @@ public class CircuitState extends BaseState {
 		tagFont = assetManager.loadFont("font/Font4TagName.fnt");
 
 		bindCircuitBoardEvents();
+
+		LOG.info("CircuitState完成初始化");
 	}
 
 	@Override
@@ -215,7 +219,7 @@ public class CircuitState extends BaseState {
 
 			if ("CANCEL_ON_CONNECTING".equals(name) && isPressed) {
 				if (state == State.Starting || state == State.Mid) {
-					clean();
+					connectClean();
 				}
 			}
 
@@ -224,11 +228,11 @@ public class CircuitState extends BaseState {
 					return;
 				}
 				if (state == State.Starting) {
-					connect_starting();
+					connectStarting();
 //					设置当前接线状态为接线中
 					state = State.Mid;
 				} else if (state == State.Mid) {
-					connect_mid();
+					connectMid();
 				} else if (state == State.Ending) {
 //					do nothing
 				}
@@ -236,8 +240,39 @@ public class CircuitState extends BaseState {
 		}, "CLICKED_ON_BOARD", "CANCEL_ON_CONNECTING");
 	}
 
-//	
-	private void connect_starting() {
+//			点击连接头、开始接线之前的准备工作
+	private void connectPre(ElecCompDef def, Terminal t) {
+		// 创建一个节点，存放当前一根导线的模型
+		tmpWireNode = new Node();
+		// 将导线模型添加到root节点中以显示
+		rootWireNode.attachChild(tmpWireNode);
+		// 创建一个导线逻辑对象
+		wire = new Wire();
+		// 导线颜色和线宽
+		wire.getProxy().setColor(color);
+		wire.getProxy().setWidth(width);
+
+		// 导线一头连接在当前连接头上
+		wire.bind(t);
+
+		// FIXME 导线连接的位置，多跟导线的情况下错开
+		Vector3f dest = t.getSpatial().getWorldTranslation().clone();
+		// 获取导线连接的方向
+		dir = def.getSpatial().getLocalRotation().mult(t.getDirection());
+		midAxis = roll90.mult(dir);
+
+		// 钱三段导线
+		startLine1 = new Line(dest, dest);//
+		startLine2 = new Line(dest, dest);
+		startLine3 = new Line(dest, dest);
+
+		tmpWireNode.attachChild(JmeUtil.createLineGeo(assetManager, startLine1, color));
+		tmpWireNode.attachChild(JmeUtil.createLineGeo(assetManager, startLine2, color));
+		tmpWireNode.attachChild(JmeUtil.createLineGeo(assetManager, startLine3, color));
+	}
+
+	//
+	private void connectStarting() {
 		Vector3f startPoint = JmeUtil.getLineStart(startLine3);
 		Vector3f endPoint = JmeUtil.getLineEnd(startLine3);
 
@@ -252,7 +287,7 @@ public class CircuitState extends BaseState {
 		startLine3 = null;
 	}
 
-	private void connect_mid() {
+	private void connectMid() {
 		// midLine1 连接好，不再修改
 		// 将之前的midLine2作为新的midLine1
 		// 获取midLine2的起始点
@@ -268,7 +303,84 @@ public class CircuitState extends BaseState {
 		midAxis = roll90.mult(midAxis);
 	}
 
-//	获取当前导线的点坐标集合
+	private void connectEnding(ElecCompDef def, Terminal t) {
+		// 终点
+		Vector3f dest = t.getSpatial().getWorldTranslation().clone();
+		// 重点线头连出的方向
+		dir = def.getSpatial().getLocalRotation().mult(t.getDirection());
+		//
+		// ##最终是在终点dest和startPoint之间创建导线##
+		Vector3f startPoint = JmeUtil.getLineStart(midLine1);
+
+		// 判断最后一段线与dir的向量积，从而知道是哪一种连接方式
+		Vector3f t1 = JmeUtil.getLineStart(midLine2);
+		Vector3f t2 = JmeUtil.getLineEnd(midLine2);
+
+		if (Math.round(t2.subtract(t1).dot(dir)) == 0) {
+			// 表明是垂直的方向连接到终点的，这种情况稍微复杂一些
+			// 倒数第二个点是终点在dir方向上的点，距离终点的长度是minLen
+			Vector3f last2 = dest.add(dir.normalize().mult(minLen));
+			// 倒数第三个点是last2在电路板子上的投影点，y的值可以从取startPoint起点的y
+			Vector3f last3 = last2.clone().setY(startPoint.getY());
+			// 倒数第四个点是last3在midLine1上的投影点
+			Vector3f endPoint = JmeUtil.getLineEnd(midLine1);
+			Vector3f last4 = startPoint.add(last3.subtract(startPoint).project(endPoint.subtract(startPoint)));
+
+			// 四个点全部找齐，下面把midLine1和midLine2的重新设置
+			midLine1.updatePoints(midLine1.getStart(), last4);
+			midLine2.updatePoints(last4, last3);
+			// 另外，还需要两根线
+			tmpWireNode.attachChild(JmeUtil.createLineGeo(assetManager, new Line(last3, last2), color));
+			tmpWireNode.attachChild(JmeUtil.createLineGeo(assetManager, new Line(last2, dest), color));
+		} else {
+			// 倒数第二个点是midLine1上任意一点在dir上的投影点，这里取startPoint
+			Vector3f last2 = dest.add(startPoint.subtract(dest).project(dir));
+			// 倒数第三个点是last2在电路板子上的投影点，y的值可以从取startPoint起点的y
+			Vector3f last3 = last2.clone().setY(startPoint.getY());
+			// 三个点全部找齐，下面把midLine1和midLine2的重新设置
+			midLine1.updatePoints(midLine1.getStart(), last3);
+			midLine2.updatePoints(last3, last2);
+			// 另外，还需要一根线
+			tmpWireNode.attachChild(JmeUtil.createLineGeo(assetManager, new Line(last2, dest), color));
+		}
+
+		wire.bind(t);
+		List<Vector3f> pointList = getPointList();
+		wire.getProxy().getPointList().addAll(pointList);
+
+		Geometry realWire = JmeUtil.createCylinderLine(assetManager, pointList, width, color);
+		attachToCircuit(realWire, wire);
+
+		tmpWireNode.removeFromParent();
+		wire = null;
+		tmpWireNode = null;
+
+		connectClean();
+	}
+
+	private void connectClean() {
+		state = null;
+		dir = null;
+		startLine1 = null;
+		startLine2 = null;
+		startLine3 = null;
+
+		midLine1 = null;
+		midLine2 = null;
+
+		if (tmpWireNode != null) {
+			tmpWireNode.removeFromParent();
+			tmpWireNode = null;
+		}
+
+		// 清理临时接线连接头
+		if (wire != null) {
+			wire.unbind();
+			wire = null;
+		}
+	}
+
+	// 获取当前导线的点坐标集合
 	@Nonnull
 	private List<Vector3f> getPointList() {
 		List<Vector3f> result = new ArrayList<>();
@@ -305,135 +417,23 @@ public class CircuitState extends BaseState {
 		return result;
 	}
 
-	private void clean() {
-		state = null;
-		dir = null;
-		startLine1 = null;
-		startLine2 = null;
-		startLine3 = null;
-
-		midLine1 = null;
-		midLine2 = null;
-
-		if (tmpWireNode != null) {
-			tmpWireNode.removeFromParent();
-			tmpWireNode = null;
-		}
-
-		// 清理临时接线连接头
-		if (wire != null) {
-			wire.unbind();
-			wire = null;
-		}
-	}
-
 	private void bindElecCompEvent(ElecCompDef def) {
 		// 1、连接头监听事件
 		def.getTerminalList().forEach(t -> addListener(t.getSpatial(), new MouseEventAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				if (state == null || state == State.Ending) {
-					connect_pre(def, t);
+					connectPre(def, t);
 //					设置接线状态为开始
 					state = State.Starting;
 				} else if (state == State.Mid) {
 //					
-					connect_ending(def, t);
+					connectEnding(def, t);
 
 					state = State.Ending;
 				} else if (state == State.Ending) {
 //					do nothing
 				}
-			}
-
-			protected void connect_ending(ElecCompDef def, Terminal t) {
-//				终点
-				Vector3f dest = t.getSpatial().getWorldTranslation().clone();
-//				重点线头连出的方向
-				dir = def.getSpatial().getLocalRotation().mult(t.getDirection());
-				//
-//				##最终是在终点dest和startPoint之间创建导线##
-				Vector3f startPoint = JmeUtil.getLineStart(midLine1);
-
-//				判断最后一段线与dir的向量积，从而知道是哪一种连接方式
-				Vector3f t1 = JmeUtil.getLineStart(midLine2);
-				Vector3f t2 = JmeUtil.getLineEnd(midLine2);
-
-				if (Math.round(t2.subtract(t1).dot(dir)) == 0) {
-//					表明是垂直的方向连接到终点的，这种情况稍微复杂一些
-//					倒数第二个点是终点在dir方向上的点，距离终点的长度是minLen
-					Vector3f last2 = dest.add(dir.normalize().mult(minLen));
-//					倒数第三个点是last2在电路板子上的投影点，y的值可以从取startPoint起点的y
-					Vector3f last3 = last2.clone().setY(startPoint.getY());
-//					倒数第四个点是last3在midLine1上的投影点
-					Vector3f endPoint = JmeUtil.getLineEnd(midLine1);
-					Vector3f last4 = startPoint.add(last3.subtract(startPoint).project(endPoint.subtract(startPoint)));
-
-//					四个点全部找齐，下面把midLine1和midLine2的重新设置
-					midLine1.updatePoints(midLine1.getStart(), last4);
-					midLine2.updatePoints(last4, last3);
-//					另外，还需要两根线
-					tmpWireNode.attachChild(JmeUtil.createLineGeo(assetManager, new Line(last3, last2), color));
-					tmpWireNode.attachChild(JmeUtil.createLineGeo(assetManager, new Line(last2, dest), color));
-				} else {
-//					倒数第二个点是midLine1上任意一点在dir上的投影点，这里取startPoint
-					Vector3f last2 = dest.add(startPoint.subtract(dest).project(dir));
-//					倒数第三个点是last2在电路板子上的投影点，y的值可以从取startPoint起点的y
-					Vector3f last3 = last2.clone().setY(startPoint.getY());
-//					三个点全部找齐，下面把midLine1和midLine2的重新设置
-					midLine1.updatePoints(midLine1.getStart(), last3);
-					midLine2.updatePoints(last3, last2);
-//					另外，还需要一根线
-					tmpWireNode.attachChild(JmeUtil.createLineGeo(assetManager, new Line(last2, dest), color));
-				}
-
-				wire.bind(t);
-				wireList.add(wire);
-				List<Vector3f> pointList = getPointList();
-				wire.getProxy().getPointList().addAll(pointList);
-
-				Geometry realWire = JmeUtil.createCylinderLine(assetManager, pointList, width, color);
-//				其实：wireNode.getChildren()是SafeArrayList类型，自带同步功能。不会出现java.util.ConcurrentModificationException
-				rootWireNode.attachChild(realWire);
-//				将模型与逻辑对象绑定
-				wire.setSpatial(realWire);
-
-				tmpWireNode.removeFromParent();
-				wire = null;
-				tmpWireNode = null;
-
-				clean();
-			}
-
-//			点击连接头、开始接线之前的准备工作
-			protected void connect_pre(ElecCompDef def, Terminal t) {
-//				创建一个节点，存放当前一根导线的模型
-				tmpWireNode = new Node();
-//				将导线模型添加到root节点中以显示
-				rootWireNode.attachChild(tmpWireNode);
-//				创建一个导线逻辑对象
-				wire = new Wire();
-//				导线颜色和线宽
-				wire.getProxy().setColor(color);
-				wire.getProxy().setWidth(width);
-
-//				导线一头连接在当前连接头上
-				wire.bind(t);
-
-				// FIXME 导线连接的位置，多跟导线的情况下错开
-				Vector3f dest = t.getSpatial().getWorldTranslation().clone();
-//				获取导线连接的方向
-				dir = def.getSpatial().getLocalRotation().mult(t.getDirection());
-				midAxis = roll90.mult(dir);
-
-//				钱三段导线
-				startLine1 = new Line(dest, dest);//
-				startLine2 = new Line(dest, dest);
-				startLine3 = new Line(dest, dest);
-
-				tmpWireNode.attachChild(JmeUtil.createLineGeo(assetManager, startLine1, color));
-				tmpWireNode.attachChild(JmeUtil.createLineGeo(assetManager, startLine2, color));
-				tmpWireNode.attachChild(JmeUtil.createLineGeo(assetManager, startLine3, color));
 			}
 		}));
 		// 2、插孔监听事件
@@ -482,6 +482,46 @@ public class CircuitState extends BaseState {
 		mouseEventState.removeCandidate(elecCompDef.getSpatial());
 	}
 
+	private void bindWireEvent(Geometry wireMdl, final Wire wire) {
+		addListener(wireMdl, new MouseEventAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				// 选中穿透高亮
+
+				for (Wire w : wireList) {
+					Spatial mdl = w.getSpatial();
+					HintControl control = mdl.getControl(HintControl.class);
+					boolean enable = w == wire;
+					if (control != null) {
+						mdl.removeControl(control);
+					} else if (enable) {
+						control = new HintControl();
+						mdl.addControl(control);
+					}
+				}
+				System.out.println();
+				super.mouseClicked(e);
+			}
+
+			@Override
+			public void mouseRightClicked(MouseEvent e) {
+				// 选中显示导线菜单
+				IContent content = SpringUtil.getBean(PageController.class).getIContent();
+				if (content instanceof TypicalCase3D) {
+					Platform.runLater(() -> {
+						((TypicalCase3D) content).showPopupMenu(wire);
+					});
+				}
+				super.mouseRightClicked(e);
+			}
+		});
+		wireList.add(wire);
+	}
+
+	private void unbindWireEvent(Wire wire) {
+		mouseEventState.removeCandidate(wire.getSpatial());
+	}
+
 	public void read(Archive archive) {
 		// 等待初始化完成
 		while (!initialized) {
@@ -509,9 +549,6 @@ public class CircuitState extends BaseState {
 				node.setLocalTranslation(proxyComp.getLocation());
 				node.setLocalRotation(proxyComp.getRotation());
 				node.scale(25);
-//				4、将读取到的元器件放入电路板中。
-				rootCompNode.attachChild(node);
-				System.gc();
 				return node;
 			});
 			Node compMdl = null;
@@ -548,17 +585,17 @@ public class CircuitState extends BaseState {
 			wire.bind(term2);
 
 			Future<Geometry> task = app.enqueue((Callable<Geometry>) () -> {
-				Geometry wireNode = JmeUtil.createCylinderLine(assetManager, proxy.getPointList(), proxy.getWidth(), proxy.getColor());
-
-				rootWireNode.attachChild(wireNode);
-				return wireNode;
+				Geometry wireMdl = JmeUtil.createCylinderLine(assetManager, proxy.getPointList(), proxy.getWidth(), proxy.getColor());
+				return wireMdl;
 			});
+			Geometry wireMdl = null;
 			try {
-				wire.setSpatial(task.get());
-				wireList.add(wire);
+				wireMdl = task.get();
 			} catch (Exception e) {
-				e.printStackTrace();
+				LOG.error("无法加载导线模型:{}", e);
+				throw new RuntimeException(e);
 			}
+			attachToCircuit(wireMdl, wire);
 		});
 	}
 
@@ -650,6 +687,37 @@ public class CircuitState extends BaseState {
 		unbindElecCompEvent(elecCompDef);
 	}
 
+	private void attachToCircuit(Geometry wireMdl, Wire wire) {
+//		1、将导线加入场景
+// 		其实：wireNode.getChildren()是SafeArrayList类型，自带同步功能。不会出现java.util.ConcurrentModificationException
+		rootWireNode.attachChild(wireMdl);
+// 		2、将模型与逻辑对象绑定
+		wire.setSpatial(wireMdl);
+//		3、绑定监听事件
+		bindWireEvent(wireMdl, wire);
+	}
+
+	public boolean detachFromCircuit(Wire wire) {
+		// 判断当前是否通电
+		if (wire.getTerm1().hasInputVoltageIO() || wire.getTerm1().hasOutputVoltageIO()) {
+			return false;
+		} else if (wire.getTerm2().hasInputVoltageIO() || wire.getTerm2().hasOutputVoltageIO()) {
+			return false;
+		}
+		detachWire(wire);
+		return true;
+	}
+
+	private void detachWire(Wire wire) {
+		Spatial wireMdl = wire.getSpatial();
+//		1、移除Control
+		wireMdl.removeControl(WireNumberControl.class);
+//		2、删除模型
+		rootWireNode.detachChild(wireMdl);
+//		3、解绑监听事件
+		unbindWireEvent(wire);
+	}
+
 	public void setTagNameVisible(boolean tagVisible) {
 		this.tempTagVisible = tagVisible;
 	}
@@ -671,6 +739,20 @@ public class CircuitState extends BaseState {
 				elecCompMdl.addControl(control);
 			}
 			control.setTagName(elecCompDef.getProxy().getTagName());
+			control.setEnabled(tagVisible);
+		}
+		for (Wire wire : wireList) {
+			Spatial wireMdl = wire.getSpatial();
+			WireNumberControl control = wireMdl.getControl(WireNumberControl.class);
+			if (control == null) {
+				BitmapText tag = new BitmapText(tagFont);
+				tag.setLocalScale(0.75f);
+				tag.setName(String.format("%s-%s", wire.getProxy().getComp1Uuid(), wire.getProxy().getComp2Uuid()));
+
+				control = new WireNumberControl(cam, guiNode, tag, wire.getProxy().getPointList());
+				wireMdl.addControl(control);
+			}
+			control.setNumber(wire.getProxy().getNumber());
 			control.setEnabled(tagVisible);
 		}
 	}

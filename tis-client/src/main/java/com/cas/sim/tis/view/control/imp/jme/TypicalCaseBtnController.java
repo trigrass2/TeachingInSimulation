@@ -27,7 +27,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
@@ -51,7 +50,6 @@ public class TypicalCaseBtnController implements IDistory {
 	private Label colorPicked;
 	private Label sectionPicked;
 	private Label preview;
-	private TextField num;
 
 	private Stage drawingWin;
 
@@ -133,9 +131,9 @@ public class TypicalCaseBtnController implements IDistory {
 	private void initNumberPane(VBox number) {
 		number.setAlignment(Pos.TOP_CENTER);
 
-		number.getChildren().add(new Label(MsgUtil.getMessage("typical.case.wire.num")));
+//		number.getChildren().add(new Label(MsgUtil.getMessage("typical.case.wire.num")));
 
-		number.getChildren().add(num = new TextField());
+//		number.getChildren().add(num = new TextField());
 
 		number.getChildren().add(new Label(MsgUtil.getMessage("typical.case.wire.preview")));
 

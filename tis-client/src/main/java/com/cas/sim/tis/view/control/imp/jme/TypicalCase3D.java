@@ -13,6 +13,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.cas.circuit.vo.ElecCompDef;
+import com.cas.circuit.vo.Wire;
+import com.cas.circuit.vo.archive.WireProxy;
 import com.cas.sim.tis.app.JmeApplication;
 import com.cas.sim.tis.app.state.CircuitState;
 import com.cas.sim.tis.app.state.TypicalCaseState;
@@ -108,7 +110,7 @@ public class TypicalCase3D implements IContent {
 		TypicalCaseState appState = jmeApp.getStateManager().getState(TypicalCaseState.class);
 //		修改元器件模型
 		appState.setupCase(typicalCase);
-		
+
 		btnController.clean();
 	}
 
@@ -149,7 +151,7 @@ public class TypicalCase3D implements IContent {
 						steamIdDialog.getEditor().setText(o);
 					}
 				});
-				steamIdDialog.setContentText(MsgUtil.getMessage("typical.case.prompt.input.tag"));
+				steamIdDialog.setContentText(MsgUtil.getMessage("typical.case.prompt.input.comp.tag"));
 				steamIdDialog.showAndWait().ifPresent(tagName -> {
 					def.getProxy().setTagName(tagName);
 					CircuitState state = jmeApp.getStateManager().getState(CircuitState.class);
@@ -166,7 +168,57 @@ public class TypicalCase3D implements IContent {
 					return;
 				}
 				boolean enable = state.detachFromCircuit(def);
-				if (!enable) {
+				if (enable) {
+					menus.remove(key);
+				} else {
+					AlertUtil.showAlert(AlertType.WARNING, MsgUtil.getMessage("alert.warning.wiring"));
+				}
+			});
+			menu = new ContextMenu(tag, del);
+		}
+		Point anchor = MouseInfo.getPointerInfo().getLocation();
+		menu.show(GUIState.getStage(), anchor.x, anchor.y);
+	}
+
+	public void showPopupMenu(Wire wire) {
+		ContextMenu menu = null;
+		WireProxy proxy = wire.getProxy();
+		String key = String.format("%s%s-%s%s", proxy.getComp1Uuid(), proxy.getTernimal1Id(), proxy.getComp2Uuid(), proxy.getTernimal2Id());
+		if (menus.containsKey(key)) {
+			menu = menus.get(key);
+		} else {
+			MenuItem tag = new MenuItem(MsgUtil.getMessage("typical.case.wire.num"));
+			tag.setOnAction(e -> {
+				TextInputDialog steamIdDialog = new TextInputDialog(proxy.getNumber());
+				steamIdDialog.setTitle(MsgUtil.getMessage("typical.case.wire.num"));
+				steamIdDialog.setHeaderText(null);
+				steamIdDialog.getEditor().textProperty().addListener((b, o, n) -> {
+					Pattern pat = Pattern.compile(REGEX_CHINESE);
+					Matcher mat = pat.matcher(n);
+					if (mat.find()) {
+						steamIdDialog.getEditor().setText(o);
+					}
+				});
+				steamIdDialog.setContentText(MsgUtil.getMessage("typical.case.prompt.input.wire.num"));
+				steamIdDialog.showAndWait().ifPresent(number -> {
+					wire.getProxy().setNumber(number);
+					CircuitState state = jmeApp.getStateManager().getState(CircuitState.class);
+					if (state == null) {
+						return;
+					}
+					state.setTagNameChanged(true);
+				});
+			});
+			MenuItem del = new MenuItem(MsgUtil.getMessage("button.delete"));
+			del.setOnAction(e -> {
+				CircuitState state = jmeApp.getStateManager().getState(CircuitState.class);
+				if (state == null) {
+					return;
+				}
+				boolean enable = state.detachFromCircuit(wire);
+				if (enable) {
+					menus.remove(key);
+				} else {
 					AlertUtil.showAlert(AlertType.WARNING, MsgUtil.getMessage("alert.warning.wiring"));
 				}
 			});
