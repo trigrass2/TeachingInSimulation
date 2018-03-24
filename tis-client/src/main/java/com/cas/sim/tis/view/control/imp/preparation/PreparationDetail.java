@@ -320,7 +320,7 @@ public class PreparationDetail extends HBox implements IContent {
 
 	@FXML
 	private void cognition() {
-		Map<String, List<ElecComp>> elecCompMap = SpringUtil.getBean(ElecCompAction.class).getElecCompMap();
+		Map<Integer, List<ElecComp>> elecCompMap = SpringUtil.getBean(ElecCompAction.class).getElecCompMap();
 
 		Dialog<Integer> dialog = new Dialog<>();
 		dialog.setDialogPane(new ElecCompSelectDialog(elecCompMap));

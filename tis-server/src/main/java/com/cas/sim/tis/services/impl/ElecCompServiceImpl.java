@@ -19,7 +19,7 @@ import tk.mybatis.mapper.entity.Example.Criteria;
 public class ElecCompServiceImpl extends AbstractService<ElecComp> implements ElecCompService {
 
 	@Override
-	public Map<String, List<ElecComp>> findElecCompGroupByType() {
+	public Map<Integer, List<ElecComp>> findElecCompGroupByType() {
 		ElecCompMapper dao = (ElecCompMapper) mapper;
 		List<ElecComp> all = dao.selectAll();
 

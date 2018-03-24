@@ -13,11 +13,17 @@ public class ElecComp implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = -2680718661511929185L;
+
+	public static final int COMBINE_NONE = 0;
+	public static final int COMBINE_TOP = 1;
+	public static final int COMBINE_BUTTOM = 2;
 	//
 	@Id
 	private Integer id;
 //	元器件类型
-	private String type;
+	private Integer type;
+//	元器件组合
+	private Integer combine;
 //	元器件型号
 	private String name;
 //	元器件型号
@@ -37,12 +43,20 @@ public class ElecComp implements Serializable {
 		this.id = id;
 	}
 
-	public String getType() {
+	public Integer getType() {
 		return type;
 	}
 
-	public void setType(String type) {
+	public void setType(Integer type) {
 		this.type = type;
+	}
+
+	public Integer getCombine() {
+		return combine;
+	}
+
+	public void setCombine(Integer combine) {
+		this.combine = combine;
 	}
 
 	public String getName() {

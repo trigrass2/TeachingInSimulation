@@ -15,7 +15,7 @@ public interface ElecCompService extends BaseService<ElecComp> {
 	 * @return
 	 */
 	@Nonnull
-	Map<String, List<ElecComp>> findElecCompGroupByType();
+	Map<Integer, List<ElecComp>> findElecCompGroupByType();
 
 	/**
 	 * 根据元器件型号查找

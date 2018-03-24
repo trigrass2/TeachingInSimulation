@@ -2,8 +2,8 @@ package com.cas.sim.tis.view.control.imp.preparation;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
+import com.cas.circuit.consts.ElecCompType;
 import com.cas.sim.tis.entity.ElecComp;
 import com.cas.sim.tis.util.MsgUtil;
 import com.cas.sim.tis.view.control.imp.dialog.DialogPane;
@@ -24,7 +24,7 @@ import javafx.scene.layout.VBox;
 
 public class ElecCompSelectDialog extends DialogPane<Integer> {
 
-	public ElecCompSelectDialog(Map<String, List<ElecComp>> elecCompMap) {
+	public ElecCompSelectDialog(Map<Integer, List<ElecComp>> elecCompMap) {
 		VBox box = new VBox(25);
 		VBox.setVgrow(box, Priority.ALWAYS);
 		box.setAlignment(Pos.TOP_CENTER);
@@ -33,17 +33,17 @@ public class ElecCompSelectDialog extends DialogPane<Integer> {
 		ToggleGroup group = new ToggleGroup();
 		Accordion accordion = new Accordion();
 		accordion.getStyleClass().add("white-accordion");
-		for (Entry<String, List<ElecComp>> entry : elecCompMap.entrySet()) {
+		for (ElecCompType type : ElecCompType.values()) {
 			VBox content = new VBox();
 			content.setStyle("-fx-padding:0px");
-			for (ElecComp elecComp : entry.getValue()) {
+			for (ElecComp elecComp : elecCompMap.get(type.getType())) {
 				ToggleButton button = new ToggleButton(elecComp.getName());
 				button.getStyleClass().add("white-titled-content-btn");
 				button.setUserData(elecComp.getId());
 				group.getToggles().add(button);
 				content.getChildren().add(button);
 			}
-			TitledPane pane = new TitledPane(entry.getKey(), content);
+			TitledPane pane = new TitledPane(type.getName(), content);
 			accordion.getPanes().add(pane);
 		}
 		ScrollPane scroll = new ScrollPane(accordion);

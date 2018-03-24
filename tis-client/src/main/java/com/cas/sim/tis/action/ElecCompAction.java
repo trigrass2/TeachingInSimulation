@@ -33,7 +33,7 @@ public class ElecCompAction extends BaseAction<ElecCompService> {
 	 * key:元器件型号
 	 * @return
 	 */
-	public Map<String, List<ElecComp>> getElecCompMap() {
+	public Map<Integer, List<ElecComp>> getElecCompMap() {
 		return getService().findElecCompGroupByType();
 	}
 

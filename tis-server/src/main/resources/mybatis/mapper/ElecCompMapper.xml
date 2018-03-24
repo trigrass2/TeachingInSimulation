@@ -3,7 +3,8 @@
 <mapper namespace="com.cas.sim.tis.mapper.ElecCompMapper">
 	<resultMap id="BaseResultMap" type="com.cas.sim.tis.entity.ElecComp">
 		<id column="ID" jdbcType="INTEGER" property="id" />
-		<result column="TYPE" jdbcType="VARCHAR" property="type" />
+		<result column="TYPE" jdbcType="INTEGER" property="type" />
+		<result column="COMBINE" jdbcType="INTEGER" property="combine" />
 		<result column="NAME" jdbcType="VARCHAR" property="name" />
 		<result column="MODEL" jdbcType="VARCHAR" property="model" />
 		<result column="MDL_PATH" jdbcType="VARCHAR" property="mdlPath" />

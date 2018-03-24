@@ -2,6 +2,7 @@ package com.cas.sim.tis.app.state;
 
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -13,10 +14,12 @@ import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 
 import org.jetbrains.annotations.Nullable;
+import org.springframework.util.StringUtils;
 
 import com.cas.circuit.vo.Archive;
 import com.cas.circuit.vo.ElecCompDef;
 import com.cas.circuit.vo.Jack;
+import com.cas.circuit.vo.Stitch;
 import com.cas.circuit.vo.Terminal;
 import com.cas.circuit.vo.Wire;
 import com.cas.circuit.vo.archive.ElecCompProxy;
@@ -109,6 +112,8 @@ public class CircuitState extends BaseState {
 	private boolean tagVisible;
 	private boolean tempTagVisible;
 	private boolean tageChanged;
+	// Key:BASE UUID,Value: TOP UUID
+	private Map<String, String> combineMap = new HashMap<String, String>();
 
 	public CircuitState(TypicalCase typicalCase, Node root) {
 		this.typicalCase = typicalCase;
@@ -465,6 +470,20 @@ public class CircuitState extends BaseState {
 				}
 			}
 		});
+//		5、若当前为底座添加监听事件
+		if (ElecComp.COMBINE_BUTTOM == def.getElecComp().getCombine()) {
+			addListener(def.getSpatial(), new MouseEventAdapter() {
+				@Override
+				public void mouseClicked(MouseEvent e) {
+					// 判断当前底座是否已经被占用
+					if (StringUtils.isEmpty(combineMap.get(def.getProxy().getUuid()))) {
+						TypicalCaseState caseState = stateManager.getState(TypicalCaseState.class);
+						caseState.putDownOnBase(def);
+						super.mouseClicked(e);
+					}
+				}
+			});
+		}
 
 //		最后将元器件加入列表中
 		compList.add(def);
@@ -563,8 +582,16 @@ public class CircuitState extends BaseState {
 			URL cfgUrl = SpringUtil.getBean(HTTPUtils.class).getUrl(elecComp.getCfgPath());
 			ElecCompDef def = JaxbUtil.converyToJavaBean(cfgUrl, ElecCompDef.class);
 			def.setProxy(proxyComp);
-//			加入电路板中
-			attachToCircuit(compMdl, def);
+			def.setElecComp(elecComp);
+			if (ElecComp.COMBINE_TOP == elecComp.getCombine()) {
+				// 获得底座，底座的排序一定在元器件之前
+				Map<String, ElecCompDef> compMap = compList.stream().collect(Collectors.toMap(x -> x.getProxy().getUuid(), x -> x));
+				ElecCompDef baseDef = compMap.get(proxyComp.getBaseUuid());
+				attachToBase(compMdl, def, baseDef);
+			} else {
+				// 加入电路板中
+				attachToCircuit(compMdl, def);
+			}
 		});
 	}
 
@@ -672,6 +699,13 @@ public class CircuitState extends BaseState {
 				return false;
 			}
 		}
+		if (ElecComp.COMBINE_BUTTOM == elecCompDef.getElecComp().getCombine()) {
+			for (Stitch stitch : elecCompDef.getStitchList()) {
+				if (stitch.getContacted() != null) {
+					return false;
+				}
+			}
+		}
 		detachElecComp(elecCompDef);
 
 		return true;
@@ -682,9 +716,44 @@ public class CircuitState extends BaseState {
 //		1、移除Control
 		elecCompMdl.removeControl(TagNameControl.class);
 // 		2、删除模型
-		rootCompNode.detachChild(elecCompMdl);
+		elecCompMdl.removeFromParent();
 //		3、解绑监听事件
 		unbindElecCompEvent(elecCompDef);
+//		4、解除组合绑定
+		if (ElecComp.COMBINE_TOP == elecCompDef.getElecComp().getCombine()) {
+			elecCompDef.getStitchList().forEach(s -> {
+				s.getContacted().setContacted(null);
+				s.setContacted(null);
+			});
+			combineMap.remove(elecCompDef.getProxy().getBaseUuid());
+			elecCompDef.getProxy().setBaseUuid(null);
+		}
+	}
+
+	public void attachToBase(Spatial holding, ElecCompDef elecCompDef, ElecCompDef baseDef) {
+//		FIXME 加入底座指定位置
+		Node parent = baseDef.getSpatial();
+		holding.scale(0.04f);
+		holding.setLocalTranslation(0, 0, 0);
+		parent.attachChild(holding);
+
+//		2、绑定模型对象
+		elecCompDef.bindModel((Node) holding);
+
+//		3、添加事件
+		bindElecCompEvent(elecCompDef);
+
+//		4、连接元器件与底座对应连接头
+		Map<String, Terminal> bases = baseDef.getTerminalMap();
+		elecCompDef.getStitchList().forEach(s -> {
+			Terminal terminal = bases.get(s.getId());
+			s.setContacted(terminal);
+			terminal.setContacted(s);
+		});
+//		5、绑定底座对象UUID
+		String baseUuid = baseDef.getProxy().getUuid();
+		elecCompDef.getProxy().setBaseUuid(baseUuid);
+		combineMap.put(baseUuid, elecCompDef.getProxy().getUuid());
 	}
 
 	private void attachToCircuit(Geometry wireMdl, Wire wire) {

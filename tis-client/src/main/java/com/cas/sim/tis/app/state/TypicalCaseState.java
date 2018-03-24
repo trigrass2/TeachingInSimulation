@@ -1,5 +1,7 @@
 package com.cas.sim.tis.app.state;
 
+import java.util.Set;
+
 import org.jetbrains.annotations.Nullable;
 
 import com.cas.circuit.vo.Archive;
@@ -7,10 +9,14 @@ import com.cas.circuit.vo.ElecCompDef;
 import com.cas.sim.tis.action.ArchiveAction;
 import com.cas.sim.tis.action.ElecCompAction;
 import com.cas.sim.tis.anno.JmeThread;
+import com.cas.sim.tis.app.event.MouseEvent;
+import com.cas.sim.tis.app.event.MouseEventAdapter;
 import com.cas.sim.tis.app.listener.TypicalCaseListener;
 import com.cas.sim.tis.entity.ElecComp;
 import com.cas.sim.tis.entity.TypicalCase;
+import com.cas.sim.tis.util.AlertUtil;
 import com.cas.sim.tis.util.JmeUtil;
+import com.cas.sim.tis.util.MsgUtil;
 import com.cas.sim.tis.util.SpringUtil;
 import com.cas.sim.tis.view.control.IContent;
 import com.cas.sim.tis.view.control.imp.jme.TypicalCase3D;
@@ -25,6 +31,7 @@ import com.jme3.scene.Spatial;
 import com.jme3.util.mikktspace.MikktspaceTangentGenerator;
 
 import javafx.application.Platform;
+import javafx.scene.control.Alert.AlertType;
 
 public class TypicalCaseState extends BaseState {
 	private static final String TYPICAL_CASE_ROOT_NODE = "TYPICAL_CASE_ROOT_NODE";
@@ -37,7 +44,6 @@ public class TypicalCaseState extends BaseState {
 	private PointLight pointLight;
 
 	private SceneCameraState cameraState;
-	private boolean moved_before_putdown;
 
 	private CircuitState circuitState;
 	private TypicalCaseListener listener;
@@ -124,10 +130,34 @@ public class TypicalCaseState extends BaseState {
 	private void bindEvents() {
 		listener = new TypicalCaseListener(this);
 		listener.registerWithInput(inputManager);
+
+		addListener(desktop, new MouseEventAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if (elecComp == null) {
+					return;
+				}
+//				moved_before_putdown = false;
+				putDown();
+				super.mouseClicked(e);
+			}
+
+			@Override
+			public void mouseRightClicked(MouseEvent e) {
+				if (holding == null) {
+					return;
+				}
+				holding.removeFromParent();
+				holding = null;
+				elecComp = null;
+				cameraState.setZoomEnable(true);
+				super.mouseRightClicked(e);
+			}
+		});
 	}
 
 	public void mouseMoved() {
-		moved_before_putdown = true;
+//		moved_before_putdown = true;
 		if (holding == null) {
 			return;
 		}
@@ -138,29 +168,6 @@ public class TypicalCaseState extends BaseState {
 			return;
 		}
 		holding.setLocalTranslation(contactPoint);
-	}
-
-	public void mouseClicked(boolean pressed) {
-		if (elecComp == null) {
-			return;
-		}
-		if (pressed) {
-			moved_before_putdown = false;
-		} else if (!moved_before_putdown) {
-			putDown();
-		}
-	}
-
-	public void mouseRightClicked(boolean pressed) {
-		if (holding == null) {
-			return;
-		}
-		if (pressed) {
-			holding.removeFromParent();
-			holding = null;
-			elecComp = null;
-			cameraState.setZoomEnable(true);
-		}
 	}
 
 	public void mouseWheel(boolean positive) {
@@ -206,19 +213,65 @@ public class TypicalCaseState extends BaseState {
 //		取消Holding的模型对鼠标透明
 		JmeUtil.setMouseVisible(holding, true);
 		try {
-//			1、获取相应元器件
-			ElecCompDef elecCompDef = SpringUtil.getBean(ElecCompAction.class).parse(elecComp.getCfgPath());
-//			2、将元器件模型与元器件对象一起加入电路板中
-			circuitState.attachToCircuit(holding, elecCompDef);
+			if (ElecComp.COMBINE_TOP == elecComp.getCombine()) {
+//				需要底座的元器件不可直接加入电路板
+				Platform.runLater(() -> {
+					AlertUtil.showAlert(AlertType.WARNING, MsgUtil.getMessage("alert.warning.base.need"));
+				});
+				holding.removeFromParent();
+			} else {
+//				1、获取相应元器件
+				ElecCompDef elecCompDef = SpringUtil.getBean(ElecCompAction.class).parse(elecComp.getCfgPath());
+				elecCompDef.setElecComp(elecComp);
+//				2、将元器件模型与元器件对象一起加入电路板中
+				circuitState.attachToCircuit(holding, elecCompDef);
+			}
 		} catch (Exception e) {
 //			删除出错的模型
 			holding.removeFromParent();
-
 			LOG.error("初始化元器件{}时出现了一个错误:{}", elecComp.getModel(), e.getMessage());
+			e.printStackTrace();
 		} finally {
 			holding = null;
 			elecComp = null;
 			cameraState.setZoomEnable(true);
+		}
+	}
+
+	/**
+	 * 将元器件放置在指定底座上
+	 * @param baseDef 指定底座
+	 */
+	public void putDownOnBase(ElecCompDef baseDef) {
+		if (elecComp == null || ElecComp.COMBINE_TOP != elecComp.getCombine()) {
+			return;
+		}
+		try {
+//			取消Holding的模型对鼠标透明
+			JmeUtil.setMouseVisible(holding, true);
+//			1、获取相应元器件
+			ElecCompDef elecCompDef = SpringUtil.getBean(ElecCompAction.class).parse(elecComp.getCfgPath());
+			elecCompDef.setElecComp(elecComp);
+//			2、判断元器件与底座是否匹配
+			Set<String> stitchs = elecCompDef.getStitchMap().keySet();
+			Set<String> bases = baseDef.getTerminalMap().keySet();
+			if (bases.containsAll(stitchs)) {
+//				3、将元器件模型与元器件对象一起加入电路板中
+				circuitState.attachToBase(holding, elecCompDef, baseDef);
+				holding = null;
+				elecComp = null;
+				cameraState.setZoomEnable(true);
+			} else {
+				Platform.runLater(() -> {
+					AlertUtil.showAlert(AlertType.WARNING, MsgUtil.getMessage("alert.warning.base.unmatch"));
+				});
+				holding.removeFromParent();
+			}
+		} catch (Exception e) {
+//			删除出错的模型
+			holding.removeFromParent();
+			LOG.error("初始化元器件{}时出现了一个错误:{}", elecComp.getModel(), e.getMessage());
+			e.printStackTrace();
 		}
 	}
 

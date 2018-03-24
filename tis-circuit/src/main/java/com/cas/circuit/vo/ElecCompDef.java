@@ -27,6 +27,7 @@ import com.cas.circuit.util.MesureResult;
 import com.cas.circuit.util.R;
 import com.cas.circuit.vo.archive.ElecCompProxy;
 import com.cas.circuit.xml.adapter.CompLogicAdapter;
+import com.cas.sim.tis.entity.ElecComp;
 import com.jme3.scene.Node;
 import com.sun.tools.internal.xjc.runtime.ZeroOneBooleanAdapter;
 
@@ -63,6 +64,8 @@ public class ElecCompDef {// extends BaseVO<ElecCompDefPO> {
 	private Boolean isCable;
 	@XmlElement(name = "Terminal")
 	private List<Terminal> terminalList = new ArrayList<>();
+	@XmlElement(name = "Stitch")
+	private List<Stitch> stitchList = new ArrayList<>();
 	@XmlElement(name = "Jack")
 	private List<Jack> jackList = new ArrayList<>();
 	@XmlElement(name = "Magnetism")
@@ -82,6 +85,9 @@ public class ElecCompDef {// extends BaseVO<ElecCompDefPO> {
 //	存放所有的连接头
 	private Map<String, Terminal> terminalMap = new LinkedHashMap<String, Terminal>();
 //	Key: id
+//	存放所有元器件组合时用到的针脚
+	private Map<String, Stitch> stitchMap = new LinkedHashMap<String, Stitch>();
+//	Key: id
 //	存放所有连接头及插孔中的针脚
 	private Map<String, Terminal> termAndStich = new LinkedHashMap<String, Terminal>();
 
@@ -98,6 +104,8 @@ public class ElecCompDef {// extends BaseVO<ElecCompDefPO> {
 
 	private ElecCompProxy proxy;
 
+	private ElecComp elecComp;
+
 	public ElecCompDef() {
 	}
 
@@ -107,9 +115,11 @@ public class ElecCompDef {// extends BaseVO<ElecCompDefPO> {
 	public void afterUnmarshal(Unmarshaller u, Object parent) {
 		jackMap = jackList.stream().collect(Collectors.toMap(Jack::getId, data -> data));
 		terminalMap = terminalList.stream().collect(Collectors.toMap(Terminal::getId, data -> data));
+		stitchMap = stitchList.stream().collect(Collectors.toMap(Stitch::getId, data -> data));
 		resisStatesMap = resisStateList.stream().collect(Collectors.toMap(ResisState::getId, data -> data));
 //
 		termAndStich.putAll(terminalMap);
+		termAndStich.putAll(stitchMap);
 		jackList.stream().forEach(jack -> termAndStich.putAll(jack.getStitchList().stream().collect(Collectors.toMap(Terminal::getId, Function.identity(), (key1, key2) -> key2, HashMap::new))));
 
 		magnetismList.stream().forEach(mag -> {
@@ -168,6 +178,7 @@ public class ElecCompDef {// extends BaseVO<ElecCompDefPO> {
 		jackList.forEach(jack -> jack.setSpatial(elecCompMdl.getChild(jack.getMdlName())));
 //		遍历元气件中所有连接头
 		terminalList.forEach(t -> t.setSpatial(elecCompMdl.getChild(t.getMdlName())));
+		stitchList.forEach(s -> s.setSpatial(elecCompMdl.getChild(s.getMdlName())));
 //		TODO 加入元气件按钮开关...
 		magnetismList.forEach(m -> {
 			m.getControlIOList().forEach(c -> c.setSpatial(elecCompMdl.getChild(c.getMdlName())));
@@ -332,6 +343,10 @@ public class ElecCompDef {// extends BaseVO<ElecCompDefPO> {
 		return terminalMap;
 	}
 
+	public Map<String, Stitch> getStitchMap() {
+		return stitchMap;
+	}
+	
 	/**
 	 * @param key Terminal::getId
 	 */
@@ -364,6 +379,10 @@ public class ElecCompDef {// extends BaseVO<ElecCompDefPO> {
 
 	public List<Terminal> getTerminalList() {
 		return terminalList;
+	}
+
+	public List<Stitch> getStitchList() {
+		return stitchList;
 	}
 
 	public List<Jack> getJackList() {
@@ -444,6 +463,14 @@ public class ElecCompDef {// extends BaseVO<ElecCompDefPO> {
 
 	public void setProxy(ElecCompProxy proxy) {
 		this.proxy = proxy;
+	}
+
+	public void setElecComp(ElecComp elecComp) {
+		this.elecComp = elecComp;
+	}
+
+	public ElecComp getElecComp() {
+		return elecComp;
 	}
 
 	@Nonnull
