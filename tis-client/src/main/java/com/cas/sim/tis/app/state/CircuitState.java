@@ -700,10 +700,8 @@ public class CircuitState extends BaseState {
 			}
 		}
 		if (ElecComp.COMBINE_BUTTOM == elecCompDef.getElecComp().getCombine()) {
-			for (Stitch stitch : elecCompDef.getStitchList()) {
-				if (stitch.getContacted() != null) {
-					return false;
-				}
+			if(!StringUtils.isEmpty(combineMap.get(elecCompDef.getProxy().getUuid()))){
+				return false;
 			}
 		}
 		detachElecComp(elecCompDef);
