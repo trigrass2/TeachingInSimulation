@@ -34,9 +34,21 @@ import com.jme3.scene.Spatial;
 public class ControlIO extends SwitchCtrl {
 	private static final Logger LOG = LoggerFactory.getLogger(Terminal.class);
 
+	/**
+	 * 揿钮分/揿钮合
+	 */
 	public static final String INTERACT_UNIDIR = "unidir";
+	/**
+	 * 按下不弹起按钮或上下拨动的开关
+	 */
 	public static final String INTERACT_CLICK = "click";
+	/**
+	 * 按下弹起型按钮
+	 */
 	public static final String INTERACT_PRESS = "press";
+	/**
+	 * 拨转型旋钮
+	 */
 	public static final String INTERACT_ROTATE = "rotate";
 
 	@XmlAttribute
