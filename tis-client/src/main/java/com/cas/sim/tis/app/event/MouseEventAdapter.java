@@ -32,10 +32,15 @@ public abstract class MouseEventAdapter implements MouseEventListener {
 	}
 
 	@Override
-	public void mouseEntered(MouseEvent e) {
+	public void mouseWheel(MouseEvent e) {
+		
 	}
-
-	@Override
-	public void mouseExited(MouseEvent e) {
-	}
+	
+//	@Override
+//	public void mouseEntered(MouseEvent e) {
+//	}
+//
+//	@Override
+//	public void mouseExited(MouseEvent e) {
+//	}
 }

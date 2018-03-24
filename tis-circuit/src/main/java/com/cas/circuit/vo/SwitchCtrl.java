@@ -5,7 +5,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import com.cas.circuit.consts.IOType;
 import com.cas.circuit.util.R;
 import com.cas.util.Util;
 

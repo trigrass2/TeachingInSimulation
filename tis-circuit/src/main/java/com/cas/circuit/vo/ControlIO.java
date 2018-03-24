@@ -3,6 +3,7 @@ package com.cas.circuit.vo;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -13,14 +14,18 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.StringUtils;
 
 import com.cas.circuit.CfgConst;
 import com.cas.circuit.consts.IOType;
+import com.cas.circuit.control.MoveCtrl;
+import com.cas.circuit.control.RotateCtrl;
+import com.cas.circuit.xml.adapter.BooleanIntAdapter;
 import com.cas.circuit.xml.adapter.FloatArrayAdapter;
 import com.cas.circuit.xml.adapter.StringArrayAdapter;
+import com.cas.circuit.xml.adapter.UnsignedAxisAdapter;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Spatial;
-import com.sun.tools.internal.xjc.runtime.ZeroOneBooleanAdapter;
 
 /**
  * 包括:按钮(button) 和 旋钮(switch)
@@ -55,14 +60,15 @@ public class ControlIO extends SwitchCtrl {
 	@XmlJavaTypeAdapter(FloatArrayAdapter.class)
 	private float[] motionParams;
 	@XmlAttribute
-	private String axis;
+	@XmlJavaTypeAdapter(UnsignedAxisAdapter.class)
+	private Vector3f axis;
 	@XmlAttribute
 	private float speed = 4;
 	@XmlAttribute
-	@XmlJavaTypeAdapter(ZeroOneBooleanAdapter.class)
-	private Boolean smooth;
+	@XmlJavaTypeAdapter(BooleanIntAdapter.class)
+	private Boolean smooth = Boolean.FALSE;
 	@XmlElement(name = "Param")
-	@XmlElementWrapper(name="Params")
+	@XmlElementWrapper(name = "Params")
 	private List<Param> params = new ArrayList<>();
 
 	private Spatial spatial;
@@ -117,15 +123,13 @@ public class ControlIO extends SwitchCtrl {
 		switchStart(1 - switchIndex);
 	}
 
-//	FIXME
 	/**
 	 * 对ROTATE类型：index 0：向上滚， 1：向下滚. 对非ROTATE类型：index 0：弹起， 1：按下
 	 */
 	public void playMotion() {
 		if (CfgConst.BUTTON_MOTION_ROTATE.equals(motion)) {
-//			// 迅速动
-//			ModelMotionUtil.rotateModel(model, axis, motionParams[1 - motionIndex] - motionParams[motionIndex]);
-			switchEnd();
+//			迅速动
+			rotateModel(spatial, motionParams[1 - motionIndex] - motionParams[motionIndex], (v) -> switchEnd());
 		} else if (CfgConst.BUTTON_MOTION_MOVE.equals(motion)) {
 			if (smooth) {
 			} else if (motionIndex == 0) {// 如果是从
@@ -133,29 +137,7 @@ public class ControlIO extends SwitchCtrl {
 			} else {
 				spatial.setLocalTranslation(zeroIndexLocation);
 			}
-
-//			FIXME
-//			float dist = motionParams[1 - motionIndex] - motionParams[motionIndex];
-//			if (smooth) {
-//				ModelMotionUtil.moveModelSmooth(model, axis, dist, speed, new Runnable() {
-//					@Override
-//					public void run() {
-//						Pool.getCircuitPool().submit(new Runnable() {
-//							@Override
-//							public void run() {
-//								try {
-//									switchEnd();
-//								} catch (Exception e) {
-//									e.printStackTrace();
-//								}
-//							}
-//						});
-//					}
-//				}, null);
-//			} else {
-//				ModelMotionUtil.moveModel(model, axis, dist);
-			switchEnd();
-//			}
+			moveModel(spatial, motionParams[1 - motionIndex] - motionParams[motionIndex], (v) -> switchEnd());
 		}
 		motionIndex = 1 - motionIndex;
 	}
@@ -170,8 +152,48 @@ public class ControlIO extends SwitchCtrl {
 	public Spatial getSpatial() {
 		return spatial;
 	}
-	
+
 	public String getName() {
 		return name;
+	}
+
+	/**
+	 * 移动模型一定距离
+	 * @param model 模型名
+	 * @param deltaDist 距离
+	 * @param c 结束动作
+	 */
+	private void moveModel(final Spatial model, final float deltaDist, final Consumer<Void> c) {
+		if (StringUtils.isEmpty(model)) {
+			LOG.error("移动目标模型为空！");
+			return;
+		}
+		MoveCtrl control = model.getControl(MoveCtrl.class);
+		if (control == null) {
+			model.addControl(control = new MoveCtrl(speed, smooth, axis));
+		}
+		control.setDistance(deltaDist);
+		control.setExecutor(c);
+		control.setEnabled(true);
+	}
+
+	/**
+	 * 旋转模型一定角度
+	 * @param model 模型名
+	 * @param deltaDeg 角度
+	 * @param c 结束动作
+	 */
+	private void rotateModel(final Spatial model, final float deltaDeg, final Consumer<Void> c) {
+		if (StringUtils.isEmpty(model)) {
+			LOG.error("旋转目标模型为空！");
+			return;
+		}
+		RotateCtrl control = model.getControl(RotateCtrl.class);
+		if (control == null) {
+			model.addControl(control = new RotateCtrl(speed, smooth, axis));
+		}
+		control.setRad(deltaDeg);
+		control.setExecutor(c);
+		control.setEnabled(true);
 	}
 }

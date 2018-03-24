@@ -22,15 +22,15 @@ public interface MouseEventListener extends Savable {
 	 */
 	public void mouseRightClicked(MouseEvent e);
 
-	/**
-	 * Invoked when the mouse enters a Node.
-	 */
-	public void mouseEntered(MouseEvent e);
-
-	/**
-	 * Invoked when the mouse exits a Node.
-	 */
-	public void mouseExited(MouseEvent e);
+//	/**
+//	 * Invoked when the mouse enters a Node.
+//	 */
+//	public void mouseEntered(MouseEvent e);
+//
+//	/**
+//	 * Invoked when the mouse exits a Node.
+//	 */
+//	public void mouseExited(MouseEvent e);
 
 //	/**
 //	 * Invoked when the mouse move a Node.
@@ -42,10 +42,10 @@ public interface MouseEventListener extends Savable {
 //	 */
 //	public void mouseDrag(MouseEvent e);
 //
-//	/**
-//	 * Invoked when the mouse wheel a Node.
-//	 */
-//	public void mouseWheel(MouseEvent e);
+	/**
+	 * Invoked when the mouse wheel a Node.
+	 */
+	public void mouseWheel(MouseEvent e);
 //
 //	/**
 //	 * @param e

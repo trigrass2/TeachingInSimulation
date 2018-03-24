@@ -16,10 +16,11 @@ import javax.annotation.Nonnull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.util.StringUtils;
 
+import com.cas.circuit.CfgConst;
 import com.cas.circuit.vo.Archive;
+import com.cas.circuit.vo.ControlIO;
 import com.cas.circuit.vo.ElecCompDef;
 import com.cas.circuit.vo.Jack;
-import com.cas.circuit.vo.Stitch;
 import com.cas.circuit.vo.Terminal;
 import com.cas.circuit.vo.Wire;
 import com.cas.circuit.vo.archive.ElecCompProxy;
@@ -450,12 +451,42 @@ public class CircuitState extends BaseState {
 		}));
 		// 3、按钮监听事件
 		def.getMagnetismList().forEach(m -> {
-			m.getControlIOList().forEach(c -> addListener(c.getSpatial(), new MouseEventAdapter() {
-				@Override
-				public void mouseClicked(MouseEvent e) {
-					System.out.println(c.getName());
+			for (ControlIO c : m.getControlIOList()) {
+				if (c.getType().indexOf(CfgConst.SWITCH_CTRL_INPUT) == -1) {
+					continue;
 				}
-			}));
+				if (ControlIO.INTERACT_ROTATE.equals(c.getInteract())) {
+					addListener(c.getSpatial(), new MouseEventAdapter() {
+						@Override
+						public void mouseWheel(MouseEvent e) {
+							c.switchStateChanged(e.getWheel());
+							c.playMotion();
+						}
+					});
+				} else if (ControlIO.INTERACT_PRESS.equals(c.getInteract())) {
+					addListener(c.getSpatial(), new MouseEventAdapter() {
+						@Override
+						public void mousePressed(MouseEvent e) {
+							c.switchStateChanged(null);
+							c.playMotion();
+						}
+
+						@Override
+						public void mouseReleased(MouseEvent e) {
+							c.switchStateChanged(null);
+							c.playMotion();
+						}
+					});
+				} else {
+					addListener(c.getSpatial(), new MouseEventAdapter() {
+						@Override
+						public void mouseClicked(MouseEvent e) {
+							c.switchStateChanged(null);
+							c.playMotion();
+						}
+					});
+				}
+			}
 		});
 		// 4、元器件本身的监听事件
 		addListener(def.getSpatial(), new MouseEventAdapter() {
@@ -484,9 +515,6 @@ public class CircuitState extends BaseState {
 				}
 			});
 		}
-
-//		最后将元器件加入列表中
-		compList.add(def);
 	}
 
 	private void unbindElecCompEvent(ElecCompDef elecCompDef) {
@@ -499,6 +527,8 @@ public class CircuitState extends BaseState {
 		});
 
 		mouseEventState.removeCandidate(elecCompDef.getSpatial());
+
+		compList.remove(elecCompDef);
 	}
 
 	private void bindWireEvent(Geometry wireMdl, final Wire wire) {
@@ -518,7 +548,6 @@ public class CircuitState extends BaseState {
 						mdl.addControl(control);
 					}
 				}
-				System.out.println();
 				super.mouseClicked(e);
 			}
 
@@ -534,7 +563,6 @@ public class CircuitState extends BaseState {
 				super.mouseRightClicked(e);
 			}
 		});
-		wireList.add(wire);
 	}
 
 	private void unbindWireEvent(Wire wire) {
@@ -667,6 +695,8 @@ public class CircuitState extends BaseState {
 			detachElecComp(elecCompDef);
 		}
 		compList.clear();
+		wireList.clear();
+		combineMap.clear();
 //		除了desktop，其余模型全部清除
 		root.detachAllChildren();
 		if (desktop != null) {
@@ -685,6 +715,9 @@ public class CircuitState extends BaseState {
 
 //		3、添加事件
 		bindElecCompEvent(elecCompDef);
+
+//		4、最后将元器件加入列表中
+		compList.add(elecCompDef);
 	}
 
 	public boolean detachFromCircuit(ElecCompDef elecCompDef) {
@@ -700,7 +733,7 @@ public class CircuitState extends BaseState {
 			}
 		}
 		if (ElecComp.COMBINE_BUTTOM == elecCompDef.getElecComp().getCombine()) {
-			if(!StringUtils.isEmpty(combineMap.get(elecCompDef.getProxy().getUuid()))){
+			if (!StringUtils.isEmpty(combineMap.get(elecCompDef.getProxy().getUuid()))) {
 				return false;
 			}
 		}
@@ -726,6 +759,8 @@ public class CircuitState extends BaseState {
 			combineMap.remove(elecCompDef.getProxy().getBaseUuid());
 			elecCompDef.getProxy().setBaseUuid(null);
 		}
+//		5、移除元器件加入列表中
+		compList.remove(elecCompDef);
 	}
 
 	public void attachToBase(Spatial holding, ElecCompDef elecCompDef, ElecCompDef baseDef) {
@@ -752,6 +787,8 @@ public class CircuitState extends BaseState {
 		String baseUuid = baseDef.getProxy().getUuid();
 		elecCompDef.getProxy().setBaseUuid(baseUuid);
 		combineMap.put(baseUuid, elecCompDef.getProxy().getUuid());
+//		6、最后将元器件加入列表中
+		compList.add(elecCompDef);
 	}
 
 	private void attachToCircuit(Geometry wireMdl, Wire wire) {
@@ -762,6 +799,8 @@ public class CircuitState extends BaseState {
 		wire.setSpatial(wireMdl);
 //		3、绑定监听事件
 		bindWireEvent(wireMdl, wire);
+//		4、将导线加入列表中
+		wireList.add(wire);
 	}
 
 	public boolean detachFromCircuit(Wire wire) {
@@ -783,6 +822,8 @@ public class CircuitState extends BaseState {
 		rootWireNode.detachChild(wireMdl);
 //		3、解绑监听事件
 		unbindWireEvent(wire);
+//		4、移除导线
+		wireList.remove(wire);
 	}
 
 	public void setTagNameVisible(boolean tagVisible) {

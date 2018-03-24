@@ -35,6 +35,8 @@ public class MouseEventState extends BaseState {
 	protected static final float CLICK_MAX_AXIS_DISTANCE = 0.003f;
 	protected static final String MOUSE_PRIMARY_BUTTON = "MOUSE_PRIMARY_BUTTON";
 	protected static final String MOUSE_SECOND_BUTTON = "MOUSE_SECOND_BUTTON";
+	protected static final String MOUSE_WHEEL_UP = "MOUSE_WHEEL_UP";
+	protected static final String MOUSE_WHEEL_DOWN = "MOUSE_WHEEL_DOWN";
 	protected static final String MOUSE_AXIS_LEFT = "MOUSE_AXIS_LEFT";
 	protected static final String MOUSE_AXIS_RIGHT = "MOUSE_AXIS_RIGHT";
 	protected static final String MOUSE_AXIS_UP = "MOUSE_AXIS_UP";
@@ -96,30 +98,47 @@ public class MouseEventState extends BaseState {
 		addListener(new ActionListener() {
 			@Override
 			public void onAction(String name, boolean isPressed, float tpf) {
-			mouseButtonPressed = isPressed;
+				mouseButtonPressed = isPressed;
 
-			if (isPressed) {
-				pickModel();
-				axis_distance = 0;
+				if (isPressed) {
+					pickModel();
+					axis_distance = 0;
 //				记录当前鼠标按下时，所选中模型
-				pressed = picked;
-			} else {
-				pickModel();
+					pressed = picked;
+				} else {
+					pickModel();
 //				鼠标松开
-				Spatial oldPressed = pressed;
-				pressed = null;
+					Spatial oldPressed = pressed;
+					pressed = null;
 //				如果两次选择的不一样，则选择无效
-				if (picked == null || oldPressed != picked) {
-					return;
+					if (picked == null || oldPressed != picked) {
+						return;
+					}
+					if (Math.abs(axis_distance) < CLICK_MAX_AXIS_DISTANCE) {
+						e.setAction(MouseAction.MOUSE_RIGHT_CLICK);
+						notifyEventTrigged(e);
+					}
 				}
-				if (Math.abs(axis_distance) < CLICK_MAX_AXIS_DISTANCE) {
-					e.setAction(MouseAction.MOUSE_RIGHT_CLICK);
+			}
+		}, MOUSE_SECOND_BUTTON);
+		addMapping(MOUSE_WHEEL_UP, new MouseAxisTrigger(MouseInput.AXIS_WHEEL, false));
+		addMapping(MOUSE_WHEEL_DOWN, new MouseAxisTrigger(MouseInput.AXIS_WHEEL, true));
+		addListener(new AnalogListener() {
+
+			@Override
+			public void onAnalog(String name, float value, float tpf) {
+				pickModel();
+				if (MOUSE_WHEEL_UP.equals(name)) {
+					e.setWheel(MouseEvent.WHEEL_UP);
+					e.setAction(MouseAction.MOUSE_WHEEL);
+					notifyEventTrigged(e);
+				} else if (MOUSE_WHEEL_DOWN.equals(name)) {
+					e.setWheel(MouseEvent.WHEEL_DOWN);
+					e.setAction(MouseAction.MOUSE_WHEEL);
 					notifyEventTrigged(e);
 				}
 			}
-		}
-	}, MOUSE_SECOND_BUTTON);
-
+		}, MOUSE_WHEEL_UP, MOUSE_WHEEL_DOWN);
 		addMapping(MOUSE_AXIS_LEFT, new MouseAxisTrigger(MouseInput.AXIS_X, true));
 		addMapping(MOUSE_AXIS_RIGHT, new MouseAxisTrigger(MouseInput.AXIS_X, false));
 		addMapping(MOUSE_AXIS_UP, new MouseAxisTrigger(MouseInput.AXIS_Y, false));
@@ -310,6 +329,9 @@ public class MouseEventState extends BaseState {
 					break;
 				case MOUSE_RIGHT_CLICK:
 					listener.mouseRightClicked(event);
+					break;
+				case MOUSE_WHEEL:
+					listener.mouseWheel(event);
 					break;
 				default:
 					break;
