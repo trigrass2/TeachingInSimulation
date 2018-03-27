@@ -527,8 +527,6 @@ public class CircuitState extends BaseState {
 		});
 
 		mouseEventState.removeCandidate(elecCompDef.getSpatial());
-
-		compList.remove(elecCompDef);
 	}
 
 	private void bindWireEvent(Geometry wireMdl, final Wire wire) {
@@ -695,6 +693,9 @@ public class CircuitState extends BaseState {
 			detachElecComp(elecCompDef);
 		}
 		compList.clear();
+		for (Wire wire : wireList) {
+			detachWire(wire);
+		}
 		wireList.clear();
 		combineMap.clear();
 //		除了desktop，其余模型全部清除
@@ -737,8 +738,10 @@ public class CircuitState extends BaseState {
 				return false;
 			}
 		}
+//		1、移除元器件模型
 		detachElecComp(elecCompDef);
-
+//		2、从元器件列表中移除
+		compList.remove(elecCompDef);
 		return true;
 	}
 
@@ -759,8 +762,6 @@ public class CircuitState extends BaseState {
 			combineMap.remove(elecCompDef.getProxy().getBaseUuid());
 			elecCompDef.getProxy().setBaseUuid(null);
 		}
-//		5、移除元器件加入列表中
-		compList.remove(elecCompDef);
 	}
 
 	public void attachToBase(Spatial holding, ElecCompDef elecCompDef, ElecCompDef baseDef) {
@@ -811,6 +812,8 @@ public class CircuitState extends BaseState {
 			return false;
 		}
 		detachWire(wire);
+		// 移除导线
+		wireList.remove(wire);
 		return true;
 	}
 
@@ -822,8 +825,6 @@ public class CircuitState extends BaseState {
 		rootWireNode.detachChild(wireMdl);
 //		3、解绑监听事件
 		unbindWireEvent(wire);
-//		4、移除导线
-		wireList.remove(wire);
 	}
 
 	public void setTagNameVisible(boolean tagVisible) {
