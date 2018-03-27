@@ -14,13 +14,11 @@ import org.jodconverter.office.OfficeManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 
 import com.cas.sim.tis.consts.ResourceConsts;
 
 @Component
-@PropertySource("file:cfg.properties")
 public class OfficeConverter {
 	private static final Logger LOG = LoggerFactory.getLogger(OfficeConverter.class);
 

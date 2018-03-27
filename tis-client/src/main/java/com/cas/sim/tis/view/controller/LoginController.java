@@ -64,11 +64,11 @@ public class LoginController implements Initializable {
 //		
 		Properties prop = new Properties();
 		try {
-			prop.load(new FileInputStream("cfg.properties"));
+			prop.load(new FileInputStream("application.properties"));
 		} catch (FileNotFoundException e) {
-			LOG.warn("未找到配置文件cfg.properties");
+			LOG.warn("未找到配置文件application.properties");
 		} catch (IOException e) {
-			LOG.warn("文件解析失败cfg.properties");
+			LOG.warn("文件解析失败application.properties");
 		}
 		userId.setText(prop.getProperty("login.account", ""));
 	}
@@ -90,11 +90,11 @@ public class LoginController implements Initializable {
 		int port = 0;
 		Properties prop = new Properties();
 		try {
-			prop.load(new FileInputStream("cfg.properties"));
+			prop.load(new FileInputStream("application.properties"));
 			address = prop.getProperty("server.base.address");
 			port = Integer.parseInt(prop.getProperty("server.base.port"));
 		} catch (Exception e) {
-			LOG.error("文件cfg.properties读取失败", e);
+			LOG.error("文件application.properties读取失败", e);
 			throw new RuntimeException(e);
 		}
 

@@ -30,9 +30,9 @@ public class LoginMessageHandler implements ClientHandler<LoginMessage> {
 			Session.set(Session.KEY_LOGIN_ROLE, m.getUserType());
 			Session.set(Session.KEY_LOGIN_ACCOUNT, m.getUserCode());
 //			2、记录当前登录用户
-			properties.load(new FileInputStream("cfg.properties"));
+			properties.load(new FileInputStream("application.properties"));
 			properties.setProperty("login.account", m.getUserCode());
-			FileOutputStream fos = new FileOutputStream("cfg.properties");
+			FileOutputStream fos = new FileOutputStream("application.properties");
 			properties.store(fos, null);
 			fos.close();
 

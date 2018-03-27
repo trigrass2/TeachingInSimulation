@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.remoting.rmi.RmiProxyFactoryBean;
 
 import com.cas.sim.tis.services.BrokenCaseService;
@@ -29,7 +28,6 @@ import com.cas.sim.tis.services.TypicalCaseService;
 import com.cas.sim.tis.services.UserService;
 
 @Configuration
-@PropertySource("file:cfg.properties")
 public class RMIConfig {
 
 	private static final Logger LOG = LoggerFactory.getLogger(RMIConfig.class);

@@ -69,10 +69,10 @@ public class NetworkController implements Initializable {
 	public void initialize(URL location, ResourceBundle resources) {
 		// 读取服务器信息配置
 		try {
-			prop.load(new FileInputStream("cfg.properties"));
+			prop.load(new FileInputStream("application.properties"));
 		} catch (IOException e) {
 			e.printStackTrace();
-			LOG.error("文件cfg.properties读取失败", e);
+			LOG.error("文件application.properties读取失败", e);
 		}
 
 		baseIP.setText(prop.getProperty("server.base.address", "127.0.0.1"));
@@ -95,7 +95,7 @@ public class NetworkController implements Initializable {
 
 		LOG.info("修改与服务器的连接配置，修改后的主服务器地址：{}， 端口：{}；FTP服务器地址：{}，端口：{}；HTTPD服务器地址：{}，端口：{}", baseIP.getText(), basePort.getText(), ftpIP.getText(), ftpPort.getText(), httpdIP.getText(), httpdPort.getText());
 //		服务器信息保存
-		prop.store(new FileOutputStream("cfg.properties"), "");
+		prop.store(new FileOutputStream("application.properties"), "");
 		back();
 	}
 

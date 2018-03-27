@@ -4,14 +4,12 @@ import org.apache.commons.net.ftp.FTPClient;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
 
 import com.cas.sim.tis.util.FTPUtils;
 import com.cas.sim.tis.util.HTTPUtils;
 import com.cas.sim.tis.util.SocketTest;
 
 @Configuration
-@PropertySource("file:cfg.properties")
 public class ClientConfig {
 	@Value(value = "${server.ftp.address}")
 	private String ftpAddress;
