@@ -5,8 +5,6 @@ import java.text.DecimalFormat;
 import java.util.List;
 import java.util.UUID;
 
-import javax.swing.filechooser.FileSystemView;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,6 +43,8 @@ public class ResourceUploadDialog extends DialogPane<Integer> {
 	private File uploadFile;
 
 	private ResourceType type;
+
+	private FileChooser chooser;
 
 	public ResourceUploadDialog() {
 		VBox box = new VBox(10);
@@ -110,8 +110,7 @@ public class ResourceUploadDialog extends DialogPane<Integer> {
 
 	private void browse() {
 		// 打开文件管理器
-		FileChooser chooser = new FileChooser();
-		chooser.setInitialDirectory(FileSystemView.getFileSystemView().getHomeDirectory());
+		chooser = new FileChooser();
 		if (type == null) {
 			chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter(MsgUtil.getMessage("resource.all"), "*.doc", "*.docx", "*.xls", "*.xlsx", "*.ppt", "*.pptx", "*.pdf", "*.png", "*.jpg", "*.swf", "*.mp4", "*.flv", "*.wmv", "*.rmvb", "*.avi", "*.txt"));
 			chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter(MsgUtil.getMessage("resource.word"), ResourceType.WORD.getSuffixs()));
@@ -132,6 +131,7 @@ public class ResourceUploadDialog extends DialogPane<Integer> {
 		this.filePath.setText(target.getAbsolutePath());
 		this.size.setText(getFileSize(target));
 		this.uploadFile = target;
+		this.chooser.setInitialDirectory(target.getParentFile());
 	}
 
 	private void upload(ActionEvent event) {

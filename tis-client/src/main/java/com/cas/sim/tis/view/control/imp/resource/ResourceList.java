@@ -11,8 +11,6 @@ import java.util.ResourceBundle;
 import java.util.UUID;
 import java.util.function.Function;
 
-import javax.swing.filechooser.FileSystemView;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -183,6 +181,8 @@ public class ResourceList extends HBox implements IContent {
 	private ResourceMenuType type;
 
 	private ResourceAction action;
+	
+	private FileChooser chooser;
 
 	public ResourceList(ResourceMenuType type, int creator) {
 		action = SpringUtil.getBean(ResourceAction.class);
@@ -431,17 +431,18 @@ public class ResourceList extends HBox implements IContent {
 	@FXML
 	private void browse() {
 		// 打开文件管理器
-		FileChooser chooser = new FileChooser();
-		chooser.setInitialDirectory(FileSystemView.getFileSystemView().getHomeDirectory());
-		chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter(MsgUtil.getMessage("resource.all"), "*.doc", "*.docx", "*.xls", "*.xlsx", "*.ppt", "*.pptx", "*.pdf", "*.png", "*.jpg", "*.swf", "*.mp4", "*.flv", "*.wmv", "*.rmvb", "*.avi", "*.txt"));
-		chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter(MsgUtil.getMessage("resource.word"), ResourceType.WORD.getSuffixs()));
-		chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter(MsgUtil.getMessage("resource.excel"), ResourceType.EXCEL.getSuffixs()));
-		chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter(MsgUtil.getMessage("resource.ppt"), ResourceType.PPT.getSuffixs()));
-		chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter(MsgUtil.getMessage("resource.pdf"), ResourceType.PDF.getSuffixs()));
-		chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter(MsgUtil.getMessage("resource.pic"), ResourceType.IMAGE.getSuffixs()));
-		chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter(MsgUtil.getMessage("resource.swf"), ResourceType.SWF.getSuffixs()));
-		chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter(MsgUtil.getMessage("resource.video"), ResourceType.VIDEO.getSuffixs()));
-		chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter(MsgUtil.getMessage("resource.txt"), ResourceType.TXT.getSuffixs()));
+		if (chooser == null) {
+			chooser = new FileChooser();
+			chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter(MsgUtil.getMessage("resource.all"), "*.doc", "*.docx", "*.xls", "*.xlsx", "*.ppt", "*.pptx", "*.pdf", "*.png", "*.jpg", "*.swf", "*.mp4", "*.flv", "*.wmv", "*.rmvb", "*.avi", "*.txt"));
+			chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter(MsgUtil.getMessage("resource.word"), ResourceType.WORD.getSuffixs()));
+			chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter(MsgUtil.getMessage("resource.excel"), ResourceType.EXCEL.getSuffixs()));
+			chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter(MsgUtil.getMessage("resource.ppt"), ResourceType.PPT.getSuffixs()));
+			chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter(MsgUtil.getMessage("resource.pdf"), ResourceType.PDF.getSuffixs()));
+			chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter(MsgUtil.getMessage("resource.pic"), ResourceType.IMAGE.getSuffixs()));
+			chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter(MsgUtil.getMessage("resource.swf"), ResourceType.SWF.getSuffixs()));
+			chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter(MsgUtil.getMessage("resource.video"), ResourceType.VIDEO.getSuffixs()));
+			chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter(MsgUtil.getMessage("resource.txt"), ResourceType.TXT.getSuffixs()));
+		}
 		File target = chooser.showOpenDialog(GUIState.getStage());
 		if (target == null) {
 			return;
@@ -449,19 +450,20 @@ public class ResourceList extends HBox implements IContent {
 		this.filePath.setText(target.getAbsolutePath());
 		this.size.setText(getFileSize(target));
 		this.uploadFile = target;
+		this.chooser.setInitialDirectory(target.getParentFile());
 	}
 
 	@FXML
 	private void upload(ActionEvent event) {
 		// 禁用上传按钮
 		((Button) event.getSource()).setDisable(true);
+		uploadTip.setText(MsgUtil.getMessage("ftp.upload.waiting"));
 		String filePath = uploadFile.getAbsolutePath();
 		String fileName = FileUtil.getFileName(filePath);
 		String ext = FileUtil.getFileExt(filePath);
 		// 重命名
 		String rename = UUID.randomUUID() + "." + ext;
 		// 上传文件到FTP
-		uploadTip.setText(MsgUtil.getMessage("ftp.upload.waiting"));
 		boolean uploaded = SpringUtil.getBean(FTPUtils.class).uploadFile(ResourceConsts.FTP_RES_PATH, uploadFile, rename);
 		if (!uploaded) {
 			AlertUtil.showAlert(AlertType.ERROR, MsgUtil.getMessage("ftp.upload.failure"));
