@@ -25,7 +25,7 @@
 						<Insets left="40" right="40" />
 					</HBox.margin>
 				</ImageView>
-				<Button mnemonicParsing="false" onAction="#back" styleClass="img-btn" text="返回" textFill="WHITE" focusTraversable="false">
+				<Button fx:id="back" mnemonicParsing="false" onAction="#back" styleClass="img-btn" text="返回" textFill="WHITE" focusTraversable="false">
 					<graphic>
 						<SVGGlyph name="iconfont.svg.back" size="16" fill="WHITE" />
 					</graphic>

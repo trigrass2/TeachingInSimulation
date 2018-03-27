@@ -17,6 +17,7 @@ import de.felixroske.jfxsupport.GUIState;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
@@ -42,6 +43,9 @@ public class PageController implements Initializable {
 
 	@FXML
 	private Decoration decoration;
+	
+	@FXML
+	private Button back;
 
 	@FXML
 	private Pane handle;
@@ -206,7 +210,7 @@ public class PageController implements Initializable {
 //        progressIndicator.setId(CssIds.EDITOR_LOADING_PROGRESS);
 		loadingLayer.getChildren().add(progressIndicator);
 		container.setDisable(true);
-
+		back.setDisable(true);
 		setLoading(true);
 	}
 
@@ -221,7 +225,7 @@ public class PageController implements Initializable {
 		progressIndicator = null;
 
 		container.setDisable(false);
-
+		back.setDisable(false);
 		setLoading(false);
 	}
 
