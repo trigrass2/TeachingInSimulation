@@ -30,11 +30,11 @@ public class MyCameraState extends BaseState {
 //		3、设置垂直翻转
 		chaser.setInvertVerticalAxis(true);
 //		4、设置最大和最小仰角
-		chaser.setMaxVerticalRotation(FastMath.DEG_TO_RAD * 60);
-		chaser.setMinVerticalRotation(FastMath.DEG_TO_RAD * 10);
+		chaser.setMaxVerticalRotation(FastMath.HALF_PI);
+		chaser.setMinVerticalRotation(-FastMath.HALF_PI);
 //		5、设置缩放与旋转的灵敏度
 		chaser.setZoomSensitivity(1);
-		chaser.setRotationSpeed(5);
+		chaser.setRotationSpeed(2);
 //		6、移除用于旋转相机的鼠标右键触发器
 		inputManager.deleteTrigger(CameraInput.CHASECAM_TOGGLEROTATE, new MouseButtonTrigger(MouseInput.BUTTON_RIGHT));
 //		7、模拟一个拖拽事件，通过修改相机观测点的偏移量实现的。

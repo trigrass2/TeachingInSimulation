@@ -15,18 +15,21 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
 
+import com.cas.sim.tis.consts.LoginResult;
 import com.cas.sim.tis.message.ExamMessage;
 import com.cas.sim.tis.message.LoginMessage;
 import com.cas.sim.tis.message.handler.ExamMessageHandler;
 import com.cas.sim.tis.message.handler.LoginMessageHandler;
 import com.cas.sim.tis.message.handler.SerializerRegistrationsMessageHandler;
 import com.cas.sim.tis.message.listener.ClientMessageListener;
+import com.cas.sim.tis.util.AlertUtil;
 import com.cas.sim.tis.util.SocketUtil;
 import com.cas.sim.tis.view.control.imp.LoginDecoration;
 import com.jme3.network.message.SerializerRegistrationsMessage;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
@@ -105,7 +108,6 @@ public class LoginController implements Initializable {
 			LoginMessageHandler loginMessageHandler = new LoginMessageHandler();
 			ClientMessageListener.INSTENCE.registerMessageHandler(LoginMessage.class, loginMessageHandler);
 			loginMessageHandler.setLoginUIController(this);
-			loginMessageHandler.setResourceBundle(ResourceBundle.getBundle("i18n/messages"));
 
 			ClientMessageListener.INSTENCE.registerMessageHandler(SerializerRegistrationsMessage.class, new SerializerRegistrationsMessageHandler());
 			ClientMessageListener.INSTENCE.registerMessageHandler(ExamMessage.class, new ExamMessageHandler());
@@ -123,16 +125,31 @@ public class LoginController implements Initializable {
 		}
 	}
 
+	public void failure(LoginMessage m) {
+		String messageKey = m.getResult().getMsg();
+		if (LoginResult.DUPLICATE == m.getResult()) {
+			AlertUtil.showConfirm(resources.getString(messageKey), resp -> {
+				if (ButtonType.YES == resp) {
+					loginBtn.setDisable(true);
+					LoginMessage msg = new LoginMessage();
+					msg.setUserCode(userId.getText());
+					msg.setUserPwd(password.getText());
+					msg.setFocus(true);
+					SocketUtil.INSTENCE.send(msg);
+				}
+			});
+		} else {
+			setErrorMsg(resources.getString(messageKey));
+		}
+		loginBtn.setDisable(false);
+	}
+
 	public void setErrorMsg(String msg) {
 		errorMessage.setText(msg);
 	}
 
 	public void setSettingView(Region settingView) {
 		this.loginDecoration.setSettingView(settingView);
-	}
-
-	public void enableLoginButton() {
-		loginBtn.setDisable(false);
 	}
 
 	public void close() {

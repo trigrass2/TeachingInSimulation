@@ -14,6 +14,7 @@ import com.cas.sim.tis.message.LoginMessage;
 import com.cas.sim.tis.services.UserService;
 import com.cas.sim.tis.services.exception.ServiceException;
 import com.jme3.network.HostedConnection;
+import com.jme3.network.message.DisconnectMessage;
 
 @Component
 public class LoginMessageHandler implements ServerHandler<LoginMessage> {
@@ -47,12 +48,8 @@ public class LoginMessageHandler implements ServerHandler<LoginMessage> {
 				return;
 			}
 //			检查用户是否已经登录了
-			boolean exist = clients.stream().filter(c -> user.getId().equals(c.getAttribute(Session.KEY_LOGIN_ID.name()))).findAny().isPresent();
-			if (exist) {
-//				用户已经登录了
-				respMsg.setResult(LoginResult.DUPLICATE);
-				source.send(respMsg);
-			} else {
+			HostedConnection existConn = clients.stream().filter(c -> user.getId().equals(c.getAttribute(Session.KEY_LOGIN_ID.name()))).findAny().orElse(null);
+			if (existConn == null) {
 				source.setAttribute(Session.KEY_LOGIN_ID.name(), user.getId());
 				source.setAttribute(Session.KEY_LOGIN_CLASSID.name(), user.getClassId());
 				source.setAttribute(Session.KEY_LOGIN_ACCOUNT.name(), user.getCode());
@@ -62,6 +59,26 @@ public class LoginMessageHandler implements ServerHandler<LoginMessage> {
 				respMsg.setResult(LoginResult.SUCCESS);
 				respMsg.setUserId(user.getId());
 				respMsg.setUserType(user.getRole());
+				source.send(respMsg);
+			} else if (m.isFocus()) {
+				DisconnectMessage disconnect = new DisconnectMessage();
+				disconnect.setReason(DisconnectMessage.KICK);
+				disconnect.setType(DisconnectMessage.KICK);
+				existConn.send(disconnect);
+
+				source.setAttribute(Session.KEY_LOGIN_ID.name(), user.getId());
+				source.setAttribute(Session.KEY_LOGIN_CLASSID.name(), user.getClassId());
+				source.setAttribute(Session.KEY_LOGIN_ACCOUNT.name(), user.getCode());
+				clients.add(source);
+				LOG.info("客户端登录成功，当前客户端数量{}", clients.size());
+//				用户成功连接
+				respMsg.setResult(LoginResult.SUCCESS);
+				respMsg.setUserId(user.getId());
+				respMsg.setUserType(user.getRole());
+				source.send(respMsg);
+			} else {
+//				用户已经登录了
+				respMsg.setResult(LoginResult.DUPLICATE);
 				source.send(respMsg);
 			}
 		} catch (ServiceException e) {

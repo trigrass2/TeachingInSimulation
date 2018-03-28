@@ -9,8 +9,13 @@ import org.slf4j.LoggerFactory;
 import com.cas.sim.tis.consts.SystemInfo;
 import com.cas.sim.tis.message.listener.ClientMessageListener;
 import com.jme3.network.Client;
+import com.jme3.network.ClientStateListener;
 import com.jme3.network.Message;
 import com.jme3.network.Network;
+import com.jme3.network.message.DisconnectMessage;
+
+import javafx.application.Platform;
+import javafx.scene.control.Alert.AlertType;
 
 public enum SocketUtil {
 	INSTENCE;
@@ -25,6 +30,25 @@ public enum SocketUtil {
 			return false;
 		}
 		client.addMessageListener(ClientMessageListener.INSTENCE);
+		client.addClientStateListener(new ClientStateListener() {
+
+			@Override
+			public void clientConnected(Client c) {
+
+			}
+
+			@Override
+			public void clientDisconnected(Client c, DisconnectInfo info) {
+				if (info.reason.equals(DisconnectMessage.KICK)) {
+					Platform.runLater(() -> {
+						AlertUtil.showAlert(AlertType.WARNING, MsgUtil.getMessage("server.connect.kick"));
+						Platform.exit();
+						System.exit(0);
+					});
+				}
+			}
+
+		});
 		return true;
 	}
 

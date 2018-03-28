@@ -11,21 +11,12 @@ import com.jme3.network.serializing.Serializable;
 @Serializable()
 public class LoginMessage extends AbstractMessage {
 
-	/**
-	 * 有新用户登录
-	 */
-	public static final int CLIENT_LOGIN = 10;
-
-	/**
-	 * 有客户端离线
-	 */
-	public static final int CLIENT_LOGOUT = 11;
-
 //	默认是学生类型
 	private int userId;
 	private int userType;
 	private String userCode;
 	private String userPwd;
+	private boolean focus;// 强制登录
 
 	private LoginResult result;
 
@@ -59,6 +50,14 @@ public class LoginMessage extends AbstractMessage {
 
 	public void setUserType(int userType) {
 		this.userType = userType;
+	}
+
+	public boolean isFocus() {
+		return focus;
+	}
+
+	public void setFocus(boolean focus) {
+		this.focus = focus;
 	}
 
 	public LoginResult getResult() {

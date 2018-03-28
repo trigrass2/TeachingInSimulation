@@ -3,7 +3,6 @@ package com.cas.sim.tis.message.handler;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.util.Properties;
-import java.util.ResourceBundle;
 
 import org.springframework.boot.SpringApplication;
 
@@ -19,7 +18,6 @@ import javafx.application.Platform;
 public class LoginMessageHandler implements ClientHandler<LoginMessage> {
 	private LoginController loginController;
 	private Properties properties = new Properties();
-	private ResourceBundle bundle;
 
 	@Override
 	public void execute(Client client, LoginMessage m) throws Exception {
@@ -44,19 +42,12 @@ public class LoginMessageHandler implements ClientHandler<LoginMessage> {
 			});
 		} else {
 			Platform.runLater(() -> {
-				String messageKey = m.getResult().getMsg();
-				loginController.setErrorMsg(bundle.getString(messageKey));
-				
-				loginController.enableLoginButton();
+				loginController.failure(m);
 			});
 		}
 	}
 
 	public void setLoginUIController(LoginController loginController) {
 		this.loginController = loginController;
-	}
-
-	public void setResourceBundle(ResourceBundle bundle) {
-		this.bundle = bundle;
 	}
 }

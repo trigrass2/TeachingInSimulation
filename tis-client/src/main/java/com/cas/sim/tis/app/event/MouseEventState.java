@@ -128,6 +128,9 @@ public class MouseEventState extends BaseState {
 			@Override
 			public void onAnalog(String name, float value, float tpf) {
 				pickModel();
+				if (picked == null) {
+					return;
+				}
 				if (MOUSE_WHEEL_UP.equals(name)) {
 					e.setWheel(MouseEvent.WHEEL_UP);
 					e.setAction(MouseAction.MOUSE_WHEEL);
