@@ -582,9 +582,9 @@ public class CircuitState extends BaseState {
 //		一、开始加载元器件
 		compProxyList.forEach(proxyComp -> {
 //			1、根据元器件型号（model字段），查找数据库中的元器件实体对象
-			ElecComp elecComp = action.getElecComp(proxyComp.getModel());
+			ElecComp elecComp = action.findElecCompById(proxyComp.getId());
 			if (elecComp == null) {
-				LOG.warn("没有找到型号为{}的元器件", proxyComp.getModel());
+				LOG.warn("没有找到ID号为{}的元器件", proxyComp.getId());
 			}
 
 //			2、加载模型，同时设置好坐标与旋转
@@ -665,7 +665,7 @@ public class CircuitState extends BaseState {
 	private void saveEleccomps(Archive archive) {
 		compList.forEach(comp -> {
 			ElecCompProxy compProxy = comp.getProxy();
-			compProxy.setModel(comp.getModel());
+			compProxy.setId(comp.getElecComp().getId());
 			compProxy.setLocation(comp.getSpatial().getLocalTranslation());
 			System.out.println(comp.getSpatial().getLocalRotation());
 			compProxy.setRotation(comp.getSpatial().getLocalRotation());

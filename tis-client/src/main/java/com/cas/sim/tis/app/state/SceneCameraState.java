@@ -13,7 +13,6 @@ import com.jme3.input.controls.MouseButtonTrigger;
 import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
-import com.jme3.scene.Node;
 
 public class SceneCameraState extends BaseState implements ActionListener, AnalogListener {
 	private WASDListener camera;
@@ -39,9 +38,6 @@ public class SceneCameraState extends BaseState implements ActionListener, Analo
 	protected boolean checkReleaseRight = false;
 	protected boolean shiftModifier = false;
 
-//	相机始终聚焦在精灵球的坐标,即通过调整精灵球的位置来改变相机的焦点
-	private Node fairy;
-
 	private boolean zoomable = true;
 
 	public enum View {
@@ -54,7 +50,7 @@ public class SceneCameraState extends BaseState implements ActionListener, Analo
 	@Override
 	public void initializeLocal() {
 		// 初始化相机
-		cam.setLocation(new Vector3f(-10, 5, 10));
+		cam.setLocation(new Vector3f(0, 10, 10));
 		cam.lookAt(Vector3f.ZERO, Vector3f.UNIT_Y);
 		// 添加鼠标监听事件
 		inputManager.addMapping("MouseAxisX", new MouseAxisTrigger(MouseInput.AXIS_X, false));
@@ -129,12 +125,12 @@ public class SceneCameraState extends BaseState implements ActionListener, Analo
 			}
 
 		} else if ("MouseWheel".equals(name)) {
-			if (zoomable) {
-				doZoomCamera(.1f);
+			if (zoomable && buttonDownR) {
+				doZoomCamera(.05f);
 			}
 		} else if ("MouseWheel-".equals(name)) {
-			if (zoomable) {
-				doZoomCamera(-.1f);
+			if (zoomable && buttonDownR) {
+				doZoomCamera(-.05f);
 			}
 		}
 	}
@@ -235,7 +231,7 @@ public class SceneCameraState extends BaseState implements ActionListener, Analo
 	protected void doRotateCamera(Vector3f axis, float amount) {
 		if (axis.equals(cam.getLeft())) {
 			float elevation = -FastMath.asin(cam.getDirection().y);
-			amount = Math.min(Math.max(elevation + amount, -FastMath.HALF_PI), FastMath.HALF_PI) - elevation;
+			amount = Math.min(Math.max(elevation + amount, FastMath.DEG_TO_RAD * 10), FastMath.DEG_TO_RAD * 60) - elevation;
 		}
 		rot.fromAngleAxis(amount, axis);
 		cam.getLocation().subtract(focus, vector);
@@ -328,10 +324,6 @@ public class SceneCameraState extends BaseState implements ActionListener, Analo
 
 	public void moveCamera(@NotNull Vector3f focus) {
 		cam.setLocation(cam.getLocation().add(focus.subtract(this.focus)));
-	}
-
-	public void setFairLocation(@NotNull Vector3f focus) {
-		this.fairy.setLocalTranslation(focus.clone());
 	}
 
 	@Override

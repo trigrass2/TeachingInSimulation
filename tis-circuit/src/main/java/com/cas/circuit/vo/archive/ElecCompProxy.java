@@ -15,9 +15,9 @@ import com.jme3.math.Vector3f;
 
 @XmlAccessorType(XmlAccessType.NONE)
 public class ElecCompProxy {
-//	元器件ID
+//	元器件信息ID
 	@XmlAttribute
-	private String model;
+	private Integer id;
 //	元器件ID
 	@XmlAttribute
 	private String uuid;
@@ -38,12 +38,13 @@ public class ElecCompProxy {
 	@XmlJavaTypeAdapter(value = QuaternionAdapter.class)
 	private Quaternion rotation = Quaternion.ZERO;
 
-	public String getModel() {
-		return model;
+
+	public Integer getId() {
+		return id;
 	}
 
-	public void setModel(String model) {
-		this.model = model;
+	public void setId(Integer id) {
+		this.id = id;
 	}
 
 	public String getUuid() {
