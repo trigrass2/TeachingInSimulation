@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.remoting.rmi.RmiProxyFactoryBean;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.util.StringUtils;
 
 import com.cas.sim.tis.Application;
 import com.cas.sim.tis.consts.ResourceConsts;
@@ -150,6 +151,9 @@ public class LnkParser2 {
 		for (Object[] result : results) {
 			String fileName = String.valueOf(result[0]);
 			String path = String.valueOf(result[1]);
+			if(StringUtils.isEmpty(fileName)) {
+				fileName = FileUtil.getFileName(path);
+			}
 			String keyword = String.valueOf(result[2]);
 			upload(parser(new File(path)), fileName, keyword);
 		}
