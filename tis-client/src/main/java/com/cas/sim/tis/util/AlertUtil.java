@@ -7,6 +7,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
 import javafx.stage.Stage;
+import javafx.stage.Window;
 /**
  * 弹出窗口工具类
  * @功能 AlertUtil.java
@@ -26,9 +27,9 @@ public class AlertUtil {
 		showConfirm(GUIState.getStage(), confirm, consumer);
 	}
 
-	public static void showConfirm(Stage stage, String confirm, Consumer<ButtonType> consumer) {
+	public static void showConfirm(Window win, String confirm, Consumer<ButtonType> consumer) {
 		Alert alert = new Alert(AlertType.CONFIRMATION, confirm, ButtonType.YES, ButtonType.NO);
-		alert.initOwner(stage);
+		alert.initOwner(win);
 		alert.setHeaderText(null);
 		alert.showAndWait().ifPresent(consumer);
 	}

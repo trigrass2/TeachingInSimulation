@@ -12,6 +12,7 @@ import com.cas.sim.tis.action.ResourceAction;
 import com.cas.sim.tis.consts.ResourceConsts;
 import com.cas.sim.tis.consts.ResourceType;
 import com.cas.sim.tis.entity.Resource;
+import com.cas.sim.tis.util.AlertUtil;
 import com.cas.sim.tis.util.FTPUtils;
 import com.cas.sim.tis.util.MsgUtil;
 import com.cas.sim.tis.util.SpringUtil;
@@ -25,6 +26,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.NodeOrientation;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
@@ -137,46 +139,53 @@ public class ResourceUploadDialog extends DialogPane<Integer> {
 	private void upload(ActionEvent event) {
 		// 禁用上传按钮
 		((Button) event.getSource()).setDisable(true);
-		String filePath = uploadFile.getAbsolutePath();
-		String fileName = FileUtil.getFileName(filePath);
-		String ext = FileUtil.getFileExt(filePath);
-		// 重命名
-		String rename = UUID.randomUUID() + "." + ext;
-		// 上传文件到FTP
 		uploadTip.setText(MsgUtil.getMessage("ftp.upload.waiting"));
-		boolean uploaded = SpringUtil.getBean(FTPUtils.class).uploadFile(ResourceConsts.FTP_RES_PATH, uploadFile, rename);
-		if (!uploaded) {
-			uploadTip.setText(MsgUtil.getMessage("ftp.upload.failure"));
-			// 启用上传按钮
-			((Button) event.getSource()).setDisable(false);
-			return;
-		}
-		// 封装资源记录
-		Resource resource = new Resource();
-		resource.setKeyword(keywords.getText());
-		resource.setPath(rename);
-		resource.setName(fileName);
-		try {
-			if (this.type == null) {
-				int type = ResourceType.parseType(ext);
-				resource.setType(type);
-			} else {
-				resource.setType(this.type.getType());
+		AlertUtil.showConfirm(dialog.getOwner(), MsgUtil.getMessage("ftp.upload.confirmation"), (resp) -> {
+			if (ButtonType.NO == resp) {
+				((Button) event.getSource()).setDisable(false);
+				uploadTip.setText(null);
+				return;
 			}
-		} catch (Exception e) {
-			LOG.warn("解析文件后缀名出现错误", e);
-			throw e;
-		}
-		// 记录到数据库
-		Integer id = SpringUtil.getBean(ResourceAction.class).addResource(resource);
-		if (id == null) {
-			uploadTip.setText(MsgUtil.getMessage("ftp.upload.converter.failure"));
-			// 启用上传按钮
-			((Button) event.getSource()).setDisable(false);
-			return;
-		} else {
-			setResult(id);
-		}
+			String filePath = uploadFile.getAbsolutePath();
+			String fileName = FileUtil.getFileName(filePath);
+			String ext = FileUtil.getFileExt(filePath);
+			// 重命名
+			String rename = UUID.randomUUID() + "." + ext;
+			// 上传文件到FTP
+			boolean uploaded = SpringUtil.getBean(FTPUtils.class).uploadFile(ResourceConsts.FTP_RES_PATH, uploadFile, rename);
+			if (!uploaded) {
+				uploadTip.setText(MsgUtil.getMessage("ftp.upload.failure"));
+				// 启用上传按钮
+				((Button) event.getSource()).setDisable(false);
+				return;
+			}
+			// 封装资源记录
+			Resource resource = new Resource();
+			resource.setKeyword(keywords.getText());
+			resource.setPath(rename);
+			resource.setName(fileName);
+			try {
+				if (this.type == null) {
+					int type = ResourceType.parseType(ext);
+					resource.setType(type);
+				} else {
+					resource.setType(this.type.getType());
+				}
+			} catch (Exception e) {
+				LOG.warn("解析文件后缀名出现错误", e);
+				throw e;
+			}
+			// 记录到数据库
+			Integer id = SpringUtil.getBean(ResourceAction.class).addResource(resource);
+			if (id == null) {
+				uploadTip.setText(MsgUtil.getMessage("ftp.upload.converter.failure"));
+				// 启用上传按钮
+				((Button) event.getSource()).setDisable(false);
+				return;
+			} else {
+				setResult(id);
+			}
+		});
 	}
 
 	public static String getFileSize(File file) {
