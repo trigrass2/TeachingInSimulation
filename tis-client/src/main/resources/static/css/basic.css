@@ -357,7 +357,7 @@
 	-fx-text-fill: #ffffff;
 }
 .login-cancel-btn{
-	-fx-background-color:tansparent;
+	-fx-background-color:transparent;
 	-fx-background-radius: 0.0;
 	-fx-border-color:#ffffff;
 	-fx-text-fill: #ffffff;

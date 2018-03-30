@@ -4,11 +4,7 @@
 
 package com.cas.sim.tis.view.controller;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.net.URL;
-import java.util.Properties;
 import java.util.ResourceBundle;
 
 import org.slf4j.Logger;
@@ -23,6 +19,7 @@ import com.cas.sim.tis.message.handler.LoginMessageHandler;
 import com.cas.sim.tis.message.handler.SerializerRegistrationsMessageHandler;
 import com.cas.sim.tis.message.listener.ClientMessageListener;
 import com.cas.sim.tis.util.AlertUtil;
+import com.cas.sim.tis.util.AppPropertiesUtil;
 import com.cas.sim.tis.util.SocketUtil;
 import com.cas.sim.tis.view.control.imp.LoginDecoration;
 import com.jme3.network.message.SerializerRegistrationsMessage;
@@ -64,16 +61,7 @@ public class LoginController implements Initializable {
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		this.resources = resources;
-//		
-		Properties prop = new Properties();
-		try {
-			prop.load(new FileInputStream("application.properties"));
-		} catch (FileNotFoundException e) {
-			LOG.warn("未找到配置文件application.properties");
-		} catch (IOException e) {
-			LOG.warn("文件解析失败application.properties");
-		}
-		userId.setText(prop.getProperty("login.account", ""));
+		userId.setText(AppPropertiesUtil.getStringValue("login.account"));
 	}
 
 	@FXML
@@ -89,20 +77,13 @@ public class LoginController implements Initializable {
 			return;
 		}
 
-		String address = "";
-		int port = 0;
-		Properties prop = new Properties();
-		try {
-			prop.load(new FileInputStream("application.properties"));
-			address = prop.getProperty("server.base.address");
-			port = Integer.parseInt(prop.getProperty("server.base.port"));
-		} catch (Exception e) {
-			LOG.error("文件application.properties读取失败", e);
-			throw new RuntimeException(e);
-		}
+		String address = AppPropertiesUtil.getStringValue("server.base.address");
+		int port = AppPropertiesUtil.getIntValue("server.base.port", 0);
 
 		boolean success = SocketUtil.INSTENCE.connect(address, port);
+		LOG.info("开始连接服务器{}:{}", address, port);
 		if (success) {
+			LOG.info("服务器连接成功！");
 			loginBtn.setDisable(true);
 //			注册消息及消息处理类
 			LoginMessageHandler loginMessageHandler = new LoginMessageHandler();
@@ -119,9 +100,11 @@ public class LoginController implements Initializable {
 			msg.setUserCode(userId.getText());
 			msg.setUserPwd(password.getText());
 			SocketUtil.INSTENCE.send(msg);
+			LOG.info("发送登录请求。。。");
 		} else {
 			loginBtn.setDisable(false);
 			setErrorMsg(resources.getString("server.connect.failure"));
+			LOG.info("服务器连接失败！");
 		}
 	}
 

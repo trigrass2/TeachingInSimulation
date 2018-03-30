@@ -4,17 +4,15 @@
 
 package com.cas.sim.tis.view.controller;
 
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
-import java.util.Properties;
 import java.util.ResourceBundle;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.cas.sim.tis.util.AppPropertiesUtil;
 import com.cas.sim.tis.view.control.imp.LoginDecoration;
 
 import javafx.animation.RotateTransition;
@@ -61,41 +59,32 @@ public class NetworkController implements Initializable {
 //	@Value("${server.base.port}")
 //	private Integer num;
 
-	private Properties prop = new Properties();
-
 	private Region loginScene;
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		// 读取服务器信息配置
-		try {
-			prop.load(new FileInputStream("application.properties"));
-		} catch (IOException e) {
-			e.printStackTrace();
-			LOG.error("文件application.properties读取失败", e);
-		}
-
-		baseIP.setText(prop.getProperty("server.base.address", "127.0.0.1"));
-		basePort.setText(prop.getProperty("server.base.port", "9000"));
-		ftpIP.setText(prop.getProperty("server.ftp.address", "127.0.0.1"));
-		ftpPort.setText(prop.getProperty("server.ftp.port", "21"));
-		httpdIP.setText(prop.getProperty("server.httpd.address", "127.0.0.1"));
-		httpdPort.setText(prop.getProperty("server.httpd.port", "8082"));
+		baseIP.setText(AppPropertiesUtil.getStringValue("server.base.address", "127.0.0.1"));
+		basePort.setText(AppPropertiesUtil.getStringValue("server.base.port", "9000"));
+		ftpIP.setText(AppPropertiesUtil.getStringValue("server.ftp.address", "127.0.0.1"));
+		ftpPort.setText(AppPropertiesUtil.getStringValue("server.ftp.port", "21"));
+		httpdIP.setText(AppPropertiesUtil.getStringValue("server.httpd.address", "127.0.0.1"));
+		httpdPort.setText(AppPropertiesUtil.getStringValue("server.httpd.port", "8082"));
 	}
 
 	@FXML
 	public void ok() throws FileNotFoundException, IOException {
 		// 记录服务器信息
-		prop.setProperty("server.base.address", baseIP.getText());
-		prop.setProperty("server.base.port", basePort.getText());
-		prop.setProperty("server.ftp.address", ftpIP.getText());
-		prop.setProperty("server.ftp.port", ftpPort.getText());
-		prop.setProperty("server.httpd.address", httpdIP.getText());
-		prop.setProperty("server.httpd.port", httpdPort.getText());
+		AppPropertiesUtil.set("server.base.address", baseIP.getText());
+		AppPropertiesUtil.set("server.base.port", basePort.getText());
+		AppPropertiesUtil.set("server.ftp.address", ftpIP.getText());
+		AppPropertiesUtil.set("server.ftp.port", ftpPort.getText());
+		AppPropertiesUtil.set("server.httpd.address", httpdIP.getText());
+		AppPropertiesUtil.set("server.httpd.port", httpdPort.getText());
 
 		LOG.info("修改与服务器的连接配置，修改后的主服务器地址：{}， 端口：{}；FTP服务器地址：{}，端口：{}；HTTPD服务器地址：{}，端口：{}", baseIP.getText(), basePort.getText(), ftpIP.getText(), ftpPort.getText(), httpdIP.getText(), httpdPort.getText());
 //		服务器信息保存
-		prop.store(new FileOutputStream("application.properties"), "");
+		AppPropertiesUtil.store();
 		back();
 	}
 
