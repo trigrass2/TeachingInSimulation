@@ -2,9 +2,9 @@ mybatis:
   config-location: classpath:mybatis/mybatis.cfg.xml  # MyBatis配置文件路径
 #  type-aliases-package: com.cas.sim.tis.entity        # 定义所有操作类的别名所在包
   mapper-locations:
-  - classpath:mybatis/mapper/*.xml                    #所有的mapper映射
+  - classpath:mybatis/mapper/*.xml                    # 所有的mapper映射
 mapper:
-  wrapKeyword: "`{0}`"                                #SQL语句中的关键字用反引号``包裹，避免与数据库关键字冲突MySQL用`{0}`, SQLServer用[{0}]
+  wrapKeyword: "`{0}`"                                # SQL语句中的关键字用反引号``包裹，避免与数据库关键字冲突MySQL用`{0}`, SQLServer用[{0}]
   mappers:
   - com.cas.sim.tis.mapper.ClassMapper
   - com.cas.sim.tis.mapper.QuestionMapper
@@ -15,13 +15,13 @@ pagehelper:
   dialect: com.github.pagehelper.dialect.helper.MySqlDialect
 server:
   base:  
-    max-login: 3                                      #服务器允许同时在线的人数
-    port: 9000                                        #服务器默认端口号
+    max-login: 3                                      # 服务器允许同时在线的人数
+    port: 9000                                        # 服务器默认端口号
   rmi:
-    registry: 1101                                    #系统默认的RMI访问端口
-    service: 1102                                     #系统默认的RMI数据传输访问端口，不指定则系统随机分配
+    registry: 1101                                    # 系统默认的RMI访问端口
+    service: 1102                                     # 系统默认的RMI数据传输访问端口，不指定则系统随机分配
   ftp:
-    port: 21                                          #FTP服务器默认端口
+    port: 21                                          # FTP服务器默认端口
 spring: 
   datasource:
     type: com.alibaba.druid.pool.DruidDataSource      # 配置当前要使用的数据源的操作类型
@@ -30,7 +30,10 @@ spring:
     username: root                                    # 数据库用户名
     password: mysqladmin                              # 数据库连接密码
     dbcp2:                                            # 数据库连接池的配置 
-      min-idle: 5                                     # 最小维持连接数
-      initial-size: 5                                 # 初始化提供的连接数
-      max-total: 5                                    # 最大连接数量
+      min-idle: 0                                     # 默认0，最小维持连接数
+      initial-size: 0                                 # 默认0，初始化提供的连接数。
+      max-total: 10                                   # 默认8， 可以在这个连接池中同一时刻被分配的有效连接数的最大值
       max-wait-millis: 200                            # 等待连接获取的最大超时时间
+      removeAbandonedTimeout: 300                     # 默认300，一个被抛弃连接可以被移除的超时时间，单位为秒
+      removeAbandoned: true                           # *默认false，标记是否删除超过removeAbandonedTimout所指定时间的被遗弃的连接。
+      logAbandoned: true                              # 默认false，标志是否为应用程序中遗弃语句或连接的代码开启日志堆栈追踪。
