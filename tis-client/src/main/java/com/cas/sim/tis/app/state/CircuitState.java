@@ -2,7 +2,6 @@ package com.cas.sim.tis.app.state;
 
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -14,13 +13,14 @@ import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 
 import org.jetbrains.annotations.Nullable;
-import org.springframework.util.StringUtils;
 
 import com.cas.circuit.CfgConst;
 import com.cas.circuit.vo.Archive;
+import com.cas.circuit.vo.Base;
 import com.cas.circuit.vo.ControlIO;
 import com.cas.circuit.vo.ElecCompDef;
 import com.cas.circuit.vo.Jack;
+import com.cas.circuit.vo.RelyOn;
 import com.cas.circuit.vo.Terminal;
 import com.cas.circuit.vo.Wire;
 import com.cas.circuit.vo.archive.ElecCompProxy;
@@ -97,6 +97,7 @@ public class CircuitState extends BaseState {
 	private Vector3f midAxis;
 	Quaternion roll90 = new Quaternion().fromAngleNormalAxis(FastMath.HALF_PI, Vector3f.UNIT_Y);
 
+	private TypicalCaseState caseState;
 	private TypicalCase typicalCase;
 	private List<ElecCompDef> compList = new ArrayList<>();
 
@@ -114,13 +115,13 @@ public class CircuitState extends BaseState {
 	private boolean tempTagVisible;
 	private boolean tageChanged;
 	// Key:BASE UUID,Value: TOP UUID
-	private Map<String, String> combineMap = new HashMap<String, String>();
+//	private Map<String, String> combineMap = new HashMap<String, String>();
 
-	public CircuitState(TypicalCase typicalCase, Node root) {
+	public CircuitState(TypicalCaseState caseState, TypicalCase typicalCase, Node root) {
 		this.typicalCase = typicalCase;
+		this.caseState = caseState;
 		this.root = root;
-
-		desktop = (Geometry) root.getChild("Circuit-Desktop");
+		this.desktop = (Geometry) root.getChild("Circuit-Desktop");
 	}
 
 	public void setColor(ColorRGBA color) {
@@ -502,16 +503,12 @@ public class CircuitState extends BaseState {
 			}
 		});
 //		5、若当前为底座添加监听事件
-		if (ElecComp.COMBINE_BUTTOM == def.getElecComp().getCombine()) {
+		if (def.getBase() != null) {
 			addListener(def.getSpatial(), new MouseEventAdapter() {
 				@Override
 				public void mouseClicked(MouseEvent e) {
-					// 判断当前底座是否已经被占用
-					if (StringUtils.isEmpty(combineMap.get(def.getProxy().getUuid()))) {
-						TypicalCaseState caseState = stateManager.getState(TypicalCaseState.class);
-						caseState.putDownOnBase(def);
-						super.mouseClicked(e);
-					}
+					caseState.putDownOnBase(def);
+					super.mouseClicked(e);
 				}
 			});
 		}
@@ -608,15 +605,14 @@ public class CircuitState extends BaseState {
 			URL cfgUrl = SpringUtil.getBean(HTTPUtils.class).getUrl(elecComp.getCfgPath());
 			ElecCompDef def = JaxbUtil.converyToJavaBean(cfgUrl, ElecCompDef.class);
 			def.setProxy(proxyComp);
-			def.setElecComp(elecComp);
-			if (ElecComp.COMBINE_TOP == elecComp.getCombine()) {
+			if (def.getRelyOn() == null) {
+				// 加入电路板中
+				attachToCircuit(compMdl, def);
+			} else {
 				// 获得底座，底座的排序一定在元器件之前
 				Map<String, ElecCompDef> compMap = compList.stream().collect(Collectors.toMap(x -> x.getProxy().getUuid(), x -> x));
 				ElecCompDef baseDef = compMap.get(proxyComp.getBaseUuid());
 				attachToBase(compMdl, def, baseDef);
-			} else {
-				// 加入电路板中
-				attachToCircuit(compMdl, def);
 			}
 		});
 	}
@@ -665,7 +661,6 @@ public class CircuitState extends BaseState {
 	private void saveEleccomps(Archive archive) {
 		compList.forEach(comp -> {
 			ElecCompProxy compProxy = comp.getProxy();
-			compProxy.setId(comp.getElecComp().getId());
 			compProxy.setLocation(comp.getSpatial().getLocalTranslation());
 			System.out.println(comp.getSpatial().getLocalRotation());
 			compProxy.setRotation(comp.getSpatial().getLocalRotation());
@@ -697,7 +692,7 @@ public class CircuitState extends BaseState {
 			detachWire(wire);
 		}
 		wireList.clear();
-		combineMap.clear();
+//		combineMap.clear();
 //		除了desktop，其余模型全部清除
 		root.detachAllChildren();
 		if (desktop != null) {
@@ -733,8 +728,12 @@ public class CircuitState extends BaseState {
 				return false;
 			}
 		}
-		if (ElecComp.COMBINE_BUTTOM == elecCompDef.getElecComp().getCombine()) {
-			if (!StringUtils.isEmpty(combineMap.get(elecCompDef.getProxy().getUuid()))) {
+
+		Base base = elecCompDef.getBase();
+		if (base != null) {
+			if (base.getRelyOnPlug() != null) {
+				return false;
+			} else if (base.getRelyOnResis() != null) {
 				return false;
 			}
 		}
@@ -754,42 +753,53 @@ public class CircuitState extends BaseState {
 //		3、解绑监听事件
 		unbindElecCompEvent(elecCompDef);
 //		4、解除组合绑定
-		if (ElecComp.COMBINE_TOP == elecCompDef.getElecComp().getCombine()) {
-			elecCompDef.getStitchList().forEach(s -> {
-				s.getContacted().setContacted(null);
-				s.setContacted(null);
-			});
-			combineMap.remove(elecCompDef.getProxy().getBaseUuid());
-			elecCompDef.getProxy().setBaseUuid(null);
+		RelyOn relyOn = elecCompDef.getRelyOn();
+		if (relyOn != null) {
+			ElecCompDef baseDef = relyOn.getBaseDef();
+			if (baseDef == null) {
+				LOG.error("组合使用元器件不可能没有底座！");
+				return;
+			}
+			for (String relyId : relyOn.getRelyIds()) {
+				Terminal terminal = elecCompDef.getTerminal(relyId);
+				terminal.getContacted().setContacted(null);
+				terminal.setContacted(null);
+			}
+			baseDef.getBase().setRelyOnPlug(null);
+			elecCompDef.getRelyOn().setBaseDef(null);
 		}
 	}
 
-	public void attachToBase(Spatial holding, ElecCompDef elecCompDef, ElecCompDef baseDef) {
+	public void attachToBase(Spatial holding, ElecCompDef relyOnDef, ElecCompDef baseDef) {
 //		FIXME 加入底座指定位置
+		RelyOn relyOn = relyOnDef.getRelyOn();
 		Node parent = baseDef.getSpatial();
 		holding.scale(0.04f);
-		holding.setLocalTranslation(0, 0, 0);
+		holding.setLocalTranslation(relyOn.getLocalTranslation());
+		holding.setLocalRotation(relyOn.getLocalRotations());
 		parent.attachChild(holding);
 
 //		2、绑定模型对象
-		elecCompDef.bindModel((Node) holding);
+		relyOnDef.bindModel((Node) holding);
 
 //		3、添加事件
-		bindElecCompEvent(elecCompDef);
+		bindElecCompEvent(relyOnDef);
 
 //		4、连接元器件与底座对应连接头
-		Map<String, Terminal> bases = baseDef.getTerminalMap();
-		elecCompDef.getStitchList().forEach(s -> {
-			Terminal terminal = bases.get(s.getId());
-			s.setContacted(terminal);
-			terminal.setContacted(s);
-		});
+		for (String relyId : relyOn.getRelyIds()) {
+			Terminal terminal1 = relyOnDef.getTerminal(relyId);
+			Terminal terminal2 = baseDef.getTerminal(relyId);
+			terminal1.setContacted(terminal2);
+			terminal2.setContacted(terminal1);
+		}
+		baseDef.getBase().setRelyOnPlug(relyOnDef);
+		relyOn.setBaseDef(baseDef);
 //		5、绑定底座对象UUID
 		String baseUuid = baseDef.getProxy().getUuid();
-		elecCompDef.getProxy().setBaseUuid(baseUuid);
-		combineMap.put(baseUuid, elecCompDef.getProxy().getUuid());
+		relyOnDef.getProxy().setBaseUuid(baseUuid);
+//		combineMap.put(baseUuid, elecCompDef.getProxy().getUuid());
 //		6、最后将元器件加入列表中
-		compList.add(elecCompDef);
+		compList.add(relyOnDef);
 	}
 
 	private void attachToCircuit(Geometry wireMdl, Wire wire) {
@@ -805,12 +815,7 @@ public class CircuitState extends BaseState {
 	}
 
 	public boolean detachFromCircuit(Wire wire) {
-		// 判断当前是否通电
-		if (wire.getTerm1().hasInputVoltageIO() || wire.getTerm1().hasOutputVoltageIO()) {
-			return false;
-		} else if (wire.getTerm2().hasInputVoltageIO() || wire.getTerm2().hasOutputVoltageIO()) {
-			return false;
-		}
+		// TODO 判断当前是否通电
 		detachWire(wire);
 		// 移除导线
 		wireList.remove(wire);
@@ -825,6 +830,8 @@ public class CircuitState extends BaseState {
 		rootWireNode.detachChild(wireMdl);
 //		3、解绑监听事件
 		unbindWireEvent(wire);
+//		4、解除连接头绑定
+		wire.unbind();
 	}
 
 	public void setTagNameVisible(boolean tagVisible) {

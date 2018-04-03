@@ -15,8 +15,8 @@ public class ElecComp implements Serializable {
 	private static final long serialVersionUID = -2680718661511929185L;
 
 	public static final int COMBINE_NONE = 0;
-	public static final int COMBINE_TOP = 1;
-	public static final int COMBINE_BUTTOM = 2;
+	public static final int COMBINE_RELY_ON = 1;
+	public static final int COMBINE_BASE = 2;
 	//
 	@Id
 	private Integer id;

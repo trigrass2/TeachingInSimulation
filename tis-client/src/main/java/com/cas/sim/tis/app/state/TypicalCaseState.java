@@ -1,7 +1,5 @@
 package com.cas.sim.tis.app.state;
 
-import java.util.Set;
-
 import org.jetbrains.annotations.Nullable;
 
 import com.cas.circuit.vo.Archive;
@@ -93,7 +91,7 @@ public class TypicalCaseState extends BaseState {
 			stateManager.detach(circuitState);
 		}
 		// 创建新的circuitState
-		circuitState = new CircuitState(typicalCase, root);
+		circuitState = new CircuitState(this, typicalCase, root);
 		stateManager.attach(circuitState);
 
 		// 尝试解析出存档对象
@@ -213,7 +211,7 @@ public class TypicalCaseState extends BaseState {
 //		取消Holding的模型对鼠标透明
 		JmeUtil.setMouseVisible(holding, true);
 		try {
-			if (ElecComp.COMBINE_TOP == elecComp.getCombine()) {
+			if (ElecComp.COMBINE_RELY_ON == elecComp.getCombine()) {
 //				需要底座的元器件不可直接加入电路板
 				Platform.runLater(() -> {
 					AlertUtil.showAlert(AlertType.WARNING, MsgUtil.getMessage("alert.warning.base.need"));
@@ -222,7 +220,7 @@ public class TypicalCaseState extends BaseState {
 			} else {
 //				1、获取相应元器件
 				ElecCompDef elecCompDef = SpringUtil.getBean(ElecCompAction.class).parse(elecComp.getCfgPath());
-				elecCompDef.setElecComp(elecComp);
+				elecCompDef.getProxy().setId(elecComp.getId());
 //				2、将元器件模型与元器件对象一起加入电路板中
 				circuitState.attachToCircuit(holding, elecCompDef);
 			}
@@ -242,31 +240,32 @@ public class TypicalCaseState extends BaseState {
 	 * 将元器件放置在指定底座上
 	 * @param baseDef 指定底座
 	 */
-	public void putDownOnBase(ElecCompDef baseDef) {
-		if (elecComp == null || ElecComp.COMBINE_TOP != elecComp.getCombine()) {
+	public void putDownOnBase(ElecCompDef def) {
+		if (elecComp == null || ElecComp.COMBINE_RELY_ON != elecComp.getCombine()) {
+			return;
+		}
+//		1、获取相应元器件
+		ElecCompDef elecCompDef = SpringUtil.getBean(ElecCompAction.class).parse(elecComp.getCfgPath());
+		elecCompDef.getProxy().setId(elecComp.getId());
+		if (def.getBase().isUseable(elecCompDef)) {
 			return;
 		}
 		try {
 //			取消Holding的模型对鼠标透明
 			JmeUtil.setMouseVisible(holding, true);
-//			1、获取相应元器件
-			ElecCompDef elecCompDef = SpringUtil.getBean(ElecCompAction.class).parse(elecComp.getCfgPath());
-			elecCompDef.setElecComp(elecComp);
 //			2、判断元器件与底座是否匹配
-			Set<String> stitchs = elecCompDef.getStitchMap().keySet();
-			Set<String> bases = baseDef.getTerminalMap().keySet();
-			if (bases.containsAll(stitchs)) {
+			if (def.getBase().checkMatched(elecCompDef)) {
 //				3、将元器件模型与元器件对象一起加入电路板中
-				circuitState.attachToBase(holding, elecCompDef, baseDef);
-				holding = null;
-				elecComp = null;
-				cameraState.setZoomEnable(true);
+				circuitState.attachToBase(holding, elecCompDef, def);
 			} else {
 				Platform.runLater(() -> {
 					AlertUtil.showAlert(AlertType.WARNING, MsgUtil.getMessage("alert.warning.base.unmatch"));
 				});
 				holding.removeFromParent();
 			}
+			holding = null;
+			elecComp = null;
+			cameraState.setZoomEnable(true);
 		} catch (Exception e) {
 //			删除出错的模型
 			holding.removeFromParent();

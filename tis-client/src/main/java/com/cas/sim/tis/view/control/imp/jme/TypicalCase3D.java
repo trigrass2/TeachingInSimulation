@@ -219,7 +219,7 @@ public class TypicalCase3D implements IContent {
 				if (enable) {
 					menus.remove(key);
 				} else {
-					AlertUtil.showAlert(AlertType.WARNING, MsgUtil.getMessage("alert.warning.wiring"));
+					AlertUtil.showAlert(AlertType.WARNING, MsgUtil.getMessage("alert.warning.power.on"));
 				}
 			});
 			menu = new ContextMenu(tag, del);
