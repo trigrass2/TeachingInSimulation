@@ -30,8 +30,8 @@ public class TypicalCaseAction extends BaseAction<TypicalCaseService> {
 		return getService().findById(id);
 	}
 
-	public List<TypicalCase> getTypicalCaseList() {
-		return getService().findTypicalCases();
+	public List<TypicalCase> getTypicalCasesByCreator(Integer creator) {
+		return getService().findTypicalCasesByCreator(creator);
 	}
 
 	public void save(TypicalCase typicalCase, Archive archive) {

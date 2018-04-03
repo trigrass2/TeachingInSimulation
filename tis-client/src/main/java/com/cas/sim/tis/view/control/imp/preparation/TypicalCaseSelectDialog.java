@@ -3,7 +3,10 @@ package com.cas.sim.tis.view.control.imp.preparation;
 import java.util.List;
 
 import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.util.TypeUtils;
 import com.cas.sim.tis.action.TypicalCaseAction;
+import com.cas.sim.tis.consts.RoleConst;
+import com.cas.sim.tis.consts.Session;
 import com.cas.sim.tis.entity.TypicalCase;
 import com.cas.sim.tis.util.AlertUtil;
 import com.cas.sim.tis.util.MsgUtil;
@@ -16,24 +19,53 @@ import com.cas.sim.tis.view.control.imp.table.Table;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.ToggleButton;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.ScrollPane.ScrollBarPolicy;
+import javafx.scene.control.Toggle;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 
 public class TypicalCaseSelectDialog extends DialogPane<Integer> {
 
 	private Table table;
+	private ToggleGroup group = new ToggleGroup();
+	private ToggleButton sys;
+	private Column<String> delete;
 
 	public TypicalCaseSelectDialog(boolean editable) {
 		VBox box = new VBox(25);
 		VBox.setVgrow(box, Priority.ALWAYS);
 		box.setAlignment(Pos.TOP_CENTER);
 		box.setPadding(new Insets(20));
+
+		HBox toggleBox = new HBox(10);
+		sys = new ToggleButton(MsgUtil.getMessage("resource.menu.sys"));
+		sys.setMinSize(100, 40);
+		sys.setStyle("-fx-font-size:14px");
+		sys.setUserData(1);
+		group.getToggles().add(sys);
+		toggleBox.getChildren().add(sys);
+		if (Session.get(Session.KEY_LOGIN_ROLE, 0) != RoleConst.ADMIN) {
+			ToggleButton mine = new ToggleButton(MsgUtil.getMessage("resource.menu.mine"));
+			mine.setMinSize(100, 40);
+			mine.setStyle("-fx-font-size:14px");
+			mine.setUserData(Session.get(Session.KEY_LOGIN_ID));
+			group.getToggles().add(mine);
+			toggleBox.getChildren().add(mine);
+		}
+		group.selectedToggleProperty().addListener((b, o, n) -> {
+			if (n == null) {
+				group.selectToggle(o);
+			} else {
+				reload();
+			}
+		});
 
 		table = new Table("table-row", "table-row-hover", "table-row-selected");
 		table.setSerial(true);
@@ -52,14 +84,14 @@ public class TypicalCaseSelectDialog extends DialogPane<Integer> {
 		table.getColumns().addAll(id, name);
 		if (editable) {
 			// 删除按钮
-			Column<String> delete = new Column<String>();
+			delete = new Column<String>();
 			delete.setCellFactory(BtnCell.forTableColumn(MsgUtil.getMessage("button.delete"), "blue-btn", rid -> {
 				AlertUtil.showConfirm(MsgUtil.getMessage("alert.confirmation.data.delete"), response -> {
 					if (response == ButtonType.NO) {
 						return;
 					}
 					SpringUtil.getBean(TypicalCaseAction.class).delete((Integer) rid);
-					refresh();
+					reload();
 				});
 			}));
 			delete.setAlignment(Pos.CENTER_RIGHT);
@@ -88,14 +120,26 @@ public class TypicalCaseSelectDialog extends DialogPane<Integer> {
 			this.setResult(row.getItems().getInteger("id"));
 		});
 
-		box.getChildren().addAll(scroll, error, ok);
+		box.getChildren().addAll(toggleBox, scroll, error, ok);
 		getChildren().add(box);
 
-		refresh();
+		group.selectToggle(sys);
 	}
 
-	private void refresh() {
-		List<TypicalCase> cases = SpringUtil.getBean(TypicalCaseAction.class).getTypicalCaseList();
+	private void reload() {
+		Toggle toggle = group.getSelectedToggle();
+		Integer creator = TypeUtils.castToInt(toggle.getUserData());
+		if (delete == null) {
+
+		} else if (sys.isSelected()) {
+			if (Session.get(Session.KEY_LOGIN_ROLE, 0) != RoleConst.ADMIN) {
+				table.getColumns().remove(delete);
+			}
+		} else if (!table.getColumns().contains(delete)) {
+			table.getColumns().add(delete);
+		}
+
+		List<TypicalCase> cases = SpringUtil.getBean(TypicalCaseAction.class).getTypicalCasesByCreator(creator);
 		JSONArray array = new JSONArray();
 		array.addAll(cases);
 		table.setItems(array);

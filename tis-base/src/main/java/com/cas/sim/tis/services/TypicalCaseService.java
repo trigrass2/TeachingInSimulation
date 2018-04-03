@@ -6,6 +6,6 @@ import com.cas.sim.tis.entity.TypicalCase;
 
 public interface TypicalCaseService extends BaseService<TypicalCase> {
 
-	List<TypicalCase> findTypicalCases();
+	List<TypicalCase> findTypicalCasesByCreator(Integer creator);
 
 }

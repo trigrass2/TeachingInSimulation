@@ -14,9 +14,12 @@ import tk.mybatis.mapper.entity.Example.Criteria;
 public class TypicalCaseServiceImpl extends AbstractService<TypicalCase> implements TypicalCaseService {
 
 	@Override
-	public List<TypicalCase> findTypicalCases() {
+	public List<TypicalCase> findTypicalCasesByCreator(Integer creator) {
 		Condition condition = new Condition(TypicalCase.class);
 		Criteria criteria = condition.createCriteria();
 		criteria.andEqualTo("del", 0);
+		criteria.andEqualTo("creator", creator);
+		condition.orderBy("createDate").desc();
 		return findByCondition(condition);
-	}}
+	}
+}
