@@ -36,8 +36,10 @@
 			<artifactId>jme3-networking</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>com.github.JavaSaBr</groupId>
-			<artifactId>JME3-JFX</artifactId>
+			<!-- <groupId>com.github.JavaSaBr</groupId> -->
+			<!-- <artifactId>JME3-JFX</artifactId> -->
+			<groupId>com.jme3x</groupId>
+			<artifactId>jme-jfx</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>de.roskenet</groupId>

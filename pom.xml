@@ -22,7 +22,7 @@
 		<!-- 引擎版本号 -->
 		<engine.version>3.2.1-stable</engine.version>
 		<!-- 引擎与javafx集成版本号 -->
-		<jme3-jfx.version>1.7.1</jme3-jfx.version>
+		<jme3-jfx.version>1.7.5-Final</jme3-jfx.version>
 		<!-- SpringBoot版本 -->
 		<springboot.version>2.0.0.M6</springboot.version>
 		<!-- Spring版本 -->
@@ -271,8 +271,10 @@
 			</dependency>
 
 			<dependency>
-				<groupId>com.github.JavaSaBr</groupId>
-				<artifactId>JME3-JFX</artifactId>
+				<!-- <groupId>com.github.JavaSaBr</groupId> -->
+				<!-- <artifactId>JME3-JFX</artifactId> -->
+				<groupId>com.jme3x</groupId>
+				<artifactId>jme-jfx</artifactId>
 				<version>${jme3-jfx.version}</version>
 				<exclusions>
 					<exclusion>

@@ -27,7 +27,6 @@ import com.cas.circuit.util.MesureResult;
 import com.cas.circuit.util.R;
 import com.cas.circuit.vo.archive.ElecCompProxy;
 import com.cas.circuit.xml.adapter.CompLogicAdapter;
-import com.cas.sim.tis.entity.ElecComp;
 import com.jme3.scene.Node;
 import com.sun.tools.internal.xjc.runtime.ZeroOneBooleanAdapter;
 
