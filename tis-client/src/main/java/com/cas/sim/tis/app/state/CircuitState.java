@@ -41,6 +41,7 @@ import com.cas.sim.tis.view.control.IContent;
 import com.cas.sim.tis.view.control.imp.jme.TypicalCase3D;
 import com.cas.sim.tis.view.controller.PageController;
 import com.cas.sim.tis.xml.util.JaxbUtil;
+import com.cas.util.StringUtil;
 import com.jme3.asset.ModelKey;
 import com.jme3.collision.CollisionResult;
 import com.jme3.font.BitmapFont;
@@ -114,6 +115,8 @@ public class CircuitState extends BaseState {
 	private boolean tagVisible;
 	private boolean tempTagVisible;
 	private boolean tageChanged;
+	private boolean transparent;
+	private boolean tempTransparent;
 	// Key:BASE UUID,Value: TOP UUID
 //	private Map<String, String> combineMap = new HashMap<String, String>();
 
@@ -159,6 +162,10 @@ public class CircuitState extends BaseState {
 		} else if (tageChanged) {
 			toggleTagName();
 			tageChanged = false;
+		}
+		if (transparent != tempTransparent) {
+			transparent = tempTransparent;
+			toggelTransparent();
 		}
 	}
 
@@ -871,5 +878,32 @@ public class CircuitState extends BaseState {
 			control.setNumber(wire.getProxy().getNumber());
 			control.setEnabled(tagVisible);
 		}
+	}
+
+	public void setElecCompTransparent(boolean transparent) {
+		this.tempTransparent = transparent;
+	}
+
+	private void toggelTransparent() {
+		if (transparent) {
+			compList.forEach(def -> {
+				String shell = def.getParam(ElecCompDef.PARAM_KEY_SHELL);
+				Node elecCompMdl = def.getSpatial();
+				StringUtil.split(shell, ',').forEach(s -> {
+//					找出元器件外壳模型
+					Spatial shellNode = elecCompMdl.getChild(s);
+					if (shellNode != null) {
+						JmeUtil.transparent(shellNode, .7f);
+					} else {
+						LOG.error("模型{}中没有名为{}的节点", root, s);
+					}
+				});
+			});
+		} else {
+			compList.forEach(def -> {
+				JmeUtil.untransparent(def.getSpatial());
+			});
+		}
+
 	}
 }

@@ -16,6 +16,7 @@
 
 	<HBox spacing="10">
 		<CheckBox fx:id="showName"  text="%rec.ckb.showName" styleClass="recognize-btn" onAction="#toggleTagName" />
+		<CheckBox fx:id="transparent" text="%rec.ckb.transparent" styleClass="recognize-btn" onAction="#toggleTransparent"/>
 		<Button text="%typical.case.drawings" styleClass="recognize-btn" onAction="#showDrawingWin"><!-- 电路图 -->
 			<graphic>
 				<SVGGlyph name="iconfont.svg.drawing" size="20" fill="WHITE" />

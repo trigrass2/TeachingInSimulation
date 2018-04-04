@@ -47,6 +47,8 @@ public class TypicalCaseBtnController implements IDistory {
 	private StackPane content;
 	@FXML
 	private CheckBox showName;
+	@FXML
+	private CheckBox transparent;
 
 	private TypicalCaseState state;
 
@@ -66,6 +68,14 @@ public class TypicalCaseBtnController implements IDistory {
 		}
 	}
 
+	@FXML
+	private void toggleTransparent() {
+		boolean selected = transparent.isSelected();
+		if (state != null && state.getCircuitState() != null) {
+			state.getCircuitState().setElecCompTransparent(selected);
+		}
+	}
+	
 	@FXML
 	private void showDrawingWin(ActionEvent event) {
 		((Button) event.getSource()).setDisable(true);
@@ -294,6 +304,7 @@ public class TypicalCaseBtnController implements IDistory {
 
 	public void clean() {
 		showName.setSelected(false);
+		transparent.setSelected(false);
 
 		if (drawingWin != null) {
 			drawingWin.close();
