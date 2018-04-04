@@ -71,7 +71,7 @@ public class CircuitState extends BaseState {
 	private static final String COMP_ROOT = "comp_root_in_circuit_state";
 	private static final String WIRE_ROOT = "wire_root_in_circuit_state";
 //	导线颜色
-	private static ColorRGBA color = ColorRGBA.Red;
+	private static ColorRGBA color = ColorRGBA.Yellow;
 //	导线半径
 	private static float width = 0.01f;
 

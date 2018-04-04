@@ -1,8 +1,6 @@
 package com.cas.sim.tis.view.control.imp.jme;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.ResourceBundle;
 
 import org.controlsfx.control.PopOver;
@@ -15,6 +13,8 @@ import com.cas.sim.tis.view.control.IDistory;
 import com.cas.sim.tis.view.controller.DrawingController;
 
 import de.felixroske.jfxsupport.GUIState;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -25,19 +25,24 @@ import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListCell;
+import javafx.scene.control.ListView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
+import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import javafx.util.Callback;
 
 public class TypicalCaseBtnController implements IDistory {
+	private static final Color COPPER = Color.rgb(186, 100, 64);
 	@FXML
 	private StackPane content;
 	@FXML
@@ -47,8 +52,6 @@ public class TypicalCaseBtnController implements IDistory {
 
 	private PopOver wirePicker;
 
-	private Label colorPicked;
-	private Label sectionPicked;
 	private Label preview;
 
 	private Stage drawingWin;
@@ -108,28 +111,29 @@ public class TypicalCaseBtnController implements IDistory {
 
 	private Node getWirePickContent() {
 		VBox node = new VBox(10);
-		node.setPadding(new Insets(10, 10, 10, 10));
+		node.setAlignment(Pos.CENTER_LEFT);
+		node.setPadding(new Insets(20));
 
-		HBox hbox = new HBox(15);
+//		HBox hbox = new HBox(15);
 
-		VBox number = new VBox(10);
+		HBox number = new HBox(10);
 		initNumberPane(number);
 
-		VBox color = new VBox(10);
+		HBox color = new HBox(10);
 		initWireColorPane(color);
 
-		VBox section = new VBox(10);
+		HBox section = new HBox(10);
 		initSectionPane(section);
 
-		hbox.getChildren().addAll(color, section, number);
+//		hbox.getChildren().addAll(color, section, number);
 
-		node.getChildren().add(hbox);
+		node.getChildren().addAll(color, section, number);
 
 		return node;
 	}
 
-	private void initNumberPane(VBox number) {
-		number.setAlignment(Pos.TOP_CENTER);
+	private void initNumberPane(HBox number) {
+		number.setAlignment(Pos.CENTER_LEFT);
 
 //		number.getChildren().add(new Label(MsgUtil.getMessage("typical.case.wire.num")));
 
@@ -138,86 +142,131 @@ public class TypicalCaseBtnController implements IDistory {
 		number.getChildren().add(new Label(MsgUtil.getMessage("typical.case.wire.preview")));
 
 		number.getChildren().add(preview = new Label("--", new WireRadius()));
-		preview.setPrefSize(80, 80);
+		preview.setPrefSize(145,80);
 		preview.setAlignment(Pos.CENTER);
 		preview.setContentDisplay(ContentDisplay.TOP);
-		VBox.setVgrow(preview, Priority.ALWAYS);
+		HBox.setHgrow(preview, Priority.ALWAYS);
 	}
 
-	private void initSectionPane(VBox section) {
-		section.setAlignment(Pos.TOP_CENTER);
+	private void initSectionPane(HBox section) {
+		section.setAlignment(Pos.CENTER_LEFT);
 
 		section.getChildren().add(new Label(MsgUtil.getMessage("typical.case.wire.radius")));
-		List<Label> list = new ArrayList<>();
-		list.add(new Label("0.75mm", new WireRadius(2, Color.rgb(186, 100, 64), 6, Color.TRANSPARENT))); //
-		list.add(new Label("1.00mm", new WireRadius(3, Color.rgb(186, 100, 64), 7, Color.TRANSPARENT))); //
-		list.add(new Label("1.50mm", new WireRadius(4, Color.rgb(186, 100, 64), 8, Color.TRANSPARENT))); //
-		list.add(new Label("2.50mm", new WireRadius(6, Color.rgb(186, 100, 64), 10, Color.TRANSPARENT))); //
-		list.add(new Label("4.00mm", new WireRadius(8, Color.rgb(186, 100, 64), 12, Color.TRANSPARENT)));//
+		ObservableList<Label> list = FXCollections.observableArrayList();
+		list.addAll(new Label("0.75mm²", new WireRadius(3, COPPER, 10, Color.TRANSPARENT)));
+		list.addAll(new Label("1.00mm²", new WireRadius(4, COPPER, 10, Color.TRANSPARENT)));
+		list.addAll(new Label("1.50mm²", new WireRadius(6, COPPER, 10, Color.TRANSPARENT)));
+		list.addAll(new Label("2.50mm²", new WireRadius(8, COPPER, 10, Color.TRANSPARENT)));
+		list.addAll(new Label("4.00mm²", new WireRadius(10, COPPER, 10, Color.TRANSPARENT)));
 
-		onSectionSelected(list.get(0));
+		ComboBox<Label> sectionCombo = new ComboBox<Label>();
+		sectionCombo.getItems().addAll(list);
+		// 不定义显示样式的话，下拉选项会在选择一次之后消失，这应该是FX的一个BUG
+		sectionCombo.setCellFactory(new Callback<ListView<Label>, ListCell<Label>>() {
+			@Override
+			public ListCell<Label> call(ListView<Label> p) {
+				return new ListCell<Label>() {
+					private final WireRadius copper = new WireRadius();
+					private final Label label = new Label("", copper);
+					{
+						copper.setInnerFill(COPPER);
+						copper.setOuterRadius(16);
+					}
 
-		list.forEach(l -> {
-			l.getStyleClass().add("picker-item");
-			l.setOnMouseClicked(e -> onSectionSelected(l));
+					@Override
+					protected void updateItem(Label item, boolean empty) {
+						super.updateItem(item, empty);
+						if (item == null || empty) {
+							setGraphic(null);
+						} else {
+							label.setText(item.getText());
+							WireRadius copper = (WireRadius) item.getGraphic();
+							double radius = copper.getInnerRadius();
+							this.copper.setInnerRadius(radius);
+							setGraphic(label);
+						}
+					}
+				};
+			}
 		});
-		section.getChildren().addAll(list);
+		sectionCombo.getSelectionModel().selectedItemProperty().addListener((b, o, n) -> {
+			onSectionSelected(n);
+		});
+		sectionCombo.getSelectionModel().select(0);
+		section.getChildren().add(sectionCombo);
 	}
 
 	private void onSectionSelected(Label l) {
-		if (sectionPicked != null) {
-			sectionPicked.getStyleClass().remove("picker-item-selected");
-		}
-		sectionPicked = l;
-		sectionPicked.getStyleClass().add("picker-item-selected");
 
-		preview.setText(sectionPicked.getText());
+		preview.setText(l.getText());
 
-		WireRadius cir = (WireRadius) sectionPicked.getGraphic();
+		WireRadius cir = (WireRadius) l.getGraphic();
 
 		WireRadius wr = (WireRadius) preview.getGraphic();
 
+		double radius = cir.getInnerRadius();
 		wr.setInnerFill(cir.getInnerFill());
-		wr.setInnerRadius(cir.getInnerRadius());
-		wr.setOuterRadius(cir.getOuterRadius());
+		wr.setInnerRadius(radius);
+		wr.setOuterRadius(radius + 4);
 
 		if (state != null && state.getCircuitState() != null) {
-			state.getCircuitState().setWidth((float) cir.getInnerRadius() * 2);
+			state.getCircuitState().setWidth((float) radius * 2);
 		}
 	}
 
-	private void initWireColorPane(VBox color) {
-		color.setAlignment(Pos.TOP_CENTER);
+	private void initWireColorPane(HBox color) {
+		color.setAlignment(Pos.CENTER_LEFT);
 
 		color.getChildren().add(new Label(MsgUtil.getMessage("typical.case.wire.color")));
-		List<Label> list = new ArrayList<>();
-		list.add(new Label(MsgUtil.getMessage("typical.case.wire.red"), new Circle(10, Color.RED))); //
-		list.add(new Label(MsgUtil.getMessage("typical.case.wire.blank"), new Circle(10, Color.BLACK))); //
-		list.add(new Label(MsgUtil.getMessage("typical.case.wire.green"), new Circle(10, Color.GREEN))); //
-		list.add(new Label(MsgUtil.getMessage("typical.case.wire.yellow"), new Circle(10, Color.YELLOW))); //
-		list.add(new Label(MsgUtil.getMessage("typical.case.wire.blue"), new Circle(10, Color.BLUE)));//
+		ObservableList<Rectangle> list = FXCollections.observableArrayList();
+		list.add(new Rectangle(95, 20, Color.YELLOW)); //
+		list.add(new Rectangle(95, 20, Color.GREEN)); //
+		list.add(new Rectangle(95, 20, Color.RED)); //
+		list.add(new Rectangle(95, 20, Color.BLUE));//
+		list.add(new Rectangle(95, 20, Color.BLACK)); //
 
-		onColorSelected(list.get(0));
-
-		list.forEach(l -> {
-			l.getStyleClass().add("picker-item");
-			l.setOnMouseClicked(e -> onColorSelected(l));
+		list.forEach(r -> {
+			r.setStroke(Color.GRAY);
 		});
 
-		color.getChildren().addAll(list);
+		ComboBox<Rectangle> colorCombo = new ComboBox<Rectangle>();
+		colorCombo.getItems().addAll(list);
+		// 不定义显示样式的话，下拉选项会在选择一次之后消失，这应该是FX的一个BUG
+		colorCombo.setCellFactory(new Callback<ListView<Rectangle>, ListCell<Rectangle>>() {
+			@Override
+			public ListCell<Rectangle> call(ListView<Rectangle> p) {
+				return new ListCell<Rectangle>() {
+					private final Rectangle rectangle;
+					{
+						setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
+						rectangle = new Rectangle(95, 20);
+						rectangle.setStroke(Color.GRAY);
+					}
+
+					@Override
+					protected void updateItem(Rectangle item, boolean empty) {
+						super.updateItem(item, empty);
+						if (item == null || empty) {
+
+						} else {
+							rectangle.setFill(item.getFill());
+							setGraphic(rectangle);
+						}
+					}
+				};
+			}
+		});
+		colorCombo.getSelectionModel().selectedItemProperty().addListener((b, o, n) -> {
+			onColorSelected(n);
+		});
+		colorCombo.getSelectionModel().select(0);
+		color.getChildren().add(colorCombo);
 	}
 
-	private void onColorSelected(Label l) {
-		if (colorPicked != null) {
-			colorPicked.getStyleClass().remove("picker-item-selected");
-		}
-		colorPicked = l;
-		colorPicked.getStyleClass().add("picker-item-selected");
-
-		Circle cir = (Circle) colorPicked.getGraphic();
+	private void onColorSelected(Rectangle rectangle) {
 		WireRadius wr = (WireRadius) preview.getGraphic();
 
-		Color color = (Color) cir.getFill();
+		Color color = (Color) rectangle.getFill();
 		wr.setOuterFill(color);
 
 		if (state != null && state.getCircuitState() != null) {
@@ -234,6 +283,9 @@ public class TypicalCaseBtnController implements IDistory {
 		if (drawingWin != null) {
 			drawingWin.close();
 		}
+		if (wirePicker.isShowing()) {
+			wirePicker.hide();
+		}
 	}
 
 	public void setUI(TypicalCase3D typicalCase3D) {
@@ -242,7 +294,7 @@ public class TypicalCaseBtnController implements IDistory {
 
 	public void clean() {
 		showName.setSelected(false);
-		
+
 		if (drawingWin != null) {
 			drawingWin.close();
 		}
