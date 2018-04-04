@@ -43,7 +43,7 @@ public class PageController implements Initializable {
 
 	@FXML
 	private Decoration decoration;
-	
+
 	@FXML
 	private Button back;
 
@@ -150,10 +150,19 @@ public class PageController implements Initializable {
 			return;
 		}
 		if (PageLevel.Level1 == level || level == null) {
+			if (this.level1Content != null) {
+				this.level1Content.distroy();
+			}
+			if (this.level2Content != null) {
+				this.level2Content.distroy();
+			}
 			this.level = PageLevel.Level1;
 			this.level1Content = content;
 			this.level2Content = null;
 		} else if (PageLevel.Level2 == level) {
+			if (this.level2Content != null) {
+				this.level2Content.distroy();
+			}
 			this.level = PageLevel.Level2;
 			if (this.level2Content != null) {
 				this.level2Content.distroy();

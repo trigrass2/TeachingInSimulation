@@ -142,7 +142,7 @@ public class TypicalCaseBtnController implements IDistory {
 		number.getChildren().add(new Label(MsgUtil.getMessage("typical.case.wire.preview")));
 
 		number.getChildren().add(preview = new Label("--", new WireRadius()));
-		preview.setPrefSize(145,80);
+		preview.setPrefSize(145, 80);
 		preview.setAlignment(Pos.CENTER);
 		preview.setContentDisplay(ContentDisplay.TOP);
 		HBox.setHgrow(preview, Priority.ALWAYS);
@@ -170,7 +170,7 @@ public class TypicalCaseBtnController implements IDistory {
 					private final Label label = new Label("", copper);
 					{
 						copper.setInnerFill(COPPER);
-						copper.setOuterRadius(16);
+						copper.setOuterRadius(10);
 					}
 
 					@Override
@@ -219,11 +219,11 @@ public class TypicalCaseBtnController implements IDistory {
 
 		color.getChildren().add(new Label(MsgUtil.getMessage("typical.case.wire.color")));
 		ObservableList<Rectangle> list = FXCollections.observableArrayList();
-		list.add(new Rectangle(95, 20, Color.YELLOW)); //
-		list.add(new Rectangle(95, 20, Color.GREEN)); //
-		list.add(new Rectangle(95, 20, Color.RED)); //
-		list.add(new Rectangle(95, 20, Color.BLUE));//
-		list.add(new Rectangle(95, 20, Color.BLACK)); //
+		list.add(new Rectangle(90, 20, Color.YELLOW)); //
+		list.add(new Rectangle(90, 20, Color.GREEN)); //
+		list.add(new Rectangle(90, 20, Color.RED)); //
+		list.add(new Rectangle(90, 20, Color.BLUE));//
+		list.add(new Rectangle(90, 20, Color.BLACK)); //
 
 		list.forEach(r -> {
 			r.setStroke(Color.GRAY);
@@ -239,7 +239,7 @@ public class TypicalCaseBtnController implements IDistory {
 					private final Rectangle rectangle;
 					{
 						setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
-						rectangle = new Rectangle(95, 20);
+						rectangle = new Rectangle(90, 20);
 						rectangle.setStroke(Color.GRAY);
 					}
 
@@ -283,7 +283,7 @@ public class TypicalCaseBtnController implements IDistory {
 		if (drawingWin != null) {
 			drawingWin.close();
 		}
-		if (wirePicker.isShowing()) {
+		if (wirePicker != null && wirePicker.isShowing()) {
 			wirePicker.hide();
 		}
 	}
