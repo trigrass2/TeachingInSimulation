@@ -7,8 +7,11 @@ import java.util.ResourceBundle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -19,10 +22,18 @@ public class DialogPane<R>extends VBox {
 	private HBox header;
 	@FXML
 	private Label title;
+	@FXML
+	private Button close;
 
 	protected Dialog<R> dialog;
 	private double xOffset;
 	private double yOffset;
+
+	private BooleanProperty closeable = new SimpleBooleanProperty(true) {
+		public void set(boolean newValue) {
+			close.setVisible(newValue);
+		};
+	};
 
 	public DialogPane() {
 		loadFXML();
@@ -74,5 +85,13 @@ public class DialogPane<R>extends VBox {
 	@FXML
 	private void close() {
 		dialog.close();
+	}
+
+	public BooleanProperty closeableProperty() {
+		return closeable;
+	}
+
+	public void setCloseable(boolean closeable) {
+		closeableProperty().set(closeable);
 	}
 }

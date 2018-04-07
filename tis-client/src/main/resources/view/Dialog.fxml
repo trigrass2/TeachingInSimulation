@@ -14,7 +14,7 @@
 				<Label fx:id="title" styleClass="font14" />
 				<HBox alignment="CENTER_RIGHT" HBox.hgrow="ALWAYS">
 					<children>
-						<Button styleClass="img-btn" mnemonicParsing="false" onAction="#close">
+						<Button fx:id="close" styleClass="img-btn" mnemonicParsing="false" onAction="#close">
 							<graphic>
 								<SVGGlyph name="iconfont.svg.close" fill="#747474" size="10" />
 							</graphic>

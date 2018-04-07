@@ -44,6 +44,7 @@ import com.github.pagehelper.PageInfo;
 import de.felixroske.jfxsupport.GUIState;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -458,49 +459,51 @@ public class ResourceList extends HBox implements IContent {
 		// 禁用上传按钮
 		((Button) event.getSource()).setDisable(true);
 		uploadTip.setText(MsgUtil.getMessage("ftp.upload.waiting"));
-		AlertUtil.showConfirm(MsgUtil.getMessage("ftp.upload.confirmation"), (resp) -> {
-			if (ButtonType.NO == resp) {
-				((Button) event.getSource()).setDisable(false);
-				uploadTip.setText(null);
-				return;
-			}
-			String filePath = uploadFile.getAbsolutePath();
-			String fileName = FileUtil.getFileName(filePath);
-			String ext = FileUtil.getFileExt(filePath);
-			// 重命名
-			String rename = UUID.randomUUID() + "." + ext;
-			// 上传文件到FTP
-			boolean uploaded = SpringUtil.getBean(FTPUtils.class).uploadFile(ResourceConsts.FTP_RES_PATH, uploadFile, rename);
-			if (!uploaded) {
-				AlertUtil.showAlert(AlertType.ERROR, MsgUtil.getMessage("ftp.upload.failure"));
+		
+		Task<Void> task = new Task<Void>() {
+			
+			@Override
+			protected Void call() throws Exception {
+				String filePath = uploadFile.getAbsolutePath();
+				String fileName = FileUtil.getFileName(filePath);
+				String ext = FileUtil.getFileExt(filePath);
+				// 重命名
+				String rename = UUID.randomUUID() + "." + ext;
+				// 上传文件到FTP
+				boolean uploaded = SpringUtil.getBean(FTPUtils.class).uploadFile(ResourceConsts.FTP_RES_PATH, uploadFile, rename);
+				if (!uploaded) {
+					AlertUtil.showAlert(AlertType.ERROR, MsgUtil.getMessage("ftp.upload.failure"));
+					// 启用上传按钮
+					((Button) event.getSource()).setDisable(false);
+					return null;
+				}
+				// 封装资源记录
+				int type = ResourceType.parseType(ext);
+				Resource resource = new Resource();
+				resource.setKeyword(keywords.getText());
+				resource.setPath(rename);
+				resource.setName(fileName);
+				try {
+					resource.setType(type);
+				} catch (Exception e) {
+					LOG.warn("解析文件后缀名出现错误", e);
+					throw e;
+				}
+				// 记录到数据库
+				Integer id = action.addResource(resource);
+				if (id != null) {
+					AlertUtil.showAlert(AlertType.INFORMATION, MsgUtil.getMessage("ftp.upload.success"));
+				} else {
+					AlertUtil.showAlert(AlertType.ERROR, MsgUtil.getMessage("ftp.upload.converter.failure"));
+				}
 				// 启用上传按钮
 				((Button) event.getSource()).setDisable(false);
-				return;
+				clear();
+				pagination.reload();
+				return null;
 			}
-			// 封装资源记录
-			int type = ResourceType.parseType(ext);
-			Resource resource = new Resource();
-			resource.setKeyword(keywords.getText());
-			resource.setPath(rename);
-			resource.setName(fileName);
-			try {
-				resource.setType(type);
-			} catch (Exception e) {
-				LOG.warn("解析文件后缀名出现错误", e);
-				throw e;
-			}
-			// 记录到数据库
-			Integer id = action.addResource(resource);
-			if (id != null) {
-				AlertUtil.showAlert(AlertType.INFORMATION, MsgUtil.getMessage("ftp.upload.success"));
-			} else {
-				AlertUtil.showAlert(AlertType.ERROR, MsgUtil.getMessage("ftp.upload.converter.failure"));
-			}
-			// 启用上传按钮
-			((Button) event.getSource()).setDisable(false);
-			clear();
-			pagination.reload();
-		});
+		};
+		new Thread(task).start();
 	}
 
 	private void clear() {
