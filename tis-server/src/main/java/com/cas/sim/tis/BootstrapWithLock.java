@@ -14,7 +14,6 @@ import cas.lock.LockThread;
 import javafx.application.Platform;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.ButtonType;
 
 /**
  * 硬加密验证【locker-1.0.0】
@@ -36,7 +35,7 @@ public class BootstrapWithLock {
 			@Override
 			public void doLockWrong(String errorCode) {
 				PlatformImpl.startup(() -> {
-					Alert alert = new Alert(AlertType.ERROR, null, ButtonType.OK);
+					Alert alert = new Alert(AlertType.ERROR);
 					alert.setHeaderText(null);
 					alert.setContentText(ResourceBundle.getBundle("i18n/messages").getString("unavaliable.locker"));
 					alert.showAndWait();

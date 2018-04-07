@@ -8,7 +8,6 @@ import com.sun.javafx.application.PlatformImpl;
 import javafx.application.Platform;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.ButtonType;
 
 @SuppressWarnings("restriction")
 public class BootstrapWithLockAndAuthority {
@@ -24,7 +23,7 @@ public class BootstrapWithLockAndAuthority {
             javafx.application.Application.launch(BootstrapWithAuthority.class, args);
         } else {
         	PlatformImpl.startup(() -> {
-				Alert alert = new Alert(AlertType.ERROR, null, ButtonType.OK);
+				Alert alert = new Alert(AlertType.ERROR);
 				alert.setHeaderText(null);
 				alert.setContentText(ResourceBundle.getBundle("i18n/messages").getString("unavaliable.locker"));
 				alert.showAndWait();
