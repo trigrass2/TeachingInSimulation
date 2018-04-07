@@ -45,6 +45,12 @@ public enum SocketUtil {
 						Platform.exit();
 						System.exit(0);
 					});
+				} else {
+					Platform.runLater(() -> {
+						AlertUtil.showAlert(AlertType.WARNING, MsgUtil.getMessage("server.disconnect"));
+						Platform.exit();
+						System.exit(0);
+					});
 				}
 			}
 

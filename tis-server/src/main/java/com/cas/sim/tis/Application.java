@@ -33,7 +33,7 @@ public class Application implements CommandLineRunner {
 	@Resource
 	private Server coreServer;
 
-	private static void jul2slf4j() {
+	public static void jul2slf4j() {
 		java.util.logging.LogManager.getLogManager().reset();
 		SLF4JBridgeHandler.removeHandlersForRootLogger();
 //		设置JUL的日志级别
