@@ -42,6 +42,7 @@ import com.cas.util.StringUtil;
 import com.github.pagehelper.PageInfo;
 
 import de.felixroske.jfxsupport.GUIState;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
@@ -459,9 +460,9 @@ public class ResourceList extends HBox implements IContent {
 		// 禁用上传按钮
 		((Button) event.getSource()).setDisable(true);
 		uploadTip.setText(MsgUtil.getMessage("ftp.upload.waiting"));
-		
+
 		Task<Void> task = new Task<Void>() {
-			
+
 			@Override
 			protected Void call() throws Exception {
 				String filePath = uploadFile.getAbsolutePath();
@@ -491,15 +492,17 @@ public class ResourceList extends HBox implements IContent {
 				}
 				// 记录到数据库
 				Integer id = action.addResource(resource);
-				if (id != null) {
-					AlertUtil.showAlert(AlertType.INFORMATION, MsgUtil.getMessage("ftp.upload.success"));
-				} else {
-					AlertUtil.showAlert(AlertType.ERROR, MsgUtil.getMessage("ftp.upload.converter.failure"));
-				}
-				// 启用上传按钮
-				((Button) event.getSource()).setDisable(false);
-				clear();
-				pagination.reload();
+				Platform.runLater(() -> {
+					if (id != null) {
+						AlertUtil.showAlert(AlertType.INFORMATION, MsgUtil.getMessage("ftp.upload.success"));
+					} else {
+						AlertUtil.showAlert(AlertType.ERROR, MsgUtil.getMessage("ftp.upload.converter.failure"));
+					}
+					// 启用上传按钮
+					((Button) event.getSource()).setDisable(false);
+					clear();
+					pagination.reload();
+				});
 				return null;
 			}
 		};

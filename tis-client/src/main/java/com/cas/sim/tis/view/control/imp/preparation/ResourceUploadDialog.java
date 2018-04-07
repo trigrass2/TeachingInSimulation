@@ -20,6 +20,7 @@ import com.cas.util.FileUtil;
 import com.cas.util.StringUtil;
 
 import de.felixroske.jfxsupport.GUIState;
+import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
@@ -175,14 +176,16 @@ public class ResourceUploadDialog extends DialogPane<Integer> {
 				}
 				// 记录到数据库
 				Integer id = SpringUtil.getBean(ResourceAction.class).addResource(resource);
-				if (id == null) {
-					uploadTip.setText(MsgUtil.getMessage("ftp.upload.converter.failure"));
-					// 启用上传按钮
-					((Button) event.getSource()).setDisable(false);
-					setCloseable(true);
-				} else {
-					setResult(id);
-				}
+				Platform.runLater(() -> {
+					if (id == null) {
+						uploadTip.setText(MsgUtil.getMessage("ftp.upload.converter.failure"));
+						// 启用上传按钮
+						((Button) event.getSource()).setDisable(false);
+						setCloseable(true);
+					} else {
+						setResult(id);
+					}
+				});
 				return null;
 			}
 		};
