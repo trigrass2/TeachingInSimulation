@@ -23,6 +23,8 @@ import com.cas.sim.tis.vo.ResourceInfo;
 import com.cas.util.DateUtil;
 import com.teamdev.jxbrowser.chromium.Browser;
 import com.teamdev.jxbrowser.chromium.BrowserType;
+import com.teamdev.jxbrowser.chromium.DownloadHandler;
+import com.teamdev.jxbrowser.chromium.DownloadItem;
 import com.teamdev.jxbrowser.chromium.javafx.BrowserView;
 
 import javafx.beans.property.DoubleProperty;
@@ -53,6 +55,7 @@ import javafx.scene.paint.Color;
  */
 public class ResourceViewer extends VBox implements IContent {
 	private static final Logger LOG = LoggerFactory.getLogger(ResourceViewer.class);
+
 	@FXML
 	private StackPane viewer;
 	@FXML
@@ -142,7 +145,7 @@ public class ResourceViewer extends VBox implements IContent {
 	/**
 	 * 创建图片浏览
 	 */
-	public void createImageViewer() {
+	private void createImageViewer() {
 		HTTPUtils utils = SpringUtil.getBean(HTTPUtils.class);
 //		Image image = new Image("http://192.168.1.19:8082/Test/1516772514400.png");
 		String url = utils.getFullPath(ResourceConsts.FTP_RES_PATH + resource.getPath());
@@ -200,7 +203,37 @@ public class ResourceViewer extends VBox implements IContent {
 			return;
 		}
 		Browser browser = new Browser(BrowserType.LIGHTWEIGHT);
+		// 禁止下载文件
+		browser.setDownloadHandler(new DownloadHandler() {
+			@Override
+			public boolean allowDownload(DownloadItem download) {
+				return false;
+			}
+		});
 		browser.loadURL(pdfPath);
+		BrowserView view = new BrowserView(browser);
+		viewer.getChildren().add(view);
+	}
+
+	/**
+	 * 创建PDF查看器
+	 */
+	private void createPDFViewer() {
+		HTTPUtils utils = SpringUtil.getBean(HTTPUtils.class);
+		String url = utils.getFullPath(ResourceConsts.FTP_RES_PATH + resource.getPath());
+		if (url == null) {
+			return;
+		}
+
+		Browser browser = new Browser(BrowserType.LIGHTWEIGHT);
+		// 禁止下载文件
+		browser.setDownloadHandler(new DownloadHandler() {
+			@Override
+			public boolean allowDownload(DownloadItem download) {
+				return false;
+			}
+		});
+		browser.loadURL(url);
 		BrowserView view = new BrowserView(browser);
 		viewer.getChildren().add(view);
 	}
@@ -220,22 +253,6 @@ public class ResourceViewer extends VBox implements IContent {
 		viewer.getChildren().add(player);
 //		player.loadVideo("http://192.168.1.19:8082/Test/Mux140928003405.avi");
 //		player.loadVideo("http://192.168.1.19:8082/resources/4dae3b67-1d55-4125-a577-4086585464c1.mp4");
-	}
-
-	/**
-	 * 创建PDF查看器
-	 */
-	private void createPDFViewer() {
-		HTTPUtils utils = SpringUtil.getBean(HTTPUtils.class);
-		String url = utils.getFullPath(ResourceConsts.FTP_RES_PATH + resource.getPath());
-		if (url == null) {
-			return;
-		}
-
-		Browser browser = new Browser(BrowserType.LIGHTWEIGHT);
-		browser.loadURL(url);
-		BrowserView view = new BrowserView(browser);
-		viewer.getChildren().add(view);
 	}
 
 	/**
@@ -302,6 +319,8 @@ public class ResourceViewer extends VBox implements IContent {
 		for (Node child : viewer.getChildren()) {
 			if (child instanceof IDistory) {
 				((IDistory) child).distroy();
+			} else if (child instanceof BrowserView) {
+				((BrowserView) child).getBrowser().dispose();
 			}
 		}
 	}
