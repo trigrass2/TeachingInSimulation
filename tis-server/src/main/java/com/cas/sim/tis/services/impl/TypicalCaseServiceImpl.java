@@ -22,4 +22,10 @@ public class TypicalCaseServiceImpl extends AbstractService<TypicalCase> impleme
 		condition.orderBy("createDate").desc();
 		return findByCondition(condition);
 	}
+
+	@Override
+	public int saveRetId(TypicalCase typicalCase) {
+		saveUseGeneratedKeys(typicalCase);
+		return typicalCase.getId();
+	}
 }

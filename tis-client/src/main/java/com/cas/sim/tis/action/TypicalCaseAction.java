@@ -16,6 +16,7 @@ import com.cas.circuit.vo.Archive;
 import com.cas.sim.tis.consts.Session;
 import com.cas.sim.tis.entity.TypicalCase;
 import com.cas.sim.tis.services.TypicalCaseService;
+import com.cas.sim.tis.services.exception.ServiceException;
 import com.cas.sim.tis.util.FTPUtils;
 import com.cas.sim.tis.util.SpringUtil;
 import com.cas.sim.tis.xml.util.JaxbUtil;
@@ -35,37 +36,40 @@ public class TypicalCaseAction extends BaseAction<TypicalCaseService> {
 	}
 
 	public void save(TypicalCase typicalCase, Archive archive) {
-//		持久化
+//		1、 将存档对象转换为XML文件
 		String xmlContent = JaxbUtil.convertToXml(archive, "utf-8");
-		LOG.info("用户的案例存档内容：{}", xmlContent);
+		LOG.debug("用户的案例存档内容：{}", xmlContent);
 //		将存档内容保存到临时目录中。
-		Path path;
+		Path path = null;
 		try {
 			path = Files.createTempFile("tis-archive-", ".xml");
 			Files.write(path, xmlContent.getBytes());
-			LOG.info("存档成功:{}", path);
+			LOG.debug("存档成功:{}", path);
 		} catch (IOException e) {
 			LOG.error("存档失败", e);
-			throw new RuntimeException(e);
+			throw new ServiceException("存档失败");
 		}
-		boolean success = false;
+
+//		2、将案例的记录保存到数据库中
 		if (typicalCase.getId() == null) {
 //			待新增
-			success = SpringUtil.getBean(FTPUtils.class).uploadFile("/archives", path.toFile(), path.getFileName().toString());
-//			
 			typicalCase.setCreator(Session.get(Session.KEY_LOGIN_ID));
 			typicalCase.setArchivePath(MessageFormat.format("/archives/{0}", path.getFileName().toString()));
-
-			getService().save(typicalCase);
+//			FIXME 修改当前案例的主键ID，原因：前端根据ID判断是新增还是修改。
+			int id = getService().saveRetId(typicalCase);
+//			！由于是使用RMI，不能实现保存对象就能将ID自动填充的效果，所以保存后，手动设置ID！
+			typicalCase.setId(id);
 		} else {
-			success = SpringUtil.getBean(FTPUtils.class).uploadFile("/archives", path.toFile(), typicalCase.getArchivePath());
 			typicalCase.setUpdater(Session.get(Session.KEY_LOGIN_ID));
 			getService().update(typicalCase);
 		}
-		if (success) {
-			LOG.info("存档{}已保存到服务器", path);
-		}
 
+//		3、将文件上传到FTP服务器
+		try {
+			SpringUtil.getBean(FTPUtils.class).uploadFile("/archives", path.toFile(), typicalCase.getArchivePath());
+		} catch (Exception e) {
+			LOG.error("文件{}上传失败！会在下次运行程序时上传", path.toFile());
+		}
 	}
 
 	public void modify(TypicalCase typicalCase) {

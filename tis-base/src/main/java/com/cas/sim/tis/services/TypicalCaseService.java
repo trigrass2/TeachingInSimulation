@@ -8,4 +8,6 @@ public interface TypicalCaseService extends BaseService<TypicalCase> {
 
 	List<TypicalCase> findTypicalCasesByCreator(Integer creator);
 
+	int saveRetId(TypicalCase typicalCase);
+
 }
