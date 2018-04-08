@@ -74,7 +74,6 @@ public class TypicalCaseState extends BaseState {
 	@Override
 	public void update(float tpf) {
 		pointLight.setPosition(cam.getLocation());
-		root.rotate(0, tpf, 0);
 		super.update(tpf);
 	}
 
