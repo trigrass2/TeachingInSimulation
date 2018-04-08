@@ -1,5 +1,9 @@
 package com.cas.sim.tis.consts;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import javafx.scene.paint.Color;
 
 public enum ResourceType {
@@ -104,5 +108,14 @@ public enum ResourceType {
 			}
 		}
 		throw new RuntimeException("不支持的文件后缀名:" + suffix);
+	}
+
+	public static String[] getAllSuffixs() {
+		List<String> suffixs = new ArrayList<>();
+		ResourceType[] all = ResourceType.values();
+		for (int i = 0; i < all.length; i++) {
+			suffixs.addAll(Arrays.asList(all[i].getSuffixs()));
+		}
+		return suffixs.toArray(new String[suffixs.size()]);
 	}
 }

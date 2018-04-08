@@ -3,7 +3,6 @@ package com.cas.sim.tis.view.control.imp.resource;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -409,15 +408,14 @@ public class ResourceList extends HBox implements IContent {
 
 			});
 		}
-
-		pic.setText(MsgUtil.getMessage("resource.pic") + ":" + picNum);
-		swf.setText(MsgUtil.getMessage("resource.swf") + ":" + swfNum);
-		video.setText(MsgUtil.getMessage("resource.video") + ":" + videoNum);
-		txt.setText(MsgUtil.getMessage("resource.txt") + ":" + txtNum);
-		word.setText(MsgUtil.getMessage("resource.word") + ":" + wordNum);
-		ppt.setText(MsgUtil.getMessage("resource.ppt") + ":" + pptNum);
-		excel.setText(MsgUtil.getMessage("resource.excel") + ":" + excelNum);
-		pdf.setText(MsgUtil.getMessage("resource.pdf") + ":" + pdfNum);
+		pic.setText(String.format("%s:%s", MsgUtil.getMessage("resource.pic"), picNum));
+		swf.setText(String.format("%s:%s", MsgUtil.getMessage("resource.swf"), swfNum));
+		video.setText(String.format("%s:%s", MsgUtil.getMessage("resource.video"), videoNum));
+		txt.setText(String.format("%s:%s", MsgUtil.getMessage("resource.txt"), txtNum));
+		word.setText(String.format("%s:%s", MsgUtil.getMessage("resource.word"), wordNum));
+		ppt.setText(String.format("%s:%s", MsgUtil.getMessage("resource.ppt"), pptNum));
+		excel.setText(String.format("%s:%s", MsgUtil.getMessage("resource.excel"), excelNum));
+		pdf.setText(String.format("%s:%s", MsgUtil.getMessage("resource.pdf"), pdfNum));
 	}
 
 	@FXML
@@ -435,7 +433,7 @@ public class ResourceList extends HBox implements IContent {
 		// 打开文件管理器
 		if (chooser == null) {
 			chooser = new FileChooser();
-			chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter(MsgUtil.getMessage("resource.all"), "*.doc", "*.docx", "*.xls", "*.xlsx", "*.ppt", "*.pptx", "*.pdf", "*.png", "*.jpg", "*.swf", "*.mp4", "*.flv", "*.wmv", "*.rmvb", "*.avi", "*.txt"));
+			chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter(MsgUtil.getMessage("resource.all"), ResourceType.getAllSuffixs()));
 			chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter(MsgUtil.getMessage("resource.word"), ResourceType.WORD.getSuffixs()));
 			chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter(MsgUtil.getMessage("resource.excel"), ResourceType.EXCEL.getSuffixs()));
 			chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter(MsgUtil.getMessage("resource.ppt"), ResourceType.PPT.getSuffixs()));
@@ -450,7 +448,7 @@ public class ResourceList extends HBox implements IContent {
 			return;
 		}
 		this.filePath.setText(target.getAbsolutePath());
-		this.size.setText(getFileSize(target));
+		this.size.setText(FileUtil.getFileSize(target));
 		this.uploadFile = target;
 		this.chooser.setInitialDirectory(target.getParentFile());
 	}
@@ -541,28 +539,6 @@ public class ResourceList extends HBox implements IContent {
 		clear();
 		pagination.reload();
 		return new Region[] { this };
-	}
-
-	public static String getFileSize(File file) {
-		String size = "";
-		if (file.exists() && file.isFile()) {
-			long fileS = file.length();
-			DecimalFormat df = new DecimalFormat("#.00");
-			if (fileS < 1024) {
-				size = df.format((double) fileS) + "BT";
-			} else if (fileS < 1048576) {
-				size = df.format((double) fileS / 1024) + "KB";
-			} else if (fileS < 1073741824) {
-				size = df.format((double) fileS / 1048576) + "MB";
-			} else {
-				size = df.format((double) fileS / 1073741824) + "GB";
-			}
-		} else if (file.exists() && file.isDirectory()) {
-			size = "";
-		} else {
-			size = "0BT";
-		}
-		return size;
 	}
 
 	@Override
