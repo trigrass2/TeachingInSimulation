@@ -14,15 +14,15 @@
 <VBox pickOnBounds="false" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.cas.sim.tis.view.control.imp.jme.TypicalCaseBtnController">
 	<VBox VBox.vgrow="ALWAYS" mouseTransparent="true" />
 
-	<HBox spacing="10">
-		<CheckBox fx:id="showName"  text="%rec.ckb.showName" styleClass="recognize-btn" onAction="#toggleTagName" />
-		<CheckBox fx:id="transparent" text="%rec.ckb.transparent" styleClass="recognize-btn" onAction="#toggleTransparent"/>
-		<Button text="%typical.case.drawings" styleClass="recognize-btn" onAction="#showDrawingWin"><!-- 电路图 -->
+	<HBox spacing="10" pickOnBounds="false">
+		<CheckBox fx:id="showName" text="%rec.ckb.showName" styleClass="recognize-btn" onAction="#toggleTagName" pickOnBounds="true" />
+		<CheckBox fx:id="transparent" text="%rec.ckb.transparent" styleClass="recognize-btn" onAction="#toggleTransparent" pickOnBounds="true" />
+		<Button text="%typical.case.drawings" styleClass="recognize-btn" onAction="#showDrawingWin" pickOnBounds="true"><!-- 电路图 -->
 			<graphic>
 				<SVGGlyph name="iconfont.svg.drawing" size="20" fill="WHITE" />
 			</graphic>
 		</Button>
-		<Button text="%typical.case.wires" styleClass="recognize-btn" onAction="#showWirePicker"><!-- 导线 -->
+		<Button text="%typical.case.wires" styleClass="recognize-btn" onAction="#showWirePicker" pickOnBounds="true"><!-- 导线 -->
 			<graphic>
 				<SVGGlyph name="iconfont.svg.wire" size="20" fill="WHITE" />
 			</graphic>
