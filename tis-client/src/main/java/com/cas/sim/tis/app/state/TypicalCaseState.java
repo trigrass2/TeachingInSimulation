@@ -32,12 +32,15 @@ import javafx.application.Platform;
 import javafx.scene.control.Alert.AlertType;
 
 public class TypicalCaseState extends BaseState {
+//	每次打开新的案例，都会创建一个新的节点，存放与案例相关的模型
 	private static final String TYPICAL_CASE_ROOT_NODE = "TYPICAL_CASE_ROOT_NODE";
+
 	private Node root;
 
-	private Spatial holding;
-	private Spatial desktop;
+//	当前手中的元器件对象
 	private ElecComp elecComp;
+
+	private Spatial desktop;
 
 	private PointLight pointLight;
 
@@ -71,6 +74,7 @@ public class TypicalCaseState extends BaseState {
 	@Override
 	public void update(float tpf) {
 		pointLight.setPosition(cam.getLocation());
+		root.rotate(0, tpf, 0);
 		super.update(tpf);
 	}
 
@@ -129,34 +133,25 @@ public class TypicalCaseState extends BaseState {
 		listener = new TypicalCaseListener(this);
 		listener.registerWithInput(inputManager);
 
+		/*
+		 * 左键点击桌面，放置手中的元器件 右键点击桌面，取消手中的元器件
+		 */
 		addListener(desktop, new MouseEventAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				if (elecComp == null) {
-					return;
-				}
-//				moved_before_putdown = false;
 				putDown();
-				super.mouseClicked(e);
 			}
 
 			@Override
 			public void mouseRightClicked(MouseEvent e) {
-				if (holding == null) {
-					return;
-				}
-				holding.removeFromParent();
-				holding = null;
-				elecComp = null;
-				cameraState.setZoomEnable(true);
-				super.mouseRightClicked(e);
+				discard();
 			}
 		});
 	}
 
 	public void mouseMoved() {
 //		moved_before_putdown = true;
-		if (holding == null) {
+		if (elecComp == null) {
 			return;
 		}
 
@@ -165,17 +160,17 @@ public class TypicalCaseState extends BaseState {
 		if (contactPoint == null) {
 			return;
 		}
-		holding.setLocalTranslation(contactPoint);
+		elecComp.getSpatial().setLocalTranslation(contactPoint);
 	}
 
 	public void mouseWheel(boolean positive) {
-		if (holding == null) {
+		if (elecComp == null) {
 			return;
 		}
 		if (positive) {
-			holding.rotate(0, FastMath.DEG_TO_RAD * 90, 0);
+			elecComp.getSpatial().rotate(0, FastMath.DEG_TO_RAD * 90, 0);
 		} else {
-			holding.rotate(0, -FastMath.DEG_TO_RAD * 90, 0);
+			elecComp.getSpatial().rotate(0, -FastMath.DEG_TO_RAD * 90, 0);
 		}
 	}
 
@@ -184,19 +179,24 @@ public class TypicalCaseState extends BaseState {
 	 */
 	@JmeThread
 	public void hold(ElecComp elecComp) {
-		if (holding != null) {
-			holding.removeFromParent();
+//		检查当前手中时候已经有一个元器件了
+		if (this.elecComp != null) {
+//			如果有，就将模型删除掉，准备换成新元器件模型
+			this.elecComp.getSpatial().removeFromParent();
 		}
 //		禁用相机的滚轮事件，留给旋转模型用。
 		cameraState.setZoomEnable(false);
 //		加载相应的模型
 		try {
-			holding = loadAsset(new ModelKey(elecComp.getMdlPath()));
+			Spatial spatial = loadAsset(new ModelKey(elecComp.getMdlPath()));
 //			设置Holding的模型对鼠标透明
-			JmeUtil.setMouseVisible(holding, false);
+			JmeUtil.setMouseVisible(spatial, false);
+			spatial.scale(25);
+			root.attachChild(spatial);
 
-			holding.scale(25);
-			root.attachChild(holding);
+//			设置当前元器件的模型对象
+			elecComp.setSpatial(spatial);
+//			记录当前的元器件对象
 			this.elecComp = elecComp;
 		} catch (Exception e) {
 			cameraState.setZoomEnable(true);
@@ -204,36 +204,50 @@ public class TypicalCaseState extends BaseState {
 	}
 
 	/**
-	 * 将一个元器件放置在电路板上
+	 * 放置手中的元器件
 	 */
 	@JmeThread
 	public void putDown() {
+		if (elecComp == null) {
+			return;
+		}
 //		取消Holding的模型对鼠标透明
-		JmeUtil.setMouseVisible(holding, true);
+		JmeUtil.setMouseVisible(elecComp.getSpatial(), true);
 		try {
 			if (ElecComp.COMBINE_RELY_ON == elecComp.getCombine()) {
 //				需要底座的元器件不可直接加入电路板
 				Platform.runLater(() -> {
 					AlertUtil.showAlert(AlertType.WARNING, MsgUtil.getMessage("alert.warning.base.need"));
 				});
-				holding.removeFromParent();
+				elecComp.getSpatial().removeFromParent();
 			} else {
 //				1、获取相应元器件
 				ElecCompDef elecCompDef = SpringUtil.getBean(ElecCompAction.class).parse(elecComp.getCfgPath());
 				elecCompDef.getProxy().setId(elecComp.getId());
 //				2、将元器件模型与元器件对象一起加入电路板中
-				circuitState.attachToCircuit(holding, elecCompDef);
+				circuitState.attachToCircuit(elecComp.getSpatial(), elecCompDef);
 			}
 		} catch (Exception e) {
 //			删除出错的模型
-			holding.removeFromParent();
+			elecComp.getSpatial().removeFromParent();
 			LOG.error("初始化元器件{}时出现了一个错误:{}", elecComp.getModel(), e.getMessage());
 			e.printStackTrace();
 		} finally {
-			holding = null;
 			elecComp = null;
 			cameraState.setZoomEnable(true);
 		}
+	}
+
+	/**
+	 * 丢弃手中的元器件
+	 */
+	public void discard() {
+		if (elecComp == null) {
+			return;
+		}
+		elecComp.getSpatial().removeFromParent();
+		elecComp = null;
+		cameraState.setZoomEnable(true);
 	}
 
 	/**
@@ -252,47 +266,33 @@ public class TypicalCaseState extends BaseState {
 		}
 		try {
 //			取消Holding的模型对鼠标透明
-			JmeUtil.setMouseVisible(holding, true);
+			JmeUtil.setMouseVisible(elecComp.getSpatial(), true);
 //			2、判断元器件与底座是否匹配
 			if (def.getBase().checkMatched(elecCompDef)) {
 //				3、将元器件模型与元器件对象一起加入电路板中
-				circuitState.attachToBase(holding, elecCompDef, def);
+				circuitState.attachToBase(elecComp.getSpatial(), elecCompDef, def);
 			} else {
 				Platform.runLater(() -> {
 					AlertUtil.showAlert(AlertType.WARNING, MsgUtil.getMessage("alert.warning.base.unmatch"));
 				});
-				holding.removeFromParent();
+				elecComp.getSpatial().removeFromParent();
 			}
-			holding = null;
 			elecComp = null;
 			cameraState.setZoomEnable(true);
 		} catch (Exception e) {
 //			删除出错的模型
-			holding.removeFromParent();
-			LOG.error("初始化元器件{}时出现了一个错误:{}", elecComp.getModel(), e.getMessage());
+			if (elecComp != null) {
+				elecComp.getSpatial().removeFromParent();
+				LOG.error("初始化元器件{}时出现了一个错误:{}", elecComp.getModel(), e.getMessage());
+			}
 			e.printStackTrace();
 		}
-	}
-
-	/**
-	 * 将一个元器件从电路板上拿起来
-	 */
-	@JmeThread
-	public Spatial takeUp(ElecCompDef comp) {
-		holding = comp.getSpatial();
-		return holding;
-	}
-
-	public Spatial getHolding() {
-		return holding;
 	}
 
 	public void save() {
 		if (circuitState != null) {
 			circuitState.save();
 		}
-		// 结束加载界面
-		Platform.runLater(() -> SpringUtil.getBean(PageController.class).hideLoading());
 	}
 
 	public CircuitState getCircuitState() {

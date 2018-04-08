@@ -127,11 +127,11 @@ public class CircuitState extends BaseState {
 		this.desktop = (Geometry) root.getChild("Circuit-Desktop");
 	}
 
-	public void setColor(ColorRGBA color) {
+	public static void setColor(ColorRGBA color) {
 		CircuitState.color = color;
 	}
 
-	public void setWidth(float width) {
+	public static void setWidth(float width) {
 //		考虑模型的显示比例。
 		CircuitState.width = width / 500;
 	}

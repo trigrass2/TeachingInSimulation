@@ -3,6 +3,9 @@ package com.cas.sim.tis.entity;
 import java.io.Serializable;
 
 import javax.persistence.Id;
+import javax.persistence.Transient;
+
+import com.jme3.scene.Spatial;
 
 /**
  * 元器件实体类
@@ -35,6 +38,9 @@ public class ElecComp implements Serializable {
 
 	private String animPath;
 
+	@Transient
+	private Spatial spatial;
+	
 	public Integer getId() {
 		return id;
 	}
@@ -97,6 +103,14 @@ public class ElecComp implements Serializable {
 
 	public void setAnimPath(String animPath) {
 		this.animPath = animPath;
+	}
+
+	public Spatial getSpatial() {
+		return spatial;
+	}
+
+	public void setSpatial(Spatial spatial) {
+		this.spatial = spatial;
 	}
 
 	@Override
