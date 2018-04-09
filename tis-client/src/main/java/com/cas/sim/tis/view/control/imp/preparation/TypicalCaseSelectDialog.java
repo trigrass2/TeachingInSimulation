@@ -1,5 +1,6 @@
 package com.cas.sim.tis.view.control.imp.preparation;
 
+import java.util.Date;
 import java.util.List;
 
 import com.alibaba.fastjson.JSONArray;
@@ -13,9 +14,11 @@ import com.cas.sim.tis.util.MsgUtil;
 import com.cas.sim.tis.util.SpringUtil;
 import com.cas.sim.tis.view.control.imp.dialog.DialogPane;
 import com.cas.sim.tis.view.control.imp.table.BtnCell;
+import com.cas.sim.tis.view.control.imp.table.Cell;
 import com.cas.sim.tis.view.control.imp.table.Column;
 import com.cas.sim.tis.view.control.imp.table.Row;
 import com.cas.sim.tis.view.control.imp.table.Table;
+import com.cas.util.DateUtil;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -30,6 +33,7 @@ import javafx.scene.control.Toggle;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import javafx.util.StringConverter;
 
 public class TypicalCaseSelectDialog extends DialogPane<Integer> {
 
@@ -81,7 +85,25 @@ public class TypicalCaseSelectDialog extends DialogPane<Integer> {
 		Column<Integer> name = new Column<>();
 		name.setKey("name");
 		name.setText(MsgUtil.getMessage("preparation.typical.case"));
-		table.getColumns().addAll(id, name);
+		// 日期
+		Column<Date> date = new Column<>();
+		date.setAlignment(Pos.CENTER);
+		date.setKey("createDate");
+		date.setText(MsgUtil.getMessage("preparation.create.date"));
+		date.setMaxWidth(160);
+		date.setCellFactory(Cell.forTableColumn(new StringConverter<Date>() {
+
+			@Override
+			public String toString(Date date) {
+				return DateUtil.date2Str(date, DateUtil.DATE_TIME_PAT_SHOW_);
+			}
+
+			@Override
+			public Date fromString(String string) {
+				return null;
+			}
+		}));
+		table.getColumns().addAll(id, name, date);
 		if (editable) {
 			// 删除按钮
 			delete = new Column<String>();

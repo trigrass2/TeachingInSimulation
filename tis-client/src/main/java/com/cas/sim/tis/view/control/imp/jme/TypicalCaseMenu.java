@@ -10,13 +10,13 @@ import com.cas.sim.tis.util.MsgUtil;
 import com.cas.sim.tis.util.SpringUtil;
 import com.cas.sim.tis.view.control.ILeftContent;
 import com.cas.sim.tis.view.control.imp.dialog.Dialog;
+import com.cas.sim.tis.view.control.imp.dialog.Tip.TipType;
 import com.cas.sim.tis.view.control.imp.preparation.TypicalCaseSelectDialog;
 import com.cas.sim.tis.view.controller.PageController;
 
 import javafx.application.Platform;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.TextInputDialog;
@@ -111,7 +111,7 @@ public class TypicalCaseMenu implements ILeftContent {
 			}
 			typicalCase3D.save();
 
-			AlertUtil.showAlert(AlertType.INFORMATION, MsgUtil.getMessage("alert.information.data.save.success"));
+			AlertUtil.showTip(TipType.INFO, MsgUtil.getMessage("alert.information.data.save.success"));
 		} finally {
 //			保存完成，关闭等待界面
 			Platform.runLater(() -> SpringUtil.getBean(PageController.class).hideLoading());

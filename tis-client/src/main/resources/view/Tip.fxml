@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.geometry.Insets?>
+<?import com.cas.sim.tis.svg.SVGGlyph?>
+
+<fx:root type="HBox" style="-fx-background-color:transparent;" stylesheets="@../static/css/basic.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
+	<HBox spacing="10.0" alignment="CENTER_LEFT" maxHeight="60" style="-fx-background-color:#19b0c6;">
+		<children>
+			<Label fx:id="tip" textFill="WHITE" styleClass="font14" />
+			<Button fx:id="close" mnemonicParsing="false" styleClass="img-btn" onAction="#close">
+				<graphic>
+					<SVGGlyph name="iconfont.svg.close" size="10" fill="#A2CBF3" />
+				</graphic>
+			</Button>
+		</children>
+		<padding>
+			<Insets bottom="10" left="10" right="10" top="10" />
+		</padding>
+	</HBox>
+	<padding>
+		<Insets bottom="5" left="5" right="5" top="5" />
+	</padding>
+	<effect>
+		<DropShadow radius="0"/>
+	</effect>
+</fx:root>
