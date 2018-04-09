@@ -13,7 +13,7 @@
 			<Label fx:id="tip" textFill="WHITE" styleClass="font14" />
 			<Button fx:id="close" mnemonicParsing="false" styleClass="img-btn" onAction="#close">
 				<graphic>
-					<SVGGlyph name="iconfont.svg.close" size="10" fill="#A2CBF3" />
+					<SVGGlyph name="iconfont.svg.close" size="10" fill="WHITE" />
 				</graphic>
 			</Button>
 		</children>
@@ -25,6 +25,6 @@
 		<Insets bottom="5" left="5" right="5" top="5" />
 	</padding>
 	<effect>
-		<DropShadow radius="0"/>
+		<DropShadow radius="5" color="#373634" offsetX="0" offsetY="0" spread="0"/>
 	</effect>
 </fx:root>

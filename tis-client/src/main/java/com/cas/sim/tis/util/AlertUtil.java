@@ -46,7 +46,7 @@ public class AlertUtil {
 		}
 		dialog = new TipDialog();
 		dialog.setDialogPane(new Tip(type, msg));
-		dialog.setPrefSize(msg.length() * 14 + 120, 65);
+		dialog.setPrefSize(msg.length() * 14 + 115, 65);
 		dialog.show();
 	}
 }
