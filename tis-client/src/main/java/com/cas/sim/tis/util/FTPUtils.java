@@ -23,6 +23,11 @@ import org.slf4j.LoggerFactory;
  * @修改人 ScOrPiO
  */
 public class FTPUtils {
+	public static class FtpFile {
+		public String name;
+		public File file;
+	}
+
 	private static final Logger LOG = LoggerFactory.getLogger(FTPUtils.class);
 	private FTPClient ftpClient;
 
@@ -173,14 +178,12 @@ public class FTPUtils {
 
 	/**
 	 * 上传文件至FTP服务器
-	 * @param serverName 服务器名称
-	 * @param storePath 上传文件存储路径
-	 * @param fileName 上传文件存储名称
-	 * @param is 上传文件输入流
-	 * @return <b>true</b>：上传成功 <br/>
-	 *         <b>false</b>：上传失败
+	 * @param storePath 文件存储路径
+	 * @param file 上传文件
+	 * @param storedName 文件存储名称
+	 * @throws Exception
 	 */
-	public boolean uploadFile(String storePath, File file, String storedName) {
+	public boolean uploadFile(String storePath, File file, String storedName) throws Exception {
 		LOG.info("准备上传文件【{}】至【{}】目录中，并且命名为【{}】", file.getPath(), storePath, storedName);
 		boolean result = false;
 		try (InputStream ins = new FileInputStream(file)) {
@@ -196,13 +199,15 @@ public class FTPUtils {
 			} else {
 				LOG.warn("文件上传失败");
 			}
-		} catch (Exception e) {
-			LOG.warn("上传文件时出现了一个错误", e);
 		} finally {
 			// 登出服务器并断开连接
 			logout();
 		}
 		return result;
+	}
+
+	public boolean uploadFileBatch(String storePath, List<FtpFile> fileList) {
+		return false;
 	}
 
 	/**
