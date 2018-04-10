@@ -101,12 +101,12 @@
 								<Separator orientation="VERTICAL" />
 								<Button mnemonicParsing="false" onAction="#showSelectDrawingDialog" textFill="WHITE" styleClass="img-btn" text="%button.add">
 									<graphic>
-										<SVGGlyph name="iconfont.svg.add" size="10" fill="WHITE" />
+										<SVGGlyph name="iconfont.svg.add" size="20" fill="WHITE" />
 									</graphic>
 								</Button>
 								<Button mnemonicParsing="false" onAction="#showUploadDrawingDialog" textFill="WHITE" styleClass="img-btn" text="%button.upload">
 									<graphic>
-										<SVGGlyph name="iconfont.svg.add" size="10" fill="WHITE" />
+										<SVGGlyph name="iconfont.svg.upload" size="20" fill="WHITE" />
 									</graphic>
 								</Button>
 							</children>

@@ -9,14 +9,17 @@ import java.util.List;
 import java.util.ResourceBundle;
 import java.util.UUID;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.StringUtils;
 
 import com.alibaba.fastjson.JSONArray;
 import com.cas.sim.tis.action.ResourceAction;
 import com.cas.sim.tis.consts.ResourceConsts;
 import com.cas.sim.tis.consts.ResourceType;
+import com.cas.sim.tis.consts.Session;
 import com.cas.sim.tis.entity.Resource;
 import com.cas.sim.tis.svg.SVGGlyph;
 import com.cas.sim.tis.util.AlertUtil;
@@ -172,7 +175,7 @@ public class ResourceList extends HBox implements IContent {
 	@FXML
 	private Label uploadTip;
 
-	private File uploadFile;
+	private List<File> uploadFiles = new ArrayList<>();
 
 	private int creator;
 
@@ -443,14 +446,14 @@ public class ResourceList extends HBox implements IContent {
 			chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter(MsgUtil.getMessage("resource.video"), ResourceType.VIDEO.getSuffixs()));
 			chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter(MsgUtil.getMessage("resource.txt"), ResourceType.TXT.getSuffixs()));
 		}
-		File target = chooser.showOpenDialog(GUIState.getStage());
-		if (target == null) {
+		List<File> targets = chooser.showOpenMultipleDialog(GUIState.getStage());
+		if (StringUtils.isEmpty(targets)) {
 			return;
 		}
-		this.filePath.setText(target.getAbsolutePath());
-		this.size.setText(FileUtil.getFileSize(target));
-		this.uploadFile = target;
-		this.chooser.setInitialDirectory(target.getParentFile());
+		this.uploadFiles = targets;
+		this.filePath.setText((targets.stream().map(target -> target.getAbsolutePath())).collect(Collectors.joining(";")));
+		this.size.setText((targets.stream().map(target -> FileUtil.getFileSize(target))).collect(Collectors.joining(";")));
+		this.chooser.setInitialDirectory(targets.get(0).getParentFile());
 	}
 
 	@FXML
@@ -463,38 +466,49 @@ public class ResourceList extends HBox implements IContent {
 
 			@Override
 			protected Void call() throws Exception {
-				String filePath = uploadFile.getAbsolutePath();
-				String fileName = FileUtil.getFileName(filePath);
-				String ext = FileUtil.getFileExt(filePath);
-				// 重命名
-				String rename = UUID.randomUUID() + "." + ext;
-				// 上传文件到FTP
-				boolean uploaded = SpringUtil.getBean(FTPUtils.class).uploadFile(ResourceConsts.FTP_RES_PATH, uploadFile, rename);
-				if (!uploaded) {
-					AlertUtil.showAlert(AlertType.ERROR, MsgUtil.getMessage("ftp.upload.failure"));
-					// 启用上传按钮
-					((Button) event.getSource()).setDisable(false);
-					return null;
+				List<String> renames = new ArrayList<>();
+				List<Resource> resources = new ArrayList<>();
+				int creator = Session.get(Session.KEY_LOGIN_ID);
+				for (File uploadFile : uploadFiles) {
+					String filePath = uploadFile.getAbsolutePath();
+					String fileName = FileUtil.getFileName(filePath);
+					String ext = FileUtil.getFileExt(filePath);
+					// 重命名
+					String rename = UUID.randomUUID() + "." + ext;
+					renames.add(rename);
+					// 封装资源记录
+					Resource resource = new Resource();
+					resource.setCreator(creator);
+					resource.setKeyword(keywords.getText());
+					resource.setPath(rename);
+					resource.setName(fileName);
+					resources.add(resource);
+					try {
+						int type = ResourceType.parseType(ext);
+						resource.setType(type);
+					} catch (Exception e) {
+						LOG.warn("解析文件后缀名出现错误", e);
+						throw e;
+					}
 				}
-				// 封装资源记录
-				int type = ResourceType.parseType(ext);
-				Resource resource = new Resource();
-				resource.setKeyword(keywords.getText());
-				resource.setPath(rename);
-				resource.setName(fileName);
-				try {
-					resource.setType(type);
-				} catch (Exception e) {
-					LOG.warn("解析文件后缀名出现错误", e);
-					throw e;
+				// 上传文件到FTP
+				// FIXME 批量上传
+				for (int i = 0; i < uploadFiles.size(); i++) {
+					boolean uploaded = SpringUtil.getBean(FTPUtils.class).uploadFile(ResourceConsts.FTP_RES_PATH, uploadFiles.get(i), renames.get(i));
+					if (!uploaded) {
+						uploadTip.setText(MsgUtil.getMessage("ftp.upload.failure"));
+						// 启用上传按钮
+						((Button) event.getSource()).setDisable(false);
+						return null;
+					}
 				}
 				// 记录到数据库
-				Integer id = action.addResource(resource);
+				List<Integer> ids = SpringUtil.getBean(ResourceAction.class).addResources(resources);
 				Platform.runLater(() -> {
-					if (id != null) {
-						AlertUtil.showAlert(AlertType.INFORMATION, MsgUtil.getMessage("ftp.upload.success"));
-					} else {
+					if (ids == null) {
 						AlertUtil.showAlert(AlertType.ERROR, MsgUtil.getMessage("ftp.upload.converter.failure"));
+					} else {
+						AlertUtil.showAlert(AlertType.INFORMATION, MsgUtil.getMessage("ftp.upload.success"));
 					}
 					// 启用上传按钮
 					((Button) event.getSource()).setDisable(false);

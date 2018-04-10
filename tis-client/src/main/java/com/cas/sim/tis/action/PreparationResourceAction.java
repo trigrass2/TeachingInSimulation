@@ -43,6 +43,11 @@ public class PreparationResourceAction extends BaseAction<PreparationResourceSer
 		service.save(resource);
 	}
 
+	public void addResources(List<PreparationResource> resources) {
+		PreparationResourceService service = getService();
+		service.save(resources);
+	}
+
 	@Override
 	protected RmiProxyFactoryBean getRmiProxyFactoryBean() {
 		return preparationResourceServiceFactory;

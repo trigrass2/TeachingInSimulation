@@ -28,7 +28,6 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Cursor;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ContextMenu;
@@ -294,24 +293,23 @@ public class DrawingController implements Initializable {
 				return;
 			}
 			// 记录到数据库
-			addDrawings(id);
+			addDrawing(id);
 		});
 	}
 
 	@FXML
 	private void showUploadDrawingDialog() {
-		Dialog<Integer> dialog = new Dialog<>();
+		Dialog<List<Integer>> dialog = new Dialog<>();
 		dialog.setDialogPane(new ResourceUploadDialog(ResourceType.DRAWING));
 		dialog.setTitle(MsgUtil.getMessage("typical.case.drawings.upload"));
 		dialog.setPrefSize(640, 330);
 		dialog.initOwner(stage);
-		dialog.showAndWait().ifPresent(id -> {
-			if (id == null) {
+		dialog.showAndWait().ifPresent(ids -> {
+			if (ids == null) {
 				return;
 			}
 			// 记录到数据库
-			addDrawings(id);
-			AlertUtil.showAlert(AlertType.INFORMATION, MsgUtil.getMessage("ftp.upload.success"));
+			addDrawings(ids);
 		});
 	}
 
@@ -334,8 +332,15 @@ public class DrawingController implements Initializable {
 		group.selectToggle(group.getToggles().get(index));
 	}
 
-	private void addDrawings(Integer id) {
+	private void addDrawing(Integer id) {
 		drawings.add(String.valueOf(id));
+		refresh();
+	}
+
+	private void addDrawings(List<Integer> ids) {
+		for (Integer id : ids) {
+			drawings.add(String.valueOf(id));
+		}
 		refresh();
 	}
 

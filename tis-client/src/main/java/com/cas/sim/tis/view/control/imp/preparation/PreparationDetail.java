@@ -2,6 +2,7 @@ package com.cas.sim.tis.view.control.imp.preparation;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
@@ -350,16 +351,15 @@ public class PreparationDetail extends HBox implements IContent {
 
 	@FXML
 	private void loadResource() {
-		Dialog<Integer> dialog = new Dialog<>();
+		Dialog<List<Integer>> dialog = new Dialog<>();
 		dialog.setDialogPane(new ResourceUploadDialog());
 		dialog.setTitle(MsgUtil.getMessage("preparation.local.resource"));
 		dialog.setPrefSize(640, 330);
-		dialog.showAndWait().ifPresent(id -> {
-			if (id == null) {
+		dialog.showAndWait().ifPresent(ids -> {
+			if (ids == null) {
 				return;
 			}
-			// 记录到数据库
-			addResource(id, PreparationResourceType.RESOURCE.getType());
+			addResources(ids, PreparationResourceType.RESOURCE.getType());
 		});
 	}
 
@@ -423,6 +423,27 @@ public class PreparationDetail extends HBox implements IContent {
 		resource.setType(type);
 		try {
 			SpringUtil.getBean(PreparationResourceAction.class).addResource(resource);
+			loadResources();
+			AlertUtil.showAlert(AlertType.INFORMATION, MsgUtil.getMessage("alert.information.data.add.success"));
+		} catch (Exception e) {
+			e.printStackTrace();
+			AlertUtil.showAlert(AlertType.ERROR, e.getMessage());
+		}
+	}
+
+	private void addResources(List<Integer> ids, int type) {
+		List<PreparationResource> resources = new ArrayList<PreparationResource>();
+		int creator = Session.get(Session.KEY_LOGIN_ID);
+		for (Integer id : ids) {
+			PreparationResource resource = new PreparationResource();
+			resource.setRelationId(id);
+			resource.setPreparationId(preparation.getId());
+			resource.setType(type);
+			resource.setCreator(creator);
+			resources.add(resource);
+		}
+		try {
+			SpringUtil.getBean(PreparationResourceAction.class).addResources(resources);
 			loadResources();
 			AlertUtil.showAlert(AlertType.INFORMATION, MsgUtil.getMessage("alert.information.data.add.success"));
 		} catch (Exception e) {

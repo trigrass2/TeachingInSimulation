@@ -22,10 +22,15 @@ public class ResourceAction extends BaseAction<ResourceService> {
 	@Qualifier("resourceServiceFactory")
 	private RmiProxyFactoryBean resourceServiceFactory;
 
-	public Integer addResource(Resource resource) {
+//	public Integer addResource(Resource resource) {
+//		ResourceService service = getService();
+//		resource.setCreator(Session.get(Session.KEY_LOGIN_ID));
+//		return service.addResource(resource);
+//	}
+
+	public List<Integer> addResources(List<Resource> resources) {
 		ResourceService service = getService();
-		resource.setCreator(Session.get(Session.KEY_LOGIN_ID));
-		return service.addResource(resource);
+		return service.addResources(resources);
 	}
 
 	public PageInfo<Resource> findResources(ResourceMenuType type, int pagination, int pageSize, List<Integer> resourceTypes, String keyword, String orderByClause, Integer creator) {
