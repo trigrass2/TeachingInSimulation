@@ -146,7 +146,7 @@ public class DrawingController implements Initializable {
 			}
 			width = drawing.getFitWidth();
 			height = drawing.getFitHeight();
-			if (width > pane.getWidth() || height > pane.getHeight()) {
+			if (width > pane.getWidth() && height > pane.getHeight()) {
 				leftOffset = x - (width * xPecent);
 				topOffset = y - (height * yPecent);
 				drawing.setLayoutX(leftOffset);
