@@ -24,6 +24,8 @@ public interface ResourceService extends BaseService<Resource> {
 	int countCollectionResourceByType(int type, String keyword, Integer creator);
 
 	Integer addResource(Resource resource);
+	
+	List<Integer> addResources(List<Resource> resources);
 
 	void browsed(Integer id, Integer userId);
 

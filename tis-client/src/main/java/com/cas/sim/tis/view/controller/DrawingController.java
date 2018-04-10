@@ -41,6 +41,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -48,7 +49,7 @@ import javafx.stage.Stage;
 
 public class DrawingController implements Initializable {
 	@FXML
-	private HBox handle;
+	private StackPane handle;
 	@FXML
 	private Button max;
 	@FXML
@@ -126,16 +127,18 @@ public class DrawingController implements Initializable {
 			loadDrawing(resource.getName(), url);
 		});
 		pane.setOnScroll(event -> {
-			double delta = event.getDeltaY();
 			double x = event.getX();
 			double y = event.getY();
 			double leftOffset = drawing.getLayoutX();
 			double topOffset = drawing.getLayoutY();
 			double width = drawing.getFitWidth();
 			double height = drawing.getFitHeight();
+			if (x < leftOffset || x > leftOffset + width || y < topOffset || y > topOffset + height) {
+				return;
+			}
 			double xPecent = (x - leftOffset) / width;
 			double yPecent = (y - topOffset) / height;
-
+			double delta = event.getDeltaY();
 			if (delta < 0) {
 				zoomOut();
 			} else {
@@ -159,7 +162,7 @@ public class DrawingController implements Initializable {
 			double width = drawing.getFitWidth();
 			double height = drawing.getFitHeight();
 			if (width > pane.getWidth() || height > pane.getHeight()) {
-				drawing.setCursor(Cursor.MOVE);
+				drawing.setCursor(Cursor.CLOSED_HAND);
 				pressedX = e.getX();
 				pressedY = e.getY();
 			}

@@ -20,9 +20,9 @@
 
 <VBox prefHeight="768.0" prefWidth="1366.0" style="-fx-background-image: url(/static/images/basic/bg.png);-fx-background-size:stretch;" stylesheets="static/css/basic.css" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8.0.141" fx:controller="com.cas.sim.tis.view.controller.DrawingController">
 	<children>
-		<HBox fx:id="handle" alignment="CENTER_LEFT" style="-fx-background-color:#2c5381ee;">
+		<StackPane fx:id="handle" alignment="CENTER_LEFT">
 			<children>
-				<HBox alignment="CENTER" HBox.hgrow="ALWAYS">
+				<HBox alignment="CENTER" HBox.hgrow="ALWAYS" style="-fx-background-color:#2c5381ee;">
 					<Label fx:id="name" textFill="WHITE">
 						<styleClass>
 							<String fx:value="font14" />
@@ -59,7 +59,7 @@
 					</children>
 				</HBox>
 			</children>
-		</HBox>
+		</StackPane>
 		<StackPane VBox.vgrow="ALWAYS">
 			<VBox>
 				<!-- <ScrollPane fitToHeight="true" fitToWidth="true" VBox.vgrow="ALWAYS" pannable="true"> -->
