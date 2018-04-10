@@ -181,6 +181,35 @@ public class ResourceServiceImpl extends AbstractService<Resource> implements Re
 	}
 
 	@Override
+	public List<Integer> addResources(List<Resource> resources) {
+		// 1.获取事务控制管理器
+		DataSourceTransactionManager transactionManager = SpringUtil.getBean(DataSourceTransactionManager.class);
+		// 2.获取事务定义
+		DefaultTransactionDefinition def = new DefaultTransactionDefinition();
+		// 3.设置事务隔离级别，开启新事务
+		def.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW);
+		// 4.获得事务状态
+		TransactionStatus status = transactionManager.getTransaction(def);
+		try {
+			List<Integer> ids = new ArrayList<>();
+			for (Resource resource : resources) {
+				ResourceType type = ResourceType.getResourceType(resource.getType());
+				if (type.isConvertable()) {
+					converter.resourceConverter(resource.getPath());
+				}
+				saveUseGeneratedKeys(resource);
+				ids.add(resource.getId());
+			}
+			transactionManager.commit(status);
+			return ids;
+		} catch (Exception e) {
+			e.printStackTrace();
+			transactionManager.rollback(status);
+			return null;
+		}
+	}
+
+	@Override
 	public void browsed(Integer id, Integer userId) {
 		// 1.获取事务控制管理器
 		DataSourceTransactionManager transactionManager = SpringUtil.getBean(DataSourceTransactionManager.class);

@@ -248,6 +248,7 @@ public class DrawingController implements Initializable {
 		}
 		zoomOut.setDisable(false);
 		zoom();
+		toCenter(pane.getWidth(), pane.getHeight());
 	}
 
 	@FXML
@@ -259,6 +260,7 @@ public class DrawingController implements Initializable {
 		}
 		zoomIn.setDisable(false);
 		zoom();
+		toCenter(pane.getWidth(), pane.getHeight());
 	}
 
 	private void zoom() {
@@ -272,11 +274,11 @@ public class DrawingController implements Initializable {
 		if (expanding) {
 			expand.setMinHeight(40);
 			expand.setMaxHeight(40);
-			((Button) event.getSource()).setGraphic(new SVGGlyph("iconfont.svg.up", Color.web("#19b0c6"), 10));
+			((Button) event.getSource()).setGraphic(new SVGGlyph("iconfont.svg.up", Color.WHITE, 10));
 		} else {
 			expand.setMinHeight(140);
 			expand.setMaxHeight(140);
-			((Button) event.getSource()).setGraphic(new SVGGlyph("iconfont.svg.down", Color.web("#19b0c6"), 10));
+			((Button) event.getSource()).setGraphic(new SVGGlyph("iconfont.svg.down", Color.WHITE, 10));
 		}
 		expanding = !expanding;
 	}
