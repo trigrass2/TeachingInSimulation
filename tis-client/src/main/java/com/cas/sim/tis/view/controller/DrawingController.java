@@ -25,6 +25,7 @@ import com.cas.util.MathUtil;
 import com.cas.util.StringUtil;
 
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert.AlertType;
@@ -33,14 +34,18 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.ScrollEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 
 public class DrawingController implements Initializable {
@@ -56,6 +61,10 @@ public class DrawingController implements Initializable {
 	private HBox btns;
 	@FXML
 	private Label name;
+	@FXML
+	private ScrollPane scorll;
+	@FXML
+	private AnchorPane pane;
 	@FXML
 	private ImageView drawing;
 	@FXML
@@ -84,7 +93,7 @@ public class DrawingController implements Initializable {
 	private int index;
 
 	private HTTPUtils utils;
-	
+
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		utils = SpringUtil.getBean(HTTPUtils.class);
@@ -115,19 +124,50 @@ public class DrawingController implements Initializable {
 			String url = utils.getFullPath(ResourceConsts.FTP_RES_PATH + resource.getPath());
 			loadDrawing(resource.getName(), url);
 		});
+		pane.addEventFilter(ScrollEvent.ANY, new EventHandler<ScrollEvent>() {
+
+			@Override
+			public void handle(ScrollEvent event) {
+				double delta = event.getDeltaY();
+				double x = event.getX();
+				double y = event.getY();
+				double leftOffset = drawing.getLayoutX();
+				double topOffset = drawing.getLayoutY();
+				double width = drawing.getFitWidth();
+				double height = drawing.getFitHeight();
+				double xPecent = (x - leftOffset) / width;
+				double yPecent = (y - topOffset) / height;
+
+				if (delta < 0) {
+					zoomOut();
+				} else {
+					zoomIn();
+				}
+				width = drawing.getFitWidth();
+				height = drawing.getFitHeight();
+				if (width > pane.getWidth() || height > pane.getHeight()) {
+					leftOffset = x - (width * xPecent);
+					topOffset = y - (height * yPecent);
+					drawing.setLayoutX(leftOffset);
+					drawing.setLayoutY(topOffset);
+				} else {
+					toCenter(pane.getWidth(), pane.getHeight());
+				}
+			}
+		});
 	}
 
 	private void addDrawingPreviewBtn(final Resource resource) {
 		String url = utils.getFullPath(ResourceConsts.FTP_RES_PATH + resource.getPath());
 		Image image = new Image(url, 70, 70, true, true);
-		
+
 		ImageView view = new ImageView(image);
 
 		ToggleButton toggle = new ToggleButton();
 		toggle.setGraphic(view);
 		toggle.getStyleClass().add("drawing-btn");
 		toggle.setUserData(resource);
-		
+
 		ContextMenu menu = new ContextMenu();
 		MenuItem item = new MenuItem(MsgUtil.getMessage("button.delete"));
 		item.setOnAction(e -> {
@@ -148,12 +188,14 @@ public class DrawingController implements Initializable {
 	private void loadDrawing(String name, String url) {
 		zoomIn.setDisable(true);
 		zoomOut.setDisable(false);
-		
+
 		this.name.setText(name);
 		drawing.setImage(new Image(url));
 		scale.setText(String.format("%d%%", 100));
 		scaleVal = 1;
 		zoom();
+
+		resizePane();
 	}
 
 	@FXML
@@ -251,6 +293,25 @@ public class DrawingController implements Initializable {
 		});
 	}
 
+	private void initDrawings(TypicalCase3D typicalCase3D) {
+		clean();
+
+		TypicalCase typicalCase = typicalCase3D.getTypicalCase();
+		String drawings = typicalCase.getDrawings();
+
+		if (StringUtils.isEmpty(drawings)) {
+			return;
+		}
+		this.drawings = StringUtil.split(drawings);
+		List<Resource> resources = SpringUtil.getBean(ResourceAction.class).findResourcesByIds(this.drawings);
+		for (Resource resource : resources) {
+			addDrawingPreviewBtn(resource);
+		}
+
+		index = 0;
+		group.selectToggle(group.getToggles().get(index));
+	}
+
 	private void addDrawings(Integer id) {
 		drawings.add(String.valueOf(id));
 		refresh();
@@ -314,29 +375,37 @@ public class DrawingController implements Initializable {
 				initDrawings(typicalCase3D);
 			}
 		});
+		this.stage.heightProperty().addListener((b, o, n) -> {
+			resizePane();
+		});
 	}
 
 	public void setUI(TypicalCase3D typicalCase3D) {
 		this.typicalCase3D = typicalCase3D;
 	}
 
-	private void initDrawings(TypicalCase3D typicalCase3D) {
-		clean();
-
-		TypicalCase typicalCase = typicalCase3D.getTypicalCase();
-		String drawings = typicalCase.getDrawings();
-
-		if (StringUtils.isEmpty(drawings)) {
-			return;
+	private void resizePane() {
+		double width = stage.getWidth();
+		double height = stage.getHeight() - 70;
+		pane.setMinSize(width, height);
+		pane.setMaxSize(width, height);
+		pane.setPrefSize(width, height);
+		if (pane.getClip() == null) {
+			pane.setClip(new Rectangle(pane.getWidth(), pane.getHeight()));
+		} else {
+			Rectangle rectangle = (Rectangle) pane.getClip();
+			rectangle.setWidth(width);
+			rectangle.setHeight(height);
 		}
-		this.drawings = StringUtil.split(drawings);
-		List<Resource> resources = SpringUtil.getBean(ResourceAction.class).findResourcesByIds(this.drawings);
-		for (Resource resource : resources) {
-			addDrawingPreviewBtn(resource);
-		}
+		toCenter(width, height);
+		System.out.printf("maximized=%b,width=%f,height=%f%n", stage.isMaximized(), width, height);
+	}
 
-		index = 0;
-		group.selectToggle(group.getToggles().get(index));
+	private void toCenter(double width, double height) {
+		double x = (width - drawing.getFitWidth()) / 2;
+		double y = (height - drawing.getFitHeight()) / 2;
+		drawing.setLayoutX(x);
+		drawing.setLayoutY(y);
 	}
 
 	private void clean() {
