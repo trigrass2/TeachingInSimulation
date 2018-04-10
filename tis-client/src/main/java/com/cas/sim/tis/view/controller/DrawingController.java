@@ -25,9 +25,9 @@ import com.cas.util.MathUtil;
 import com.cas.util.StringUtil;
 
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Cursor;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
@@ -40,7 +40,6 @@ import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -84,6 +83,9 @@ public class DrawingController implements Initializable {
 
 	private Stage stage;
 
+	private double pressedX;
+	private double pressedY;
+
 	private double xOffset;
 	private double yOffset;
 	private TypicalCase3D typicalCase3D;
@@ -124,35 +126,55 @@ public class DrawingController implements Initializable {
 			String url = utils.getFullPath(ResourceConsts.FTP_RES_PATH + resource.getPath());
 			loadDrawing(resource.getName(), url);
 		});
-		pane.addEventFilter(ScrollEvent.ANY, new EventHandler<ScrollEvent>() {
+		pane.setOnScroll(event -> {
+			double delta = event.getDeltaY();
+			double x = event.getX();
+			double y = event.getY();
+			double leftOffset = drawing.getLayoutX();
+			double topOffset = drawing.getLayoutY();
+			double width = drawing.getFitWidth();
+			double height = drawing.getFitHeight();
+			double xPecent = (x - leftOffset) / width;
+			double yPecent = (y - topOffset) / height;
 
-			@Override
-			public void handle(ScrollEvent event) {
-				double delta = event.getDeltaY();
-				double x = event.getX();
-				double y = event.getY();
-				double leftOffset = drawing.getLayoutX();
-				double topOffset = drawing.getLayoutY();
-				double width = drawing.getFitWidth();
-				double height = drawing.getFitHeight();
-				double xPecent = (x - leftOffset) / width;
-				double yPecent = (y - topOffset) / height;
-
-				if (delta < 0) {
-					zoomOut();
-				} else {
-					zoomIn();
-				}
-				width = drawing.getFitWidth();
-				height = drawing.getFitHeight();
-				if (width > pane.getWidth() || height > pane.getHeight()) {
-					leftOffset = x - (width * xPecent);
-					topOffset = y - (height * yPecent);
-					drawing.setLayoutX(leftOffset);
-					drawing.setLayoutY(topOffset);
-				} else {
-					toCenter(pane.getWidth(), pane.getHeight());
-				}
+			if (delta < 0) {
+				zoomOut();
+			} else {
+				zoomIn();
+			}
+			width = drawing.getFitWidth();
+			height = drawing.getFitHeight();
+			if (width > pane.getWidth() || height > pane.getHeight()) {
+				leftOffset = x - (width * xPecent);
+				topOffset = y - (height * yPecent);
+				drawing.setLayoutX(leftOffset);
+				drawing.setLayoutY(topOffset);
+			} else {
+				toCenter(pane.getWidth(), pane.getHeight());
+			}
+		});
+		drawing.setOnMouseReleased(e -> {
+			drawing.setCursor(Cursor.DEFAULT);
+		});
+		drawing.setOnMousePressed(e -> {
+			double width = drawing.getFitWidth();
+			double height = drawing.getFitHeight();
+			if (width > pane.getWidth() || height > pane.getHeight()) {
+				drawing.setCursor(Cursor.MOVE);
+				pressedX = e.getX();
+				pressedY = e.getY();
+			}
+		});
+		drawing.setOnMouseDragged(e -> {
+			double width = drawing.getFitWidth();
+			double height = drawing.getFitHeight();
+			if (width > pane.getWidth() || height > pane.getHeight()) {
+				double deltaX = pressedX - e.getX();
+				double deltaY = pressedY - e.getY();
+				double layoutX = drawing.getLayoutX() - deltaX;
+				double layoutY = drawing.getLayoutY() - deltaY;
+				drawing.setLayoutX(layoutX);
+				drawing.setLayoutY(layoutY);
 			}
 		});
 	}
