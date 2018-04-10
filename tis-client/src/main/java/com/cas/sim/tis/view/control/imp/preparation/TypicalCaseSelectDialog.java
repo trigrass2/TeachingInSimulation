@@ -43,26 +43,26 @@ public class TypicalCaseSelectDialog extends DialogPane<Integer> {
 	private Column<String> delete;
 
 	public TypicalCaseSelectDialog(boolean editable) {
-		VBox box = new VBox(25);
+		VBox box = new VBox(20);
 		VBox.setVgrow(box, Priority.ALWAYS);
 		box.setAlignment(Pos.TOP_CENTER);
 		box.setPadding(new Insets(20));
 
 		HBox toggleBox = new HBox(10);
-		sys = new ToggleButton(MsgUtil.getMessage("resource.menu.sys"));
-		sys.setMinSize(100, 40);
-		sys.setStyle("-fx-font-size:14px");
-		sys.setUserData(1);
-		group.getToggles().add(sys);
-		toggleBox.getChildren().add(sys);
 		if (Session.get(Session.KEY_LOGIN_ROLE, 0) != RoleConst.ADMIN) {
-			ToggleButton mine = new ToggleButton(MsgUtil.getMessage("resource.menu.mine"));
+			ToggleButton mine = new ToggleButton(MsgUtil.getMessage("typical.case.min.case"));
 			mine.setMinSize(100, 40);
 			mine.setStyle("-fx-font-size:14px");
 			mine.setUserData(Session.get(Session.KEY_LOGIN_ID));
 			group.getToggles().add(mine);
 			toggleBox.getChildren().add(mine);
 		}
+		sys = new ToggleButton(MsgUtil.getMessage("typical.case.sys.case"));
+		sys.setMinSize(100, 40);
+		sys.setStyle("-fx-font-size:14px");
+		sys.setUserData(1);
+		group.getToggles().add(sys);
+		toggleBox.getChildren().add(sys);
 		group.selectedToggleProperty().addListener((b, o, n) -> {
 			if (n == null) {
 				group.selectToggle(o);
@@ -145,7 +145,7 @@ public class TypicalCaseSelectDialog extends DialogPane<Integer> {
 		box.getChildren().addAll(toggleBox, scroll, error, ok);
 		getChildren().add(box);
 
-		group.selectToggle(sys);
+		group.selectToggle(group.getToggles().get(0));
 	}
 
 	private void reload() {
