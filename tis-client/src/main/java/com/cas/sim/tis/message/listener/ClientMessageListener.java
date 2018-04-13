@@ -26,7 +26,7 @@ public enum ClientMessageListener implements MessageListener<Client> {
 		if (handler != null) {
 			try {
 				handler.execute(client, m);
-				LOG.info("消息处理成功");
+				LOG.info("消息已处理{}", m.getClass().getName());
 			} catch (Exception e) {
 				LOG.warn("消息处理失败", e);
 			}

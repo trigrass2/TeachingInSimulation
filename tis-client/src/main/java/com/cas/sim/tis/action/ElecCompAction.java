@@ -18,8 +18,6 @@ import com.cas.sim.tis.xml.util.JaxbUtil;
 
 @Component
 public class ElecCompAction extends BaseAction<ElecCompService> {
-	@Resource
-	private HTTPUtils httpUtils;
 
 	@Resource
 	@Qualifier("elecCompServiceFactory")
@@ -43,7 +41,7 @@ public class ElecCompAction extends BaseAction<ElecCompService> {
 	}
 
 	public ElecCompDef parse(String cfgPath) {
-		return JaxbUtil.converyToJavaBean(httpUtils.getUrl(cfgPath), ElecCompDef.class);
+		return JaxbUtil.converyToJavaBean(HTTPUtils.getUrl(cfgPath), ElecCompDef.class);
 	}
 
 	public ElecComp findElecCompById(Integer id) {

@@ -4,7 +4,6 @@ import com.cas.sim.tis.util.JmeUtil;
 import com.jme3.math.ColorRGBA;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
-import com.jme3.scene.Spatial;
 import com.jme3.scene.control.AbstractControl;
 
 public class HintControl extends AbstractControl {
@@ -17,7 +16,6 @@ public class HintControl extends AbstractControl {
 	private static final ColorRGBA COLOR_END = ColorRGBA.Pink;
 	private float changeAmnt;
 	private float operator = 1;
-	private Spatial curr;
 
 	@Override
 	protected void controlUpdate(float tpf) {
@@ -27,7 +25,7 @@ public class HintControl extends AbstractControl {
 			operator = -1;
 		}
 		changeAmnt += tpf * operator * COLOR_SPEED;
-		JmeUtil.color(spatial, COLOR_BEGIN.clone().interpolateLocal(COLOR_END.clone(), changeAmnt), false);
+		JmeUtil.color(spatial, COLOR_BEGIN.clone().interpolateLocal(COLOR_END, changeAmnt), false);
 	}
 
 	@Override
@@ -36,18 +34,17 @@ public class HintControl extends AbstractControl {
 	}
 
 	@Override
-	public void setSpatial(Spatial spatial) {
-		if (spatial == null) {
-			JmeUtil.uncolor(curr);
-		} else {
-			curr = spatial;
-			JmeUtil.color(curr, COLOR_BEGIN, true);
-		}
-		super.setSpatial(spatial);
-	}
-
-	@Override
 	public void setEnabled(boolean enabled) {
+		if (spatial == null) {
+			throw new NullPointerException("请将control加入到spatial中，再调用该方法");
+		}
+		if (enabled) {
+			JmeUtil.color(spatial, COLOR_BEGIN, true);
+		} else {
+			JmeUtil.uncolor(this.spatial);
+		}
+
 		super.setEnabled(enabled);
 	}
+
 }

@@ -6,13 +6,18 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.annotation.Nonnull;
+
 import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
+import org.apache.commons.net.ftp.FTPClientConfig;
 import org.apache.commons.net.ftp.FTPFile;
 import org.apache.commons.net.ftp.FTPReply;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,85 +28,86 @@ import org.slf4j.LoggerFactory;
  * @修改人 ScOrPiO
  */
 public class FTPUtils {
+	private static final Logger LOG = LoggerFactory.getLogger(FTPUtils.class);
+	private static final String FTP_ENCODE = "ISO-8859-1";
+	private FTPClient ftpClient;
+
+//	当前目录
+	private String remotePath;
+
 	public static class FtpFile {
 		public String name;
 		public File file;
 	}
 
-	private static final Logger LOG = LoggerFactory.getLogger(FTPUtils.class);
-	private FTPClient ftpClient;
-
-	private String host;
-
-	private Integer port;
-
-	private String username;
-
-	private String password;
-
 	/**
 	 * 连接（配置通用连接属性）至服务器
-	 * @param serverName 服务器名称
-	 * @param remotePath 当前访问目录
+	 * @param remotePath 服务器名称
 	 * @return <b>true</b>：连接成功 <br/>
 	 *         <b>false</b>：连接失败
 	 * @throws Exception
 	 */
-	public boolean connect(String remotePath) throws Exception {
+	public static FTPUtils connect() {
+		FTPUtils util = new FTPUtils();
+
+		FTPClient ftpClient = new FTPClient();
+		util.setFtpClient(ftpClient);
+
+		String serverIp = AppPropertiesUtil.getStringValue("server.ftp.address");
+		Integer serverPort = AppPropertiesUtil.getIntValue("server.ftp.port");
+
+//		util.setHost(cfg.getFtpAddress());
+//		util.setPort(cfg.getFtpPort());
+//		util.setUsername("admin");
+//		util.setPassword("admin");
+
 		// 连接至服务器，端口默认为21时，可直接通过URL连接
 		try {
-			ftpClient.connect(host, port);
-		} catch (Exception e) {
-			LOG.error("无法连接到FTP服务器{}:{}", host, port);
-			throw e;
-		}
-		// 登录服务器
-		boolean login = ftpClient.login(username, password);
-		if (!login) {
-			LOG.error("无法登录到FTP服务器{},{}", username, password);
-			disconnect();
-			return false;
-		}
-		// 判断返回码是否合法
-		if (!FTPReply.isPositiveCompletion(ftpClient.getReplyCode())) {
-			// 不合法时断开连接
-			LOG.warn("不合法的连接，服务器返回码{}", ftpClient.getReplyCode());
-			disconnect();
-			// 结束程序
-			return false;
-		}
-		// 切换到对应的文件目录
-		try {
-			boolean exist = ftpClient.changeWorkingDirectory(remotePath);
-			if (!exist) {
-				ftpClient.cwd("/");
+			ftpClient.connect(serverIp, serverPort);
+			// 登录服务器
+			ftpClient.login("admin", "admin");
+			ftpClient.enterLocalPassiveMode();
 
-				boolean created = mkDir(remotePath);
-				if (created) {
-					ftpClient.changeWorkingDirectory(remotePath);
-				}
+			// 设置文件类型，二进制
+			ftpClient.setFileType(FTP.BINARY_FILE_TYPE);
+			// 设置缓冲区大小
+			ftpClient.setBufferSize(2048); // 2K
+			// 设置字符编码
+			// 下面两行代码必须要，而且不能改变编码格式，否则不能正确下载中文文件
+			ftpClient.setControlEncoding(FTP_ENCODE);// 注意编码格式
+			new FTPClientConfig(FTPClientConfig.SYST_UNIX).setServerLanguageCode("zh");// 中文
+
+			// 判断返回码是否合法
+			if (!FTPReply.isPositiveCompletion(ftpClient.getReplyCode())) {
+				// 不合法时断开连接
+				String errMsg = String.format("不合法的连接，服务器返回码%s", ftpClient.getReplyCode());
+				LOG.warn(errMsg);
+				// 结束程序
+				util.disconnect();
+				throw new RuntimeException(errMsg);
 			}
 		} catch (Exception e) {
-			disconnect();
-			LOG.warn("目录{}不存在，且无法创建", remotePath);
-			throw e;
+			throw new RuntimeException(e);
 		}
+		return util;
+	}
 
-		// 设置文件类型，二进制
-		ftpClient.setFileType(FTP.BINARY_FILE_TYPE);
-		// 设置缓冲区大小
-		ftpClient.setBufferSize(2048); // 2K
-		// 设置字符编码
-		ftpClient.setControlEncoding("UTF-8");
-		ftpClient.enterLocalPassiveMode();
-		return true;
+	public FTPUtils cd(String pathname) throws IOException {
+		boolean result = ftpClient.changeWorkingDirectory(pathname);
+		if (!result) {
+			LOG.warn("进入目录{}失败", pathname);
+			mkDir(pathname);
+			result = ftpClient.changeWorkingDirectory(pathname);
+		}
+		remotePath = ftpClient.printWorkingDirectory();
+		return this;
 	}
 
 	/**
 	 * 列出当前目录下的所有文件夹
 	 * @return
 	 */
-	public List<String> listDirs() {
+	@NotNull public List<String> listDirs() {
 		List<String> dirs = new ArrayList<>();
 		try {
 			FTPFile[] firs = ftpClient.listDirectories();
@@ -112,6 +118,30 @@ public class FTPUtils {
 			e.printStackTrace();
 		}
 		return dirs;
+	}
+
+	/**
+	 * 列出指定目录下，递归寻找所有文件夹
+	 * @param path
+	 * @param pathArray
+	 * @throws IOException
+	 */
+	public void listDirs(String path, List<String> pathArray) throws IOException {
+		ftpClient.changeWorkingDirectory(path);// 改变当前路径
+		pathArray.add(path);
+
+		FTPFile[] files = ftpClient.listFiles();
+		for (FTPFile ftpFile : files) {
+			if (ftpFile.getName().equals(".") || ftpFile.getName().equals("..")) {
+				continue;
+			}
+			if (ftpFile.isDirectory()) {// 如果是目录，则递归调用，查找里面所有文件
+				path += "/" + ftpFile.getName();
+				ftpClient.changeWorkingDirectory(path);// 改变当前路径
+				listDirs(path, pathArray);// 递归调用
+				path = path.substring(0, path.lastIndexOf("/"));// 避免对之后的同目录下的路径构造作出干扰，
+			}
+		}
 	}
 
 	public boolean mkDir(String directory) {
@@ -130,7 +160,7 @@ public class FTPUtils {
 			String parent = "";
 			for (int i = 0; i < str.length; i++) {
 
-				String dirName = new String(str[i].getBytes("UTF-8"), "ISO-8859-1");
+				String dirName = convertToFtpEncode(str[i]);
 
 				if (!isExistDir(str[i])) {
 //					目录不存在，则创建
@@ -177,80 +207,54 @@ public class FTPUtils {
 	}
 
 	/**
-	 * 上传文件至FTP服务器
+	 * 上传单个文件至FTP服务器
 	 * @param storePath 文件存储路径
 	 * @param file 上传文件
 	 * @param storedName 文件存储名称
 	 * @throws Exception
 	 */
-	public boolean uploadFile(String storePath, File file, String storedName) throws Exception {
-		LOG.info("准备上传文件【{}】至【{}】目录中，并且命名为【{}】", file.getPath(), storePath, storedName);
-		boolean result = false;
+	public FTPUtils uploadFile(File file, String storedName) throws Exception {
 		try (InputStream ins = new FileInputStream(file)) {
-			if (ins.available() == 0) {
-				return false;
-			}
-			// 连接至服务器
-			connect(storePath);
 			// 上传文件
-			result = ftpClient.storeFile(storedName, ins);
+			boolean result = ftpClient.storeFile(convertToFtpEncode(storedName), ins);
 			if (result) {
-				LOG.info("文件上传成功");
+				LOG.info("本地文件【{}】已上传至服务器目录【{}】中，并且命名为【{}】", file.getPath(), remotePath, storedName);
 			} else {
-				LOG.warn("文件上传失败");
+				LOG.error("文件【{}】上传失败", file.getPath());
 			}
-		} finally {
-			// 登出服务器并断开连接
-			logout();
 		}
-		return result;
-	}
-
-	public boolean uploadFileBatch(String storePath, List<FtpFile> fileList) {
-		return false;
+		return this;
 	}
 
 	/**
-	 * 下载FTP服务器文件至本地<br/>
-	 * 操作完成后需调用logout方法与服务器断开连接
-	 * @param serverName 服务器名称
-	 * @param remotePath 下载文件存储路径
-	 * @param fileName 下载文件存储名称
-	 * @return <b>InputStream</b>：文件输入流
+	 * 批量上传文件到当前目录中
+	 * @param fileList
+	 * @return
 	 */
-	public InputStream downloadFile(String remotePath, String fileName) {
-		try {
-			// 连接至服务器
-			connect(remotePath);
-			// 获取文件输入流
-			return ftpClient.retrieveFileStream(new String(fileName.getBytes("UTF-8"), "ISO-8859-1"));
-		} catch (Exception e) {
-			LOG.warn("下载文件时出现了一个错误", e);
-		}
-		return null;
-	}
-
-	public void getPath(String path, List<String> pathArray) throws IOException {
-		FTPFile[] files = ftpClient.listFiles();
-		for (FTPFile ftpFile : files) {
-			if (ftpFile.getName().equals(".") || ftpFile.getName().equals("..")) {
-				continue;
+	public FTPUtils uploadFileBatch(@Nonnull List<FtpFile> fileList) {
+//		连接FTP服务器
+		fileList.forEach(file -> {
+			try {
+				uploadFile(file.file, file.name);
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
-			if (ftpFile.isDirectory()) {// 如果是目录，则递归调用，查找里面所有文件
-				path += "/" + ftpFile.getName();
-				pathArray.add(path);
-				ftpClient.changeWorkingDirectory(path);// 改变当前路径
-				getPath(path, pathArray);// 递归调用
-				path = path.substring(0, path.lastIndexOf("/"));// 避免对之后的同目录下的路径构造作出干扰，
-			}
-		}
+		});
+		return this;
 	}
 
-	public void download(List<String> pathArray, String localRootPath) throws IOException {
-		download(pathArray, localRootPath, null);
+	/**
+	 * 下载给定目录下的所有文件（包括子文件夹内的文件）
+	 * @param pathArray
+	 * @param localRootPath
+	 * @return
+	 * @throws IOException
+	 */
+	public FTPUtils download(List<String> pathArray, String localRootPath) throws IOException {
+		return download(pathArray, localRootPath, null);
 	}
 
-	public void download(List<String> pathArray, String localRootPath, TaskListener listener) throws IOException {
+	public FTPUtils download(List<String> pathArray, String localRootPath, TaskListener listener) throws IOException {
 		for (String string : pathArray) {
 			String localPath = localRootPath + string;
 			File localFile = new File(localPath);
@@ -258,57 +262,60 @@ public class FTPUtils {
 				localFile.mkdirs();
 			}
 		}
-		for (String string : pathArray) {
-			String localPath = localRootPath + string;// 构造本地路径
-			ftpClient.changeWorkingDirectory(string);
+		for (String dir : pathArray) {
+			String localPath = localRootPath + dir;// 构造本地路径
+			ftpClient.changeWorkingDirectory(dir);
 			FTPFile[] file = ftpClient.listFiles();
 			for (FTPFile ftpFile : file) {
 				if (ftpFile.getName().equals(".") || ftpFile.getName().equals("..")) continue;
 				File localFile = new File(localPath);
 				if (!ftpFile.isDirectory()) {
-					File local = new File(localFile + "/" + ftpFile.getName());
+
+					File local = new File(String.format("%s/%s", localFile, convertToLocalEncode(ftpFile.getName())));
 					if (local.exists()) {
 						if (listener != null) listener.skip(file.length, local);
 						continue;
 					}
-					OutputStream is = new FileOutputStream(local);
-					boolean flg = ftpClient.retrieveFile(ftpFile.getName(), is);
+					OutputStream out = new FileOutputStream(local);
+					boolean flg = ftpClient.retrieveFile(ftpFile.getName(), out);
 					if (flg) {
 						LOG.info("与服务器同步文件成功：{}", local);
 					} else {
 						LOG.info("与服务器同步文件失败：{}", local);
 					}
-					is.close();
+					out.close();
 					if (listener != null) listener.finished(file.length, local);
 				}
 			}
 		}
+
+		return this;
 	}
 
-	/**
-	 * 下载FTP服务器文件至本地<br/>
-	 * 操作完成后需调用logout方法与服务器断开连接
-	 * @param serverName 服务器名称
-	 * @param remotePath 下载文件存储路径
-	 * @param fileName 下载文件存储名称
-	 */
-	public boolean retrieveFile(String remotePath, String localPath, String fileName) {
-		boolean result = false;
-		try {
-			// 连接至服务器
-			connect(remotePath);
-			// 获取文件输入流
-			result = ftpClient.retrieveFile(fileName, new FileOutputStream(localPath));
-		} catch (Exception e) {
-			LOG.warn("下载文件时出现了一个错误", e);
-		}
-		if (result) {
-			LOG.info("下载文件{}成功", fileName);
-		} else {
-			LOG.warn("下载文件{}失败", fileName);
-		}
-		return result;
-	}
+//	/**
+//	 * 下载FTP服务器文件至本地<br/>
+//	 * 操作完成后需调用logout方法与服务器断开连接
+//	 * @param serverName 服务器名称
+//	 * @param remotePath 下载文件存储路径
+//	 * @param fileName 下载文件存储名称
+//	 */
+//	public boolean retrieveFile(String remotePath, String localPath, String fileName) {
+//		boolean result = false;
+//		try {
+//			// 连接至服务器
+//			connect(remotePath);
+//			// 获取文件输入流
+//			result = ftpClient.retrieveFile(fileName, new FileOutputStream(localPath));
+//		} catch (Exception e) {
+//			LOG.warn("下载文件时出现了一个错误", e);
+//		}
+//		if (result) {
+//			LOG.info("下载文件{}成功", fileName);
+//		} else {
+//			LOG.warn("下载文件{}失败", fileName);
+//		}
+//		return result;
+//	}
 
 	/**
 	 * 删除FTP服务器文件
@@ -317,25 +324,12 @@ public class FTPUtils {
 	 * @param fileName 文件存储名称
 	 * @return <b>true</b>：删除成功 <br/>
 	 *         <b>false</b>：删除失败
+	 * @throws IOException
 	 */
-	public boolean deleteFile(String remotePath, String fileName) {
-		try {
-
-			// 连接至服务器
-			connect(remotePath);
-			boolean result = ftpClient.deleteFile(fileName);
-			if (result) {
-				LOG.info("删除文件{}成功", fileName);
-			} else {
-				LOG.warn("删除文件{}失败", fileName);
-			}
-		} catch (Exception e) {
-			LOG.warn("删除文件时出现了一个错误", e);
-		} finally {
-			// 登出服务器并断开连接
-			logout();
-		}
-		return false;
+	public FTPUtils deleteFile(String fileName) throws IOException {
+		ftpClient.deleteFile(fileName);
+		LOG.info("删除文件{}成功", fileName);
+		return this;
 	}
 
 	/**
@@ -345,97 +339,72 @@ public class FTPUtils {
 	 * @param fileName 检测文件存储名称
 	 * @return <b>true</b>：文件存在 <br/>
 	 *         <b>false</b>：文件不存在
+	 * @throws IOException
 	 */
-	public boolean checkFile(String remotePath, String fileName) {
+	public boolean checkFile(String fileName) throws IOException {
 		boolean result = false;
-		try {
-			// 连接至服务器
-			connect(remotePath);
-			// 获取文件操作目录下所有文件名称
-			String[] remoteNames = ftpClient.listNames();
-			// 返回值为空
-			if (remoteNames == null) {
-				return false;
-			}
-			// 循环比对文件名称，判断是否含有当前要下载的文件名
-			for (String remoteName : remoteNames) {
-				if (fileName.equals(remoteName)) {
-					result = true;
-				}
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			// 登出服务器并断开连接
-			logout();
+		// 获取文件操作目录下所有文件名称
+		String[] remoteNames = ftpClient.listNames();
+		// 返回值为空
+		if (remoteNames == null) {
+			return false;
 		}
-		return result;
-	}
-
-	/**
-	 * 登出服务器并断开连接
-	 * @param ftp FTPClient对象实例
-	 * @return <b>true</b>：操作成功 <br/>
-	 *         <b>false</b>：操作失败
-	 */
-	public boolean logout() {
-		boolean result = false;
-		if (null != ftpClient) {
-			try {
-				// 登出服务器
-				result = ftpClient.logout();
-			} catch (IOException e) {
-				e.printStackTrace();
-			} finally {
-				disconnect();
+		// 循环比对文件名称，判断是否含有当前要下载的文件名
+		for (String remoteName : remoteNames) {
+			if (fileName.equals(remoteName)) {
+				result = true;
 			}
 		}
 		return result;
 	}
 
 	public void disconnect() {
-		if (ftpClient.isConnected()) {
-			try {
+		try {
+			ftpClient.logout();
+			if (ftpClient.isConnected()) {
 				ftpClient.disconnect();
+				ftpClient = null;
 				LOG.info("主动与服务器断开连接");
-			} catch (IOException e) {
-				e.printStackTrace();
 			}
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 
-	public String getUrl(String path) {
-		path = path.replaceAll("//", "/");
-		if (path.startsWith("/")) {
-			path = path.substring(1);
-		}
-		return "ftp://" + host + ":" + port + "/" + path;
-	}
+//	public String getUrl(String path) {
+//		path = path.replaceAll("//", "/");
+//		if (path.startsWith("/")) {
+//			path = path.substring(1);
+//		}
+//		return "ftp://" + host + ":" + port + "/" + path;
+//	}
 
 	public void setFtpClient(FTPClient ftpClient) {
 		this.ftpClient = ftpClient;
-	}
-
-	public void setHost(String host) {
-		this.host = host;
-	}
-
-	public void setPort(Integer port) {
-		this.port = port;
-	}
-
-	public void setUsername(String username) {
-		this.username = username;
-	}
-
-	public void setPassword(String password) {
-		this.password = password;
 	}
 
 	public static interface TaskListener {
 		void finished(int size, File local);
 
 		void skip(int size, File local);
+	}
+
+	private String convertToFtpEncode(String text) {
+		try {
+			return new String(text.getBytes("UTF-8"), FTP_ENCODE);
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+		return text;
+	}
+
+	private String convertToLocalEncode(String text) {
+		try {
+			return new String(text.getBytes(FTP_ENCODE), "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+		return text;
 	}
 
 }

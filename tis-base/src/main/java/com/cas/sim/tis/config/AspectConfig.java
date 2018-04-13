@@ -25,13 +25,19 @@ public class AspectConfig {
 	@Around("actionPointcut()")
 	public Object onAround(ProceedingJoinPoint pjp) {
 		try {
-			logger.debug("执行 {}.{}({})", //
+			String msg = String.format("执行 %s.%s(%s)", //
 					pjp.getSignature().getDeclaringTypeName(), //
 					pjp.getSignature().getName(), //
 					pjp.getArgs());
+			logger.debug(msg);
 			return pjp.proceed();
 		} catch (Throwable e) {
-			logger.error(e.getMessage());
+			String msg = String.format("执行 %s.%s(%s)出现异常%s", //
+					pjp.getSignature().getDeclaringTypeName(), //
+					pjp.getSignature().getName(), //
+					pjp.getArgs(),//
+					e.getMessage());
+			logger.error(msg);
 		}
 		return null;
 	}

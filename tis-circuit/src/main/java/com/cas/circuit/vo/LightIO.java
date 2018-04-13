@@ -1,5 +1,7 @@
 package com.cas.circuit.vo;
 
+import java.io.IOException;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -9,11 +11,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.cas.circuit.xml.adapter.ColorRGBAAdapter;
+import com.jme3.export.JmeExporter;
+import com.jme3.export.JmeImporter;
+import com.jme3.export.Savable;
 import com.jme3.math.ColorRGBA;
 import com.jme3.scene.Spatial;
 
 @XmlAccessorType(XmlAccessType.NONE)
-public class LightIO {// extends BaseVO<LightIOPO> {
+public class LightIO implements Savable {// extends BaseVO<LightIOPO> {
 	private static final Logger LOG = LoggerFactory.getLogger(Terminal.class);
 	@XmlAttribute
 	private String name;
@@ -38,6 +43,7 @@ public class LightIO {// extends BaseVO<LightIOPO> {
 			LOG.error("没有找到LightIO::name为{}的模型{}", name, mdlName);
 		}
 		this.spatial = spatial;
+		spatial.setUserData("entity", this);
 	}
 
 	public Spatial getSpatial() {
@@ -50,5 +56,17 @@ public class LightIO {// extends BaseVO<LightIOPO> {
 
 	public String getName() {
 		return name;
+	}
+
+	@Override
+	public void write(JmeExporter ex) throws IOException {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void read(JmeImporter im) throws IOException {
+		// TODO Auto-generated method stub
+
 	}
 }

@@ -22,7 +22,11 @@ public class TypicalCaseListener implements AnalogListener {
 	public void registerWithInput(InputManager inputManager) {
 		this.inputManager = inputManager;
 		// 鼠标移动监听
-		inputManager.addMapping(TYPICAL_MOVE, new MouseAxisTrigger(MouseInput.AXIS_X, true), new MouseAxisTrigger(MouseInput.AXIS_X, false), new MouseAxisTrigger(MouseInput.AXIS_Y, true), new MouseAxisTrigger(MouseInput.AXIS_Y, false));
+		inputManager.addMapping(TYPICAL_MOVE, //
+				new MouseAxisTrigger(MouseInput.AXIS_X, true), //
+				new MouseAxisTrigger(MouseInput.AXIS_X, false), //
+				new MouseAxisTrigger(MouseInput.AXIS_Y, true), //
+				new MouseAxisTrigger(MouseInput.AXIS_Y, false));
 		inputManager.addListener(this, TYPICAL_MOVE);
 		// 鼠标滚动事件
 		inputManager.addMapping(TYPICAL_LEFT_ROTATE, new MouseAxisTrigger(MouseInput.AXIS_WHEEL, true));

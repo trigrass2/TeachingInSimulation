@@ -8,12 +8,11 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.LoggerFactory;
 
-import com.cas.sim.tis.app.event.MouseEventState;
 import com.cas.util.StringUtil;
 import com.jme3.asset.AssetManager;
+import com.jme3.bounding.BoundingBox;
 import com.jme3.collision.CollisionResult;
 import com.jme3.collision.CollisionResults;
-import com.jme3.input.InputManager;
 import com.jme3.material.MatParam;
 import com.jme3.material.Material;
 import com.jme3.material.RenderState.BlendMode;
@@ -32,12 +31,12 @@ import com.jme3.scene.Spatial;
 import com.jme3.scene.Spatial.CullHint;
 import com.jme3.scene.VertexBuffer;
 import com.jme3.scene.VertexBuffer.Type;
+import com.jme3.scene.debug.WireBox;
 import com.jme3.scene.shape.Cylinder;
 import com.jme3.scene.shape.Line;
 import com.jme3.scene.shape.Sphere;
 import com.jme3.util.BufferUtils;
 
-import javafx.scene.paint.Color;
 import jme3tools.optimize.GeometryBatchFactory;
 
 public final class JmeUtil {
@@ -134,125 +133,56 @@ public final class JmeUtil {
 	 * @return the contact point or null.
 	 */
 	@Nullable
-	public static Vector3f getContactPointFromCursor(@NotNull final Spatial spatial, @NotNull final Camera camera, @NotNull InputManager inputManager) {
-		final Vector2f cursor = inputManager.getCursorPosition();
-		return getContactPointFromScreen(spatial, camera, cursor.getX(), cursor.getY());
-	}
-
-	/**
-	 * Get a context point on spatial from screen position.
-	 * @param spatial the spatial.
-	 * @param screenX the screen X coord.
-	 * @param screenY the screen Y coord.
-	 * @return the contact point or null.
-	 */
-	@Nullable
-	public static Vector3f getContactPointFromScreen(@NotNull final Spatial spatial, @NotNull final Camera camera, final float screenX, final float screenY) {
-		final CollisionResult collision = getCollisionFromScreen(spatial, camera, screenX, screenY);
+	public static Vector3f getContactPointFromCursor(@NotNull final Spatial spatial, @NotNull final Camera camera, @NotNull Vector2f point) {
+		final CollisionResult collision = getCollisionFromCursor(spatial, camera, point);
 		return collision == null ? null : collision.getContactPoint();
 	}
 
 	@Nullable
-	public static Node getNodeFromCursor(@NotNull final Spatial spatial, @NotNull final Camera camera, InputManager inputManager) {
-		Geometry geom = getGeometryFromCursor(spatial, camera, inputManager);
-		if (geom != null) {
-			return geom.getParent();
-		}
-		return null;
-	}
-
-	/**
-	 * Get a geometry on spatial from cursor position.
-	 * @param spatial the spatial.
-	 * @return the geometry or null.
-	 */
-	@Nullable
-	public static Geometry getGeometryFromCursor(@NotNull final Spatial spatial, @NotNull final Camera camera, InputManager inputManager) {
-		final Vector2f cursor = inputManager.getCursorPosition();
-		return getGeometryFromScreen(spatial, camera, cursor.getX(), cursor.getY());
-	}
-
-	@Nullable
-	public static Node getNodeFromScreenPos(@NotNull final Spatial spatial, @NotNull final Camera camera, final float screenX, final float screenY) {
-		Geometry geom = getGeometryFromScreen(spatial, camera, screenX, screenY);
-		if (geom != null) {
-			return geom.getParent();
-		}
-		return null;
-	}
-
-	/**
-	 * Get a geometry on spatial from screen position.
-	 * @param spatial the spatial.
-	 * @param screenX the screen X coord.
-	 * @param screenY the screen Y coord.
-	 * @return the geometry or null.
-	 */
-	@Nullable
-	public static Geometry getGeometryFromScreen(@NotNull final Spatial spatial, @NotNull final Camera camera, final float screenX, final float screenY) {
-		final CollisionResult collision = getCollisionFromScreen(spatial, camera, screenX, screenY);
+	public static Geometry getNodeFromCursor(@NotNull final Spatial spatial, @NotNull final Camera camera, @NotNull Vector2f point) {
+		@Nullable
+		CollisionResult collision = getCollisionFromCursor(spatial, camera, point);
 		return collision == null ? null : collision.getGeometry();
 	}
 
 	/**
 	 * Get a collision on spatial from screen position.
-	 * @param spatial the spatial.
-	 * @param screenX the screen X coord.
-	 * @param screenY the screen Y coord.
+	 * @param spatial
+	 * @param camera
+	 * @param point
+	 * @param filter
 	 * @return the collision or null.
 	 */
 	@Nullable
-	public static CollisionResult getCollisionFromCursor(@NotNull final Spatial spatial, @NotNull final Camera camera, @NotNull InputManager inputManager) {
-		final Vector2f cursor = inputManager.getCursorPosition();
-		return getCollisionFromScreen(spatial, camera, cursor.getX(), cursor.getY());
-	}
-
-	@Nullable
-	public static CollisionResult getCollisionFromScreen(@NotNull final Spatial spatial, @NotNull final Camera camera, final float screenX, final float screenY) {
-
-		final Vector2f point = new Vector2f(screenX, screenY);
-//		final Vector3f click3d = camera.getWorldCoordinates(point, 0f);
-//		final Vector3f dir = camera.getWorldCoordinates(point, 1f).subtract(click3d).normalize();
+	public static CollisionResult getCollisionFromCursor( //
+			@NotNull final Spatial spatial, //
+			@NotNull final Camera camera, //
+			@NotNull Vector2f point) {
 		Vector3f origin = camera.getWorldCoordinates(point, 0.0f);
 		Vector3f direction = camera.getWorldCoordinates(point, 0.3f);
 		direction.subtractLocal(origin).normalizeLocal();
 
-		final Ray ray = new Ray();
+		Ray ray = new Ray();
 		ray.setOrigin(origin);
 		ray.setDirection(direction);
 
-		final CollisionResults results = new CollisionResults();
+		CollisionResults results = new CollisionResults();
 
-		spatial.updateModelBound();
+//		spatial.updateModelBound();
 		spatial.collideWith(ray, results);
 
-		if (results.size() < 1) {
+		if (results.size() == 0) {
 			return null;
 		}
 
-		for (CollisionResult collisionResult : results) {
-			if (collisionResult.getGeometry().getCullHint() == CullHint.Always) {
-				continue;
-			}
-			Boolean mouseTransparent = collisionResult.getGeometry().getUserData(MouseEventState.TO_MOUSE_VISIBLE);
-			if (mouseTransparent != null && !mouseTransparent.booleanValue()) {
-				continue;
-			}
+//		for (CollisionResult collisionResult : results) {
+//			if (collisionResult.getGeometry().getCullHint() == CullHint.Always) {
+//				continue;
+//			}
+//			return collisionResult;
+//		}
 
-			return collisionResult;
-		}
-
-		return null;
-	}
-
-	public static void setMouseVisible(Spatial spatial, boolean visible) {
-		if (spatial != null) {
-			spatial.setUserData(MouseEventState.TO_MOUSE_VISIBLE, visible);
-		}
-
-		if (spatial instanceof Node) {
-			((Node) spatial).getChildren().forEach(child -> setMouseVisible(child, visible));
-		}
+		return results.getClosestCollision();
 	}
 
 	/**
@@ -409,7 +339,33 @@ public final class JmeUtil {
 		return ballMod;
 	}
 
-	public static ColorRGBA convert(Color color) {
+	public static void updateWiringBox(Geometry boxGeo, Spatial ref) {
+		WireBox box = (WireBox) boxGeo.getMesh();
+		BoundingBox bound = ((BoundingBox) ref.getWorldBound());
+		boxGeo.setLocalTranslation(bound.getCenter());
+		box.updatePositions(bound.getXExtent() , bound.getYExtent(), bound.getZExtent());
+	}
+
+	public static Geometry getWiringBox(AssetManager assetManager, Spatial spatial) {
+		BoundingBox bound = ((BoundingBox) spatial.getWorldBound());
+		return getWiringBox(assetManager, bound.getCenter(), bound.getExtent(null));
+	}
+
+	public static Geometry getWiringBox(AssetManager assetManager, Vector3f center, Vector3f ext) {
+		Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
+		mat.setColor("Color", new ColorRGBA(1F, 1F, 1F, 1F));
+		mat.getAdditionalRenderState().setBlendMode(BlendMode.Alpha);
+		mat.getAdditionalRenderState().setDepthWrite(true);
+		mat.getAdditionalRenderState().setWireframe(true);
+		
+		WireBox mesh = new WireBox(ext.x, ext.y, ext.z);
+		Geometry ballMod = new Geometry("WiringBox", mesh);
+		ballMod.setMaterial(mat);
+		ballMod.setLocalTranslation(center);
+		return ballMod;
+	}
+
+	public static ColorRGBA convert(javafx.scene.paint.Color color) {
 		ColorRGBA colorRGBA = new ColorRGBA();
 		colorRGBA.set((float) color.getRed(), (float) color.getGreen(), (float) color.getBlue(), (float) color.getOpacity());
 //		colorRGBA.set(color.r, g, b, a);
@@ -459,7 +415,7 @@ public final class JmeUtil {
 		ballMat.setBoolean("UseMaterialColors", true);
 //		ballMat.getAdditionalRenderState().setLineWidth(width);
 		Node ret = new Node();
-		
+
 //		List<Geometry> realLineList = new ArrayList<>();
 //		两点之间穿件一条线
 //		为了方便，将pointList集合转换为List<Vector3f[]>, Vector3f[]表示线段的两点
@@ -506,9 +462,9 @@ public final class JmeUtil {
 //		Mesh outMesh = new Mesh();
 //		GeometryBatchFactory.mergeGeometries(realLineList, outMesh);
 //		Geometry ret = new Geometry("wireGeo", outMesh);
-		
+
 		GeometryBatchFactory.optimize(ret);
-		
+
 //		批处理后实际就是一个Geometry
 		return (Geometry) ret.getChild(0);
 	}

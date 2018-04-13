@@ -58,6 +58,16 @@ public class MouseEventState extends BaseState {
 
 	protected Spatial pressed;
 
+	public static void setMouseVisible(Spatial spatial, boolean visible) {
+		if (spatial != null) {
+			spatial.setUserData(MouseEventState.TO_MOUSE_VISIBLE, visible);
+		}
+
+		if (spatial instanceof Node) {
+			((Node) spatial).getChildren().forEach(child -> setMouseVisible(child, visible));
+		}
+	}
+
 	@Override
 	protected void initializeLocal() {
 		addMapping(MOUSE_PRIMARY_BUTTON, new MouseButtonTrigger(MouseInput.BUTTON_LEFT));
@@ -171,10 +181,10 @@ public class MouseEventState extends BaseState {
 		super.cleanup();
 	}
 
-	public void addCandidate(Spatial spatial, MouseEventListener listener) {
-		if (spatial == null) {
-			throw new NullPointerException();
-		}
+	public void addCandidate(@NotNull Spatial spatial, MouseEventListener listener) {
+//		if (spatial == null) {
+//			throw new NullPointerException();
+//		}
 		synchronized (candidateList) {
 //			获取节点的鼠鼠标监听
 			List<MouseEventListener> listeners = getListenerList(spatial);

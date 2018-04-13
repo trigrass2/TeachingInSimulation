@@ -6,10 +6,12 @@ import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import com.cas.circuit.xml.adapter.ColorRGBAAdapter;
 import com.cas.circuit.xml.adapter.Vector3fAdapter;
+import com.jme3.font.BitmapText;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 
@@ -39,6 +41,9 @@ public class WireProxy {
 
 	@XmlAttribute
 	private Float width;
+	
+	@XmlTransient
+	private BitmapText tagNode;
 
 	public String getComp1Uuid() {
 		return comp1Uuid;
@@ -102,6 +107,10 @@ public class WireProxy {
 
 	public void setNumber(String number) {
 		this.number = number;
+	}
+
+	public void setTagNode(BitmapText tag) {
+		this.tagNode = tag;
 	}
 
 }

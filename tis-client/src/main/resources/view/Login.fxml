@@ -18,7 +18,7 @@
 				</HBox>
 				<VBox spacing="30.0">
 					<TextField fx:id="userId" promptText="%login.account" styleClass="login-field" />
-					<PasswordField fx:id="password" promptText="%login.password" styleClass="login-field" />
+					<PasswordField fx:id="password" promptText="%login.password" styleClass="login-field" text="123456" />
 					<VBox.margin>
 						<Insets left="50.0" right="50.0" />
 					</VBox.margin>

@@ -10,6 +10,9 @@
 
 <?import com.cas.sim.tis.svg.SVGGlyph?>
 <?import org.controlsfx.control.PopOver?>
+<?import org.controlsfx.control.SegmentedButton?>
+<?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.control.ToggleGroup?>
 
 <VBox pickOnBounds="false" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.cas.sim.tis.view.control.imp.jme.TypicalCaseBtnController">
 	<VBox VBox.vgrow="ALWAYS" mouseTransparent="true" />
@@ -27,6 +30,13 @@
 				<SVGGlyph name="iconfont.svg.wire" size="20" fill="WHITE" />
 			</graphic>
 		</Button>
+
+		<SegmentedButton >
+			<buttons>
+				<ToggleButton text="2D" onMouseClicked="#toggleDimension" />
+				<ToggleButton text="3D" onMouseClicked="#toggleDimension"/>
+			</buttons>
+		</SegmentedButton>
 	</HBox>
 	<padding>
 		<Insets left="10" bottom="10" />

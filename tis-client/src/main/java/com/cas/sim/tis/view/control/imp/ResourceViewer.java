@@ -146,9 +146,8 @@ public class ResourceViewer extends VBox implements IContent {
 	 * 创建图片浏览
 	 */
 	private void createImageViewer() {
-		HTTPUtils utils = SpringUtil.getBean(HTTPUtils.class);
 //		Image image = new Image("http://192.168.1.19:8082/Test/1516772514400.png");
-		String url = utils.getFullPath(ResourceConsts.FTP_RES_PATH + resource.getPath());
+		String url = HTTPUtils.getFullPath(ResourceConsts.FTP_RES_PATH + resource.getPath());
 		if (url == null) {
 			return;
 		}
@@ -198,7 +197,7 @@ public class ResourceViewer extends VBox implements IContent {
 	private void createOfficeViewer() {
 		String officeName = resource.getPath();
 		String pdfName = officeName.substring(0, officeName.lastIndexOf(".")) + ".pdf";
-		String pdfPath = SpringUtil.getBean(HTTPUtils.class).getFullPath(ResourceConsts.FTP_CONVERT_PATH + pdfName);
+		String pdfPath = HTTPUtils.getFullPath(ResourceConsts.FTP_CONVERT_PATH + pdfName);
 		if (pdfPath == null) {
 			return;
 		}
@@ -219,8 +218,7 @@ public class ResourceViewer extends VBox implements IContent {
 	 * 创建PDF查看器
 	 */
 	private void createPDFViewer() {
-		HTTPUtils utils = SpringUtil.getBean(HTTPUtils.class);
-		String url = utils.getFullPath(ResourceConsts.FTP_RES_PATH + resource.getPath());
+		String url = HTTPUtils.getFullPath(ResourceConsts.FTP_RES_PATH + resource.getPath());
 		if (url == null) {
 			return;
 		}
@@ -242,8 +240,7 @@ public class ResourceViewer extends VBox implements IContent {
 	 * 创建视频查看器
 	 */
 	private void createVLCViewer() {
-		HTTPUtils utils = SpringUtil.getBean(HTTPUtils.class);
-		String url = utils.getFullPath(ResourceConsts.FTP_RES_PATH + resource.getPath());
+		String url = HTTPUtils.getFullPath(ResourceConsts.FTP_RES_PATH + resource.getPath());
 		if (url == null) {
 			return;
 		}
@@ -259,8 +256,7 @@ public class ResourceViewer extends VBox implements IContent {
 	 * 创建FLASH查看器
 	 */
 	private void createSWFViewer() {
-		HTTPUtils utils = SpringUtil.getBean(HTTPUtils.class);
-		String url = utils.getFullPath(ResourceConsts.FTP_RES_PATH + resource.getPath());
+		String url = HTTPUtils.getFullPath(ResourceConsts.FTP_RES_PATH + resource.getPath());
 		if (url == null) {
 			return;
 		}

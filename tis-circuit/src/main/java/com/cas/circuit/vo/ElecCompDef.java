@@ -1,5 +1,6 @@
 package com.cas.circuit.vo;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -27,12 +28,15 @@ import com.cas.circuit.util.MesureResult;
 import com.cas.circuit.util.R;
 import com.cas.circuit.vo.archive.ElecCompProxy;
 import com.cas.circuit.xml.adapter.CompLogicAdapter;
+import com.jme3.export.JmeExporter;
+import com.jme3.export.JmeImporter;
+import com.jme3.export.Savable;
 import com.jme3.scene.Node;
 import com.sun.tools.internal.xjc.runtime.ZeroOneBooleanAdapter;
 
 @XmlAccessorType(XmlAccessType.NONE)
 @XmlRootElement(name = "ElecCompDef")
-public class ElecCompDef {// extends BaseVO<ElecCompDefPO> {
+public class ElecCompDef implements Savable {// extends BaseVO<ElecCompDefPO> {
 	public static final String PARAM_KEY_SHELL = "shell";
 
 	@XmlAttribute
@@ -49,12 +53,12 @@ public class ElecCompDef {// extends BaseVO<ElecCompDefPO> {
 //	元器件模型名称
 	@XmlAttribute
 	private String mdlName;
-	
+
 	@XmlElement(name = "Base")
 	private Base base;
 	@XmlElement(name = "RelyOn")
 	private RelyOn relyOn;
-	
+
 ////	元器件标签名
 //	@XmlAttribute
 //	private String tagName;
@@ -167,20 +171,21 @@ public class ElecCompDef {// extends BaseVO<ElecCompDefPO> {
 		logic.initialize();
 	}
 
-	public void bindModel(Node elecCompMdl) {
-		this.spatial = elecCompMdl;
-
+	public void bindModel(Node spatial) {
+		this.spatial = spatial;
+		spatial.setUserData("entity", this);
+		
 //		遍历元气件中所有插座
-		jackList.forEach(jack -> jack.setSpatial(elecCompMdl.getChild(jack.getMdlName())));
+		jackList.forEach(jack -> jack.setSpatial(spatial.getChild(jack.getMdlName())));
 //		遍历元气件中所有连接头
-		terminalList.forEach(t -> t.setSpatial(elecCompMdl.getChild(t.getMdlName())));
+		terminalList.forEach(t -> t.setSpatial(spatial.getChild(t.getMdlName())));
 //		TODO 加入元气件按钮开关...
 		magnetismList.forEach(m -> {
-			m.getControlIOList().forEach(c -> c.setSpatial(elecCompMdl.getChild(c.getMdlName())));
-			m.getLightIOList().forEach(l -> l.setSpatial(elecCompMdl.getChild(l.getMdlName())));
+			m.getControlIOList().forEach(c -> c.setSpatial(spatial.getChild(c.getMdlName())));
+			m.getLightIOList().forEach(l -> l.setSpatial(spatial.getChild(l.getMdlName())));
 		});
 //		遍历元气件中所有指示灯
-		lightIOList.forEach(l -> l.setSpatial(elecCompMdl.getChild(l.getMdlName())));
+		lightIOList.forEach(l -> l.setSpatial(spatial.getChild(l.getMdlName())));
 	}
 
 	// 电生磁->磁生电或力3版
@@ -440,10 +445,6 @@ public class ElecCompDef {// extends BaseVO<ElecCompDefPO> {
 		return paramMap.get(key);
 	}
 
-	public void setSpatial(Node spatial) {
-		this.spatial = spatial;
-	}
-
 	public Node getSpatial() {
 		return spatial;
 	}
@@ -451,11 +452,11 @@ public class ElecCompDef {// extends BaseVO<ElecCompDefPO> {
 	public void setProxy(ElecCompProxy proxy) {
 		this.proxy = proxy;
 	}
-	
+
 	public Base getBase() {
 		return base;
 	}
-	
+
 	public RelyOn getRelyOn() {
 		return relyOn;
 	}
@@ -467,4 +468,13 @@ public class ElecCompDef {// extends BaseVO<ElecCompDefPO> {
 		}
 		return proxy;
 	}
+
+	@Override
+	public void write(JmeExporter ex) throws IOException {
+	}
+
+	@Override
+	public void read(JmeImporter im) throws IOException {
+	}
+
 }

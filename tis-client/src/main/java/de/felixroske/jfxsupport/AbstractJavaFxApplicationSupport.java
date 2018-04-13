@@ -367,7 +367,7 @@ public abstract class AbstractJavaFxApplicationSupport extends Application {
 //
 //    }
 
-    public final Collection<Image> loadDefaultIcons() {
+    private Collection<Image> loadDefaultIcons() {
         return Arrays.asList(new Image(getClass().getResource("/icons/gear_16x16.png").toExternalForm()),
                 new Image(getClass().getResource("/icons/gear_24x24.png").toExternalForm()),
                 new Image(getClass().getResource("/icons/gear_36x36.png").toExternalForm()),

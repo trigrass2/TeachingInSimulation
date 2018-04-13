@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -13,8 +14,11 @@ import com.cas.circuit.vo.archive.ElecCompProxy;
 import com.cas.circuit.vo.archive.WireProxy;
 
 @XmlAccessorType(XmlAccessType.NONE)
-@XmlRootElement(name="Archive")
+@XmlRootElement(name = "Archive")
 public class Archive {
+
+	@XmlAttribute(name = "name")
+	private String name;
 
 	@XmlElement(name = "Layout")
 	@XmlElementWrapper(name = "Layouts")
@@ -29,6 +33,14 @@ public class Archive {
 
 	public List<WireProxy> getWireList() {
 		return wireList;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	/**

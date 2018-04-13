@@ -1,10 +1,12 @@
 package com.cas.circuit.vo;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -21,11 +23,14 @@ import com.cas.circuit.Voltage;
 import com.cas.circuit.xml.adapter.AxisAdapter;
 import com.cas.circuit.xml.adapter.StringArrayAdapter;
 import com.cas.circuit.xml.adapter.VoltageAdapter;
+import com.jme3.export.JmeExporter;
+import com.jme3.export.JmeImporter;
+import com.jme3.export.Savable;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Spatial;
 
 @XmlAccessorType(XmlAccessType.NONE)
-public class Terminal extends SwitchCtrl {// <TerminalPO> implements Savable, ILinkTarget {
+public class Terminal extends SwitchCtrl implements Savable {// <TerminalPO> implements Savable, ILinkTarget {
 	private static final Logger LOG = LoggerFactory.getLogger(Terminal.class);
 	@XmlAttribute
 	private String id;
@@ -72,7 +77,15 @@ public class Terminal extends SwitchCtrl {// <TerminalPO> implements Savable, IL
 
 	private TermTeam termTeam;
 
+	private ElecCompDef elecCompDef;
+
 	public Terminal() {
+	}
+
+	public void afterUnmarshal(Unmarshaller u, Object parent) {
+		if (parent instanceof ElecCompDef) {
+			this.elecCompDef = (ElecCompDef) parent;
+		}
 	}
 
 	public String getId() {
@@ -114,7 +127,7 @@ public class Terminal extends SwitchCtrl {// <TerminalPO> implements Savable, IL
 			LOG.error("没有找到Terminal::ID为{}的模型{}", getId(), mdlName);
 		}
 		this.spatial = spatial;
-
+		spatial.setUserData("entity", this);
 //		if (model != null) {
 //			model.setUserData(JmeConst.AXIS_NAME, getAxis());
 //			model.setUserData(JmeConst.AXIS_DIR, isPositive());
@@ -327,5 +340,21 @@ public class Terminal extends SwitchCtrl {// <TerminalPO> implements Savable, IL
 	 */
 	public void setTermTeam(TermTeam termTeam) {
 		this.termTeam = termTeam;
+	}
+
+	public ElecCompDef getElecCompDef() {
+		return elecCompDef;
+	}
+
+	@Override
+	public void write(JmeExporter ex) throws IOException {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void read(JmeImporter im) throws IOException {
+		// TODO Auto-generated method stub
+
 	}
 }

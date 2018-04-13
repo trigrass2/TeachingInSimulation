@@ -51,16 +51,16 @@ public class TagNameControl extends AbstractControl {
 		super.setEnabled(enabled);
 	}
 
-	protected void moveMarker(Vector3f tmp) {
-		float x = tmp.x / camera.getWidth() - 0.5f;
-		float y = tmp.y / camera.getHeight() - 0.5f;
-		if (Math.abs(x) > 0.5f || Math.abs(y) > 0.5f || tmp.z >= 1) {
+	protected void moveMarker(Vector3f loc) {
+		float x = loc.x / camera.getWidth() - 0.5f;
+		float y = loc.y / camera.getHeight() - 0.5f;
+		if (Math.abs(x) > 0.5f || Math.abs(y) > 0.5f || loc.z >= 1) {
 			// is off screen
 			tag.setCullHint(CullHint.Always);
 		} else {
 			// move it
 			tag.setCullHint(CullHint.Dynamic);
-			tag.setLocalTranslation(tmp.x - tag.getLineWidth() / 2, tmp.y + tag.getHeight(), tmp.z);
+			tag.setLocalTranslation(loc.x - tag.getLineWidth() / 2, loc.y + tag.getHeight(), loc.z);
 		}
 	}
 

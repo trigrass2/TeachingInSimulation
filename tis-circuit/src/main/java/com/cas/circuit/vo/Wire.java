@@ -1,5 +1,6 @@
 package com.cas.circuit.vo;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Set;
 
@@ -11,6 +12,9 @@ import javax.xml.bind.annotation.XmlAttribute;
 import com.cas.circuit.util.R;
 import com.cas.circuit.vo.archive.WireProxy;
 import com.cas.util.Util;
+import com.jme3.export.JmeExporter;
+import com.jme3.export.JmeImporter;
+import com.jme3.export.Savable;
 import com.jme3.scene.Spatial;
 
 /**
@@ -18,7 +22,7 @@ import com.jme3.scene.Spatial;
  * @author sco_pra
  */
 @XmlAccessorType(XmlAccessType.NONE)
-public class Wire {
+public class Wire implements Savable{
 	@XmlAttribute
 //	导线的两个连接头
 	private int stitch1;
@@ -205,6 +209,7 @@ public class Wire {
 
 	public void setSpatial(Spatial spatial) {
 		this.spatial = spatial;
+		spatial.setUserData("entity", this);
 	}
 
 	@Override
@@ -241,6 +246,14 @@ public class Wire {
 
 	public void setProxy(WireProxy proxy) {
 		this.proxy = proxy;
+	}
+
+	@Override
+	public void write(JmeExporter ex) throws IOException {
+	}
+
+	@Override
+	public void read(JmeImporter im) throws IOException {
 	}
 
 }

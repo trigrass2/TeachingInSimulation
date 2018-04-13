@@ -7,7 +7,6 @@ import com.cas.circuit.BaseElectricCompLogic;
 import com.cas.circuit.Voltage;
 import com.cas.circuit.util.MesureResult;
 import com.cas.circuit.util.R;
-import com.cas.circuit.vo.ElecCompDef;
 import com.cas.circuit.vo.Jack;
 import com.cas.circuit.vo.Terminal;
 import com.cas.util.Util;

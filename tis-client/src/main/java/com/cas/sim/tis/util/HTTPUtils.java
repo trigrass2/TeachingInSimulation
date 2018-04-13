@@ -9,11 +9,14 @@ import javax.annotation.Nullable;
 import org.slf4j.LoggerFactory;
 
 public class HTTPUtils {
-	private String host;
+	private static String host;
+	private static Integer port;
+	static {
+		host = AppPropertiesUtil.getStringValue("server.httpd.address");
+		port = AppPropertiesUtil.getIntValue("server.httpd.port");
+	}
 
-	private Integer port;
-
-	public URL getUrl(String path) {
+	public static URL getUrl(String path) {
 		path = path.replaceAll("//", "/");
 		if (path.startsWith("/")) {
 			path = path.substring(1);
@@ -35,20 +38,12 @@ public class HTTPUtils {
 	}
 
 	@Nullable
-	public String getFullPath(String path) {
+	public static String getFullPath(String path) {
 		URL url = getUrl(path);
 		if (url != null) {
 			return url.toString();
 		}
 		return null;
-	}
-
-	public void setHost(String host) {
-		this.host = host;
-	}
-
-	public void setPort(Integer port) {
-		this.port = port;
 	}
 
 }

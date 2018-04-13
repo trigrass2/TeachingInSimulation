@@ -6,10 +6,12 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import com.cas.circuit.xml.adapter.QuaternionAdapter;
 import com.cas.circuit.xml.adapter.Vector3fAdapter;
+import com.jme3.font.BitmapText;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 
@@ -38,6 +40,8 @@ public class ElecCompProxy {
 	@XmlJavaTypeAdapter(value = QuaternionAdapter.class)
 	private Quaternion rotation = Quaternion.ZERO;
 
+	@XmlTransient
+	private BitmapText tagNode;
 
 	public Integer getId() {
 		return id;
@@ -60,6 +64,8 @@ public class ElecCompProxy {
 
 	public void setTagName(String tagName) {
 		this.tagName = tagName;
+//		同步显示
+		this.tagNode.setText(tagName);
 	}
 
 	public String getBaseUuid() {
@@ -84,6 +90,10 @@ public class ElecCompProxy {
 
 	public void setRotation(Quaternion rotation) {
 		this.rotation = rotation;
+	}
+
+	public void setTagNode(BitmapText tag) {
+		this.tagNode = tag;
 	}
 
 }

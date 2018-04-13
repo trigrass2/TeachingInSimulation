@@ -6,8 +6,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.Callable;
-import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
@@ -27,28 +25,37 @@ import com.cas.circuit.vo.archive.ElecCompProxy;
 import com.cas.circuit.vo.archive.WireProxy;
 import com.cas.sim.tis.action.ElecCompAction;
 import com.cas.sim.tis.action.TypicalCaseAction;
-import com.cas.sim.tis.app.control.HintControl;
+import com.cas.sim.tis.anno.JmeThread;
 import com.cas.sim.tis.app.control.TagNameControl;
 import com.cas.sim.tis.app.control.WireNumberControl;
-import com.cas.sim.tis.app.event.MouseEvent;
-import com.cas.sim.tis.app.event.MouseEventAdapter;
+import com.cas.sim.tis.app.event.MouseEventListener;
+import com.cas.sim.tis.app.event.MouseEventState;
+import com.cas.sim.tis.app.listener.ControlIOClickListener;
+import com.cas.sim.tis.app.listener.ControlIOPressListener;
+import com.cas.sim.tis.app.listener.ControlIOWheelListener;
+import com.cas.sim.tis.app.listener.ElecCompBaseClickListener;
+import com.cas.sim.tis.app.listener.ElecCompClickListener;
+import com.cas.sim.tis.app.listener.TerminalListener;
+import com.cas.sim.tis.app.listener.WireListener;
 import com.cas.sim.tis.entity.ElecComp;
 import com.cas.sim.tis.entity.TypicalCase;
+import com.cas.sim.tis.util.AlertUtil;
 import com.cas.sim.tis.util.HTTPUtils;
 import com.cas.sim.tis.util.JmeUtil;
+import com.cas.sim.tis.util.MsgUtil;
 import com.cas.sim.tis.util.SpringUtil;
-import com.cas.sim.tis.view.control.IContent;
-import com.cas.sim.tis.view.control.imp.jme.TypicalCase3D;
-import com.cas.sim.tis.view.controller.PageController;
+import com.cas.sim.tis.view.control.imp.dialog.Tip.TipType;
 import com.cas.sim.tis.xml.util.JaxbUtil;
 import com.cas.util.StringUtil;
 import com.jme3.asset.ModelKey;
 import com.jme3.collision.CollisionResult;
 import com.jme3.font.BitmapFont;
 import com.jme3.font.BitmapText;
+import com.jme3.input.KeyInput;
 import com.jme3.input.MouseInput;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.AnalogListener;
+import com.jme3.input.controls.KeyTrigger;
 import com.jme3.input.controls.MouseAxisTrigger;
 import com.jme3.input.controls.MouseButtonTrigger;
 import com.jme3.math.ColorRGBA;
@@ -65,17 +72,16 @@ import javafx.application.Platform;
 
 public class CircuitState extends BaseState {
 //	导线工连接头接出的最小长度
-	private static final float minLen = 0.3f;
-//	导线与电路板的最小距离
-	private static final float minHeight = 0.1f;
+	private static final float minLen = 0.01f;
 
 	private static final String COMP_ROOT = "comp_root_in_circuit_state";
 	private static final String WIRE_ROOT = "wire_root_in_circuit_state";
 //	导线颜色
 	private static ColorRGBA color = ColorRGBA.Yellow;
 //	导线半径
-	private static float width = 0.01f;
+	private static float width = 3f * 2 / 20000;
 
+//	接线的3中状态
 	static enum State {
 		Starting, Mid, Ending
 	}
@@ -105,26 +111,37 @@ public class CircuitState extends BaseState {
 	@Nullable
 	private CollisionResult collision;
 
-	private Geometry desktop;
+	/*
+	 * 导线的水平面，这是一个看不到的模型。 这个模型略高于桌面，目的是为了不让导线与桌面表面重叠
+	 */
+	private Spatial wirePlane;
 
 	private Node rootCompNode;
 	private Node rootWireNode;
 
 	private Node guiNode;
 	private BitmapFont tagFont;
-	private boolean tagVisible;
-	private boolean tempTagVisible;
-	private boolean tageChanged;
-	private boolean transparent;
-	private boolean tempTransparent;
+
+	private boolean moved;
+
 	// Key:BASE UUID,Value: TOP UUID
 //	private Map<String, String> combineMap = new HashMap<String, String>();
+
+//	事件监听
+	private MouseEventListener wireListener, //
+			terminalLitener, //
+			controlIOWheelListener, //
+			controlIOPressListener, //
+			controlIOClickListener, //
+			elecCompRightClickListener, //
+			elecCompBaseClickListener; //
+
+	private Geometry elecCompBox;
 
 	public CircuitState(TypicalCaseState caseState, TypicalCase typicalCase, Node root) {
 		this.typicalCase = typicalCase;
 		this.caseState = caseState;
 		this.root = root;
-		this.desktop = (Geometry) root.getChild("Circuit-Desktop");
 	}
 
 	public static void setColor(ColorRGBA color) {
@@ -133,40 +150,48 @@ public class CircuitState extends BaseState {
 
 	public static void setWidth(float width) {
 //		考虑模型的显示比例。
-		CircuitState.width = width / 500;
+		CircuitState.width = width / 20000;
 	}
 
 	@Override
 	protected void initializeLocal() {
-		rootCompNode = new Node(COMP_ROOT);
-		rootWireNode = new Node(WIRE_ROOT);
-		rootWireNode.setCullHint(CullHint.Never);
+		wireListener = new WireListener(this);
+		terminalLitener = new TerminalListener(this);
+		controlIOWheelListener = new ControlIOWheelListener(this);
+		controlIOPressListener = new ControlIOPressListener(this);
+		controlIOClickListener = new ControlIOClickListener(this);
+		elecCompBaseClickListener = new ElecCompBaseClickListener(caseState);
 
+//		默认尺寸
+		elecCompBox = JmeUtil.getWiringBox(assetManager, Vector3f.ZERO, Vector3f.UNIT_XYZ);
+//		默认隐藏
+		elecCompBox.setCullHint(CullHint.Always);
+//		对鼠标不可见
+		MouseEventState.setMouseVisible(elecCompBox, false);
+		root.attachChild(elecCompBox);
+		elecCompRightClickListener = new ElecCompClickListener(elecCompBox, caseState.getCameraState());
+
+//		存放元器件的根节点
+		rootCompNode = new Node(COMP_ROOT);
 		root.attachChild(rootCompNode);
+//		存放导线的根节点
+		rootWireNode = new Node(WIRE_ROOT);
+//		设置导线始终显示
+		rootWireNode.setCullHint(CullHint.Never);
 		root.attachChild(rootWireNode);
 
+//		2、排布导线所在的模型
+		this.wirePlane = root.getChild("WIRE-PLANE");
+//		wirePlane这个模型是指用于接线过程中，本身也是不可见的模型，这里是为了避免影响其它模型的点击事件
+		MouseEventState.setMouseVisible(wirePlane, false);
+
+//		显示元器件标签名
 		guiNode = app.getGuiNode();
 		tagFont = assetManager.loadFont("font/Font4TagName.fnt");
 
 		bindCircuitBoardEvents();
 
 		LOG.info("CircuitState完成初始化");
-	}
-
-	@Override
-	public void update(float tpf) {
-		super.update(tpf);
-		if (tagVisible != tempTagVisible) {
-			tagVisible = tempTagVisible;
-			toggleTagName();
-		} else if (tageChanged) {
-			toggleTagName();
-			tageChanged = false;
-		}
-		if (transparent != tempTransparent) {
-			transparent = tempTransparent;
-			toggelTransparent();
-		}
 	}
 
 	private void bindCircuitBoardEvents() {
@@ -176,86 +201,116 @@ public class CircuitState extends BaseState {
 		addMapping("CONNECT_ON_DESKTOP_AXIR_Y+", new MouseAxisTrigger(MouseInput.AXIS_Y, true));
 		addMapping("CONNECT_ON_DESKTOP_AXIR_Y-", new MouseAxisTrigger(MouseInput.AXIS_Y, false));
 		String[] hoverMapping = new String[] { "CONNECT_ON_DESKTOP_AXIR_X+", "CONNECT_ON_DESKTOP_AXIR_X-", "CONNECT_ON_DESKTOP_AXIR_Y+", "CONNECT_ON_DESKTOP_AXIR_Y-" };
-		addListener((AnalogListener) (name, value, tpf) -> {
-			if (state == null) {
-				return;
-			}
-//			先判断鼠标是否在元器件上
-			collision = JmeUtil.getCollisionFromCursor(rootCompNode, cam, inputManager);
-//			如果没有宣导元器件
-			if (collision == null) {
-//				再尝试和桌面碰撞
-				collision = JmeUtil.getCollisionFromCursor(desktop, cam, inputManager);
-			}
-			if (collision == null) {
-				return;
-			}
-			Vector3f point = collision.getContactPoint();
-
-//			离电路板略高一些。
-			point.addLocal(0, minHeight, 0);
-
-			if (state == State.Starting) {
-//				开头
-				Vector3f project = point.subtract(startLine1.getStart()).project(dir);
-				if (project.dot(dir) < minLen) {
-					return;
-				}
-				Vector3f line1EndPoint = startLine1.getStart().add(project);
-				startLine1.updatePoints(startLine1.getStart(), line1EndPoint);
-
-				Vector3f line2EndPoint = line1EndPoint.add(point.subtract(line1EndPoint).project(Vector3f.UNIT_Y));
-				startLine2.updatePoints(line1EndPoint, line2EndPoint);
-
-//				Vector3f line3EndPoint = point;
-				startLine3.updatePoints(line2EndPoint, point);
-			} else if (state == State.Mid) {
-//				计算midLine1.getStart() 与  鼠标point 向量在X与Z轴的投影。
-				Vector3f tmpPoint = null;
-				tmpPoint = midLine1.getStart().add(point.subtract(midLine1.getStart()).project(midAxis));
-				midLine1.updatePoints(midLine1.getStart(), tmpPoint);
-				midLine2.updatePoints(tmpPoint, point);
-			} else if (state == State.Ending) {
-//				endLine1.updatePoints(endLine1.getStart(), point);
-			}
-
-		}, hoverMapping);
+		addListener((AnalogListener) (name, value, tpf) -> onAnalog0(name, value, tpf), hoverMapping);
 
 		addMapping("CLICKED_ON_BOARD", new MouseButtonTrigger(MouseInput.BUTTON_LEFT));
 		addMapping("CANCEL_ON_CONNECTING", new MouseButtonTrigger(MouseInput.BUTTON_RIGHT));
-		addListener((ActionListener) (name, isPressed, tpf) -> {
-			if (collision == null) {
-				return;
-			}
-			if (desktop != collision.getGeometry()) {
-				return;
-			}
-
-			if ("CANCEL_ON_CONNECTING".equals(name) && isPressed) {
-				if (state == State.Starting || state == State.Mid) {
-					connectClean();
-				}
-			}
-
-			if ("CLICKED_ON_BOARD".equals(name) && isPressed) {
-				if (state == null) {
-					return;
-				}
-				if (state == State.Starting) {
-					connectStarting();
-//					设置当前接线状态为接线中
-					state = State.Mid;
-				} else if (state == State.Mid) {
-					connectMid();
-				} else if (state == State.Ending) {
-//					do nothing
-				}
-			}
-		}, "CLICKED_ON_BOARD", "CANCEL_ON_CONNECTING");
+		addMapping("DELETE_SELECTED_WIRE", new KeyTrigger(KeyInput.KEY_DELETE));
+		addListener((ActionListener) (name, isPressed, tpf) -> onAction0(name, isPressed, tpf), "CLICKED_ON_BOARD", "CANCEL_ON_CONNECTING", "DELETE_SELECTED_WIRE");
 	}
 
-//			点击连接头、开始接线之前的准备工作
-	private void connectPre(ElecCompDef def, Terminal t) {
+	/*
+	 * 鼠标在导线平面上点击
+	 */
+	private void onAction0(String name, boolean isPressed, float tpf) {
+		if (isPressed) {
+//			在鼠标按下 与 抬起的过程中，使用moved变量记录在这个过程中鼠标是否移动过。
+//			当鼠标按下后，设置moved标记为false，表示没有移动过
+//			如果analog0方法被执行，则会改变moved状态为true，表示鼠标移动过,则视为点击事件click无效。
+			moved = false;
+		}
+
+		if ("CLICKED_ON_BOARD".equals(name) && !isPressed && !moved) {
+//			走线
+			if (state == null) {
+				return;
+			}
+			if (state == State.Starting) {
+				connectStarting();
+//				设置当前接线状态为接线中
+				state = State.Mid;
+			} else if (state == State.Mid) {
+				connectMid();
+			} else if (state == State.Ending) {
+//				do nothing
+			}
+		} else if ("CANCEL_ON_CONNECTING".equals(name) && isPressed) {
+			if (state == State.Starting || state == State.Mid) {
+				connectClean();
+			}
+//			取消（接线）
+		} else if ("DELETE_SELECTED_WIRE".equals(name) && isPressed) {
+			WireListener listener = (WireListener) wireListener;
+			Spatial selectedWireToDelete = listener.getSelectedWire();
+			if (selectedWireToDelete == null) {
+				return;
+			}
+			Wire wire = selectedWireToDelete.getUserData("entity");
+			detachFromCircuit(wire);
+		} else {
+//			do nothing
+		}
+	}
+
+	/*
+	 * 鼠标在导线平面上滑过
+	 */
+	private void onAnalog0(String name, float value, float tpf) {
+		if (state == null) {
+			return;
+		}
+
+		moved = true;
+
+//		collision = JmeUtil.getCollisionFromCursor(root, cam, inputManager.getCursorPosition());
+		collision = JmeUtil.getCollisionFromCursor(wirePlane, cam, inputManager.getCursorPosition());
+		if (collision == null) {
+			return;
+		}
+		Vector3f point = collision.getContactPoint();
+
+		if (state == State.Starting) {
+//			开头
+			Vector3f project = point.subtract(startLine1.getStart()).project(dir);
+			if (project.dot(dir) < minLen) {
+				return;
+			}
+			Vector3f line1EndPoint = startLine1.getStart().add(project);
+			startLine1.updatePoints(startLine1.getStart(), line1EndPoint);
+
+			Vector3f line2EndPoint = line1EndPoint.add(point.subtract(line1EndPoint).project(Vector3f.UNIT_Y));
+			startLine2.updatePoints(line1EndPoint, line2EndPoint);
+
+//			Vector3f line3EndPoint = point;
+			startLine3.updatePoints(line2EndPoint, point);
+		} else if (state == State.Mid) {
+//			计算midLine1.getStart() 与  鼠标point 向量在X与Z轴的投影。
+			Vector3f tmpPoint = null;
+			tmpPoint = midLine1.getStart().add(point.subtract(midLine1.getStart()).project(midAxis));
+			midLine1.updatePoints(midLine1.getStart(), tmpPoint);
+			midLine2.updatePoints(tmpPoint, point);
+		} else if (state == State.Ending) {
+//			endLine1.updatePoints(endLine1.getStart(), point);
+		}
+	}
+
+	public void onTernialClick(Terminal t) {
+		if (state == null || state == State.Ending) {
+			connectPre(t);
+//			设置接线状态为开始
+			state = State.Starting;
+		} else if (state == State.Mid) {
+//			
+			connectEnding(t);
+
+			state = State.Ending;
+		} else if (state == State.Ending) {
+//			do nothing
+		}
+	}
+
+//	点击连接头、开始接线之前的准备工作
+	private void connectPre(Terminal t) {
 		// 创建一个节点，存放当前一根导线的模型
 		tmpWireNode = new Node();
 		// 将导线模型添加到root节点中以显示
@@ -263,7 +318,7 @@ public class CircuitState extends BaseState {
 		// 创建一个导线逻辑对象
 		wire = new Wire();
 		// 导线颜色和线宽
-		wire.getProxy().setColor(color);
+		wire.getProxy().setColor(color.clone());
 		wire.getProxy().setWidth(width);
 
 		// 导线一头连接在当前连接头上
@@ -272,7 +327,7 @@ public class CircuitState extends BaseState {
 		// FIXME 导线连接的位置，多跟导线的情况下错开
 		Vector3f dest = t.getSpatial().getWorldTranslation().clone();
 		// 获取导线连接的方向
-		dir = def.getSpatial().getLocalRotation().mult(t.getDirection());
+		dir = t.getElecCompDef().getSpatial().getLocalRotation().mult(t.getDirection());
 		midAxis = roll90.mult(dir);
 
 		// 钱三段导线
@@ -317,11 +372,11 @@ public class CircuitState extends BaseState {
 		midAxis = roll90.mult(midAxis);
 	}
 
-	private void connectEnding(ElecCompDef def, Terminal t) {
+	private void connectEnding(Terminal t) {
 		// 终点
 		Vector3f dest = t.getSpatial().getWorldTranslation().clone();
 		// 重点线头连出的方向
-		dir = def.getSpatial().getLocalRotation().mult(t.getDirection());
+		dir = t.getElecCompDef().getSpatial().getLocalRotation().mult(t.getDirection());
 		//
 		// ##最终是在终点dest和startPoint之间创建导线##
 		Vector3f startPoint = JmeUtil.getLineStart(midLine1);
@@ -330,7 +385,7 @@ public class CircuitState extends BaseState {
 		Vector3f t1 = JmeUtil.getLineStart(midLine2);
 		Vector3f t2 = JmeUtil.getLineEnd(midLine2);
 
-		if (Math.round(t2.subtract(t1).dot(dir)) == 0) {
+		if (t2.subtract(t1).normalize().dot(dir) == 0) {
 			// 表明是垂直的方向连接到终点的，这种情况稍微复杂一些
 			// 倒数第二个点是终点在dir方向上的点，距离终点的长度是minLen
 			Vector3f last2 = dest.add(dir.normalize().mult(minLen));
@@ -346,6 +401,8 @@ public class CircuitState extends BaseState {
 			// 另外，还需要两根线
 			tmpWireNode.attachChild(JmeUtil.createLineGeo(assetManager, new Line(last3, last2), color));
 			tmpWireNode.attachChild(JmeUtil.createLineGeo(assetManager, new Line(last2, dest), color));
+			
+			Platform.runLater(()->AlertUtil.showTip(TipType.WARN, MsgUtil.getMessage("alert.warning.wire.rule")));
 		} else {
 			// 倒数第二个点是midLine1上任意一点在dir上的投影点，这里取startPoint
 			Vector3f last2 = dest.add(startPoint.subtract(dest).project(dir));
@@ -375,12 +432,8 @@ public class CircuitState extends BaseState {
 	private void connectClean() {
 		state = null;
 		dir = null;
-		startLine1 = null;
-		startLine2 = null;
-		startLine3 = null;
-
-		midLine1 = null;
-		midLine2 = null;
+		startLine1 = startLine2 = startLine3 = null;
+		midLine1 = midLine2 = null;
 
 		if (tmpWireNode != null) {
 			tmpWireNode.removeFromParent();
@@ -433,30 +486,14 @@ public class CircuitState extends BaseState {
 
 	private void bindElecCompEvent(ElecCompDef def) {
 		// 1、连接头监听事件
-		def.getTerminalList().forEach(t -> addListener(t.getSpatial(), new MouseEventAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				if (state == null || state == State.Ending) {
-					connectPre(def, t);
-//					设置接线状态为开始
-					state = State.Starting;
-				} else if (state == State.Mid) {
-//					
-					connectEnding(def, t);
-
-					state = State.Ending;
-				} else if (state == State.Ending) {
-//					do nothing
-				}
-			}
-		}));
-		// 2、插孔监听事件
-		def.getJackList().forEach(j -> addListener(j.getSpatial(), new MouseEventAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				System.out.println(j.getName());
-			}
-		}));
+		def.getTerminalList().forEach(t -> addListener(t.getSpatial(), terminalLitener));
+//		// 2、插孔监听事件
+//		def.getJackList().forEach(j -> addListener(j.getSpatial(), new MouseEventAdapter() {
+//			@Override
+//			public void mouseClicked(MouseEvent e) {
+//				System.out.println(j.getName());
+//			}
+//		}));
 		// 3、按钮监听事件
 		def.getMagnetismList().forEach(m -> {
 			for (ControlIO c : m.getControlIOList()) {
@@ -464,60 +501,19 @@ public class CircuitState extends BaseState {
 					continue;
 				}
 				if (ControlIO.INTERACT_ROTATE.equals(c.getInteract())) {
-					addListener(c.getSpatial(), new MouseEventAdapter() {
-						@Override
-						public void mouseWheel(MouseEvent e) {
-							c.switchStateChanged(e.getWheel());
-							c.playMotion();
-						}
-					});
+					addListener(c.getSpatial(), controlIOWheelListener);
 				} else if (ControlIO.INTERACT_PRESS.equals(c.getInteract())) {
-					addListener(c.getSpatial(), new MouseEventAdapter() {
-						@Override
-						public void mousePressed(MouseEvent e) {
-							c.switchStateChanged(null);
-							c.playMotion();
-						}
-
-						@Override
-						public void mouseReleased(MouseEvent e) {
-							c.switchStateChanged(null);
-							c.playMotion();
-						}
-					});
+					addListener(c.getSpatial(), controlIOPressListener);
 				} else {
-					addListener(c.getSpatial(), new MouseEventAdapter() {
-						@Override
-						public void mouseClicked(MouseEvent e) {
-							c.switchStateChanged(null);
-							c.playMotion();
-						}
-					});
+					addListener(c.getSpatial(), controlIOClickListener);
 				}
 			}
 		});
-		// 4、元器件本身的监听事件
-		addListener(def.getSpatial(), new MouseEventAdapter() {
-			@Override
-			public void mouseRightClicked(MouseEvent e) {
-				super.mouseRightClicked(e);
-				IContent content = SpringUtil.getBean(PageController.class).getIContent();
-				if (content instanceof TypicalCase3D) {
-					Platform.runLater(() -> {
-						((TypicalCase3D) content).showPopupMenu(def);
-					});
-				}
-			}
-		});
+//		4、元器件本身的监听事件
+		addListener(def.getSpatial(), elecCompRightClickListener);
 //		5、若当前为底座添加监听事件
 		if (def.getBase() != null) {
-			addListener(def.getSpatial(), new MouseEventAdapter() {
-				@Override
-				public void mouseClicked(MouseEvent e) {
-					caseState.putDownOnBase(def);
-					super.mouseClicked(e);
-				}
-			});
+			addListener(def.getSpatial(), elecCompBaseClickListener);
 		}
 	}
 
@@ -531,40 +527,6 @@ public class CircuitState extends BaseState {
 		});
 
 		mouseEventState.removeCandidate(elecCompDef.getSpatial());
-	}
-
-	private void bindWireEvent(Geometry wireMdl, final Wire wire) {
-		addListener(wireMdl, new MouseEventAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				// 选中穿透高亮
-
-				for (Wire w : wireList) {
-					Spatial mdl = w.getSpatial();
-					HintControl control = mdl.getControl(HintControl.class);
-					boolean enable = w == wire;
-					if (control != null) {
-						mdl.removeControl(control);
-					} else if (enable) {
-						control = new HintControl();
-						mdl.addControl(control);
-					}
-				}
-				super.mouseClicked(e);
-			}
-
-			@Override
-			public void mouseRightClicked(MouseEvent e) {
-				// 选中显示导线菜单
-				IContent content = SpringUtil.getBean(PageController.class).getIContent();
-				if (content instanceof TypicalCase3D) {
-					Platform.runLater(() -> {
-						((TypicalCase3D) content).showPopupMenu(wire);
-					});
-				}
-				super.mouseRightClicked(e);
-			}
-		});
 	}
 
 	private void unbindWireEvent(Wire wire) {
@@ -588,28 +550,19 @@ public class CircuitState extends BaseState {
 //			1、根据元器件型号（model字段），查找数据库中的元器件实体对象
 			ElecComp elecComp = action.findElecCompById(proxyComp.getId());
 			if (elecComp == null) {
-				LOG.warn("没有找到ID号为{}的元器件", proxyComp.getId());
+				String errMsg = String.format("没有找到ID号为%s的元器件", proxyComp.getId());
+				LOG.warn(errMsg);
+				throw new RuntimeException(errMsg);
 			}
-
 //			2、加载模型，同时设置好坐标与旋转
-			Future<Node> task = app.enqueue((Callable<Node>) () -> {
-				Node node = (Node) loadAsset(new ModelKey(elecComp.getMdlPath()));
-//				设置transform信息：location、rotation
-				node.setLocalTranslation(proxyComp.getLocation());
-				node.setLocalRotation(proxyComp.getRotation());
-				node.scale(25);
-				return node;
-			});
-			Node compMdl = null;
-			try {
-				compMdl = task.get();
-			} catch (Exception e) {
-				LOG.error("无法加载元器件模型{}:{}", elecComp.getMdlPath(), e);
-				throw new RuntimeException(e);
-			}
+			Node compMdl = (Node) loadAsset(new ModelKey(elecComp.getMdlPath()));
+//			设置transform信息：location、rotation
+			compMdl.setLocalTranslation(proxyComp.getLocation());
+			compMdl.setLocalRotation(proxyComp.getRotation());
+//			compMdl.scale(25);
 
 //			3、初始化元器件逻辑对象
-			URL cfgUrl = SpringUtil.getBean(HTTPUtils.class).getUrl(elecComp.getCfgPath());
+			URL cfgUrl = HTTPUtils.getUrl(elecComp.getCfgPath());
 			ElecCompDef def = JaxbUtil.converyToJavaBean(cfgUrl, ElecCompDef.class);
 			def.setProxy(proxyComp);
 			if (def.getRelyOn() == null) {
@@ -624,7 +577,9 @@ public class CircuitState extends BaseState {
 		});
 	}
 
+//	从存档中读取导线信息
 	private void readWires(@Nonnull List<WireProxy> wireProxyList) {
+//		KEY : 元器件UUID
 		Map<String, ElecCompDef> compMap = compList.stream().collect(Collectors.toMap(x -> x.getProxy().getUuid(), x -> x));
 
 		wireProxyList.forEach(proxy -> {
@@ -639,24 +594,27 @@ public class CircuitState extends BaseState {
 
 			wire.bind(term1);
 			wire.bind(term2);
+//			
+			Geometry wireMdl = JmeUtil.createCylinderLine(assetManager, proxy.getPointList(), proxy.getWidth(), proxy.getColor());
 
-			Future<Geometry> task = app.enqueue((Callable<Geometry>) () -> {
-				Geometry wireMdl = JmeUtil.createCylinderLine(assetManager, proxy.getPointList(), proxy.getWidth(), proxy.getColor());
-				return wireMdl;
-			});
-			Geometry wireMdl = null;
-			try {
-				wireMdl = task.get();
-			} catch (Exception e) {
-				LOG.error("无法加载导线模型:{}", e);
-				throw new RuntimeException(e);
-			}
+//			加入tagName
+			BitmapText tag = new BitmapText(tagFont);
+			tag.setLocalScale(0.75f);
+			tag.setName(String.format("%s-%s", wire.getProxy().getComp1Uuid(), wire.getProxy().getComp2Uuid()));
+			tag.setText(proxy.getNumber());
+			WireNumberControl control = new WireNumberControl(cam, guiNode, tag, wire.getProxy().getPointList());
+//			默认状态下不启动
+			wireMdl.addControl(control);
+			proxy.setTagNode(tag);
 			attachToCircuit(wireMdl, wire);
 		});
 	}
 
 	public void save() {
 		Archive archive = new Archive();
+//		
+		archive.setName(typicalCase.getName());
+
 //		保存元器件列表
 		saveEleccomps(archive);
 //		保存导线
@@ -701,28 +659,46 @@ public class CircuitState extends BaseState {
 		wireList.clear();
 //		combineMap.clear();
 //		除了desktop，其余模型全部清除
-		root.detachAllChildren();
-		if (desktop != null) {
-			root.attachChild(desktop);
+
+		if (rootCompNode != null) {
+			rootCompNode.removeFromParent();
+		}
+		if (rootWireNode != null) {
+			rootWireNode.removeFromParent();
+		}
+		if (elecCompBox != null) {
+			elecCompBox.removeFromParent();
 		}
 		super.cleanup();
 	}
 
-	public void attachToCircuit(Spatial holding, ElecCompDef elecCompDef) {
+	@JmeThread
+	void attachToCircuit(Spatial compModel, ElecCompDef elecCompDef) {
+//		1、加入元器件标签
+		BitmapText tag = new BitmapText(tagFont);
+//		标签对象的名称和元器件的UUID一致
+		tag.setName(elecCompDef.getProxy().getUuid());
+		tag.setText(elecCompDef.getProxy().getTagName());
+		guiNode.attachChild(tag);
+		TagNameControl control = new TagNameControl(cam, tag);
+//		默认状态下不启动
+		control.setEnabled(false);
+		compModel.addControl(control);
+		elecCompDef.getProxy().setTagNode(tag);
+		
 //		将holding的模型加入“电路板”的环境中
 //		holding会先自动从原parent中剔除，成为孤儿节点，然后加入新的parent中
-		rootCompNode.attachChild(holding);
-
+		rootCompNode.attachChild(compModel);
 //		2、绑定模型对象
-		elecCompDef.bindModel((Node) holding);
+		elecCompDef.bindModel((Node) compModel);
 
-//		3、添加事件
+//		3、添加接线事件
 		bindElecCompEvent(elecCompDef);
-
 //		4、最后将元器件加入列表中
 		compList.add(elecCompDef);
 	}
 
+	@JmeThread
 	public boolean detachFromCircuit(ElecCompDef elecCompDef) {
 //		0、判断元器件连接头是否接线
 		for (Terminal terminal : elecCompDef.getTerminalList()) {
@@ -809,14 +785,14 @@ public class CircuitState extends BaseState {
 		compList.add(relyOnDef);
 	}
 
-	private void attachToCircuit(Geometry wireMdl, Wire wire) {
+	void attachToCircuit(Geometry wireMdl, Wire wire) {
 //		1、将导线加入场景
 // 		其实：wireNode.getChildren()是SafeArrayList类型，自带同步功能。不会出现java.util.ConcurrentModificationException
 		rootWireNode.attachChild(wireMdl);
 // 		2、将模型与逻辑对象绑定
 		wire.setSpatial(wireMdl);
 //		3、绑定监听事件
-		bindWireEvent(wireMdl, wire);
+		addListener(wireMdl, wireListener);
 //		4、将导线加入列表中
 		wireList.add(wire);
 	}
@@ -842,49 +818,31 @@ public class CircuitState extends BaseState {
 	}
 
 	public void setTagNameVisible(boolean tagVisible) {
-		this.tempTagVisible = tagVisible;
+		app.enqueue(() -> this.toggleTagName(tagVisible));
 	}
 
-	public void setTagNameChanged(boolean tagChanged) {
-		this.tageChanged = tagChanged;
-	}
-
-	private void toggleTagName() {
+	private void toggleTagName(boolean tagVisible) {
 		for (ElecCompDef elecCompDef : compList) {
 			Spatial elecCompMdl = elecCompDef.getSpatial();
+			@Nonnull
 			TagNameControl control = elecCompMdl.getControl(TagNameControl.class);
-			if (control == null) {
-				BitmapText tag = new BitmapText(tagFont);
-				tag.setName(elecCompDef.getProxy().getUuid());
-				guiNode.attachChild(tag);
-
-				control = new TagNameControl(cam, tag);
-				elecCompMdl.addControl(control);
+			if(control != null) {
+				control.setEnabled(tagVisible);
 			}
-			control.setTagName(elecCompDef.getProxy().getTagName());
-			control.setEnabled(tagVisible);
 		}
 		for (Wire wire : wireList) {
 			Spatial wireMdl = wire.getSpatial();
+			@Nonnull
 			WireNumberControl control = wireMdl.getControl(WireNumberControl.class);
-			if (control == null) {
-				BitmapText tag = new BitmapText(tagFont);
-				tag.setLocalScale(0.75f);
-				tag.setName(String.format("%s-%s", wire.getProxy().getComp1Uuid(), wire.getProxy().getComp2Uuid()));
-
-				control = new WireNumberControl(cam, guiNode, tag, wire.getProxy().getPointList());
-				wireMdl.addControl(control);
-			}
-			control.setNumber(wire.getProxy().getNumber());
 			control.setEnabled(tagVisible);
 		}
 	}
 
 	public void setElecCompTransparent(boolean transparent) {
-		this.tempTransparent = transparent;
+		app.enqueue(() -> this.toggelTransparent(transparent));
 	}
 
-	private void toggelTransparent() {
+	private void toggelTransparent(boolean transparent) {
 		if (transparent) {
 			compList.forEach(def -> {
 				String shell = def.getParam(ElecCompDef.PARAM_KEY_SHELL);
@@ -895,15 +853,13 @@ public class CircuitState extends BaseState {
 					if (shellNode != null) {
 						JmeUtil.transparent(shellNode, .7f);
 					} else {
-						LOG.error("模型{}中没有名为{}的节点", root, s);
+						LOG.error("模型{}中没有名为{}的节点", elecCompMdl, s);
 					}
 				});
 			});
 		} else {
-			compList.forEach(def -> {
-				JmeUtil.untransparent(def.getSpatial());
-			});
+			compList.forEach(def -> JmeUtil.untransparent(def.getSpatial()));
 		}
-
 	}
+
 }

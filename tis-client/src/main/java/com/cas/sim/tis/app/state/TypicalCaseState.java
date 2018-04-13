@@ -9,24 +9,24 @@ import com.cas.sim.tis.action.ElecCompAction;
 import com.cas.sim.tis.anno.JmeThread;
 import com.cas.sim.tis.app.event.MouseEvent;
 import com.cas.sim.tis.app.event.MouseEventAdapter;
+import com.cas.sim.tis.app.event.MouseEventState;
 import com.cas.sim.tis.app.listener.TypicalCaseListener;
+import com.cas.sim.tis.app.state.SceneCameraState.View;
 import com.cas.sim.tis.entity.ElecComp;
 import com.cas.sim.tis.entity.TypicalCase;
 import com.cas.sim.tis.util.AlertUtil;
 import com.cas.sim.tis.util.JmeUtil;
 import com.cas.sim.tis.util.MsgUtil;
 import com.cas.sim.tis.util.SpringUtil;
-import com.cas.sim.tis.view.control.IContent;
-import com.cas.sim.tis.view.control.imp.jme.TypicalCase3D;
 import com.cas.sim.tis.view.controller.PageController;
 import com.jme3.asset.ModelKey;
 import com.jme3.light.PointLight;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
+import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
-import com.jme3.util.mikktspace.MikktspaceTangentGenerator;
 
 import javafx.application.Platform;
 import javafx.scene.control.Alert.AlertType;
@@ -40,8 +40,6 @@ public class TypicalCaseState extends BaseState {
 //	当前手中的元器件对象
 	private ElecComp elecComp;
 
-	private Spatial desktop;
-
 	private PointLight pointLight;
 
 	private SceneCameraState cameraState;
@@ -49,26 +47,27 @@ public class TypicalCaseState extends BaseState {
 	private CircuitState circuitState;
 	private TypicalCaseListener listener;
 
+	private TypicalCase typicalCase;
+	/*
+	 * 元器件所在的平面
+	 */
+	private Spatial compPlane;
+
 	@Override
 	protected void initializeLocal() {
 		// 布置场景
 		arrangementScene();
 
 		// 添加操作模式State
-		cameraState = new SceneCameraState();
-		stateManager.attach(cameraState);
+		stateManager.attach(cameraState = new SceneCameraState());
 
+//		cam.setLocation(new Vector3f(0.023734434f, 0.52777225f, 0.37514582f));
+//		cam.setRotation(new Quaternion());
 		// 绑定事件
 		bindEvents();
-
+		
 		// 默认新建案例
-		IContent content = SpringUtil.getBean(PageController.class).getIContent();
-		if (content instanceof TypicalCase3D) {
-			((TypicalCase3D) content).setupCase(new TypicalCase());
-		}
-
-		// 结束加载界面
-		Platform.runLater(() -> SpringUtil.getBean(PageController.class).hideLoading());
+		setupCase(new TypicalCase());
 	}
 
 	@Override
@@ -88,7 +87,9 @@ public class TypicalCaseState extends BaseState {
 		super.cleanup();
 	}
 
+//	打开一个案例
 	public void setupCase(TypicalCase typicalCase) {
+		this.typicalCase = typicalCase;
 		// 1、清理垃圾
 		if (circuitState != null) {
 			stateManager.detach(circuitState);
@@ -99,30 +100,30 @@ public class TypicalCaseState extends BaseState {
 
 		// 尝试解析出存档对象
 		Archive archive = SpringUtil.getBean(ArchiveAction.class).parse(typicalCase.getArchivePath());
-		if (archive == null) {
+		app.enqueue(() -> {
+			if (archive != null) {
+				circuitState.read(archive);
+			}
 			// 结束加载界面
 			Platform.runLater(() -> SpringUtil.getBean(PageController.class).hideLoading());
-			return;
-		}
-		circuitState.read(archive);
-		// 结束加载界面
-		Platform.runLater(() -> SpringUtil.getBean(PageController.class).hideLoading());
+		});
 	}
 
+//	布置场景
 	private void arrangementScene() {
 		// 0、新建场景节点
 		root = new Node(TYPICAL_CASE_ROOT_NODE);
 		rootNode.attachChild(root);
-		// 1、加载桌子
-		desktop = loadAsset(new ModelKey("Model/Desktop/desktop.j3o"));
-		desktop.setName("Circuit-Desktop");
-		MikktspaceTangentGenerator.generate(desktop);
-		root.attachChild(desktop);
-		// 2、添加灯光
-		setupLight();
-	}
+		// 1、加载工作台模型
+//		Spatial desktop = loadAsset(new ModelKey("Model/ShiXunZhuo/ShiXunZhuo.j3o"));
+//		root.attachChild(desktop);
+//		
+		Node plane = (Node) loadAsset(new ModelKey("Model/Desktop/plane.j3o"));
+		root.attachChild(plane);
+//		1、元器件摆放的模型
+		this.compPlane = plane.getChild("COMP-PLANE");
 
-	private void setupLight() {
+		// 2、添加灯光
 		pointLight = new PointLight();
 		pointLight.setColor(ColorRGBA.White);
 		rootNode.addLight(pointLight);
@@ -135,7 +136,7 @@ public class TypicalCaseState extends BaseState {
 		/*
 		 * 左键点击桌面，放置手中的元器件 右键点击桌面，取消手中的元器件
 		 */
-		addListener(desktop, new MouseEventAdapter() {
+		addListener(compPlane, new MouseEventAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				putDown();
@@ -155,7 +156,7 @@ public class TypicalCaseState extends BaseState {
 		}
 
 		@Nullable
-		Vector3f contactPoint = JmeUtil.getContactPointFromCursor(desktop, cam, inputManager);
+		Vector3f contactPoint = JmeUtil.getContactPointFromCursor(compPlane, cam, inputManager.getCursorPosition());
 		if (contactPoint == null) {
 			return;
 		}
@@ -189,8 +190,8 @@ public class TypicalCaseState extends BaseState {
 		try {
 			Spatial spatial = loadAsset(new ModelKey(elecComp.getMdlPath()));
 //			设置Holding的模型对鼠标透明
-			JmeUtil.setMouseVisible(spatial, false);
-			spatial.scale(25);
+			MouseEventState.setMouseVisible(spatial, false);
+//			spatial.scale(25);
 			root.attachChild(spatial);
 
 //			设置当前元器件的模型对象
@@ -211,7 +212,7 @@ public class TypicalCaseState extends BaseState {
 			return;
 		}
 //		取消Holding的模型对鼠标透明
-		JmeUtil.setMouseVisible(elecComp.getSpatial(), true);
+		MouseEventState.setMouseVisible(elecComp.getSpatial(), true);
 		try {
 			if (ElecComp.COMBINE_RELY_ON == elecComp.getCombine()) {
 //				需要底座的元器件不可直接加入电路板
@@ -265,7 +266,7 @@ public class TypicalCaseState extends BaseState {
 		}
 		try {
 //			取消Holding的模型对鼠标透明
-			JmeUtil.setMouseVisible(elecComp.getSpatial(), true);
+			MouseEventState.setMouseVisible(elecComp.getSpatial(), true);
 //			2、判断元器件与底座是否匹配
 			if (def.getBase().checkMatched(elecCompDef)) {
 //				3、将元器件模型与元器件对象一起加入电路板中
@@ -296,6 +297,14 @@ public class TypicalCaseState extends BaseState {
 
 	public CircuitState getCircuitState() {
 		return circuitState;
+	}
+
+	public TypicalCase getTypicalCase() {
+		return typicalCase;
+	}
+	
+	public SceneCameraState getCameraState() {
+		return cameraState;
 	}
 
 }

@@ -1,6 +1,7 @@
 
 package com.cas.circuit.vo;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
@@ -24,6 +25,9 @@ import com.cas.circuit.xml.adapter.BooleanIntAdapter;
 import com.cas.circuit.xml.adapter.FloatArrayAdapter;
 import com.cas.circuit.xml.adapter.StringArrayAdapter;
 import com.cas.circuit.xml.adapter.UnsignedAxisAdapter;
+import com.jme3.export.JmeExporter;
+import com.jme3.export.JmeImporter;
+import com.jme3.export.Savable;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Spatial;
 
@@ -31,7 +35,7 @@ import com.jme3.scene.Spatial;
  * 包括:按钮(button) 和 旋钮(switch)
  */
 @XmlAccessorType(XmlAccessType.NONE)
-public class ControlIO extends SwitchCtrl {
+public class ControlIO extends SwitchCtrl implements Savable {
 	private static final Logger LOG = LoggerFactory.getLogger(Terminal.class);
 
 	/**
@@ -159,6 +163,7 @@ public class ControlIO extends SwitchCtrl {
 			LOG.error("没有找到ControlIO::name为{}的模型{}", name, mdlName);
 		}
 		this.spatial = spatial;
+		spatial.setUserData("entity", this);
 	}
 
 	public Spatial getSpatial() {
@@ -207,5 +212,13 @@ public class ControlIO extends SwitchCtrl {
 		control.setRad(deltaDeg);
 		control.setExecutor(c);
 		control.setEnabled(true);
+	}
+
+	@Override
+	public void write(JmeExporter ex) throws IOException {
+	}
+
+	@Override
+	public void read(JmeImporter im) throws IOException {
 	}
 }

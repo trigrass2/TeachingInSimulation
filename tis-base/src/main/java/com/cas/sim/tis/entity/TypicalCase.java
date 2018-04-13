@@ -20,17 +20,17 @@ public class TypicalCase implements Serializable {
 
 //	电路存档的路径
 	private String archivePath;
-	
+
 	private String drawings;
 
 	private Integer creator;
-	
+
 	private Date createDate;
-	
+
 	private Integer updater;
-	
+
 	private Date updateDate;
-	
+
 	private Boolean del = false;
 
 	public Integer getId() {
@@ -77,6 +77,10 @@ public class TypicalCase implements Serializable {
 		return createDate;
 	}
 
+	public void setCreateDate(Date createDate) {
+		this.createDate = createDate;
+	}
+
 	public Integer getUpdater() {
 		return updater;
 	}
@@ -91,6 +95,10 @@ public class TypicalCase implements Serializable {
 
 	public Boolean getDel() {
 		return del;
+	}
+
+	public void setUpdateDate(Date updateDate) {
+		this.updateDate = updateDate;
 	}
 
 	public void setDel(Boolean del) {

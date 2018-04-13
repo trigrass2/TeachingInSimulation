@@ -82,8 +82,8 @@ public abstract class BaseState extends AbstractAppState {
 			LOG.warn("没有MouseEventState");
 			return;
 		}
-		candidates.add(sp);
 		mouseEventState.addCandidate(sp, l);
+		candidates.add(sp);
 	}
 
 	@Override
@@ -143,13 +143,21 @@ public abstract class BaseState extends AbstractAppState {
 		T t = null;
 		try {
 			t = assetManager.loadAsset(key);
-			LOG.info("成功加载资源{}", key);
+			LOG.info("加载资源{}", key);
 			return t;
 		} catch (Exception e) {
 			String errMsg = MessageFormat.format("加载{0}加载失败", key);
 			LOG.warn(errMsg, e);
 			throw new RuntimeException(MessageFormat.format("无法加载资源{0}", key));
 		}
+	}
+
+	public AssetManager getAssetManager() {
+		return assetManager;
+	}
+
+	public Node getRootNode() {
+		return rootNode;
 	}
 
 }

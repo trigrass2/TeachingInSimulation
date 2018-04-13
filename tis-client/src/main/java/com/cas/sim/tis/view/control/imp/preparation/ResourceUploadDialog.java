@@ -182,8 +182,10 @@ public class ResourceUploadDialog extends DialogPane<List<Integer>> {
 				// 上传文件到FTP
 				// FIXME 批量上传
 				for (int i = 0; i < uploadFiles.size(); i++) {
-					boolean uploaded = SpringUtil.getBean(FTPUtils.class).uploadFile(ResourceConsts.FTP_RES_PATH, uploadFiles.get(i), renames.get(i));
-					if (!uploaded) {
+
+					try {
+						FTPUtils.connect().cd(ResourceConsts.FTP_RES_PATH).uploadFile(uploadFiles.get(i), renames.get(i)).disconnect();
+					} catch (Exception e) {
 						uploadTip.setText(MsgUtil.getMessage("ftp.upload.failure"));
 						// 启用上传按钮
 						((Button) event.getSource()).setDisable(false);

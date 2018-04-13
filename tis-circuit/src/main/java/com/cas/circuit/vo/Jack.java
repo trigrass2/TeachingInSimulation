@@ -1,5 +1,6 @@
 package com.cas.circuit.vo;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -20,6 +21,9 @@ import org.slf4j.LoggerFactory;
 import com.cas.circuit.CfgConst;
 import com.cas.circuit.Plug;
 import com.cas.circuit.xml.adapter.Vector3fRotAdapter;
+import com.jme3.export.JmeExporter;
+import com.jme3.export.JmeImporter;
+import com.jme3.export.Savable;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Spatial;
 import com.sun.tools.internal.xjc.runtime.ZeroOneBooleanAdapter;
@@ -30,7 +34,7 @@ import com.sun.tools.internal.xjc.runtime.ZeroOneBooleanAdapter;
  * @author sco_pra
  */
 @XmlAccessorType(XmlAccessType.NONE)
-public class Jack {
+public class Jack implements Savable {
 	private static final Logger LOG = LoggerFactory.getLogger(Jack.class);
 	@XmlAttribute
 	private String id;
@@ -67,7 +71,7 @@ public class Jack {
 	@XmlElement(name = "Terminal")
 	private List<Stitch> stitchList = new ArrayList<>();
 	@XmlElement(name = "Param")
-	@XmlElementWrapper(name="Params")
+	@XmlElementWrapper(name = "Params")
 	private List<Param> params = new ArrayList<>();
 
 //	------------------------------
@@ -104,7 +108,8 @@ public class Jack {
 		return stitchList;
 	}
 
-	@Nullable public Stitch getStitch(Integer index) {
+	@Nullable
+	public Stitch getStitch(Integer index) {
 		return stitchMap.get(index);
 	}
 
@@ -137,6 +142,7 @@ public class Jack {
 			LOG.error("没有找到Jack::ID为{}的模型{}", getId(), mdlName);
 		}
 		this.spatial = spatial;
+		spatial.setUserData("entity", this);
 	}
 
 	public boolean isStopSend() {
@@ -158,5 +164,17 @@ public class Jack {
 	@Override
 	public String toString() {
 		return "插孔 [" + name + "] 制式 [" + format + "]";
+	}
+
+	@Override
+	public void write(JmeExporter ex) throws IOException {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void read(JmeImporter im) throws IOException {
+		// TODO Auto-generated method stub
+
 	}
 }

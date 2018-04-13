@@ -81,9 +81,8 @@ public class LoginController implements Initializable {
 		int port = AppPropertiesUtil.getIntValue("server.base.port", 0);
 
 		boolean success = SocketUtil.INSTENCE.connect(address, port);
-		LOG.info("开始连接服务器{}:{}", address, port);
 		if (success) {
-			LOG.info("服务器连接成功！");
+			LOG.info("连接服务器{}:{}", address, port);
 			loginBtn.setDisable(true);
 //			注册消息及消息处理类
 			LoginMessageHandler loginMessageHandler = new LoginMessageHandler();

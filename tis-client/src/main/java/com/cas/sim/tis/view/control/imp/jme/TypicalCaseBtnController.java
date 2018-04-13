@@ -6,6 +6,7 @@ import java.util.ResourceBundle;
 import org.controlsfx.control.PopOver;
 import org.controlsfx.control.PopOver.ArrowLocation;
 
+import com.cas.sim.tis.app.state.CircuitState;
 import com.cas.sim.tis.app.state.TypicalCaseState;
 import com.cas.sim.tis.util.JmeUtil;
 import com.cas.sim.tis.util.MsgUtil;
@@ -30,6 +31,8 @@ import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
+import javafx.scene.control.ToggleButton;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
@@ -69,13 +72,27 @@ public class TypicalCaseBtnController implements IDistory {
 	}
 
 	@FXML
+	private void toggleDimension(MouseEvent event) {
+		ToggleButton source = (ToggleButton) event.getSource();
+		if (!source.isSelected()) {
+			return;
+		}
+
+		if ("2D".equals(source.getText())) {
+			typicalCase3D.switchTo2D();
+		} else if ("3D".equals(source.getText())) {
+			typicalCase3D.switchTo3D();
+		}
+	}
+
+	@FXML
 	private void toggleTransparent() {
 		boolean selected = transparent.isSelected();
 		if (state != null && state.getCircuitState() != null) {
 			state.getCircuitState().setElecCompTransparent(selected);
 		}
 	}
-	
+
 	@FXML
 	private void showDrawingWin(ActionEvent event) {
 		((Button) event.getSource()).setDisable(true);
@@ -219,9 +236,7 @@ public class TypicalCaseBtnController implements IDistory {
 		wr.setInnerRadius(radius);
 		wr.setOuterRadius(radius + 4);
 
-		if (state != null && state.getCircuitState() != null) {
-			state.getCircuitState().setWidth((float) radius * 2);
-		}
+		CircuitState.setWidth((float) radius * 2);
 	}
 
 	private void initWireColorPane(HBox color) {
@@ -278,10 +293,7 @@ public class TypicalCaseBtnController implements IDistory {
 
 		Color color = (Color) rectangle.getFill();
 		wr.setOuterFill(color);
-
-		if (state != null && state.getCircuitState() != null) {
-			state.getCircuitState().setColor(JmeUtil.convert(color));
-		}
+		CircuitState.setColor(JmeUtil.convert(color));
 	}
 
 	public void setState(TypicalCaseState state) {

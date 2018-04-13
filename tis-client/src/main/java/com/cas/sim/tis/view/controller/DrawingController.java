@@ -94,11 +94,8 @@ public class DrawingController implements Initializable {
 	private ToggleGroup group = new ToggleGroup();
 	private int index;
 
-	private HTTPUtils utils;
-
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		utils = SpringUtil.getBean(HTTPUtils.class);
 		handle.setOnMouseDragged(e -> {
 			stage.setX(e.getScreenX() + xOffset);
 			stage.setY(e.getScreenY() + yOffset);
@@ -123,7 +120,7 @@ public class DrawingController implements Initializable {
 				next.setDisable(true);
 			}
 			Resource resource = (Resource) n.getUserData();
-			String url = utils.getFullPath(ResourceConsts.FTP_RES_PATH + resource.getPath());
+			String url = HTTPUtils.getFullPath(ResourceConsts.FTP_RES_PATH + resource.getPath());
 			loadDrawing(resource.getName(), url);
 		});
 		pane.setOnScroll(event -> {
@@ -182,7 +179,7 @@ public class DrawingController implements Initializable {
 	}
 
 	private void addDrawingPreviewBtn(final Resource resource) {
-		String url = utils.getFullPath(ResourceConsts.FTP_RES_PATH + resource.getPath());
+		String url = HTTPUtils.getFullPath(ResourceConsts.FTP_RES_PATH + resource.getPath());
 		Image image = new Image(url, 70, 70, true, true);
 
 		ImageView view = new ImageView(image);
