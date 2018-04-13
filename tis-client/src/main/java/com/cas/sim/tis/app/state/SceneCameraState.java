@@ -45,8 +45,11 @@ public class SceneCameraState extends BaseState implements ActionListener, Analo
 	private Vector3f target;
 
 //	在3D切换到2D时的相机位置，
-	private Vector3f camLocation3D, camLocation2D;
-	private Quaternion camRotation3D, camRotation2D;
+
+	private Vector3f camLocation3D = new Vector3f(0.0023542233f, 0.3672351f, 0.47397044f), //
+			camLocation2D = new Vector3f(0.02355165f, 0.8038877f, 0.001963116f);
+	private Quaternion camRotation3D = new Quaternion(2.240995E-9f, -0.9319663f, 0.36255902f, 1.3504177E-8f), //
+			camRotation2D = new Quaternion(0.0f, -0.70710677f, 0.70710677f, 0.0f);
 
 	private Mode mode;
 
@@ -82,9 +85,11 @@ public class SceneCameraState extends BaseState implements ActionListener, Analo
 		camera = new WASDListener(cam);
 		camera.registerWithInput(inputManager);
 
-		switchToView(View.Top);
-
-		toggleOrthoPerspMode(Mode.Ortho);
+//		默认3D视角
+//		如果是默认2D视角，则要替换下面的默认值
+		toggleOrthoPerspMode(Mode.Persp);
+		camLocation2D = new Vector3f(0.02355165f, 0.8038877f, 0.001963116f);
+		camRotation2D = new Quaternion(0.0f, -0.70710677f, 0.70710677f, 0.0f);
 	}
 
 	@Override
@@ -103,7 +108,8 @@ public class SceneCameraState extends BaseState implements ActionListener, Analo
 				doRotateCamera(Vector3f.UNIT_Y, -value * 2.5f);
 			}
 			if (buttonDownR || (buttonDownM && shiftModifier)) {
-				doPanCamera(value * 2.5f, 0);
+
+				doPanCamera(value, 0);
 			}
 		} else if ("MouseAxisY".equals(name)) {
 			moved = true;
@@ -113,7 +119,7 @@ public class SceneCameraState extends BaseState implements ActionListener, Analo
 				doRotateCamera(cam.getLeft(), -value * 2.5f);
 			}
 			if (buttonDownR || (buttonDownM && shiftModifier)) {
-				doPanCamera(0, -value * 2.5f);
+				doPanCamera(0, -value);
 			}
 		} else if ("MouseAxisX-".equals(name)) {
 			moved = true;
@@ -123,7 +129,7 @@ public class SceneCameraState extends BaseState implements ActionListener, Analo
 				doRotateCamera(Vector3f.UNIT_Y, value * 2.5f);
 			}
 			if (buttonDownR || (buttonDownM && shiftModifier)) {
-				doPanCamera(-value * 2.5f, 0);
+				doPanCamera(-value, 0);
 			}
 		} else if ("MouseAxisY-".equals(name)) {
 			moved = true;
@@ -133,7 +139,7 @@ public class SceneCameraState extends BaseState implements ActionListener, Analo
 				doRotateCamera(cam.getLeft(), value * 2.5f);
 			}
 			if (buttonDownR || (buttonDownM && shiftModifier)) {
-				doPanCamera(0, value * 2.5f);
+				doPanCamera(0, value);
 			}
 
 		} else if ("MouseWheel".equals(name)) {
@@ -290,11 +296,6 @@ public class SceneCameraState extends BaseState implements ActionListener, Analo
 		focus.addLocal(vector);
 	}
 
-//	protected void doMoveCamera(float forward) {
-//		cam.getDirection().mult(forward, vector);
-//		cam.setLocation(cam.getLocation().add(vector));
-//	}
-
 	/**
 	 * 镜头放大缩小
 	 * @param amount
@@ -302,7 +303,7 @@ public class SceneCameraState extends BaseState implements ActionListener, Analo
 	protected void doZoomCamera(float amount) {
 		amount = cam.getLocation().distance(focus) * amount;
 		float dist = cam.getLocation().distance(focus);
-		
+
 		amount = dist - Math.max(0f, dist - amount);
 		Vector3f loc = cam.getLocation().clone();
 		loc.scaleAdd(amount, cam.getDirection(), loc);
@@ -376,7 +377,6 @@ public class SceneCameraState extends BaseState implements ActionListener, Analo
 			h = FastMath.tan(45 * FastMath.DEG_TO_RAD * .5f) * dist;
 			float w = h * aspect;
 			cam.setFrustum(-1000, 1000, -w, w, h, -h);
-
 		} else if (mode == Mode.Persp) {
 //			记录相机的位置
 			camLocation2D = cam.getLocation().clone();

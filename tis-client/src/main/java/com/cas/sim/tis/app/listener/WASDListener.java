@@ -63,7 +63,8 @@ public class WASDListener implements AnalogListener, ActionListener {
 
 	protected Camera cam;
 	protected Vector3f initialUpVec;
-	protected float moveSpeed = 3f;
+	protected static float DEFAULT_SPEED = .5f;
+	protected float moveSpeed = DEFAULT_SPEED;
 	protected MotionAllowedListener motionAllowed = null;
 	protected boolean enabled = true;
 	protected InputManager inputManager;
@@ -221,7 +222,7 @@ public class WASDListener implements AnalogListener, ActionListener {
 	@Override
 	public void onAction(String name, boolean isPressed, float tpf) {
 		if (WASD_SPEEDUP.equals(name)) {
-			setMoveSpeed(isPressed ? 10 : 3);
+			setMoveSpeed(isPressed ? DEFAULT_SPEED * 2 : DEFAULT_SPEED);
 		}
 	}
 }
