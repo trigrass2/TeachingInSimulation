@@ -80,6 +80,11 @@
 			<name>JMonkeyEngineRepository</name>
 			<url>https://dl.bintray.com/jmonkeyengine/org.jmonkeyengine/</url>
 		</repository>
+		<repository>
+			<id>javasabr</id>
+			<name>JavaSabrRepository</name>
+			<url>https://dl.bintray.com/javasabr/maven/</url>
+		</repository>
 	</repositories>
 
 	<dependencyManagement>
