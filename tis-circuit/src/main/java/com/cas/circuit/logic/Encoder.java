@@ -9,7 +9,6 @@ import com.cas.circuit.util.MesureResult;
 import com.cas.circuit.util.R;
 import com.cas.circuit.vo.ResisRelation;
 import com.cas.circuit.vo.Terminal;
-import com.cas.util.MathUtil;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 
@@ -44,7 +43,7 @@ public class Encoder extends BaseElectricCompLogic {
 		_B = elecComp.getTerminal("B");
 		_Z = elecComp.getTerminal("Z");
 
-		resolution = MathUtil.parseInt(elecComp.getParam("resolution"), resolution);
+		resolution = Integer.parseInt(elecComp.getParam("resolution"));
 
 		degPerPulse = 360f / resolution;
 

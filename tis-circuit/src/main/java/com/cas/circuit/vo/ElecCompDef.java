@@ -445,6 +445,14 @@ public class ElecCompDef implements Savable {// extends BaseVO<ElecCompDefPO> {
 		return paramMap.get(key);
 	}
 
+	public String getParam(String key, String def) {
+		String v = getParam(key);
+		if(v == null) {
+			v = def;
+		}
+		return v;
+	}
+
 	public Node getSpatial() {
 		return spatial;
 	}

@@ -5,7 +5,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import com.cas.circuit.logic.Inverter.Dir;
-import com.cas.util.MathUtil;
 
 public class InvertorAssist {
 
@@ -53,7 +52,7 @@ public class InvertorAssist {
 	public void HEE(String value) {
 		float hertz = 0;
 		try {
-			hertz = MathUtil.parseFloat(value, 0f) / 100;
+			hertz = Float.parseFloat(value) / 100;
 		} catch (NumberFormatException e) {
 			Inverter.LOG.error(e.getMessage(), e);
 		}

@@ -14,6 +14,7 @@ import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.stream.Collectors;
 
 import org.apache.log4j.Logger;
 
@@ -25,7 +26,6 @@ import com.cas.circuit.vo.IP;
 import com.cas.circuit.vo.ResisRelation;
 import com.cas.circuit.vo.Terminal;
 import com.cas.circuit.vo.Wire;
-import com.cas.util.Util;
 import com.jme3.math.FastMath;
 
 /**
@@ -621,10 +621,8 @@ public class R {
 		Set<String> env1 = startTerminal.getResidualVolt().keySet();
 		Set<String> env2 = endTerminal.getResidualVolt().keySet();
 
-		Set<String> all = new HashSet<String>();
-
 //		获取交集
-		Util.intersection(all, env1, env2);
+		Set<String> all = env1.stream().filter(t -> env2.contains(t)).collect(Collectors.toSet());
 
 		MultiPower.filters(all, condition);
 
@@ -723,8 +721,7 @@ public class R {
 
 		if (startIP.getCRList().size() > 1 || endIP.getCRList().size() > 1) {
 			// startip或endIP外侧需要丢弃n坨
-			List<CR> commonCR = new ArrayList<CR>();
-			Util.intersection(commonCR, startIP.getCRList(), endIP.getCRList());
+			List<CR> commonCR = startIP.getCRList().stream().filter(t -> endIP.getCRList().contains(t)).collect(Collectors.toList());
 
 			List<CR> startTempCRs = new ArrayList<CR>();
 			startTempCRs.addAll(startIP.getCRList());
@@ -947,8 +944,9 @@ public class R {
 				}
 
 				if (anotherIsopo != null) {
-					List<CR> parallelCR = new ArrayList<CR>();
-					Util.intersection(parallelCR, ip.getCRList(), anotherIsopo.getCRList());
+					List<CR> acrList = anotherIsopo.getCRList(); 
+					List<CR> parallelCR = ip.getCRList().stream().filter(t -> acrList.contains(t)).collect(Collectors.toList());
+
 					if (parallelCR.size() > 1) {
 						CR one = new CR(this);
 						one.setType(CR.PARALLEL);

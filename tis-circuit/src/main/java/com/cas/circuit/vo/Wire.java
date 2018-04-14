@@ -11,7 +11,6 @@ import javax.xml.bind.annotation.XmlAttribute;
 
 import com.cas.circuit.util.R;
 import com.cas.circuit.vo.archive.WireProxy;
-import com.cas.util.Util;
 import com.jme3.export.JmeExporter;
 import com.jme3.export.JmeImporter;
 import com.jme3.export.Savable;
@@ -58,9 +57,6 @@ public class Wire implements Savable{
 	}
 
 	private void parseStitch(int stitchNo) {
-		if (Util.isEmpty(stitchNo)) {
-			return;
-		}
 		bind(new Stitch(stitchNo));
 	}
 
