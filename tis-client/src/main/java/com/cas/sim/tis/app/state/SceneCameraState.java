@@ -14,6 +14,12 @@ import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 
+/**
+ * 平移：鼠标中键按下<br/>
+ * 缩放：滚轮<br/>
+ * 旋转：Alt+中键按下<br/>
+ * @author Administrator
+ */
 public class SceneCameraState extends BaseState implements ActionListener, AnalogListener {
 	private WASDListener camera;
 
@@ -23,18 +29,14 @@ public class SceneCameraState extends BaseState implements ActionListener, Analo
 
 	protected boolean moved = false;
 	protected boolean movedR = false;
-	protected boolean buttonDownL = false;
 	protected boolean buttonDownR = false;
 	protected boolean buttonDownM = false;
-	protected boolean checkClickL = false;
 	protected boolean checkClickR = false;
 	protected boolean checkClickM = false;
-	protected boolean checkReleaseL = false;
 	protected boolean checkReleaseR = false;
 	protected boolean checkReleaseM = false;
 	protected boolean checkDragged = false;
 	protected boolean checkDraggedR = false;
-	protected boolean checkReleaseLeft = false;
 	protected boolean checkReleaseRight = false;
 	protected boolean shiftModifier = false;
 
@@ -75,12 +77,12 @@ public class SceneCameraState extends BaseState implements ActionListener, Analo
 		inputManager.addMapping("MouseAxisY-", new MouseAxisTrigger(MouseInput.AXIS_Y, true));
 		inputManager.addMapping("MouseWheel", new MouseAxisTrigger(MouseInput.AXIS_WHEEL, false));
 		inputManager.addMapping("MouseWheel-", new MouseAxisTrigger(MouseInput.AXIS_WHEEL, true));
-		inputManager.addMapping("MouseButtonLeft", new MouseButtonTrigger(MouseInput.BUTTON_LEFT));
+//		inputManager.addMapping("MouseButtonLeft", new MouseButtonTrigger(MouseInput.BUTTON_LEFT));
 		inputManager.addMapping("MouseButtonMiddle", new MouseButtonTrigger(MouseInput.BUTTON_MIDDLE));
 		inputManager.addMapping("MouseButtonRight", new MouseButtonTrigger(MouseInput.BUTTON_RIGHT));
-		inputManager.addMapping("ShiftModifier", new KeyTrigger(KeyInput.KEY_LSHIFT));
+		inputManager.addMapping("ShiftModifier", new KeyTrigger(KeyInput.KEY_LMENU));
 		// 注册监听
-		inputManager.addListener(this, "MouseAxisX", "MouseAxisY", "MouseAxisX-", "MouseAxisY-", "MouseWheel", "MouseWheel-", "MouseButtonLeft", "MouseButtonMiddle", "MouseButtonRight", "ShiftModifier");
+		inputManager.addListener(this, "MouseAxisX", "MouseAxisY", "MouseAxisX-", "MouseAxisY-", "MouseWheel", "MouseWheel-", "MouseButtonMiddle", "MouseButtonRight", "ShiftModifier");
 
 		camera = new WASDListener(cam);
 		camera.registerWithInput(inputManager);
@@ -101,53 +103,47 @@ public class SceneCameraState extends BaseState implements ActionListener, Analo
 			return;
 		}
 		if ("MouseAxisX".equals(name)) {
-			moved = true;
-			movedR = true;
-
-			if (buttonDownL || (buttonDownM && !shiftModifier)) {
-				doRotateCamera(Vector3f.UNIT_Y, -value * 2.5f);
-			}
-			if (buttonDownR || (buttonDownM && shiftModifier)) {
-
-				doPanCamera(value, 0);
+			moved = movedR = true;
+			if (buttonDownM) {
+				if (shiftModifier) {
+					doRotateCamera(Vector3f.UNIT_Y, -value * 2.5f);
+				} else {
+					doPanCamera(value, 0);
+				}
 			}
 		} else if ("MouseAxisY".equals(name)) {
-			moved = true;
-			movedR = true;
-
-			if (buttonDownL || (buttonDownM && !shiftModifier)) {
-				doRotateCamera(cam.getLeft(), -value * 2.5f);
-			}
-			if (buttonDownR || (buttonDownM && shiftModifier)) {
-				doPanCamera(0, -value);
+			moved = movedR = true;
+			if (buttonDownM) {
+				if (shiftModifier) {
+					doRotateCamera(cam.getLeft(), -value * 2.5f);
+				} else {
+					doPanCamera(0, -value);
+				}
 			}
 		} else if ("MouseAxisX-".equals(name)) {
-			moved = true;
-			movedR = true;
-
-			if (buttonDownL || (buttonDownM && !shiftModifier)) {
-				doRotateCamera(Vector3f.UNIT_Y, value * 2.5f);
-			}
-			if (buttonDownR || (buttonDownM && shiftModifier)) {
-				doPanCamera(-value, 0);
+			moved = movedR = true;
+			if (buttonDownM) {
+				if (shiftModifier) {
+					doRotateCamera(Vector3f.UNIT_Y, value * 2.5f);
+				} else {
+					doPanCamera(-value, 0);
+				}
 			}
 		} else if ("MouseAxisY-".equals(name)) {
-			moved = true;
-			movedR = true;
-
-			if (buttonDownL || (buttonDownM && !shiftModifier)) {
-				doRotateCamera(cam.getLeft(), value * 2.5f);
+			moved = movedR = true;
+			if (buttonDownM) {
+				if (shiftModifier) {
+					doRotateCamera(cam.getLeft(), value * 2.5f);
+				} else {
+					doPanCamera(0, value);
+				}
 			}
-			if (buttonDownR || (buttonDownM && shiftModifier)) {
-				doPanCamera(0, value);
-			}
-
 		} else if ("MouseWheel".equals(name)) {
-			if (zoomable && buttonDownR) {
+			if (zoomable) {
 				doZoomCamera(.05f);
 			}
 		} else if ("MouseWheel-".equals(name)) {
-			if (zoomable && buttonDownR) {
+			if (zoomable) {
 				doZoomCamera(-.05f);
 			}
 		}
@@ -162,20 +158,6 @@ public class SceneCameraState extends BaseState implements ActionListener, Analo
 			shiftModifier = isPressed;
 		}
 
-		if ("MouseButtonLeft".equals(name)) {
-			if (isPressed) {
-				if (!buttonDownL) { // mouse clicked
-					checkClickL = true;
-					checkReleaseL = false;
-				}
-			} else {
-				if (buttonDownL) { // mouse released
-					checkReleaseL = true;
-					checkClickL = false;
-				}
-			}
-			buttonDownL = isPressed;
-		}
 		if ("MouseButtonRight".equals(name)) {
 			if (isPressed) {
 				if (!buttonDownR) { // mouse clicked
@@ -230,21 +212,14 @@ public class SceneCameraState extends BaseState implements ActionListener, Analo
 
 		if (moved) {
 			// moved, check for drags
-			if (checkReleaseL || checkReleaseR || checkReleaseM) {
+			if (checkReleaseR || checkReleaseM) {
 				// drag released
-				checkReleaseL = false;
 				checkReleaseR = false;
 				checkReleaseM = false;
 			}
 			moved = false;
 		} else {
 			// not moved, check for just clicks
-			if (checkClickL) {
-				checkClickL = false;
-			}
-			if (checkReleaseL) {
-				checkReleaseL = false;
-			}
 			if (checkClickR) {
 				checkClickR = false;
 			}
