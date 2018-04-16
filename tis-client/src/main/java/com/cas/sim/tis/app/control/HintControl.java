@@ -11,9 +11,9 @@ public class HintControl extends AbstractControl {
 	/**
 	 * 颜色提示
 	 */
-	private static final float COLOR_SPEED = 0.5f;
-	private static final ColorRGBA COLOR_BEGIN = ColorRGBA.Magenta;
-	private static final ColorRGBA COLOR_END = ColorRGBA.Pink;
+	private static final float COLOR_SPEED = 2f;
+	private static final ColorRGBA COLOR_BEGIN = ColorRGBA.Red;
+	private static final ColorRGBA COLOR_END = ColorRGBA.White;
 	private float changeAmnt;
 	private float operator = 1;
 
