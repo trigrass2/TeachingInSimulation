@@ -26,9 +26,6 @@ public class CircuitTest {
 	@Qualifier(value = "elecCompServiceFactory")
 	private RmiProxyFactoryBean elecCompServiceFactory;
 
-	@Resource
-	private HTTPUtils util;
-
 	@Test
 	public void testParseCfg() throws Exception {
 		ElecCompService service = (ElecCompService) elecCompServiceFactory.getObject();
@@ -36,7 +33,7 @@ public class CircuitTest {
 //		ElecComp elecComp = service.findById(10);
 		ElecComp elecComp = service.findBy("model", "CJX2-12");
 
-		String cfgPath = util.getFullPath(elecComp.getCfgPath());
+		String cfgPath = HTTPUtils.getFullPath(elecComp.getCfgPath());
 		URL url = new URL(cfgPath);
 		ElecCompDef elecCompDef = JaxbUtil.converyToJavaBean(url, ElecCompDef.class);
 		System.out.println(elecCompDef);

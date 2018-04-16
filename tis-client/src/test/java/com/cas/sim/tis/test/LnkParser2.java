@@ -8,7 +8,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.UUID;
 
-import org.apache.commons.net.ftp.FTPClient;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -40,22 +39,7 @@ public class LnkParser2 {
 	@Qualifier("resourceServiceFactory")
 	private RmiProxyFactoryBean resourceServiceFactory;
 
-	private static FTPUtils ftpUtils;
-
-	private FTPUtils getUtil(String user, String password) {
-		FTPUtils util = new FTPUtils();
-
-		FTPClient client = new FTPClient();
-		util.setFtpClient(client);
-
-		util.setHost("192.168.1.122");
-		util.setPort(21);
-		util.setUsername(user);
-		util.setPassword(password);
-		return util;
-	}
-
-	public void load(File file) {
+	public void load(File file) throws Exception {
 		if (file.isDirectory()) {
 			for (File child : file.listFiles()) {
 				load(child);
@@ -68,13 +52,13 @@ public class LnkParser2 {
 		}
 	}
 
-	private void upload(File uploadFile, String fileName, String keyword) {
+	private void upload(File uploadFile, String fileName, String keyword) throws Exception {
 		String filePath = uploadFile.getAbsolutePath();
 		String ext = FileUtil.getFileExt(filePath);
 		// 重命名
 		String rename = UUID.randomUUID() + "." + ext;
 		// 上传文件到FTP
-		ftpUtils.uploadFile(ResourceConsts.FTP_RES_PATH, uploadFile, rename);
+		FTPUtils.connect().cd(ResourceConsts.FTP_RES_PATH).uploadFile( uploadFile, rename).disconnect();
 		// 封装资源记录
 		int type = ResourceType.parseType(ext);
 		Resource resource = new Resource();
@@ -139,14 +123,12 @@ public class LnkParser2 {
 	}
 
 	@Test
-	public void test() {
-		ftpUtils = getUtil("admin", "admin");
+	public void test() throws Exception {
 		load(new File("C:\\Users\\Administrator\\Desktop\\3D电工仿真软件 - 副本"));
 	}
 
 	@Test
-	public void excelImportTest() {
-		ftpUtils = getUtil("admin", "admin");
+	public void excelImportTest() throws Exception {
 		Object[][] results = ExcelUtil.readExcelSheet("", "Sheet1");
 		for (Object[] result : results) {
 			String fileName = String.valueOf(result[0]);

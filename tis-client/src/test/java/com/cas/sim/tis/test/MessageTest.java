@@ -18,8 +18,6 @@ import com.cas.sim.tis.util.MsgUtil;
 public class MessageTest {
 	@Resource
 	private ResourceService resourceService;
-	@Resource
-	private HTTPUtils httpUtils;
 
 	@Test
 	public void testMsgUtil() throws Exception {
@@ -28,6 +26,6 @@ public class MessageTest {
 
 	@Test
 	public void testResourceAvaliable() throws Exception {
-		resourceService.findAll().forEach(r -> httpUtils.getFullPath(r.getPath()));
+		resourceService.findAll().forEach(r -> HTTPUtils.getFullPath(r.getPath()));
 	}
 }

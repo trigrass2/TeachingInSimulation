@@ -23,7 +23,7 @@ public class TestJxBrowserJfx extends Application {
 		BrowserView view = new BrowserView(browser);
 		primaryStage.setScene(new Scene(view));
 		
-		browser.loadURL("http://file.keking.cn/");
+		browser.loadURL("http://www.baidu.com/");
 //		browser.loadURL("http://58.214.15.134:8945/DigitalCampus_v3.0_nj/loginInit!init.action");
 //		browser.setContextMenuHandler(new ContextMenuHandler() {
 //			@Override

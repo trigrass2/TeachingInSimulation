@@ -96,7 +96,7 @@ public class TestJmeToJFXCanvas extends Application {
 //        					System.err.println(picked);
 //        				}
         				@Nullable
-        				Vector3f point = JmeUtil.getContactPointFromCursor(rootNode, cam, inputManager);
+        				Vector3f point = JmeUtil.getContactPointFromCursor(rootNode, cam, inputManager.getCursorPosition());
         				if(point != null) {
         					Geometry ball = JmeUtil.getSphere(assetManager, 32, 0.1f, ColorRGBA.Red);
         					rootNode.attachChild(ball);
