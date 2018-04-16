@@ -9,7 +9,6 @@ import com.cas.circuit.util.MesureResult;
 import com.cas.circuit.util.R;
 import com.cas.circuit.vo.Jack;
 import com.cas.circuit.vo.Terminal;
-import com.cas.util.Util;
 
 /**
  * 变频器
@@ -92,7 +91,7 @@ public class Inverter extends BaseElectricCompLogic {
 			MesureResult resultWU = R.matchRequiredVolt(Voltage.IS_AC, _t, _r, 380, 10);
 
 //			判断三者之间是否存在电势差
-			boolean tmp = Util.notEmpty(resultUV) && Util.notEmpty(resultWU) && Util.notEmpty(resultVW);
+			boolean tmp = resultUV != null && resultWU != null && resultVW != null;
 
 			List<R> controlVoltPower = R.get3Phase(controlVoltEnv);
 			if (tmp && !workable) {

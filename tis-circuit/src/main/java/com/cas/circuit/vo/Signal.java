@@ -9,7 +9,6 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import com.cas.circuit.xml.adapter.SignalFormatAdapter;
-import com.cas.util.Util;
 @XmlAccessorType(XmlAccessType.NONE)
 public class Signal {
 	public static final Map<String, Signal> AMAP = new ConcurrentHashMap<String, Signal>();
@@ -85,7 +84,7 @@ public class Signal {
 	}
 
 	public static String formatSignal(String addr, int bit) {
-		if (Util.isEmpty(addr)) {
+		if (addr == null) {
 			return null;
 		}
 		addr = addr.trim();

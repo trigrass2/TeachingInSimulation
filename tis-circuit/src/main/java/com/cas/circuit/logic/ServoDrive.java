@@ -9,8 +9,6 @@ import com.cas.circuit.util.R;
 import com.cas.circuit.vo.Jack;
 import com.cas.circuit.vo.ResisRelation;
 import com.cas.circuit.vo.Terminal;
-import com.cas.util.MathUtil;
-import com.cas.util.Util;
 
 /**
  * 伺服驱动器
@@ -67,7 +65,7 @@ public class ServoDrive extends BaseElectricCompLogic {
 	@Override
 	public void initialize() {
 		super.initialize();
-		rate = MathUtil.parseFloat(elecComp.getParam("rate"), rate);
+		rate = Float.parseFloat(elecComp.getParam("rate", "1"));
 
 		controlVoltEnv = "ServoControlVoltage" + hashCode();
 		encoderEnv = "ServoEncoderVoltage" + hashCode();
@@ -179,7 +177,7 @@ public class ServoDrive extends BaseElectricCompLogic {
 		if (tmp && !receivedPulse) {
 			LOG.info("伺服放大器收到脉冲信号");
 			receivedPulse = true;
-			Float f = MathUtil.parseFloat(result.getData("pulseFrequency"), 0f) / rate;
+			Float f = Float.parseFloat(result.getData("pulseFrequency")) / rate;
 			if (f != frequency) {
 				frequency = f;
 			}
@@ -197,7 +195,7 @@ public class ServoDrive extends BaseElectricCompLogic {
 		MesureResult resultuv = R.matchRequiredVolt(Voltage.IS_AC, _L1, _L2, 380, 10);
 		MesureResult resultvw = R.matchRequiredVolt(Voltage.IS_AC, _L2, _L3, 380, 10);
 		MesureResult resultwu = R.matchRequiredVolt(Voltage.IS_AC, _L3, _L1, 380, 10);
-		boolean matchRequiredVolt = Util.notEmpty(resultuv) && Util.notEmpty(resultwu) && Util.notEmpty(resultvw);
+		boolean matchRequiredVolt = resultuv != null && resultwu != null && resultvw != null;
 		if (matchRequiredVolt && !outputEnable) {
 			LOG.info("伺服放大器能够输出电压");
 			outputEnable = true;

@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Set;
 
 import com.cas.circuit.util.R;
-import com.cas.util.Util;
 
 public class SwitchCtrl {// extends BaseVO<T> {
 	protected ElecCompDef elecComp;
@@ -56,9 +55,6 @@ public class SwitchCtrl {// extends BaseVO<T> {
 		}
 		try {
 			for (String env : envs) {
-				if (Util.isEmpty(env)) {
-					continue;
-				}
 				R r = R.getR(env);
 				if (r != null) {
 					r.shareVoltage();
@@ -107,9 +103,6 @@ public class SwitchCtrl {// extends BaseVO<T> {
 
 		try {
 			for (String env : envs) {
-				if (Util.isEmpty(env)) {
-					continue;
-				}
 				R r = R.getR(env);
 				if (r != null) {
 					r.shareVoltage();
@@ -182,9 +175,6 @@ public class SwitchCtrl {// extends BaseVO<T> {
 //		System.out.println("SwitchCtrl.doSwitch() -----------shareVoltage-----------");
 		try {
 			for (String env : envs) {
-				if (Util.isEmpty(env)) {
-					continue;
-				}
 				R r = R.getR(env);
 				if (r != null) {
 					r.shareVoltage();
