@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 
 import com.cas.circuit.vo.ElecCompDef;
 import com.cas.circuit.vo.Wire;
+import com.cas.sim.tis.anno.FxThread;
 import com.cas.sim.tis.app.JmeApplication;
 import com.cas.sim.tis.app.state.CircuitState;
 import com.cas.sim.tis.app.state.SceneCameraState.Mode;
@@ -31,10 +32,14 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.ContextMenu;
+import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextInputDialog;
+import javafx.scene.effect.DropShadow;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
+import javafx.scene.paint.Color;
 
 public class TypicalCase3D implements IContent {
 
@@ -52,6 +57,8 @@ public class TypicalCase3D implements IContent {
 	private TypicalCaseBtnController btnController;
 	private Wire wire;
 	private ElecCompDef compDef;
+	private Label nameLabel;
+	private AnchorPane pane;
 
 	public TypicalCase3D() {
 //		创建一个Canvas层，用于显示JME
@@ -71,6 +78,7 @@ public class TypicalCase3D implements IContent {
 		jmeApp = new JmeApplication();
 
 		TypicalCaseState compState = new TypicalCaseState();
+		compState.setUI(this);
 		jmeApp.getStateManager().attach(compState);
 		JmeToJFXIntegrator.startAndBind(jmeApp, canvas, Thread::new);
 
@@ -85,6 +93,18 @@ public class TypicalCase3D implements IContent {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+
+//		3、名称显示
+		nameLabel = new Label();
+//		TODO 调样式
+		nameLabel.setId("RecognizeNameLabel");
+		nameLabel.setStyle("-fx-background-color:rgb(200,0,0);");
+		nameLabel.setTextFill(Color.WHITE);
+		nameLabel.setEffect(new DropShadow(3, Color.BLACK));
+
+		pane = new AnchorPane(nameLabel);
+		pane.setPickOnBounds(false);
+		pane.setMouseTransparent(true);
 
 //		3、弹出菜单
 		createWirePopupMenu();
@@ -103,7 +123,7 @@ public class TypicalCase3D implements IContent {
 		steamIdDialog.setHeaderText(null);
 		steamIdDialog.setContentText(MsgUtil.getMessage("typical.case.prompt.input.comp.tag"));
 		steamIdDialog.getEditor().textProperty().addListener((b, o, n) -> {
-			if(n == null) {
+			if (n == null) {
 				return;
 			}
 			Pattern pat = Pattern.compile(REGEX_CHINESE);
@@ -166,7 +186,7 @@ public class TypicalCase3D implements IContent {
 
 	@Override
 	public Node[] getContent() {
-		return new Node[] { canvas, btns };
+		return new Node[] { canvas, pane, btns };
 	}
 
 	@Override
@@ -243,4 +263,16 @@ public class TypicalCase3D implements IContent {
 		TypicalCaseState appState = jmeApp.getStateManager().getState(TypicalCaseState.class);
 		appState.getCameraState().toggleOrthoPerspMode(Mode.Persp);
 	}
+
+	@FxThread
+	public void showName(String text, float x, float y) {
+		nameLabel.setText(text);
+		nameLabel.setLayoutX(x);
+////	解释：由于JME与Javafx坐标系上下颠倒，为了能正常获取鼠标坐标，将Javafx的坐标系向JME靠拢。
+////	详见JFXMouseInput:
+////	    private boolean useLocalCoords;
+////		private boolean inverseYCoord;
+		nameLabel.setLayoutY(canvas.getHeight() - y + 20);
+	}
+
 }

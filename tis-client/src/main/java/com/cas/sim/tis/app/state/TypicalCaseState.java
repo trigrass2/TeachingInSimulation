@@ -17,6 +17,8 @@ import com.cas.sim.tis.util.AlertUtil;
 import com.cas.sim.tis.util.JmeUtil;
 import com.cas.sim.tis.util.MsgUtil;
 import com.cas.sim.tis.util.SpringUtil;
+import com.cas.sim.tis.view.control.imp.jme.Recongnize3D;
+import com.cas.sim.tis.view.control.imp.jme.TypicalCase3D;
 import com.cas.sim.tis.view.controller.PageController;
 import com.jme3.asset.ModelKey;
 import com.jme3.light.PointLight;
@@ -51,6 +53,8 @@ public class TypicalCaseState extends BaseState {
 	 */
 	private Spatial compPlane;
 
+	private TypicalCase3D ui;
+
 	@Override
 	protected void initializeLocal() {
 		// 布置场景
@@ -63,7 +67,7 @@ public class TypicalCaseState extends BaseState {
 //		cam.setRotation(new Quaternion());
 		// 绑定事件
 		bindEvents();
-		
+
 		// 默认新建案例
 		setupCase(new TypicalCase());
 	}
@@ -300,9 +304,16 @@ public class TypicalCaseState extends BaseState {
 	public TypicalCase getTypicalCase() {
 		return typicalCase;
 	}
-	
+
 	public SceneCameraState getCameraState() {
 		return cameraState;
 	}
 
+	public void setUI(TypicalCase3D ui) {
+		this.ui = ui;
+	}
+	
+	public TypicalCase3D getUi() {
+		return ui;
+	}
 }

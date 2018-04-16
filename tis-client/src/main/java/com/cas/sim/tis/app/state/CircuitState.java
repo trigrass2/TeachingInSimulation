@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import com.cas.circuit.CfgConst;
@@ -26,6 +27,7 @@ import com.cas.circuit.vo.archive.WireProxy;
 import com.cas.sim.tis.action.ElecCompAction;
 import com.cas.sim.tis.action.TypicalCaseAction;
 import com.cas.sim.tis.anno.JmeThread;
+import com.cas.sim.tis.app.control.ShowNameOnHoverControl;
 import com.cas.sim.tis.app.control.TagNameControl;
 import com.cas.sim.tis.app.control.WireNumberControl;
 import com.cas.sim.tis.app.event.MouseEventListener;
@@ -61,6 +63,7 @@ import com.jme3.input.controls.MouseButtonTrigger;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
+import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
@@ -174,6 +177,9 @@ public class CircuitState extends BaseState {
 //		存放元器件的根节点
 		rootCompNode = new Node(COMP_ROOT);
 		root.attachChild(rootCompNode);
+//		
+		rootCompNode.addControl(new ShowNameOnHoverControl(this, inputManager, cam));
+
 //		存放导线的根节点
 		rootWireNode = new Node(WIRE_ROOT);
 //		设置导线始终显示
@@ -401,8 +407,8 @@ public class CircuitState extends BaseState {
 			// 另外，还需要两根线
 			tmpWireNode.attachChild(JmeUtil.createLineGeo(assetManager, new Line(last3, last2), color));
 			tmpWireNode.attachChild(JmeUtil.createLineGeo(assetManager, new Line(last2, dest), color));
-			
-			Platform.runLater(()->AlertUtil.showTip(TipType.WARN, MsgUtil.getMessage("alert.warning.wire.rule")));
+
+			Platform.runLater(() -> AlertUtil.showTip(TipType.WARN, MsgUtil.getMessage("alert.warning.wire.rule")));
 		} else {
 			// 倒数第二个点是midLine1上任意一点在dir上的投影点，这里取startPoint
 			Vector3f last2 = dest.add(startPoint.subtract(dest).project(dir));
@@ -685,7 +691,7 @@ public class CircuitState extends BaseState {
 		control.setEnabled(false);
 		compModel.addControl(control);
 		elecCompDef.getProxy().setTagNode(tag);
-		
+
 //		将holding的模型加入“电路板”的环境中
 //		holding会先自动从原parent中剔除，成为孤儿节点，然后加入新的parent中
 		rootCompNode.attachChild(compModel);
@@ -826,7 +832,7 @@ public class CircuitState extends BaseState {
 			Spatial elecCompMdl = elecCompDef.getSpatial();
 			@Nonnull
 			TagNameControl control = elecCompMdl.getControl(TagNameControl.class);
-			if(control != null) {
+			if (control != null) {
 				control.setEnabled(tagVisible);
 			}
 		}
@@ -860,6 +866,11 @@ public class CircuitState extends BaseState {
 		} else {
 			compList.forEach(def -> JmeUtil.untransparent(def.getSpatial()));
 		}
+	}
+
+	public void showName(@NotNull String name) {
+		Vector2f pos = inputManager.getCursorPosition();
+		Platform.runLater(() -> caseState.getUi().showName(name, pos.x, pos.y));
 	}
 
 }
