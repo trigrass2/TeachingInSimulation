@@ -2,6 +2,12 @@ package com.cas.sim.tis.entity.json;
 
 import com.alibaba.fastjson.annotation.JSONField;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+@Getter
+@Setter
+@NoArgsConstructor
 public class QuestionIds {
 	@JSONField(name = "t")
 	private Integer type;
@@ -11,9 +17,6 @@ public class QuestionIds {
 
 	@JSONField(name = "a")
 	private String answer;
-
-	public QuestionIds() {
-	}
 
 	public QuestionIds(Integer type, Integer questionId) {
 		super();

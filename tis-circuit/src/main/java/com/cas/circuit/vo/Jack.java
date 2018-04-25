@@ -28,11 +28,15 @@ import com.jme3.math.Vector3f;
 import com.jme3.scene.Spatial;
 import com.sun.tools.internal.xjc.runtime.ZeroOneBooleanAdapter;
 
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * 元器件上的电缆插孔类.<br/>
  * 信号的传递过程:信号通过电缆传递,其本质还是通过电缆中的芯传递的.
  * @author sco_pra
  */
+@Getter
 @XmlAccessorType(XmlAccessType.NONE)
 public class Jack implements Savable {
 	private static final Logger LOG = LoggerFactory.getLogger(Jack.class);
@@ -77,6 +81,7 @@ public class Jack implements Savable {
 //	------------------------------
 
 //	该插孔上所插入的电缆线
+	@Setter
 	private Plug plug;
 //	该插座上的连接的线缆（唯一）
 	private Cable cable;
@@ -90,23 +95,8 @@ public class Jack implements Savable {
 	private Spatial spatial;
 
 	// G信号控制是否停止发送
+	@Setter
 	private boolean stopSend;
-
-	public String getId() {
-		return id;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public String getMdlName() {
-		return mdlName;
-	}
-
-	public List<Stitch> getStitchList() {
-		return stitchList;
-	}
 
 	@Nullable
 	public Stitch getStitch(Integer index) {
@@ -117,26 +107,6 @@ public class Jack implements Savable {
 		stitchMap = stitchList.stream().collect(Collectors.toMap(Stitch::getIndex, data -> data));
 	}
 
-	public void setPlug(Plug plug) {
-		this.plug = plug;
-	}
-
-	public Plug getPlug() {
-		return plug;
-	}
-
-	public boolean isPositive() {
-		return positive;
-	}
-
-	public String getBrokenState() {
-		return brokenState;
-	}
-
-	public Spatial getSpatial() {
-		return spatial;
-	}
-
 	public void setSpatial(Spatial spatial) {
 		if (spatial == null) {
 			LOG.error("没有找到Jack::ID为{}的模型{}", getId(), mdlName);
@@ -145,36 +115,11 @@ public class Jack implements Savable {
 		spatial.setUserData("entity", this);
 	}
 
-	public boolean isStopSend() {
-		return stopSend;
-	}
-
-	public void setStopSend(boolean stopSend) {
-		this.stopSend = stopSend;
-	}
-
-	public Cable getCable() {
-		return cable;
-	}
-
-	public String getFormat() {
-		return format;
-	}
-
-	@Override
-	public String toString() {
-		return "插孔 [" + name + "] 制式 [" + format + "]";
-	}
-
 	@Override
 	public void write(JmeExporter ex) throws IOException {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void read(JmeImporter im) throws IOException {
-		// TODO Auto-generated method stub
-
 	}
 }

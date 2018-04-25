@@ -3,8 +3,11 @@ package com.cas.sim.tis.vo;
 import java.io.Serializable;
 import java.util.Date;
 
+import lombok.Getter;
+import lombok.Setter;
+@Getter
+@Setter
 public class LibraryPublishForStudent implements Serializable {
-
 	/**
 	 * 
 	 */
@@ -14,44 +17,4 @@ public class LibraryPublishForStudent implements Serializable {
 	private Integer score;
 	private Long cost;
 	private Date date;
-
-	public Integer getId() {
-		return id;
-	}
-
-	public void setId(Integer id) {
-		this.id = id;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public Integer getScore() {
-		return score;
-	}
-
-	public void setScore(Integer score) {
-		this.score = score;
-	}
-
-	public Long getCost() {
-		return cost;
-	}
-
-	public void setCost(Long cost) {
-		this.cost = cost;
-	}
-
-	public Date getDate() {
-		return date;
-	}
-
-	public void setDate(Date date) {
-		this.date = date;
-	}
 }

@@ -34,34 +34,43 @@ import com.jme3.export.Savable;
 import com.jme3.scene.Node;
 import com.sun.tools.internal.xjc.runtime.ZeroOneBooleanAdapter;
 
+import lombok.Getter;
+
 @XmlAccessorType(XmlAccessType.NONE)
 @XmlRootElement(name = "ElecCompDef")
+@Getter
 public class ElecCompDef implements Savable {// extends BaseVO<ElecCompDefPO> {
 	public static final String PARAM_KEY_SHELL = "shell";
 
 	@XmlAttribute
 	private String id;
+
 	@XmlAttribute
 	private String name;
 	/**
 	 * key : model【型号】
 	 */
+
 	@XmlAttribute
 	private String model;
+
 	@XmlAttribute
 	private String desc;
 //	元器件模型名称
+
 	@XmlAttribute
 	private String mdlName;
 
 	@XmlElement(name = "Base")
 	private Base base;
+
 	@XmlElement(name = "RelyOn")
 	private RelyOn relyOn;
 
 ////	元器件标签名
 //	@XmlAttribute
 //	private String tagName;
+
 	@XmlAttribute(name = "appStateCls")
 	@XmlJavaTypeAdapter(CompLogicAdapter.class)
 	private BaseElectricCompLogic logic;
@@ -71,32 +80,42 @@ public class ElecCompDef implements Savable {// extends BaseVO<ElecCompDefPO> {
 	@XmlJavaTypeAdapter(ZeroOneBooleanAdapter.class)
 	@XmlAttribute
 	private Boolean isCable;
+
 	@XmlElement(name = "Terminal")
 	private List<Terminal> terminalList = new ArrayList<>();
+
 	@XmlElement(name = "Jack")
 	private List<Jack> jackList = new ArrayList<>();
+
 	@XmlElement(name = "Magnetism")
 	private List<Magnetism> magnetismList = new ArrayList<>();
+
 	@XmlElement(name = "ResisState")
 	private List<ResisState> resisStateList = new ArrayList<>();
 //	@XmlElement(name = "BlockState")
 //	private List<BlockState> blockStateList = new ArrayList<>();
+
 	@XmlElement(name = "LightIO")
 	private List<LightIO> lightIOList = new ArrayList<>();
 
 //	----------------------------------------------------------------------
 
 //	Key:电缆插孔的名字
+
 	private Map<String, Jack> jackMap = new LinkedHashMap<String, Jack>();
 //	Key: id
 //	存放所有的连接头
+
 	private Map<String, Terminal> terminalMap = new LinkedHashMap<String, Terminal>();
 //	Key: id
 //	存放所有连接头及插孔中的针脚
+
 	private Map<String, Terminal> termAndStich = new LinkedHashMap<String, Terminal>();
+
 
 	private Map<String, ResisState> resisStatesMap = new LinkedHashMap<String, ResisState>();
 //	key: terminal ID
+
 	private Map<String, List<ResisRelation>> nowResisRelations = new LinkedHashMap<String, List<ResisRelation>>();
 //	属性
 	private Map<String, String> paramMap;
@@ -104,6 +123,7 @@ public class ElecCompDef implements Savable {// extends BaseVO<ElecCompDefPO> {
 	private Set<String> createdEnv = null;
 
 //	元器件模型
+
 	private Node spatial;
 
 	private ElecCompProxy proxy;
@@ -335,14 +355,6 @@ public class ElecCompDef implements Savable {// extends BaseVO<ElecCompDefPO> {
 		}
 	}
 
-	public Map<String, Jack> getJackMap() {
-		return jackMap;
-	}
-
-	public Map<String, Terminal> getTerminalMap() {
-		return terminalMap;
-	}
-
 	/**
 	 * @param key Terminal::getId
 	 */
@@ -351,34 +363,6 @@ public class ElecCompDef implements Savable {// extends BaseVO<ElecCompDefPO> {
 			return termAndStich.get(key);
 		}
 		return null;
-	}
-
-	public Map<String, ResisState> getResisStatesMap() {
-		return resisStatesMap;
-	}
-
-	public Map<String, List<ResisRelation>> getNowResisRelations() {
-		return nowResisRelations;
-	}
-
-	public List<Magnetism> getMagnetismList() {
-		return magnetismList;
-	}
-
-	public List<LightIO> getLightIOList() {
-		return lightIOList;
-	}
-
-	public List<ResisState> getResisStateList() {
-		return resisStateList;
-	}
-
-	public List<Terminal> getTerminalList() {
-		return terminalList;
-	}
-
-	public List<Jack> getJackList() {
-		return jackList;
 	}
 
 	/**
@@ -414,31 +398,8 @@ public class ElecCompDef implements Savable {// extends BaseVO<ElecCompDefPO> {
 //		ref.getCompState().powerShorted(startTerminal, endTerminal);
 	}
 
-	/**
-	 * @return the compState
-	 */
-	public BaseElectricCompLogic getLogic() {
-		return logic;
-	}
-
 	public boolean isCable() {
 		return isCable;
-	}
-
-	public String getModel() {
-		return model;
-	}
-
-	public String getMdlName() {
-		return mdlName;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public String getDesc() {
-		return desc;
 	}
 
 	public String getParam(String key) {
@@ -453,20 +414,8 @@ public class ElecCompDef implements Savable {// extends BaseVO<ElecCompDefPO> {
 		return v;
 	}
 
-	public Node getSpatial() {
-		return spatial;
-	}
-
 	public void setProxy(ElecCompProxy proxy) {
 		this.proxy = proxy;
-	}
-
-	public Base getBase() {
-		return base;
-	}
-
-	public RelyOn getRelyOn() {
-		return relyOn;
 	}
 
 	@Nonnull

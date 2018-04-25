@@ -3,6 +3,9 @@ package com.cas.sim.tis.message;
 import com.jme3.network.AbstractMessage;
 import com.jme3.network.serializing.Serializable;
 
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * 考核相关消息接受
  * @功能 ExamMessage.java
@@ -11,6 +14,8 @@ import com.jme3.network.serializing.Serializable;
  * @修改人 Caowj
  */
 @Serializable
+@Getter
+@Setter
 public class ExamMessage extends AbstractMessage {
 
 	/**
@@ -43,37 +48,5 @@ public class ExamMessage extends AbstractMessage {
 	 * JSONArray.toString()
 	 */
 	private String result;
-
-	public int getPid() {
-		return pid;
-	}
-
-	public void setPid(int pid) {
-		this.pid = pid;
-	}
-
-	public int getSid() {
-		return sid;
-	}
-
-	public void setSid(int sid) {
-		this.sid = sid;
-	}
-
-	public int getType() {
-		return type;
-	}
-
-	public void setType(int type) {
-		this.type = type;
-	}
-
-	public String getResult() {
-		return result;
-	}
-
-	public void setResult(String result) {
-		this.result = result;
-	}
 
 }
