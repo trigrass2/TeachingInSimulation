@@ -7,8 +7,11 @@ import javax.persistence.Id;
 
 import com.cas.sim.tis.consts.AnswerState;
 
+import lombok.Getter;
+import lombok.Setter;
+@Getter
+@Setter
 public class LibraryAnswer implements Serializable {
-
 	/**
 	 * 
 	 */
@@ -46,78 +49,5 @@ public class LibraryAnswer implements Serializable {
 	 * 用户最后一次更正后的答案
 	 */
 	private String correctAnswer;
-
 	private Question question;
-
-	public Integer getId() {
-		return id;
-	}
-
-	public void setId(Integer id) {
-		this.id = id;
-	}
-
-	public Integer getIndex() {
-		return index;
-	}
-
-	public void setIndex(Integer index) {
-		this.index = index;
-	}
-
-	public String getAnswer() {
-		return answer;
-	}
-
-	public void setAnswer(String answer) {
-		this.answer = answer;
-	}
-
-	public Float getScore() {
-		return score;
-	}
-
-	public void setScore(Float score) {
-		this.score = score;
-	}
-
-	public Integer getQuestionId() {
-		return questionId;
-	}
-
-	public void setQuestionId(Integer questionId) {
-		this.questionId = questionId;
-	}
-
-	public Integer getRecordId() {
-		return recordId;
-	}
-
-	public void setRecordId(Integer recordId) {
-		this.recordId = recordId;
-	}
-
-	public Integer getCorrected() {
-		return corrected;
-	}
-
-	public void setCorrected(Integer corrected) {
-		this.corrected = corrected;
-	}
-
-	public String getCorrectAnswer() {
-		return correctAnswer;
-	}
-
-	public void setCorrectAnswer(String correctAnswer) {
-		this.correctAnswer = correctAnswer;
-	}
-
-	public Question getQuestion() {
-		return question;
-	}
-
-	public void setQuestion(Question question) {
-		this.question = question;
-	}
 }

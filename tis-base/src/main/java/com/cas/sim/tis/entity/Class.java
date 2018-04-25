@@ -8,6 +8,10 @@ import javax.persistence.Id;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
+import lombok.Getter;
+import lombok.Setter;
+@Getter
+@Setter
 //班级类
 public class Class implements Serializable {
 	/**
@@ -30,70 +34,5 @@ public class Class implements Serializable {
 	private Date updateDate;
 //	默认是0
 	private Integer del = 0;
-	
 	private User teacher;
-
-	public Integer getId() {
-		return id;
-	}
-
-	public void setId(Integer id) {
-		this.id = id;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public Integer getTeacherId() {
-		return teacherId;
-	}
-
-	public void setTeacherId(Integer teacherId) {
-		this.teacherId = teacherId;
-	}
-
-	public Integer getCreator() {
-		return creator;
-	}
-
-	public void setCreator(Integer creator) {
-		this.creator = creator;
-	}
-
-	public Date getCreateDate() {
-		return createDate;
-	}
-
-	public Integer getUpdater() {
-		return updater;
-	}
-
-	public void setUpdater(Integer updater) {
-		this.updater = updater;
-	}
-
-	public Date getUpdateDate() {
-		return updateDate;
-	}
-
-	public Integer getDel() {
-		return del;
-	}
-
-	public void setDel(Integer del) {
-		this.del = del;
-	}
-
-	public User getTeacher() {
-		return teacher;
-	}
-
-	public void setTeacher(User teacher) {
-		this.teacher = teacher;
-	}
 }

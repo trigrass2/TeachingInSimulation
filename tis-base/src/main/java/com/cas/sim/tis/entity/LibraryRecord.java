@@ -8,6 +8,9 @@ import javax.persistence.Id;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * 试题发布记录表
  * @功能 LibraryPublish.java
@@ -15,8 +18,9 @@ import org.springframework.format.annotation.DateTimeFormat;
  * @创建日期 2018年2月7日
  * @修改人 Caowj
  */
+@Getter
+@Setter
 public class LibraryRecord implements Serializable {
-
 	/**
 	 * 
 	 */
@@ -30,48 +34,4 @@ public class LibraryRecord implements Serializable {
 	private Integer creator;
 	@DateTimeFormat(pattern = "yyyy-MM-dd hh:mm:ss")
 	private Date createDate;
-
-	public Integer getId() {
-		return id;
-	}
-
-	public void setId(Integer id) {
-		this.id = id;
-	}
-
-	public Integer getPublishId() {
-		return publishId;
-	}
-
-	public void setPublishId(Integer publishId) {
-		this.publishId = publishId;
-	}
-
-	public Float getScore() {
-		return score;
-	}
-
-	public void setScore(Float score) {
-		this.score = score;
-	}
-
-	public Integer getCost() {
-		return cost;
-	}
-
-	public void setCost(Integer cost) {
-		this.cost = cost;
-	}
-
-	public Integer getCreator() {
-		return creator;
-	}
-
-	public void setCreator(Integer creator) {
-		this.creator = creator;
-	}
-
-	public Date getCreateDate() {
-		return createDate;
-	}
 }

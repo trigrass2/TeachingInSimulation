@@ -8,6 +8,9 @@ import javax.persistence.Id;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * 试题发布记录表
  * @功能 LibraryPublish.java
@@ -15,8 +18,9 @@ import org.springframework.format.annotation.DateTimeFormat;
  * @创建日期 2018年2月7日
  * @修改人 Caowj
  */
+@Getter
+@Setter
 public class LibraryPublish implements Serializable {
-
 	/**
 	 * 
 	 */
@@ -35,7 +39,6 @@ public class LibraryPublish implements Serializable {
 			return type;
 		}
 	}
-
 	@Id
 	private Integer id;
 	@Column(name = "LID")
@@ -48,90 +51,10 @@ public class LibraryPublish implements Serializable {
 	 */
 	private Integer type;
 	private Float average;
-
 	private Integer creator;
 	@DateTimeFormat(pattern = "yyyy-MM-dd hh:mm:ss")
 	private Date createDate;
-
 	private Boolean state = false;
-
 	private Library library;
-
 	private Class clazz;
-
-	public Integer getId() {
-		return id;
-	}
-
-	public void setId(Integer id) {
-		this.id = id;
-	}
-
-	public Integer getLibraryId() {
-		return libraryId;
-	}
-
-	public void setLibraryId(Integer libraryId) {
-		this.libraryId = libraryId;
-	}
-
-	public Integer getClassId() {
-		return classId;
-	}
-
-	public void setClassId(Integer classId) {
-		this.classId = classId;
-	}
-
-	public Integer getType() {
-		return type;
-	}
-
-	public void setType(Integer type) {
-		this.type = type;
-	}
-
-	public Float getAverage() {
-		return average;
-	}
-
-	public void setAverage(Float average) {
-		this.average = average;
-	}
-
-	public Integer getCreator() {
-		return creator;
-	}
-
-	public void setCreator(Integer creator) {
-		this.creator = creator;
-	}
-
-	public Date getCreateDate() {
-		return createDate;
-	}
-
-	public Boolean getState() {
-		return state;
-	}
-
-	public void setState(Boolean state) {
-		this.state = state;
-	}
-
-	public Library getLibrary() {
-		return library;
-	}
-
-	public void setLibrary(Library library) {
-		this.library = library;
-	}
-
-	public Class getClazz() {
-		return clazz;
-	}
-
-	public void setClazz(Class clazz) {
-		this.clazz = clazz;
-	}
 }

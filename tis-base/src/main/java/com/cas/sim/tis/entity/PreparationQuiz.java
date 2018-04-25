@@ -8,19 +8,22 @@ import javax.persistence.Id;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * @功能 Preparation.java
  * @作者 Administrator
  * @创建日期 2018年3月5日
  * @修改人 Administrator
  */
+@Getter
+@Setter
 public class PreparationQuiz implements Serializable {
-
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -1804440953931638199L;
-
 	@Id
 	private Integer id;
 	private Integer type;
@@ -37,70 +40,5 @@ public class PreparationQuiz implements Serializable {
 //	修改时间
 	@DateTimeFormat(pattern = "yyyy-MM-dd hh:mm:ss")
 	private Date updateDate;
-
 	private Boolean del = false;
-	
-	public Integer getId() {
-		return id;
-	}
-
-	public void setId(Integer id) {
-		this.id = id;
-	}
-
-	public Integer getType() {
-		return type;
-	}
-
-	public void setType(Integer type) {
-		this.type = type;
-	}
-
-	public Integer getPreparationId() {
-		return preparationId;
-	}
-
-	public void setPreparationId(Integer preparationId) {
-		this.preparationId = preparationId;
-	}
-
-	public Integer getRelationId() {
-		return relationId;
-	}
-
-	public void setRelationId(Integer relationId) {
-		this.relationId = relationId;
-	}
-
-	public Integer getCreator() {
-		return creator;
-	}
-
-	public void setCreator(Integer creator) {
-		this.creator = creator;
-	}
-
-	public Date getCreateDate() {
-		return createDate;
-	}
-
-	public Integer getUpdater() {
-		return updater;
-	}
-
-	public void setUpdater(Integer updater) {
-		this.updater = updater;
-	}
-
-	public Date getUpdateDate() {
-		return updateDate;
-	}
-
-	public Boolean getDel() {
-		return del;
-	}
-
-	public void setDel(Boolean del) {
-		this.del = del;
-	}
 }

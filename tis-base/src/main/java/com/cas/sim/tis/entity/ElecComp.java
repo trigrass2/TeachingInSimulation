@@ -7,10 +7,15 @@ import javax.persistence.Transient;
 
 import com.jme3.scene.Spatial;
 
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * 元器件实体类
  * @author Administrator
  */
+@Getter
+@Setter
 public class ElecComp implements Serializable {
 	/**
 	 * 
@@ -31,91 +36,9 @@ public class ElecComp implements Serializable {
 	private String name;
 //	元器件型号
 	private String model;
-
 	private String mdlPath;
-
 	private String cfgPath;
-
 	private String animPath;
-
 	@Transient
 	private Spatial spatial;
-	
-	public Integer getId() {
-		return id;
-	}
-
-	public void setId(Integer id) {
-		this.id = id;
-	}
-
-	public Integer getType() {
-		return type;
-	}
-
-	public void setType(Integer type) {
-		this.type = type;
-	}
-
-	public Integer getCombine() {
-		return combine;
-	}
-
-	public void setCombine(Integer combine) {
-		this.combine = combine;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public String getModel() {
-		return model;
-	}
-
-	public void setModel(String model) {
-		this.model = model;
-	}
-
-	public String getMdlPath() {
-		return mdlPath;
-	}
-
-	public void setMdlPath(String mdlPath) {
-		this.mdlPath = mdlPath;
-	}
-
-	public String getCfgPath() {
-		return cfgPath;
-	}
-
-	public void setCfgPath(String cfgPath) {
-		this.cfgPath = cfgPath;
-	}
-
-	public String getAnimPath() {
-		return animPath;
-	}
-
-	public void setAnimPath(String animPath) {
-		this.animPath = animPath;
-	}
-
-	public Spatial getSpatial() {
-		return spatial;
-	}
-
-	public void setSpatial(Spatial spatial) {
-		this.spatial = spatial;
-	}
-
-	@Override
-	public String toString() {
-		return "ElecComp [id=" + id + "\r\n type=" + type + "\r\n name=" + name + "\r\n model=" + model + "\r\n mdlPath=" + mdlPath + "\r\n cfgPath=" + cfgPath + "]";
-	}
-
 }

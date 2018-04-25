@@ -8,7 +8,12 @@ import javax.persistence.Id;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
+import lombok.Getter;
+import lombok.Setter;
+
 //题库
+@Getter
+@Setter
 public class Library implements Serializable {
 	/**
 	 * 
@@ -30,101 +35,9 @@ public class Library implements Serializable {
 //	创建时间
 	@DateTimeFormat(pattern = "yyyy-MM-dd hh:mm:ss")
 	private Date createDate;
-
 	private Integer updater;
 	@DateTimeFormat(pattern = "yyyy-MM-dd hh:mm:ss")
 	private Date updateDate;
-	
 	private Integer del = 0;
-
 	private List<Question> questions;
-	
-	public Integer getId() {
-		return id;
-	}
-
-	public void setId(Integer id) {
-		this.id = id;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public Integer getTime() {
-		return time;
-	}
-
-	public void setTime(Integer time) {
-		this.time = time;
-	}
-
-	public Integer getType() {
-		return type;
-	}
-
-	public void setType(Integer type) {
-		this.type = type;
-	}
-	
-	public Integer getNum() {
-		return num;
-	}
-	
-	public void setNum(Integer num) {
-		this.num = num;
-	}
-
-	public Integer getCreator() {
-		return creator;
-	}
-
-	public void setCreator(Integer creator) {
-		this.creator = creator;
-	}
-
-	public Date getCreateDate() {
-		return createDate;
-	}
-
-	public void setCreateDate(Date createDate) {
-		this.createDate = createDate;
-	}
-
-	public Integer getUpdater() {
-		return updater;
-	}
-
-	public void setUpdater(Integer updater) {
-		this.updater = updater;
-	}
-
-	public Date getUpdateDate() {
-		return updateDate;
-	}
-
-	public void setUpdateDate(Date updateDate) {
-		this.updateDate = updateDate;
-	}
-
-	public Integer getDel() {
-		return del;
-	}
-
-	public void setDel(Integer del) {
-		this.del = del;
-	}
-
-	public List<Question> getQuestions() {
-		return questions;
-	}
-
-	public void setQuestions(List<Question> questions) {
-		this.questions = questions;
-	}
-
 }

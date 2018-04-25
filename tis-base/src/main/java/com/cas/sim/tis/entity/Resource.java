@@ -6,7 +6,12 @@ import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Id;
 
+import lombok.Getter;
+import lombok.Setter;
+
 //资源
+@Getter
+@Setter
 public class Resource implements Serializable {
 	/**
 	 * 
@@ -47,100 +52,6 @@ public class Resource implements Serializable {
 	protected Date createDate;
 //	默认资源没有被删除
 	protected Boolean del = Boolean.FALSE;
-
 	private Integer browsedTimes = 0;
 	private Integer collectedTimes = 0;
-
-	public Integer getId() {
-		return id;
-	}
-
-	public void setId(Integer id) {
-		this.id = id;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public Integer getType() {
-		return type;
-	}
-
-	public void setType(Integer type) {
-		this.type = type;
-	}
-
-	public String getPath() {
-		return path;
-	}
-
-	public void setPath(String path) {
-		this.path = path;
-	}
-
-	public String getKeyword() {
-		return keyword;
-	}
-
-	public void setKeyword(String keyword) {
-		this.keyword = keyword;
-	}
-
-	public String getDesc() {
-		return desc;
-	}
-
-	public void setDesc(String desc) {
-		this.desc = desc;
-	}
-
-	public Integer getCreator() {
-		return creator;
-	}
-
-	public void setCreator(Integer creator) {
-		this.creator = creator;
-	}
-
-	public Date getCreateDate() {
-		return createDate;
-	}
-
-	public Boolean getShare() {
-		return share;
-	}
-
-	public void setShare(Boolean share) {
-		this.share = share;
-	}
-
-	public Boolean getDel() {
-		return del;
-	}
-
-	public void setDel(Boolean del) {
-		this.del = del;
-	}
-
-	public Integer getBrowsedTimes() {
-		return browsedTimes;
-	}
-
-	public void setBrowsedTimes(Integer browsedTimes) {
-		this.browsedTimes = browsedTimes;
-	}
-
-	public Integer getCollectedTimes() {
-		return collectedTimes;
-	}
-
-	public void setCollectedTimes(Integer collectedTimes) {
-		this.collectedTimes = collectedTimes;
-	}
-
 }
