@@ -5,7 +5,10 @@ import java.util.Arrays;
 import java.util.List;
 
 import javafx.scene.paint.Color;
-
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+@Getter
+@AllArgsConstructor
 public enum ResourceType {
 	/**
 	 * 图片
@@ -58,34 +61,6 @@ public enum ResourceType {
 	private String[] suffixs;
 
 	private boolean convertable;
-
-	private ResourceType(int id, String icon, Color color, String[] suffixs, boolean convertable) {
-		this.type = id;
-		this.icon = icon;
-		this.color = color;
-		this.suffixs = suffixs;
-		this.convertable = convertable;
-	}
-
-	public String[] getSuffixs() {
-		return suffixs;
-	}
-
-	public int getType() {
-		return type;
-	}
-
-	public String getIcon() {
-		return icon;
-	}
-
-	public Color getColor() {
-		return color;
-	}
-
-	public boolean isConvertable() {
-		return convertable;
-	}
 
 	public static ResourceType getResourceType(int type) {
 		for (ResourceType resourceType : values()) {

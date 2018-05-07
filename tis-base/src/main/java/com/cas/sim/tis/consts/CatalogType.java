@@ -5,8 +5,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public enum PreparationResourceType {
-	RESOURCE(1), COGNITION(2), TYPICAL(3);
-
+public enum CatalogType {
+	SUBJECT(1), PROJECT(2), TASK(3), ATTITUDE(4), SKILL(5), KNOWLEDGE(6);
 	private int type;
 }

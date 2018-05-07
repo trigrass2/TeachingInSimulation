@@ -1,5 +1,10 @@
 package com.cas.sim.tis.consts;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
+@Getter
+@AllArgsConstructor
 public enum LoginResult {
 	/**
 	 * 登录失败
@@ -24,11 +29,4 @@ public enum LoginResult {
 
 	private String msgKey;
 
-	private LoginResult(String msgKey) {
-		this.msgKey = msgKey;
-	}
-
-	public String getMsg() {
-		return msgKey;
-	}
 }

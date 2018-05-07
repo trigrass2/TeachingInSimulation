@@ -108,7 +108,7 @@ public class LoginController implements Initializable {
 	}
 
 	public void failure(LoginMessage m) {
-		String messageKey = m.getResult().getMsg();
+		String messageKey = m.getResult().getMsgKey();
 		if (LoginResult.DUPLICATE == m.getResult()) {
 			AlertUtil.showConfirm(resources.getString(messageKey), resp -> {
 				if (ButtonType.YES == resp) {

@@ -1,5 +1,10 @@
 package com.cas.sim.tis.consts;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
+@Getter
+@AllArgsConstructor
 public enum AnswerState {
 	// 未答题
 	ANSWER_STATE_UNDO(0),
@@ -11,12 +16,4 @@ public enum AnswerState {
 	ANSWER_STATE_RIGHT(3);
 
 	private int type;
-
-	private AnswerState(int type) {
-		this.type = type;
-	}
-
-	public int getType() {
-		return type;
-	}
 }

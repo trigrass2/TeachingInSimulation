@@ -23,8 +23,6 @@ import com.cas.sim.tis.services.PreparationResourceService;
 import com.cas.sim.tis.services.PreparationService;
 import com.cas.sim.tis.services.QuestionService;
 import com.cas.sim.tis.services.ResourceService;
-import com.cas.sim.tis.services.StudentService;
-import com.cas.sim.tis.services.TeacherService;
 import com.cas.sim.tis.services.TypicalCaseService;
 import com.cas.sim.tis.services.UserService;
 
@@ -40,10 +38,6 @@ public class RMIConfig {
 	private ClassService classService;
 	@Resource
 	private ResourceService resourceService;
-	@Resource
-	private StudentService studentService;
-	@Resource
-	private TeacherService teacherService;
 	@Resource
 	private CollectionService collectionService;
 	@Resource
@@ -111,30 +105,6 @@ public class RMIConfig {
 		exporter.setServiceInterface(ResourceService.class);
 		exporter.setServiceName("resourceService");
 		exporter.setService(resourceService);
-
-		exporter.setServicePort(servicePort);
-		exporter.setRegistryPort(registPort);
-		return exporter;
-	}
-
-	@Bean
-	public RmiServiceExporter studentServiceExporter() {
-		RmiServiceExporter exporter = new RmiServiceExporter();
-		exporter.setServiceInterface(StudentService.class);
-		exporter.setServiceName("studentService");
-		exporter.setService(studentService);
-
-		exporter.setServicePort(servicePort);
-		exporter.setRegistryPort(registPort);
-		return exporter;
-	}
-
-	@Bean
-	public RmiServiceExporter teacherServiceExporter() {
-		RmiServiceExporter exporter = new RmiServiceExporter();
-		exporter.setServiceInterface(TeacherService.class);
-		exporter.setServiceName("teacherService");
-		exporter.setService(teacherService);
 
 		exporter.setServicePort(servicePort);
 		exporter.setRegistryPort(registPort);
