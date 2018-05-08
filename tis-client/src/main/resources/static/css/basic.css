@@ -852,6 +852,7 @@
  	-fx-border-width: 3.0px;
  	-fx-pref-width: 132.0px;
  	-fx-pref-height: 90.0px;
+ 	-fx-text-alignment: center;
  }
  .class-select-item:hover{
  	-fx-text-fill: #ffffff;
