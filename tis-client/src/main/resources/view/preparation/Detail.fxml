@@ -56,19 +56,19 @@
 					<content>
 						<VBox spacing="10.0">
 							<children>
-								<Accordion styleClass="white-accordion">
-									<panes>
-										<TitledPane animated="false" styleClass="preparation-titled-pane" text="%preparation.points">
-											<content>
-												<ScrollPane fitToWidth="true" hbarPolicy="NEVER">
-													<content>
-														<FlowPane fx:id="points" prefWrapLength="680.0" hgap="10" vgap="10" />
-													</content>
-												</ScrollPane>
-											</content>
-										</TitledPane>
-									</panes>
-								</Accordion>
+								<!-- <Accordion styleClass="white-accordion"> -->
+								<!-- <panes> -->
+								<!-- <TitledPane animated="false" styleClass="preparation-titled-pane" text="%preparation.points"> -->
+								<!-- <content> -->
+								<!-- <ScrollPane fitToWidth="true" hbarPolicy="NEVER"> -->
+								<!-- <content> -->
+								<!-- <FlowPane fx:id="points" prefWrapLength="680.0" hgap="10" vgap="10" /> -->
+								<!-- </content> -->
+								<!-- </ScrollPane> -->
+								<!-- </content> -->
+								<!-- </TitledPane> -->
+								<!-- </panes> -->
+								<!-- </Accordion> -->
 								<Accordion styleClass="white-accordion">
 									<panes>
 										<TitledPane animated="false" text="%preparation.rescs">
@@ -114,37 +114,41 @@
 			</padding>
 			<children>
 				<Title title="%preparation.title.goals" />
-				<VBox id="asks">
-					<VBox fx:id="a" spacing="10.0">
-						<children>
-							<Label text="职业素质目标（A）" />
-							<CheckBox disable="true" mnemonicParsing="false" styleClass="ask-check-box" text="学会对旋钮凸模进行工艺分析" />
-						</children>
-						<padding>
-							<Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
-						</padding>
-					</VBox>
-					<VBox fx:id="k" spacing="10.0">
-						<children>
-							<Label text="知识目标（K）" />
-							<CheckBox disable="true" mnemonicParsing="false" selected="true" styleClass="ask-check-box" text="学会型腔铣、等高铣等多种加工方法在凸模   零件中的应用。" />
-							<CheckBox disable="true" mnemonicParsing="false" selected="true" styleClass="ask-check-box" text="学会合理设置加工参数" />
-						</children>
-						<padding>
-							<Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
-						</padding>
-					</VBox>
-					<VBox fx:id="s" spacing="10.0">
-						<children>
-							<Label text="技能目标（S）" />
-							<CheckBox disable="true" mnemonicParsing="false" styleClass="ask-check-box" text="学会型腔铣、等高铣等多种加工方法在凸模   零件中的应用。" />
-							<CheckBox disable="true" mnemonicParsing="false" styleClass="ask-check-box" text="学会合理设置加工参数" />
-						</children>
-						<padding>
-							<Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
-						</padding>
-					</VBox>
-				</VBox>
+				<ScrollPane>
+					<content>
+						<VBox>
+							<VBox fx:id="k" spacing="10.0">
+								<children>
+									<Label text="知识目标（K）" />
+									<!-- <CheckBox disable="true" mnemonicParsing="false" selected="true" styleClass="ask-check-box" text="学会型腔铣、等高铣等多种加工方法在凸模 零件中的应用。" /> -->
+									<!-- <CheckBox disable="true" mnemonicParsing="false" selected="true" styleClass="ask-check-box" text="学会合理设置加工参数" /> -->
+								</children>
+								<padding>
+									<Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+								</padding>
+							</VBox>
+							<VBox fx:id="s" spacing="10.0">
+								<children>
+									<Label text="技能目标（S）" />
+									<!-- <CheckBox disable="true" mnemonicParsing="false" styleClass="ask-check-box" text="学会型腔铣、等高铣等多种加工方法在凸模 零件中的应用。" /> -->
+									<!-- <CheckBox disable="true" mnemonicParsing="false" styleClass="ask-check-box" text="学会合理设置加工参数" /> -->
+								</children>
+								<padding>
+									<Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+								</padding>
+							</VBox>
+							<VBox fx:id="a" spacing="10.0">
+								<children>
+									<Label text="职业素质目标（A）" />
+									<!-- <CheckBox disable="true" mnemonicParsing="false" styleClass="ask-check-box" text="学会对旋钮凸模进行工艺分析" /> -->
+								</children>
+								<padding>
+									<Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+								</padding>
+							</VBox>
+						</VBox>
+					</content>
+				</ScrollPane>
 			</children>
 		</VBox>
 	</children>

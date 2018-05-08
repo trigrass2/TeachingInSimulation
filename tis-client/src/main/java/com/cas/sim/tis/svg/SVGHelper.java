@@ -73,8 +73,8 @@ public class SVGHelper {
 				return new InputSource(new StringReader(""));
 			});
 
-			File svgFontFile = new File(url.toURI());
-			Document doc = docBuilder.parse(svgFontFile);
+//			File svgFontFile = new File(url.toURI());
+			Document doc = docBuilder.parse(url.openStream());
 			doc.getDocumentElement().normalize();
 
 			NodeList glyphsList = doc.getElementsByTagName("glyph");
@@ -87,9 +87,9 @@ public class SVGHelper {
 
 				String glyphId = glyphName.getNodeValue();
 				SVGBuilder builder = new SVGBuilder(i, glyphId, glyph.getAttributes().getNamedItem("d").getNodeValue());
-				glyphsMap.put(svgFontFile.getName() + "." + glyphId, builder);
+				glyphsMap.put("iconfont.svg." + glyphId, builder);
 			}
-		} catch (ParserConfigurationException | SAXException | URISyntaxException e) {
+		} catch (ParserConfigurationException | SAXException e) {
 			e.printStackTrace();
 		}
 	}

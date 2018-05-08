@@ -21,6 +21,7 @@ import com.cas.sim.tis.action.PreparationResourceAction;
 import com.cas.sim.tis.action.ResourceAction;
 import com.cas.sim.tis.action.TypicalCaseAction;
 import com.cas.sim.tis.action.UserAction;
+import com.cas.sim.tis.consts.CatalogType;
 import com.cas.sim.tis.consts.PreparationQuizType;
 import com.cas.sim.tis.consts.PreparationResourceType;
 import com.cas.sim.tis.consts.ResourceType;
@@ -61,7 +62,6 @@ import javafx.scene.Node;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
-import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
@@ -73,14 +73,12 @@ public class PreparationDetail extends HBox implements IContent {
 
 	@FXML
 	private Title title;
-	@FXML
-	private FlowPane points;
+//	@FXML
+//	private FlowPane points;
 	@FXML
 	private Table resces;
 	@FXML
 	private Table quizs;
-	@FXML
-	private VBox asks;
 	@FXML
 	private VBox a;
 	@FXML
@@ -122,7 +120,9 @@ public class PreparationDetail extends HBox implements IContent {
 
 		loadPreparation();
 
-		loadPoints();
+		refreshASK();
+
+//		loadPoints();
 		loadResources();
 		loadQuizs();
 	}
@@ -276,12 +276,12 @@ public class PreparationDetail extends HBox implements IContent {
 		}
 	}
 
-	private void loadPoints() {
-		List<Catalog> points = SpringUtil.getBean(CatalogAction.class).findCatalogsByParentId(task.getId());
-		for (Catalog point : points) {
-			createPointItem(point);
-		}
-	}
+//	private void loadPoints() {
+//		List<Catalog> points = SpringUtil.getBean(CatalogAction.class).findCatalogsByParentId(task.getId());
+//		for (Catalog point : points) {
+//			createPointItem(point);
+//		}
+//	}
 
 	private void loadResources() {
 		if (preparation == null) {
@@ -305,18 +305,34 @@ public class PreparationDetail extends HBox implements IContent {
 		this.quizs.build();
 	}
 
-	private void createPointItem(Catalog point) {
-		CheckBox pointItem = new CheckBox(point.getName());
-		pointItem.getStyleClass().add("point-check-box");
-		pointItem.selectedProperty().addListener((b, o, n) -> {
-			refreshASK();
-		});
-		pointItem.setSelected(true);
-		points.getChildren().add(pointItem);
-	}
+//	private void createPointItem(Catalog point) {
+//		CheckBox pointItem = new CheckBox(point.getName());
+//		pointItem.getStyleClass().add("point-check-box");
+//		pointItem.selectedProperty().addListener((b, o, n) -> {
+//			refreshASK();
+//		});
+//		pointItem.setSelected(true);
+//		points.getChildren().add(pointItem);
+//	}
 
 	private void refreshASK() {
 		// TODO 根据选择的知识点设置刷新学习目标中ASK的选中情况
+		List<Catalog> points = SpringUtil.getBean(CatalogAction.class).findCatalogsByParentId(task.getId());
+		for (Catalog point : points) {
+			int type = point.getType();
+			CheckBox checkBox = new CheckBox();
+			checkBox.setText(point.getName());
+			checkBox.setDisable(true);
+			checkBox.setSelected(true);
+			checkBox.getStyleClass().add("ask-check-box");
+			if (CatalogType.ATTITUDE.getType() == type) {
+				a.getChildren().add(checkBox);
+			} else if (CatalogType.SKILL.getType() == type) {
+				s.getChildren().add(checkBox);
+			} else if (CatalogType.KNOWLEDGE.getType() == type) {
+				k.getChildren().add(checkBox);
+			}
+		}
 	}
 
 	@FXML

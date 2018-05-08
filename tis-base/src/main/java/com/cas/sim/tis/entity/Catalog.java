@@ -22,8 +22,8 @@ public class Catalog implements Serializable {
 	@Id
 	private Integer id;
 	private String name;
-//	4个级别：0-课程、1-章、2-节、3-知识点
-//	private Integer type = 0;
+//	类型：1-课程、2-项目、3-任务、4-K、5-S、6-A
+	private Integer type = 0;
 //	学时
 	private Integer lessons = 0;
 //	上一目录的ID
