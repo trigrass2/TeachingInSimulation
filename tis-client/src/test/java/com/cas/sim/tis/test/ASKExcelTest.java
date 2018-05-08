@@ -32,7 +32,6 @@ public class ASKExcelTest {
 
 		Catalog subject = new Catalog();
 		subject.setName("工厂电气控制设备");
-		subject.setLessons(1);
 		subject.setCreatorId(1);
 		subject.setType(CatalogType.SUBJECT.getType());
 		service.save(subject);
@@ -43,10 +42,16 @@ public class ASKExcelTest {
 		Catalog kCatalog = null;
 		Catalog sCatalog = null;
 		Catalog aCatalog = null;
+		int subjectCount = 0;
+		int projectCount = 0;
 		for (int i = 1; i <= datas.length; i++) {
 			Object[] data = datas[i];
 			Object project = data[0];
 			if (Util.notEmpty(project)) {
+				if (projectCatalog != null) {
+					projectCatalog.setLessons(projectCount);
+					service.update(projectCatalog);
+				}
 				projectCatalog = new Catalog();
 				projectCatalog.setLessons(1);
 				projectCatalog.setCreatorId(1);
@@ -55,6 +60,8 @@ public class ASKExcelTest {
 				projectCatalog.setType(CatalogType.PROJECT.getType());
 				service.save(projectCatalog);
 				projectCatalog = getLastestCatalog(service);
+				projectCount = 0;
+				subjectCount++;
 				continue;
 			}
 			Object task = data[1];
@@ -67,12 +74,12 @@ public class ASKExcelTest {
 				taskCatalog.setType(CatalogType.TASK.getType());
 				service.save(taskCatalog);
 				taskCatalog = getLastestCatalog(service);
+				projectCount++;
 				continue;
 			}
 			Object k = data[2];
 			if (Util.notEmpty(k)) {
 				kCatalog = new Catalog();
-				kCatalog.setLessons(1);
 				kCatalog.setCreatorId(1);
 				kCatalog.setRid(taskCatalog.getId());
 				kCatalog.setName(String.valueOf(k));
@@ -82,7 +89,6 @@ public class ASKExcelTest {
 			Object s = data[3];
 			if (Util.notEmpty(s)) {
 				sCatalog = new Catalog();
-				sCatalog.setLessons(1);
 				sCatalog.setCreatorId(1);
 				sCatalog.setRid(taskCatalog.getId());
 				sCatalog.setName(String.valueOf(s));
@@ -92,7 +98,6 @@ public class ASKExcelTest {
 			Object a = data[4];
 			if (Util.notEmpty(a)) {
 				aCatalog = new Catalog();
-				aCatalog.setLessons(1);
 				aCatalog.setCreatorId(1);
 				aCatalog.setRid(taskCatalog.getId());
 				aCatalog.setName(String.valueOf(a));
@@ -100,6 +105,8 @@ public class ASKExcelTest {
 				service.save(sCatalog);
 			}
 		}
+		subject.setLessons(subjectCount);
+		service.update(subject);
 	}
 
 	private Catalog getLastestCatalog(CatalogService service) {
