@@ -262,7 +262,7 @@ public class PreparationDetail extends HBox implements IContent {
 		quizs.selectedRowProperty().addListener((b, o, n) -> {
 			if (n == null) {
 				loadASK(task.getId(), GoalRelationshipType.TASK.getType());
-			}else {
+			} else {
 				Integer rid = n.getItems().getIntValue("id");
 				loadASK(rid, GoalRelationshipType.QUIZ.getType());
 			}
@@ -352,6 +352,9 @@ public class PreparationDetail extends HBox implements IContent {
 			checkBox.setText(goal.getName());
 			checkBox.setDisable(true);
 			checkBox.getStyleClass().add("ask-check-box");
+			checkBox.setOnAction(e -> {
+				
+			});
 			if (GoalType.ATTITUDE.getType() == type) {
 				a.getChildren().add(checkBox);
 			} else if (GoalType.SKILL.getType() == type) {
