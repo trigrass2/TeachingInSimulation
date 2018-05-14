@@ -102,6 +102,7 @@ public class ResourceServiceImpl extends AbstractService<Resource> implements Re
 		}
 		Criteria criteria = condition.createCriteria();
 		criteria.andEqualTo("creator", creator);
+		criteria.andEqualTo("del", 0);
 		condition.and(criteria);
 		List<Resource> result = findByCondition(condition);
 		return result;

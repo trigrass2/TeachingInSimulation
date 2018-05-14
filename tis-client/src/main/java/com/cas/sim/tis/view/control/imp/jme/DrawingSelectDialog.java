@@ -10,10 +10,12 @@ import com.cas.sim.tis.consts.ResourceType;
 import com.cas.sim.tis.consts.Session;
 import com.cas.sim.tis.entity.Resource;
 import com.cas.sim.tis.svg.SVGGlyph;
+import com.cas.sim.tis.util.AlertUtil;
 import com.cas.sim.tis.util.MsgUtil;
 import com.cas.sim.tis.util.SpringUtil;
 import com.cas.sim.tis.view.control.imp.SearchBox;
 import com.cas.sim.tis.view.control.imp.dialog.DialogPane;
+import com.cas.sim.tis.view.control.imp.table.BtnCell;
 import com.cas.sim.tis.view.control.imp.table.Column;
 import com.cas.sim.tis.view.control.imp.table.Row;
 import com.cas.sim.tis.view.control.imp.table.SVGIconCell;
@@ -22,6 +24,7 @@ import com.cas.sim.tis.view.control.imp.table.Table;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.ScrollPane.ScrollBarPolicy;
@@ -35,7 +38,7 @@ public class DrawingSelectDialog extends DialogPane<Integer> {
 	private SearchBox search;
 
 	private List<Integer> types = Arrays.asList(ResourceType.DRAWING.getType());
-	
+
 	public DrawingSelectDialog() {
 		VBox box = new VBox(15);
 		VBox.setVgrow(box, Priority.ALWAYS);
@@ -69,7 +72,7 @@ public class DrawingSelectDialog extends DialogPane<Integer> {
 		icon.setAlignment(Pos.CENTER_RIGHT);
 		icon.setKey("type");
 		icon.setText("");
-		icon.setMaxWidth(25);
+		icon.setMaxWidth(22);
 		Function<Integer, SVGGlyph> converter = new Function<Integer, SVGGlyph>() {
 
 			@Override
@@ -87,8 +90,19 @@ public class DrawingSelectDialog extends DialogPane<Integer> {
 		name.setAlignment(Pos.CENTER_LEFT);
 		name.setKey("name");
 		name.setText(MsgUtil.getMessage("resource.name"));
-		name.setMaxWidth(250);
-		table.getColumns().addAll(id, icon, name);
+		// 删除按钮
+		Column<String> delete = new Column<String>();
+		delete.setCellFactory(BtnCell.forTableColumn(MsgUtil.getMessage("button.delete"), "blue-btn", rid -> {
+			AlertUtil.showConfirm(dialog.getWindow(), MsgUtil.getMessage("alert.confirmation.data.delete"), response -> {
+				if (response == ButtonType.YES) {
+					SpringUtil.getBean(ResourceAction.class).detele((Integer) rid);
+					reload();
+				}
+			});
+		}));
+		delete.setAlignment(Pos.CENTER_RIGHT);
+		delete.setMaxWidth(58);
+		table.getColumns().addAll(id, icon, name, delete);
 
 		ScrollPane scroll = new ScrollPane(table);
 		scroll.setHbarPolicy(ScrollBarPolicy.NEVER);
@@ -113,7 +127,7 @@ public class DrawingSelectDialog extends DialogPane<Integer> {
 
 		box.getChildren().addAll(toggleBox, scroll, error, ok);
 		getChildren().add(box);
-		
+
 		reload();
 	}
 
