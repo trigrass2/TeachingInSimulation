@@ -12,8 +12,14 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.cas.sim.tis.Application;
 import com.cas.sim.tis.consts.CatalogType;
+import com.cas.sim.tis.consts.GoalRelationshipType;
+import com.cas.sim.tis.consts.GoalType;
 import com.cas.sim.tis.entity.Catalog;
+import com.cas.sim.tis.entity.Goal;
+import com.cas.sim.tis.entity.GoalRelationship;
 import com.cas.sim.tis.services.CatalogService;
+import com.cas.sim.tis.services.GoalRelationshipService;
+import com.cas.sim.tis.services.GoalService;
 import com.cas.sim.tis.util.ExcelUtil;
 import com.cas.util.Util;
 
@@ -24,11 +30,19 @@ public class ASKExcelTest {
 	@Autowired
 	@Qualifier("catalogServiceFactory")
 	private RmiProxyFactoryBean catalogServiceFactory;
+	@Autowired
+	@Qualifier("goalServiceFactory")
+	private RmiProxyFactoryBean goalServiceFactory;
+	@Autowired
+	@Qualifier("goalRelationshipServiceFactory")
+	private RmiProxyFactoryBean goalRelationshipServiceFactory;
 
 	private void importExcelToCatalog() {
 		Object[][] datas = ExcelUtil.readExcelSheet("G:\\Workspace\\TeachingInSimulation\\TeachingInSimulation\\tis-client\\src\\test\\resources\\《工厂电气控制设备》ASK.xlsx", "工厂电气控制设备", 6);
 
 		CatalogService service = (CatalogService) catalogServiceFactory.getObject();
+		GoalService goalService = (GoalService) goalServiceFactory.getObject();
+		GoalRelationshipService relationshipService = (GoalRelationshipService) goalRelationshipServiceFactory.getObject();
 
 		Catalog subject = new Catalog();
 		subject.setName("工厂电气控制设备");
@@ -39,12 +53,9 @@ public class ASKExcelTest {
 
 		Catalog projectCatalog = null;
 		Catalog taskCatalog = null;
-		Catalog kCatalog = null;
-		Catalog sCatalog = null;
-		Catalog aCatalog = null;
 		int subjectCount = 0;
 		int projectCount = 0;
-		for (int i = 1; i <= datas.length; i++) {
+		for (int i = 1; i < datas.length; i++) {
 			Object[] data = datas[i];
 			Object project = data[0];
 			if (Util.notEmpty(project)) {
@@ -79,44 +90,74 @@ public class ASKExcelTest {
 			}
 			Object k = data[2];
 			if (Util.notEmpty(k)) {
-				kCatalog = new Catalog();
-				kCatalog.setCreatorId(1);
-				kCatalog.setRid(taskCatalog.getId());
-				kCatalog.setName(String.valueOf(k));
-				kCatalog.setType(CatalogType.KNOWLEDGE.getType());
-				service.save(kCatalog);
+				Goal kGoal = new Goal();
+				kGoal.setCreator(1);
+				kGoal.setName(String.valueOf(k));
+				kGoal.setType(GoalType.KNOWLEDGE.getType());
+				goalService.save(kGoal);
+
+				Goal goal = getLastestGoal(goalService);
+
+				GoalRelationship relationship = new GoalRelationship();
+				relationship.setRelationId(taskCatalog.getId());
+				relationship.setGoalId(goal.getId());
+				relationship.setType(GoalRelationshipType.TASK.getType());
+				relationship.setCreator(1);
+				relationshipService.save(relationship);
 			}
 			Object s = data[3];
 			if (Util.notEmpty(s)) {
-				sCatalog = new Catalog();
-				sCatalog.setCreatorId(1);
-				sCatalog.setRid(taskCatalog.getId());
-				sCatalog.setName(String.valueOf(s));
-				sCatalog.setType(CatalogType.SKILL.getType());
-				service.save(sCatalog);
+				Goal sGoal = new Goal();
+				sGoal.setCreator(1);
+				sGoal.setName(String.valueOf(s));
+				sGoal.setType(GoalType.SKILL.getType());
+				goalService.save(sGoal);
+
+				Goal goal = getLastestGoal(goalService);
+
+				GoalRelationship relationship = new GoalRelationship();
+				relationship.setRelationId(taskCatalog.getId());
+				relationship.setGoalId(goal.getId());
+				relationship.setType(GoalRelationshipType.TASK.getType());
+				relationship.setCreator(1);
+				relationshipService.save(relationship);
 			}
 			Object a = data[4];
 			if (Util.notEmpty(a)) {
-				aCatalog = new Catalog();
-				aCatalog.setCreatorId(1);
-				aCatalog.setRid(taskCatalog.getId());
-				aCatalog.setName(String.valueOf(a));
-				aCatalog.setType(CatalogType.ATTITUDE.getType());
-				service.save(sCatalog);
+				Goal aGoal = new Goal();
+				aGoal.setCreator(1);
+				aGoal.setName(String.valueOf(a));
+				aGoal.setType(GoalType.ATTITUDE.getType());
+				goalService.save(aGoal);
+				
+				Goal goal = getLastestGoal(goalService);
+
+				GoalRelationship relationship = new GoalRelationship();
+				relationship.setRelationId(taskCatalog.getId());
+				relationship.setGoalId(goal.getId());
+				relationship.setType(GoalRelationshipType.TASK.getType());
+				relationship.setCreator(1);
+				relationshipService.save(relationship);
 			}
 		}
-		subject.setLessons(subjectCount);
-		service.update(subject);
 		if (projectCatalog != null) {
 			projectCatalog.setLessons(projectCount);
 			service.update(projectCatalog);
 		}
+		subject.setLessons(subjectCount);
+		service.update(subject);
 	}
 
 	private Catalog getLastestCatalog(CatalogService service) {
 		List<Catalog> catalogs = service.findAll();
 		Catalog catalog = catalogs.get(catalogs.size() - 1);
 		return catalog;
+	}
+
+	private Goal getLastestGoal(GoalService service) {
+		List<Goal> goals = service.findAll();
+		Goal goal = goals.get(goals.size() - 1);
+		return goal;
 	}
 
 	@Test
