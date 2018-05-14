@@ -14,6 +14,8 @@ import com.cas.sim.tis.services.ClassService;
 import com.cas.sim.tis.services.CollectionService;
 import com.cas.sim.tis.services.DrawService;
 import com.cas.sim.tis.services.ElecCompService;
+import com.cas.sim.tis.services.GoalRelationshipService;
+import com.cas.sim.tis.services.GoalService;
 import com.cas.sim.tis.services.LibraryAnswerService;
 import com.cas.sim.tis.services.LibraryPublishService;
 import com.cas.sim.tis.services.LibraryRecordService;
@@ -68,6 +70,10 @@ public class RMIConfig {
 	private PreparationResourceService preparationResourceService;
 	@Resource
 	private PreparationQuizService preparationQuizService;
+	@Resource
+	private GoalService goalService;
+	@Resource
+	private GoalRelationshipService goalRelationshipService;
 
 	@Value("${server.rmi.registry}")
 	private Integer registPort;
@@ -324,6 +330,38 @@ public class RMIConfig {
 		exporter.setServiceInterface(PreparationQuizService.class);
 		exporter.setServiceName("preparationQuizService");
 		exporter.setService(preparationQuizService);
+
+		if (servicePort != null) {
+			exporter.setServicePort(servicePort);
+		}
+		if (registPort != null) {
+			exporter.setRegistryPort(registPort);
+		}
+		return exporter;
+	}
+	
+	@Bean
+	public RmiServiceExporter goalServiceExporter() {
+		RmiServiceExporter exporter = new RmiServiceExporter();
+		exporter.setServiceInterface(GoalService.class);
+		exporter.setServiceName("goalService");
+		exporter.setService(goalService);
+
+		if (servicePort != null) {
+			exporter.setServicePort(servicePort);
+		}
+		if (registPort != null) {
+			exporter.setRegistryPort(registPort);
+		}
+		return exporter;
+	}
+	
+	@Bean
+	public RmiServiceExporter goalRelationshipServiceExporter() {
+		RmiServiceExporter exporter = new RmiServiceExporter();
+		exporter.setServiceInterface(GoalRelationshipService.class);
+		exporter.setServiceName("goalRelationshipService");
+		exporter.setService(goalRelationshipService);
 
 		if (servicePort != null) {
 			exporter.setServicePort(servicePort);

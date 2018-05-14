@@ -3,6 +3,7 @@ package com.cas.sim.tis.view.control.imp;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.function.Consumer;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,8 +15,6 @@ import com.cas.sim.tis.svg.SVGGlyph;
 import com.cas.sim.tis.util.SpringUtil;
 import com.cas.sim.tis.view.control.ILeftContent;
 
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -74,10 +73,12 @@ public abstract class LeftMenu extends VBox implements ILeftContent, Initializab
 
 	protected abstract void initMenu();
 
-	protected void addMenuItem(String name, String svg, EventHandler<ActionEvent> e) {
+	protected void addMenuItem(String name, String svg, Consumer<Void> event) {
 		SVGGlyph glyph = new SVGGlyph(svg, Color.WHITE, 22);
 		ToggleButton button = new ToggleButton(name, glyph);
-		button.setOnAction(e);
+		button.selectedProperty().addListener((b, o, n) -> {
+			event.accept(null);
+		});
 		button.getStyleClass().add("left-menu");
 		menu.getChildren().add(button);
 		items.getToggles().add(button);
