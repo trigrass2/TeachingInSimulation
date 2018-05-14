@@ -107,6 +107,10 @@ public class ASKExcelTest {
 		}
 		subject.setLessons(subjectCount);
 		service.update(subject);
+		if (projectCatalog != null) {
+			projectCatalog.setLessons(projectCount);
+			service.update(projectCatalog);
+		}
 	}
 
 	private Catalog getLastestCatalog(CatalogService service) {
