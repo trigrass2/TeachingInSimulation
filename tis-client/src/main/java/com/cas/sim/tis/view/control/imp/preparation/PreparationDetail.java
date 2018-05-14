@@ -3,6 +3,7 @@ package com.cas.sim.tis.view.control.imp.preparation;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
@@ -13,15 +14,17 @@ import org.slf4j.LoggerFactory;
 
 import com.alibaba.fastjson.JSONArray;
 import com.cas.sim.tis.action.BrokenCaseAction;
-import com.cas.sim.tis.action.CatalogAction;
 import com.cas.sim.tis.action.ElecCompAction;
+import com.cas.sim.tis.action.GoalAction;
+import com.cas.sim.tis.action.GoalRelationshipAction;
 import com.cas.sim.tis.action.PreparationAction;
 import com.cas.sim.tis.action.PreparationQuizAction;
 import com.cas.sim.tis.action.PreparationResourceAction;
 import com.cas.sim.tis.action.ResourceAction;
 import com.cas.sim.tis.action.TypicalCaseAction;
 import com.cas.sim.tis.action.UserAction;
-import com.cas.sim.tis.consts.CatalogType;
+import com.cas.sim.tis.consts.GoalRelationshipType;
+import com.cas.sim.tis.consts.GoalType;
 import com.cas.sim.tis.consts.PreparationQuizType;
 import com.cas.sim.tis.consts.PreparationResourceType;
 import com.cas.sim.tis.consts.ResourceType;
@@ -30,6 +33,8 @@ import com.cas.sim.tis.consts.Session;
 import com.cas.sim.tis.entity.BrokenCase;
 import com.cas.sim.tis.entity.Catalog;
 import com.cas.sim.tis.entity.ElecComp;
+import com.cas.sim.tis.entity.Goal;
+import com.cas.sim.tis.entity.GoalRelationship;
 import com.cas.sim.tis.entity.Preparation;
 import com.cas.sim.tis.entity.PreparationQuiz;
 import com.cas.sim.tis.entity.PreparationResource;
@@ -89,6 +94,8 @@ public class PreparationDetail extends HBox implements IContent {
 	private Catalog task;
 	private Preparation preparation;
 
+	private Map<Integer, CheckBox> askChecks = new HashMap<Integer, CheckBox>();
+
 	public PreparationDetail(Catalog task) {
 		this.task = task;
 
@@ -121,6 +128,7 @@ public class PreparationDetail extends HBox implements IContent {
 		loadPreparation();
 
 		refreshASK();
+		loadASK(task.getId(), GoalRelationshipType.TASK.getType());
 
 //		loadPoints();
 		loadResources();
@@ -251,6 +259,24 @@ public class PreparationDetail extends HBox implements IContent {
 			delete.setMaxWidth(58);
 			quizs.getColumns().add(delete);
 		}
+		quizs.selectedRowProperty().addListener((b, o, n) -> {
+			if (n == null) {
+				loadASK(task.getId(), GoalRelationshipType.TASK.getType());
+			}else {
+				Integer rid = n.getItems().getIntValue("id");
+				loadASK(rid, GoalRelationshipType.QUIZ.getType());
+			}
+		});
+	}
+
+	private void loadASK(Integer rid, int type) {
+		List<GoalRelationship> ships = SpringUtil.getBean(GoalRelationshipAction.class).findGidsByRid(rid, type);
+		for (CheckBox box : askChecks.values()) {
+			box.setSelected(false);
+		}
+		for (GoalRelationship ship : ships) {
+			askChecks.get(ship.getId()).setSelected(true);
+		}
 	}
 
 	private void loadPreparation() {
@@ -317,21 +343,23 @@ public class PreparationDetail extends HBox implements IContent {
 
 	private void refreshASK() {
 		// TODO 根据选择的知识点设置刷新学习目标中ASK的选中情况
-		List<Catalog> points = SpringUtil.getBean(CatalogAction.class).findCatalogsByParentId(task.getId());
-		for (Catalog point : points) {
-			int type = point.getType();
+		List<Goal> goals = SpringUtil.getBean(GoalAction.class).findGoalsByRid(task.getId(), GoalRelationshipType.TASK.getType());
+		for (Goal goal : goals) {
+			int type = goal.getType();
+			int id = goal.getId();
 			CheckBox checkBox = new CheckBox();
-			checkBox.setText(point.getName());
+			checkBox.setUserData(id);
+			checkBox.setText(goal.getName());
 			checkBox.setDisable(true);
-			checkBox.setSelected(true);
 			checkBox.getStyleClass().add("ask-check-box");
-			if (CatalogType.ATTITUDE.getType() == type) {
+			if (GoalType.ATTITUDE.getType() == type) {
 				a.getChildren().add(checkBox);
-			} else if (CatalogType.SKILL.getType() == type) {
+			} else if (GoalType.SKILL.getType() == type) {
 				s.getChildren().add(checkBox);
-			} else if (CatalogType.KNOWLEDGE.getType() == type) {
+			} else if (GoalType.KNOWLEDGE.getType() == type) {
 				k.getChildren().add(checkBox);
 			}
+			askChecks.put(id, checkBox);
 		}
 	}
 

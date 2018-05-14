@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public enum CatalogType {
-	SUBJECT(1), PROJECT(2), TASK(3);
+public enum GoalType {
+	ATTITUDE(1), SKILL(2), KNOWLEDGE(3);
 	private int type;
 }

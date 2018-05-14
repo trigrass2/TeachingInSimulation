@@ -120,8 +120,6 @@
 							<VBox fx:id="k" spacing="10.0">
 								<children>
 									<Label text="知识目标（K）" />
-									<!-- <CheckBox disable="true" mnemonicParsing="false" selected="true" styleClass="ask-check-box" text="学会型腔铣、等高铣等多种加工方法在凸模 零件中的应用。" /> -->
-									<!-- <CheckBox disable="true" mnemonicParsing="false" selected="true" styleClass="ask-check-box" text="学会合理设置加工参数" /> -->
 								</children>
 								<padding>
 									<Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
@@ -130,8 +128,6 @@
 							<VBox fx:id="s" spacing="10.0">
 								<children>
 									<Label text="技能目标（S）" />
-									<!-- <CheckBox disable="true" mnemonicParsing="false" styleClass="ask-check-box" text="学会型腔铣、等高铣等多种加工方法在凸模 零件中的应用。" /> -->
-									<!-- <CheckBox disable="true" mnemonicParsing="false" styleClass="ask-check-box" text="学会合理设置加工参数" /> -->
 								</children>
 								<padding>
 									<Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
@@ -140,7 +136,6 @@
 							<VBox fx:id="a" spacing="10.0">
 								<children>
 									<Label text="职业素质目标（A）" />
-									<!-- <CheckBox disable="true" mnemonicParsing="false" styleClass="ask-check-box" text="学会对旋钮凸模进行工艺分析" /> -->
 								</children>
 								<padding>
 									<Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />

@@ -87,7 +87,7 @@ public class Table extends VBox {
 		return separatorable;
 	}
 
-	// --- Selected
+	// --- Selected 如果multipleSelect=ture则表示最后选中的对象
 	private final ReadOnlyObjectWrapper<Row> selected = new ReadOnlyObjectWrapper<Row>() {
 		@Override
 		public void set(final Row newSelectedRow) {
@@ -102,13 +102,16 @@ public class Table extends VBox {
 			if (old == newSelectedRow && newSelectedRow.isSelected()) {
 				newSelectedRow.setSelected(false);
 				super.set(null);
+				selecteds.remove(old);
 				return;
 			}
 			for (Row row : rows) {
 				if (newSelectedRow == row) {
 					row.setSelected(true);
-				} else {
+					selecteds.add(row);
+				} else if (isMultipleSelect()) {
 					row.setSelected(false);
+					selecteds.remove(row);
 				}
 			}
 			super.set(newSelectedRow);
@@ -133,6 +136,30 @@ public class Table extends VBox {
 		}
 		selected.get().setSelected(false);
 		selected.set(null);
+	}
+
+	// --- multipleSelect 允许表格选择多行
+	private BooleanProperty multipleSelect;
+
+	public final void setMultipleSelect(boolean value) {
+		editableProperty().set(value);
+	}
+
+	public final boolean isMultipleSelect() {
+		return multipleSelect == null ? true : multipleSelect.get();
+	}
+
+	public final BooleanProperty multipleSelectProperty() {
+		if (multipleSelect == null) {
+			multipleSelect = new SimpleBooleanProperty(this, "multipleSelect", true);
+		}
+		return multipleSelect;
+	}
+
+	private final ObservableList<Row> selecteds = FXCollections.observableArrayList();
+
+	public final ObservableList<Row> selectedsRowProperty() {
+		return selecteds;
 	}
 
 	// --- Editable
