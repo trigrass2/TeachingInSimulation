@@ -75,7 +75,7 @@ public class LoginApp extends javafx.application.Application {
 	private static void initSVG() {
 		try {
 			// 加载svg图标
-			SVGHelper.loadGlyphsFont(Application.class.getResource("/svg/iconfont.svg"));
+			SVGHelper.loadGlyphsFont(Application.class.getResourceAsStream("/svg/iconfont.svg"), "iconfont.svg");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
