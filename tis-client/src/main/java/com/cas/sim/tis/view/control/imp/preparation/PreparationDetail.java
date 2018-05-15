@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.ResourceBundle;
 import java.util.function.Function;
 
@@ -16,7 +17,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.cas.sim.tis.action.BrokenCaseAction;
 import com.cas.sim.tis.action.ElecCompAction;
 import com.cas.sim.tis.action.GoalAction;
-import com.cas.sim.tis.action.GoalRelationshipAction;
+import com.cas.sim.tis.action.GoalCoverageAction;
 import com.cas.sim.tis.action.PreparationAction;
 import com.cas.sim.tis.action.PreparationQuizAction;
 import com.cas.sim.tis.action.PreparationResourceAction;
@@ -34,7 +35,7 @@ import com.cas.sim.tis.entity.BrokenCase;
 import com.cas.sim.tis.entity.Catalog;
 import com.cas.sim.tis.entity.ElecComp;
 import com.cas.sim.tis.entity.Goal;
-import com.cas.sim.tis.entity.GoalRelationship;
+import com.cas.sim.tis.entity.GoalCoverage;
 import com.cas.sim.tis.entity.Preparation;
 import com.cas.sim.tis.entity.PreparationQuiz;
 import com.cas.sim.tis.entity.PreparationResource;
@@ -67,6 +68,7 @@ import javafx.scene.Node;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
+import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
@@ -78,8 +80,8 @@ public class PreparationDetail extends HBox implements IContent {
 
 	@FXML
 	private Title title;
-//	@FXML
-//	private FlowPane points;
+	@FXML
+	private FlowPane objectives;
 	@FXML
 	private Table resces;
 	@FXML
@@ -95,6 +97,7 @@ public class PreparationDetail extends HBox implements IContent {
 	private Preparation preparation;
 
 	private Map<Integer, CheckBox> askChecks = new HashMap<Integer, CheckBox>();
+	private Map<Integer, CheckBox> oChecks = new HashMap<Integer, CheckBox>();
 
 	public PreparationDetail(Catalog task) {
 		this.task = task;
@@ -270,12 +273,12 @@ public class PreparationDetail extends HBox implements IContent {
 	}
 
 	private void loadASK(Integer rid, int type) {
-		List<GoalRelationship> ships = SpringUtil.getBean(GoalRelationshipAction.class).findGidsByRid(rid, type);
+		List<GoalCoverage> coverages = SpringUtil.getBean(GoalCoverageAction.class).findGidsByRid(rid, type);
 		for (CheckBox box : askChecks.values()) {
 			box.setSelected(false);
 		}
-		for (GoalRelationship ship : ships) {
-			askChecks.get(ship.getId()).setSelected(true);
+		for (GoalCoverage coverage : coverages) {
+			askChecks.get(coverage.getGoalId()).setSelected(true);
 		}
 	}
 
@@ -346,23 +349,42 @@ public class PreparationDetail extends HBox implements IContent {
 		List<Goal> goals = SpringUtil.getBean(GoalAction.class).findGoalsByRid(task.getId(), GoalRelationshipType.TASK.getType());
 		for (Goal goal : goals) {
 			int type = goal.getType();
-			int id = goal.getId();
-			CheckBox checkBox = new CheckBox();
-			checkBox.setUserData(id);
-			checkBox.setText(goal.getName());
-			checkBox.setDisable(true);
-			checkBox.getStyleClass().add("ask-check-box");
-			checkBox.setOnAction(e -> {
-				
-			});
-			if (GoalType.ATTITUDE.getType() == type) {
-				a.getChildren().add(checkBox);
-			} else if (GoalType.SKILL.getType() == type) {
-				s.getChildren().add(checkBox);
-			} else if (GoalType.KNOWLEDGE.getType() == type) {
-				k.getChildren().add(checkBox);
+			Integer id = goal.getId();
+			String name = goal.getName();
+			if (GoalType.OBJECTIVE.getType() == type) {
+				CheckBox checkBox = new CheckBox(name);
+				checkBox.getStyleClass().add("point-check-box");
+				checkBox.setSelected(false);
+				checkBox.setDisable(true);
+				objectives.getChildren().add(checkBox);
+				oChecks.put(id, checkBox);
+			} else {
+				CheckBox checkBox = new CheckBox();
+				checkBox.setUserData(id);
+				checkBox.setText(goal.getName());
+//				checkBox.setDisable(true);
+				checkBox.getStyleClass().add("ask-check-box");
+				checkBox.setOnAction(e -> {
+					// 根据选择增删目标关系
+					if (checkBox.isSelected()) {
+						SpringUtil.getBean(GoalCoverageAction.class).insertRelationship(id, task.getId(), GoalRelationshipType.TASK.getType());
+					} else {
+						SpringUtil.getBean(GoalCoverageAction.class).deleteRelationship(id, task.getId(), GoalRelationshipType.TASK.getType());
+					}
+					// 获得当前选择的ASK满足的O
+					for (Entry<Integer, CheckBox> entry : oChecks.entrySet()) {
+						entry.getValue().setSelected(SpringUtil.getBean(GoalCoverageAction.class).checkObjectiveCoverage(entry.getKey(), task.getId()));
+					}
+				});
+				if (GoalType.ATTITUDE.getType() == type) {
+					a.getChildren().add(checkBox);
+				} else if (GoalType.SKILL.getType() == type) {
+					s.getChildren().add(checkBox);
+				} else if (GoalType.KNOWLEDGE.getType() == type) {
+					k.getChildren().add(checkBox);
+				}
+				askChecks.put(id, checkBox);
 			}
-			askChecks.put(id, checkBox);
 		}
 	}
 

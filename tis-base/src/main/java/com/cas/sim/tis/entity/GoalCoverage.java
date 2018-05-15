@@ -13,13 +13,12 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class GoalRelationship implements Serializable {
+public class GoalCoverage implements Serializable {
 
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -965254270675334654L;
-
+	private static final long serialVersionUID = 7883032490789103714L;
 	@Id
 	private Integer id;
 	@Column(name = "RID")

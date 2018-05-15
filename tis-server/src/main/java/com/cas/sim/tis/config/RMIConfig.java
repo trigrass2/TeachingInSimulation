@@ -14,6 +14,7 @@ import com.cas.sim.tis.services.ClassService;
 import com.cas.sim.tis.services.CollectionService;
 import com.cas.sim.tis.services.DrawService;
 import com.cas.sim.tis.services.ElecCompService;
+import com.cas.sim.tis.services.GoalCoverageService;
 import com.cas.sim.tis.services.GoalRelationshipService;
 import com.cas.sim.tis.services.GoalService;
 import com.cas.sim.tis.services.LibraryAnswerService;
@@ -72,6 +73,8 @@ public class RMIConfig {
 	private PreparationQuizService preparationQuizService;
 	@Resource
 	private GoalService goalService;
+	@Resource
+	private GoalCoverageService goalCoverageService;
 	@Resource
 	private GoalRelationshipService goalRelationshipService;
 
@@ -363,6 +366,22 @@ public class RMIConfig {
 		exporter.setServiceName("goalRelationshipService");
 		exporter.setService(goalRelationshipService);
 
+		if (servicePort != null) {
+			exporter.setServicePort(servicePort);
+		}
+		if (registPort != null) {
+			exporter.setRegistryPort(registPort);
+		}
+		return exporter;
+	}
+	
+	@Bean
+	public RmiServiceExporter goalCoverageServiceExporter() {
+		RmiServiceExporter exporter = new RmiServiceExporter();
+		exporter.setServiceInterface(GoalCoverageService.class);
+		exporter.setServiceName("goalCoverageService");
+		exporter.setService(goalCoverageService);
+		
 		if (servicePort != null) {
 			exporter.setServicePort(servicePort);
 		}

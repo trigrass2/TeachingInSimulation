@@ -15,6 +15,7 @@ import com.cas.sim.tis.services.ClassService;
 import com.cas.sim.tis.services.CollectionService;
 import com.cas.sim.tis.services.DrawService;
 import com.cas.sim.tis.services.ElecCompService;
+import com.cas.sim.tis.services.GoalCoverageService;
 import com.cas.sim.tis.services.GoalRelationshipService;
 import com.cas.sim.tis.services.GoalService;
 import com.cas.sim.tis.services.LibraryAnswerService;
@@ -239,6 +240,16 @@ public class RMIConfig {
 		bean.setServiceUrl("rmi://" + host + ":" + port + "/goalRelationshipService");
 		LOG.info("远程访问路径：{}", bean.getServiceUrl());
 		bean.setServiceInterface(GoalRelationshipService.class);
+		return bean;
+	}
+	
+	@Bean
+	@Qualifier("goalCoverageServiceFactory")
+	public RmiProxyFactoryBean buildGoalCoverageServiceFactory() {
+		RmiProxyFactoryBean bean = new RmiProxyFactoryBean();
+		bean.setServiceUrl("rmi://" + host + ":" + port + "/goalCoverageService");
+		LOG.info("远程访问路径：{}", bean.getServiceUrl());
+		bean.setServiceInterface(GoalCoverageService.class);
 		return bean;
 	}
 }

@@ -6,6 +6,6 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum GoalType {
-	ATTITUDE(1), SKILL(2), KNOWLEDGE(3);
+	ATTITUDE(1), SKILL(2), KNOWLEDGE(3), OBJECTIVE(4);
 	private int type;
 }

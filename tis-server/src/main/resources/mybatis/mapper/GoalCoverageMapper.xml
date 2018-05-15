@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.cas.sim.tis.mapper.GoalRelationshipMapper">
-	<resultMap id="BaseResultMap" type="com.cas.sim.tis.entity.GoalRelationship">
+<mapper namespace="com.cas.sim.tis.mapper.GoalCoverageMapper">
+	<resultMap id="BaseResultMap" type="com.cas.sim.tis.entity.GoalCoverage">
 		<id column="ID" jdbcType="INTEGER" property="id" />
 		<result column="RID" jdbcType="INTEGER" property="relationId" />
 		<result column="GID" jdbcType="INTEGER" property="goalId" />
@@ -9,4 +9,13 @@
 		<result column="CREATOR" jdbcType="INTEGER" property="creator" />
 		<result column="CREATE_DATE" jdbcType="TIMESTAMP" property="createDate" />
 	</resultMap>
+	
+	<select id="checkObjectiveCoverage" resultType="java.lang.Boolean">
+		select 
+			count(*)>0 as coveraged
+		from 
+			goal_coverage c 
+		where 
+			c.rid=${rid} and c.type=1 and c.gid in(select r.gid from goal_relationship r where r.rid=${oid} and r.type=4)
+	</select>
 </mapper>

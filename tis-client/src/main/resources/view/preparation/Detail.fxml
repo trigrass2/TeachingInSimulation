@@ -56,19 +56,19 @@
 					<content>
 						<VBox spacing="10.0">
 							<children>
-								<!-- <Accordion styleClass="white-accordion"> -->
-								<!-- <panes> -->
-								<!-- <TitledPane animated="false" styleClass="preparation-titled-pane" text="%preparation.points"> -->
-								<!-- <content> -->
-								<!-- <ScrollPane fitToWidth="true" hbarPolicy="NEVER"> -->
-								<!-- <content> -->
-								<!-- <FlowPane fx:id="points" prefWrapLength="680.0" hgap="10" vgap="10" /> -->
-								<!-- </content> -->
-								<!-- </ScrollPane> -->
-								<!-- </content> -->
-								<!-- </TitledPane> -->
-								<!-- </panes> -->
-								<!-- </Accordion> -->
+								<Accordion styleClass="white-accordion">
+									<panes>
+										<TitledPane animated="false" styleClass="preparation-titled-pane" text="%preparation.objectives">
+											<content>
+												<ScrollPane fitToWidth="true" hbarPolicy="NEVER">
+													<content>
+														<FlowPane fx:id="objectives" prefWrapLength="680.0" hgap="10" vgap="10" />
+													</content>
+												</ScrollPane>
+											</content>
+										</TitledPane>
+									</panes>
+								</Accordion>
 								<Accordion styleClass="white-accordion">
 									<panes>
 										<TitledPane animated="false" text="%preparation.rescs">
