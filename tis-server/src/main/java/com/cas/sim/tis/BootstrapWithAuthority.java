@@ -118,14 +118,15 @@ public class BootstrapWithAuthority extends javafx.application.Application {
 		SpringApplication.run(Application.class);
 		AuthorityEntity entity = validate.getEntity();
 		int maxLogin = entity.getNode();
-		SpringUtil.getBean(ServerConfig.class).setMaxLogin(maxLogin);
+		ServerConfig serverConfig = SpringUtil.getBean(ServerConfig.class);
+		serverConfig.setMaxLogin(maxLogin);
 		Logger.getLogger(BootstrapWithAuthority.class).info("客户端连接数量限制：" + maxLogin + "人");
 
 		Executors.newScheduledThreadPool(1).scheduleAtFixedRate(() -> {
 			try {
 				validate.getTimerClock().validate();
 			} catch (Exception e1) {
-				ServerConfig.close();
+				serverConfig.close();
 				Alert alert = new Alert(AlertType.ERROR, RESOURCES.getString("authority.file.expired"));
 				alert.setHeaderText(null);
 				alert.show();

@@ -5,16 +5,12 @@ mybatis:
   - classpath:mybatis/mapper/*.xml                    # 所有的mapper映射
 mapper:
   wrapKeyword: "`{0}`"                                # SQL语句中的关键字用反引号``包裹，避免与数据库关键字冲突MySQL用`{0}`, SQLServer用[{0}]
-  mappers:
-  - com.cas.sim.tis.mapper.ClassMapper
-  - com.cas.sim.tis.mapper.QuestionMapper
-  - com.cas.sim.tis.mapper.ResourceMapper
-  - com.cas.sim.tis.mapper.UserMapper
+  mappers: com.cas.sim.tis.mapper.IMapper
 
 pagehelper:
   dialect: com.github.pagehelper.dialect.helper.MySqlDialect
 server:
-  base:  
+  base: 
     max-login: 3                                      # 服务器允许同时在线的人数
     port: 9000                                        # 服务器默认端口号
   rmi:
