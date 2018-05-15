@@ -37,8 +37,8 @@ import com.jme3.network.serializing.Serializer;
 public class ServerConfig {
 	private final static Logger LOG = LoggerFactory.getLogger(ServerConfig.class);
 
-	private static Server server;
-	private static FtpServer ftpServer;
+	private Server server;
+	private FtpServer ftpServer;
 
 	private List<HostedConnection> clients = new ArrayList<>();
 
@@ -80,7 +80,8 @@ public class ServerConfig {
 
 		serverFactory.addListener("default", listenerFactory.createListener());
 
-		return ftpServer = serverFactory.createServer();
+		this.ftpServer = serverFactory.createServer();
+		return this.ftpServer;
 	}
 
 	@Bean
@@ -132,7 +133,7 @@ public class ServerConfig {
 		messageHandlerClass.put(msgClass, (ServerHandler<Message>) handler);
 	}
 
-	public static void close() {
+	public void close() {
 		if (server != null) {
 			server.close();
 		}
@@ -144,7 +145,7 @@ public class ServerConfig {
 	public Server getServer() {
 		return server;
 	}
-	
+
 	public List<HostedConnection> getClients() {
 		return clients;
 	}
