@@ -4,8 +4,6 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.remoting.rmi.RmiProxyFactoryBean;
 import org.springframework.stereotype.Component;
 
 import com.cas.sim.tis.entity.Question;
@@ -13,10 +11,9 @@ import com.cas.sim.tis.services.QuestionService;
 import com.github.pagehelper.PageInfo;
 
 @Component
-public class QuestionAction extends BaseAction<QuestionService> {
-	@Resource
-	@Qualifier("questionServiceFactory")
-	private RmiProxyFactoryBean questionServiceFactory;
+public class QuestionAction extends BaseAction {
+	@Resource(name = "questionService")
+	private QuestionService service;
 
 	/**
 	 * 根据试题库分页查询试题
@@ -26,11 +23,11 @@ public class QuestionAction extends BaseAction<QuestionService> {
 	 * @return
 	 */
 	public PageInfo<Question> findQuestionsByLibrary(int pageIndex, int pageSize, int rid) {
-		return getService().findQuestionsByLibrary(pageIndex, pageSize, rid);
+		return service.findQuestionsByLibrary(pageIndex, pageSize, rid);
 	}
 
 	public List<Question> findQuestionsByLibrary(Integer rid) {
-		return getService().findQuestionsByLibrary(rid);
+		return service.findQuestionsByLibrary(rid);
 	}
 
 	/**
@@ -39,11 +36,11 @@ public class QuestionAction extends BaseAction<QuestionService> {
 	 * @return
 	 */
 	public List<Question> findQuestionsByLibraryAndQuestionType(int rid, int type) {
-		return getService().findQuestionsByLibraryAndQuestionType(rid, type);
+		return service.findQuestionsByLibraryAndQuestionType(rid, type);
 	}
 
 	public List<Question> findQuestionsByPublish(int pid, boolean mostWrong) {
-		return getService().findQuestionsByPublish(pid, mostWrong);
+		return service.findQuestionsByPublish(pid, mostWrong);
 	}
 
 	/**
@@ -51,7 +48,7 @@ public class QuestionAction extends BaseAction<QuestionService> {
 	 * @param questions
 	 */
 	public void addQuestions(int rid, List<Question> questions) {
-		getService().addQuestions(rid, questions);
+		service.addQuestions(rid, questions);
 	}
 
 	/**
@@ -60,12 +57,7 @@ public class QuestionAction extends BaseAction<QuestionService> {
 	 * @return
 	 */
 	public boolean checkImportOrExport(int rid) {
-		int total = getService().countQuestionByLibrary(rid);
+		int total = service.countQuestionByLibrary(rid);
 		return total > 0;
-	}
-
-	@Override
-	protected RmiProxyFactoryBean getRmiProxyFactoryBean() {
-		return questionServiceFactory;
 	}
 }

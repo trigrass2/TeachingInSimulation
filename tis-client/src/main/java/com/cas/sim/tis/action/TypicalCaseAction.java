@@ -7,8 +7,6 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.remoting.rmi.RmiProxyFactoryBean;
 import org.springframework.stereotype.Component;
 
 import com.cas.circuit.vo.Archive;
@@ -20,17 +18,16 @@ import com.cas.sim.tis.util.FTPUtils;
 import com.cas.sim.tis.xml.util.JaxbUtil;
 
 @Component
-public class TypicalCaseAction extends BaseAction<TypicalCaseService> {
-	@Resource
-	@Qualifier("typicalCaseServiceFactory")
-	private RmiProxyFactoryBean typicalCaseServiceFactory;
+public class TypicalCaseAction extends BaseAction {
+	@Resource(name = "typicalCaseService")
+	private TypicalCaseService service;
 
 	public TypicalCase findTypicalCaseById(Integer id) {
-		return getService().findById(id);
+		return service.findById(id);
 	}
 
 	public List<TypicalCase> getTypicalCasesByCreator(Integer creator) {
-		return getService().findTypicalCasesByCreator(creator);
+		return service.findTypicalCasesByCreator(creator);
 	}
 
 	public void save(TypicalCase typicalCase, Archive archive) {
@@ -79,22 +76,22 @@ public class TypicalCaseAction extends BaseAction<TypicalCaseService> {
 		if (typicalCase.getId() == null) {
 			typicalCase.setCreator(Session.get(Session.KEY_LOGIN_ID));
 //			FIXME 修改当前案例的主键ID，原因：前端根据ID判断是新增还是修改。
-			int id = getService().saveRetId(typicalCase);
+			int id = service.saveRetId(typicalCase);
 //			！由于是使用RMI，不能实现保存对象就能将ID自动填充的效果，所以保存后，手动设置ID！
 			typicalCase.setId(id);
 		} else {
 			typicalCase.setUpdater(Session.get(Session.KEY_LOGIN_ID));
-			getService().update(typicalCase);
+			service.update(typicalCase);
 		}
 	}
 
 	public void modify(TypicalCase typicalCase) {
 		typicalCase.setUpdater(Session.get(Session.KEY_LOGIN_ID));
-		getService().update(typicalCase);
+		service.update(typicalCase);
 	}
 
 	public void delete(Integer id) {
-		TypicalCase typicalCase = getService().findById(id);
+		TypicalCase typicalCase = service.findById(id);
 		try {
 			FTPUtils.connect().cd("/archives").deleteFile(typicalCase.getArchivePath()).disconnect();
 		} catch (Exception e) {
@@ -102,12 +99,7 @@ public class TypicalCaseAction extends BaseAction<TypicalCaseService> {
 		}
 		typicalCase.setDel(true);
 		typicalCase.setUpdater(Session.get(Session.KEY_LOGIN_ID));
-		getService().update(typicalCase);
-	}
-
-	@Override
-	protected RmiProxyFactoryBean getRmiProxyFactoryBean() {
-		return typicalCaseServiceFactory;
+		service.update(typicalCase);
 	}
 
 }

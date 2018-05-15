@@ -4,8 +4,6 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.remoting.rmi.RmiProxyFactoryBean;
 import org.springframework.stereotype.Component;
 
 import com.cas.sim.tis.entity.LibraryAnswer;
@@ -14,10 +12,9 @@ import com.cas.sim.tis.services.LibraryRecordService;
 import com.cas.sim.tis.vo.LibraryRecordInfo;
 
 @Component
-public class LibraryRecordAction extends BaseAction<LibraryRecordService> {
-	@Resource
-	@Qualifier("libraryRecordServiceFactory")
-	private RmiProxyFactoryBean libraryRecordServiceFactory;
+public class LibraryRecordAction extends BaseAction {
+	@Resource(name = "libraryRecordService")
+	private LibraryRecordService service;
 
 	/**
 	 * 查询考核记录下的学生答题记录
@@ -25,15 +22,11 @@ public class LibraryRecordAction extends BaseAction<LibraryRecordService> {
 	 * @return
 	 */
 	public List<LibraryRecordInfo> findPublishForTeacher(int pid) {
-		return getService().findRecordByPublishId(pid);
+		return service.findRecordByPublishId(pid);
 	}
 
 	public void addRecord(LibraryRecord record, List<LibraryAnswer> answers) {
-		getService().addRecord(record, answers);
+		service.addRecord(record, answers);
 	}
 
-	@Override
-	protected RmiProxyFactoryBean getRmiProxyFactoryBean() {
-		return libraryRecordServiceFactory;
-	}
 }

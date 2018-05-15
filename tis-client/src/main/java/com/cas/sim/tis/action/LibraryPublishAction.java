@@ -4,8 +4,6 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.remoting.rmi.RmiProxyFactoryBean;
 import org.springframework.stereotype.Component;
 
 import com.cas.sim.tis.consts.Session;
@@ -18,10 +16,9 @@ import com.cas.sim.tis.vo.SubmitInfo;
 import com.github.pagehelper.PageInfo;
 
 @Component
-public class LibraryPublishAction extends BaseAction<LibraryPublishService> {
-	@Resource
-	@Qualifier("libraryPublishServiceFactory")
-	private RmiProxyFactoryBean libraryPublishServiceFactory;
+public class LibraryPublishAction extends BaseAction {
+	@Resource(name = "libraryPublishService")
+	private LibraryPublishService service;
 
 	/**
 	 * 查询考核记录
@@ -31,11 +28,11 @@ public class LibraryPublishAction extends BaseAction<LibraryPublishService> {
 	 * @return
 	 */
 	public PageInfo<LibraryPublishForTeacher> findPublishForTeacher(int pageIndex, int pageSize, int creator) {
-		return getService().findPublishForTeacher(pageIndex, pageSize, creator);
+		return service.findPublishForTeacher(pageIndex, pageSize, creator);
 	}
 
 	public PageInfo<LibraryPublishForStudent> findPublishForStudent(int pageIndex, int pageSize, int type, int creator) {
-		return getService().findPublishForStudent(pageIndex, pageSize, type, creator);
+		return service.findPublishForStudent(pageIndex, pageSize, type, creator);
 	}
 
 	/**
@@ -44,11 +41,11 @@ public class LibraryPublishAction extends BaseAction<LibraryPublishService> {
 	 * @return
 	 */
 	public LibraryPublish findPublishById(int id) {
-		return getService().findPublishById(id);
+		return service.findPublishById(id);
 	}
 
 	public List<SubmitInfo> findSubmitStateById(int id) {
-		return getService().findSubmitStateById(id);
+		return service.findSubmitStateById(id);
 	}
 
 	/**
@@ -63,7 +60,7 @@ public class LibraryPublishAction extends BaseAction<LibraryPublishService> {
 		publish.setClassId(cid);
 		publish.setCreator(Session.get(Session.KEY_LOGIN_ID));
 		publish.setType(LibraryPublishType.EXAM.getType());
-		return getService().publishLibraryToClass(publish);
+		return service.publishLibraryToClass(publish);
 	}
 
 	public int practiceLibraryByStudent(int rid) {
@@ -72,11 +69,7 @@ public class LibraryPublishAction extends BaseAction<LibraryPublishService> {
 		publish.setLibraryId(rid);
 		publish.setCreator(Session.get(Session.KEY_LOGIN_ID));
 		publish.setType(LibraryPublishType.PRACTICE.getType());
-		return getService().practiceLibraryByStudent(publish);
+		return service.practiceLibraryByStudent(publish);
 	}
 
-	@Override
-	protected RmiProxyFactoryBean getRmiProxyFactoryBean() {
-		return libraryPublishServiceFactory;
-	}
 }

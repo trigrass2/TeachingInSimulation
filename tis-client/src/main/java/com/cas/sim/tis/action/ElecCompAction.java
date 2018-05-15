@@ -6,8 +6,6 @@ import java.util.Map;
 import javax.annotation.Nullable;
 import javax.annotation.Resource;
 
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.remoting.rmi.RmiProxyFactoryBean;
 import org.springframework.stereotype.Component;
 
 import com.cas.circuit.vo.ElecCompDef;
@@ -17,14 +15,13 @@ import com.cas.sim.tis.util.HTTPUtils;
 import com.cas.sim.tis.xml.util.JaxbUtil;
 
 @Component
-public class ElecCompAction extends BaseAction<ElecCompService> {
+public class ElecCompAction extends BaseAction {
 
-	@Resource
-	@Qualifier("elecCompServiceFactory")
-	private RmiProxyFactoryBean elecCompServiceFactory;
+	@Resource(name = "elecCompService")
+	private ElecCompService service;
 
 	public List<ElecComp> getElecCompList() {
-		return getService().findAll();
+		return service.findAll();
 	}
 
 	/**
@@ -32,12 +29,12 @@ public class ElecCompAction extends BaseAction<ElecCompService> {
 	 * @return
 	 */
 	public Map<Integer, List<ElecComp>> getElecCompMap() {
-		return getService().findElecCompGroupByType();
+		return service.findElecCompGroupByType();
 	}
 
 	@Nullable
 	public ElecComp getElecComp(String model) {
-		return getService().findElecCompByModel(model);
+		return service.findElecCompByModel(model);
 	}
 
 	public ElecCompDef parse(String cfgPath) {
@@ -45,11 +42,7 @@ public class ElecCompAction extends BaseAction<ElecCompService> {
 	}
 
 	public ElecComp findElecCompById(Integer id) {
-		return getService().findById(id);
+		return service.findById(id);
 	}
 
-	@Override
-	protected RmiProxyFactoryBean getRmiProxyFactoryBean() {
-		return elecCompServiceFactory;
-	}
 }
