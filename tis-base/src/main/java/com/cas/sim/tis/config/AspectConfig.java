@@ -1,5 +1,7 @@
 package com.cas.sim.tis.config;
 
+import java.util.Arrays;
+
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.AfterThrowing;
 import org.aspectj.lang.annotation.Around;
@@ -28,18 +30,22 @@ public class AspectConfig {
 			String msg = String.format("执行 %s.%s(%s)", //
 					pjp.getSignature().getDeclaringTypeName(), //
 					pjp.getSignature().getName(), //
-					pjp.getArgs());
+					getArgs(pjp.getArgs()));
 			logger.debug(msg);
 			return pjp.proceed();
 		} catch (Throwable e) {
 			String msg = String.format("执行 %s.%s(%s)出现异常%s", //
 					pjp.getSignature().getDeclaringTypeName(), //
 					pjp.getSignature().getName(), //
-					pjp.getArgs(),//
+					getArgs(pjp.getArgs()), //
 					e.getMessage());
 			logger.error(msg);
 		}
 		return null;
+	}
+
+	private String getArgs(Object[] objects) {
+		return Arrays.asList(objects).toString();
 	}
 
 	@AfterThrowing(pointcut = "servicePointcut()", throwing = "e")
