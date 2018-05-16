@@ -9,6 +9,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+import com.alibaba.dubbo.config.spring.context.annotation.DubboComponentScan;
 import com.cas.sim.tis.config.ServerConfig;
 import com.cas.sim.tis.message.ExamMessage;
 import com.cas.sim.tis.message.LoginMessage;
@@ -22,6 +23,7 @@ import com.jme3.network.Server;
 //@EnableTransactionManagement
 // 在类中用注解@Mapper明确标出
 //@MapperScan("com.cas.sim.tis.mapper")
+@DubboComponentScan(basePackages = "com.cas.sim.tis.services.impl")
 public class Application implements CommandLineRunner {
 
 	@Resource

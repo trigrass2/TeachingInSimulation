@@ -2,7 +2,7 @@ package com.cas.sim.tis.services.impl;
 
 import java.util.List;
 
-import org.springframework.stereotype.Service;
+import com.alibaba.dubbo.config.annotation.Service;
 
 import com.cas.sim.tis.entity.Preparation;
 import com.cas.sim.tis.services.PreparationService;

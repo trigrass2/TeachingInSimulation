@@ -11,6 +11,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.ConfigurableApplicationContext;
 
+import com.alibaba.dubbo.config.spring.context.annotation.DubboComponentScan;
 import com.cas.sim.tis.consts.SettingConsts;
 import com.cas.sim.tis.util.AlertUtil;
 import com.cas.sim.tis.util.MsgUtil;
@@ -27,6 +28,7 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
 @SpringBootApplication
+@DubboComponentScan(basePackages = "com.cas.sim.tis.services")
 public class Application extends AbstractJavaFxApplicationSupport implements ApplicationRunner, ApplicationContextAware {
 
 	private ApplicationContext applicationContext;

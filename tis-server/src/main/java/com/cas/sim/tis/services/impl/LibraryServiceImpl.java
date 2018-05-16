@@ -3,7 +3,7 @@ package com.cas.sim.tis.services.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.stereotype.Service;
+import com.alibaba.dubbo.config.annotation.Service;
 import org.springframework.util.StringUtils;
 
 import com.cas.sim.tis.entity.Library;

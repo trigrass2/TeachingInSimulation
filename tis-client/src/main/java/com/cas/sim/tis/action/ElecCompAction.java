@@ -8,6 +8,7 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Component;
 
+import com.alibaba.dubbo.config.annotation.Reference;
 import com.cas.circuit.vo.ElecCompDef;
 import com.cas.sim.tis.entity.ElecComp;
 import com.cas.sim.tis.services.ElecCompService;
@@ -17,7 +18,7 @@ import com.cas.sim.tis.xml.util.JaxbUtil;
 @Component
 public class ElecCompAction extends BaseAction {
 
-	@Resource(name = "elecCompService")
+	@Reference
 	private ElecCompService service;
 
 	public List<ElecComp> getElecCompList() {

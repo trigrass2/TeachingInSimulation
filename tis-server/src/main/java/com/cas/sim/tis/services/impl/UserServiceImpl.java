@@ -3,7 +3,7 @@ package com.cas.sim.tis.services.impl;
 import java.util.List;
 
 import org.apache.ibatis.exceptions.TooManyResultsException;
-import org.springframework.stereotype.Service;
+import com.alibaba.dubbo.config.annotation.Service;
 
 import com.cas.sim.tis.consts.RoleConst;
 import com.cas.sim.tis.entity.Class;
@@ -18,7 +18,7 @@ import com.github.pagehelper.PageInfo;
 import tk.mybatis.mapper.entity.Condition;
 import tk.mybatis.mapper.entity.Example.Criteria;
 
-@Service("userService")
+@Service
 public class UserServiceImpl extends AbstractService<User> implements UserService {
 	@Override
 	public User login(String usercode, String password) {

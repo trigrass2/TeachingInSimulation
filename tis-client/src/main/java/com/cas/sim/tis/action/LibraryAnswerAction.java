@@ -7,13 +7,14 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Component;
 
+import com.alibaba.dubbo.config.annotation.Reference;
 import com.cas.sim.tis.consts.AnswerState;
 import com.cas.sim.tis.entity.LibraryAnswer;
 import com.cas.sim.tis.services.LibraryAnswerService;
 
 @Component
 public class LibraryAnswerAction extends BaseAction {
-	@Resource(name = "libraryAnswerService")
+	@Reference
 	private LibraryAnswerService service;
 
 	public List<LibraryAnswer> findAnswersByPublish(int pid, boolean onlyWrong) {

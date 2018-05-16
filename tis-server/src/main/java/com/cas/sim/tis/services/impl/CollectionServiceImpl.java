@@ -1,6 +1,6 @@
 package com.cas.sim.tis.services.impl;
 
-import org.springframework.stereotype.Service;
+import com.alibaba.dubbo.config.annotation.Service;
 
 import com.cas.sim.tis.entity.Collection;
 import com.cas.sim.tis.services.CollectionService;
@@ -8,7 +8,7 @@ import com.cas.sim.tis.services.CollectionService;
 import tk.mybatis.mapper.entity.Condition;
 import tk.mybatis.mapper.entity.Example.Criteria;
 
-@Service("collectionService")
+@Service
 public class CollectionServiceImpl extends AbstractService<Collection> implements CollectionService {
 	
 	@Override

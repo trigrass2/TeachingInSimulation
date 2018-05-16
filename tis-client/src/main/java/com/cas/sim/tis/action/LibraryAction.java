@@ -6,6 +6,7 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Component;
 
+import com.alibaba.dubbo.config.annotation.Reference;
 import com.cas.sim.tis.consts.Session;
 import com.cas.sim.tis.entity.Library;
 import com.cas.sim.tis.services.LibraryService;
@@ -13,7 +14,7 @@ import com.github.pagehelper.PageInfo;
 
 @Component
 public class LibraryAction extends BaseAction {
-	@Resource(name = "libraryService")
+	@Reference
 	private LibraryService service;
 
 	public PageInfo<Library> findLibraryByType(int pageIndex, int pageSize, int type) {

@@ -33,7 +33,7 @@ import com.cas.sim.tis.services.UserService;
  * 远程方法调用（RMI：Remote Method invoke）相关配置<br>
  * 相应地，客户端也要有套类似的配置{@link ClientRMIConfig}
  */
-@Configuration
+//@Configuration
 public class RMIConfig {
 	@Resource
 	private UserService userService;

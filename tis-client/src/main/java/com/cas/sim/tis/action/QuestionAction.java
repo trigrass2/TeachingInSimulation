@@ -6,13 +6,14 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Component;
 
+import com.alibaba.dubbo.config.annotation.Reference;
 import com.cas.sim.tis.entity.Question;
 import com.cas.sim.tis.services.QuestionService;
 import com.github.pagehelper.PageInfo;
 
 @Component
 public class QuestionAction extends BaseAction {
-	@Resource(name = "questionService")
+	@Reference
 	private QuestionService service;
 
 	/**

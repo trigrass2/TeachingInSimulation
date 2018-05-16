@@ -9,6 +9,7 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Component;
 
+import com.alibaba.dubbo.config.annotation.Reference;
 import com.cas.circuit.vo.Archive;
 import com.cas.sim.tis.consts.Session;
 import com.cas.sim.tis.entity.TypicalCase;
@@ -19,7 +20,7 @@ import com.cas.sim.tis.xml.util.JaxbUtil;
 
 @Component
 public class TypicalCaseAction extends BaseAction {
-	@Resource(name = "typicalCaseService")
+	@Reference
 	private TypicalCaseService service;
 
 	public TypicalCase findTypicalCaseById(Integer id) {

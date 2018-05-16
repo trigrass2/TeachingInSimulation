@@ -4,11 +4,12 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Component;
 
+import com.alibaba.dubbo.config.annotation.Reference;
 import com.cas.sim.tis.services.BrowseHistoryService;
 
 @Component
 public class BrowseHistoryAction extends BaseAction {
-	@Resource(name = "browseHistoryService")
+	@Reference
 	private BrowseHistoryService service;
 
 }

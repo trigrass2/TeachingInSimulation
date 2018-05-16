@@ -29,7 +29,7 @@ import com.cas.sim.tis.services.ResourceService;
 import com.cas.sim.tis.services.TypicalCaseService;
 import com.cas.sim.tis.services.UserService;
 
-@Configuration
+//@Configuration
 public class RMIConfig {
 
 	private static final Logger LOG = LoggerFactory.getLogger(RMIConfig.class);

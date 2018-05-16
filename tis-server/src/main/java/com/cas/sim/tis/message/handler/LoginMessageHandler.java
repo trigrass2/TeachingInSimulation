@@ -6,6 +6,7 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Component;
 
+import com.alibaba.dubbo.config.annotation.Reference;
 import com.cas.sim.tis.config.ServerConfig;
 import com.cas.sim.tis.consts.LoginResult;
 import com.cas.sim.tis.consts.Session;
@@ -22,7 +23,7 @@ public class LoginMessageHandler implements ServerHandler<LoginMessage> {
 	@Resource
 	private ServerConfig serverConfig;
 
-	@Resource(name = "userService")
+	@Reference
 	private UserService userService;
 
 	@Override

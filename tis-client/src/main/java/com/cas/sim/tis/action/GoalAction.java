@@ -6,13 +6,14 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Component;
 
+import com.alibaba.dubbo.config.annotation.Reference;
 import com.cas.sim.tis.entity.Goal;
 import com.cas.sim.tis.services.GoalService;
 
 @Component
 public class GoalAction extends BaseAction {
 
-	@Resource(name = "goalService")
+	@Reference
 	private GoalService service;
 
 	public List<Goal> findGoalsByRid(Integer rid, int type) {

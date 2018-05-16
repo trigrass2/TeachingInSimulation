@@ -6,6 +6,7 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Component;
 
+import com.alibaba.dubbo.config.annotation.Reference;
 import com.cas.sim.tis.consts.Session;
 import com.cas.sim.tis.entity.PreparationResource;
 import com.cas.sim.tis.services.PreparationResourceService;
@@ -13,7 +14,7 @@ import com.cas.sim.tis.vo.PreparationInfo;
 
 @Component
 public class PreparationResourceAction extends BaseAction {
-	@Resource(name = "preparationResourceService")
+	@Reference
 	private PreparationResourceService service;
 
 	public List<PreparationInfo> findResourcesByPreparationId(Integer pid) {

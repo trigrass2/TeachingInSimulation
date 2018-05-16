@@ -5,7 +5,7 @@ import java.util.List;
 import javax.annotation.Resource;
 
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
-import org.springframework.stereotype.Service;
+import com.alibaba.dubbo.config.annotation.Service;
 import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
@@ -22,7 +22,7 @@ import com.github.pagehelper.PageInfo;
 import tk.mybatis.mapper.entity.Condition;
 import tk.mybatis.mapper.entity.Example.Criteria;
 
-@Service("classService")
+@Service
 public class ClassServiceImpl extends AbstractService<Class> implements ClassService {
 
 	@Resource

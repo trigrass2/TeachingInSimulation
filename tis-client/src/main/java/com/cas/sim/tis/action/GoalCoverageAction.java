@@ -7,6 +7,7 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Component;
 
+import com.alibaba.dubbo.config.annotation.Reference;
 import com.cas.sim.tis.consts.Session;
 import com.cas.sim.tis.entity.GoalCoverage;
 import com.cas.sim.tis.services.GoalCoverageService;
@@ -14,7 +15,7 @@ import com.cas.sim.tis.services.GoalCoverageService;
 @Component
 public class GoalCoverageAction extends BaseAction {
 
-	@Resource(name = "goalCoverageService")
+	@Reference
 	private GoalCoverageService service;
 
 	public List<GoalCoverage> findGidsByRid(Integer rid, int type) {

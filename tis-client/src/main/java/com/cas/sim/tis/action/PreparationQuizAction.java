@@ -6,6 +6,7 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Component;
 
+import com.alibaba.dubbo.config.annotation.Reference;
 import com.cas.sim.tis.consts.Session;
 import com.cas.sim.tis.entity.PreparationQuiz;
 import com.cas.sim.tis.services.PreparationQuizService;
@@ -13,7 +14,7 @@ import com.cas.sim.tis.vo.PreparationInfo;
 
 @Component
 public class PreparationQuizAction extends BaseAction {
-	@Resource(name = "preparationQuizService")
+	@Reference
 	private PreparationQuizService service;
 
 	public List<PreparationInfo> findQuizsByPreparationId(Integer pid) {

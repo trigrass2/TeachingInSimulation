@@ -6,6 +6,7 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Component;
 
+import com.alibaba.dubbo.config.annotation.Reference;
 import com.cas.sim.tis.consts.Session;
 import com.cas.sim.tis.entity.User;
 import com.cas.sim.tis.services.UserService;
@@ -13,7 +14,7 @@ import com.github.pagehelper.PageInfo;
 
 @Component
 public class UserAction extends BaseAction {
-	@Resource(name = "userService")
+	@Reference
 	private UserService service;
 
 	public int getTeacherIdByStudentId(Integer studentId) {

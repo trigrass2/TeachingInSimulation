@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
+import com.alibaba.dubbo.config.annotation.Reference;
 import com.cas.sim.tis.consts.Session;
 import com.cas.sim.tis.entity.Resource;
 import com.cas.sim.tis.services.ResourceService;
@@ -16,7 +17,7 @@ import com.github.pagehelper.PageInfo;
 
 @Component
 public class ResourceAction extends BaseAction {
-	@javax.annotation.Resource(name = "resourceService")
+	@Reference
 	private ResourceService service;
 
 //	public Integer addResource(Resource resource) {

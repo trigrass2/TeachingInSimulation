@@ -3,7 +3,7 @@ package com.cas.sim.tis.services.impl;
 import java.util.Collections;
 import java.util.List;
 
-import org.springframework.stereotype.Service;
+import com.alibaba.dubbo.config.annotation.Service;
 
 import com.cas.sim.tis.entity.Catalog;
 import com.cas.sim.tis.mapper.CatalogMapper;

@@ -6,6 +6,7 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Component;
 
+import com.alibaba.dubbo.config.annotation.Reference;
 import com.cas.sim.tis.consts.Session;
 import com.cas.sim.tis.entity.LibraryPublish;
 import com.cas.sim.tis.entity.LibraryPublish.LibraryPublishType;
@@ -17,7 +18,7 @@ import com.github.pagehelper.PageInfo;
 
 @Component
 public class LibraryPublishAction extends BaseAction {
-	@Resource(name = "libraryPublishService")
+	@Reference
 	private LibraryPublishService service;
 
 	/**
