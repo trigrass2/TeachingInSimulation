@@ -1,7 +1,12 @@
 package com.cas.sim.tis.thrift;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.TypeReference;
 
 import io.airlift.drift.annotations.ThriftField;
 import io.airlift.drift.annotations.ThriftStruct;
@@ -53,11 +58,24 @@ public class RequestEntity {
 		return json.getString(key);
 	}
 
-	public Object getObject(String key) {
+	public <T> T getObject(String key, Class<T> clazz) {
 		if (json == null) {
 			json = JSON.parseObject(data);
 		}
-		return json.get(key);
+		return json.getObject(key, clazz);
 	}
 
+	public <T> List<T> getList(String key, Class<T> clazz) {
+		if (json == null) {
+			json = JSON.parseObject(data);
+		}
+		return json.getJSONArray(key).toJavaList(clazz);
+	}
+
+	public <K, V> Map<K, V> getMap(String key, Class<K> mapKey, Class<V> mapValue) {
+		if (json == null) {
+			json = JSON.parseObject(data);
+		}
+		return json.getJSONArray(key).toJavaObject(new TypeReference<HashMap<K, V>>() {});
+	}
 }
