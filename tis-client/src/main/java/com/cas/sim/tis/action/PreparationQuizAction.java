@@ -6,9 +6,12 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Component;
 
+import com.alibaba.fastjson.JSON;
 import com.cas.sim.tis.consts.Session;
 import com.cas.sim.tis.entity.PreparationQuiz;
 import com.cas.sim.tis.services.PreparationQuizService;
+import com.cas.sim.tis.thrift.RequestEntity;
+import com.cas.sim.tis.thrift.ResponseEntity;
 import com.cas.sim.tis.vo.PreparationInfo;
 
 @Component
@@ -17,21 +20,33 @@ public class PreparationQuizAction extends BaseAction {
 	private PreparationQuizService service;
 
 	public List<PreparationInfo> findQuizsByPreparationId(Integer pid) {
-		return service.findQuizsByPreparationId(pid);
+		RequestEntity req = new RequestEntity();
+		req.set("pid", pid).end();
+		ResponseEntity resp = service.findQuizsByPreparationId(req);
+		return JSON.parseArray(resp.data, PreparationInfo.class);
 	}
 
 	public PreparationQuiz findQuizById(Integer id) {
-		return service.findById(id);
+		RequestEntity req = new RequestEntity();
+		req.set("id", id).end();
+		ResponseEntity resp = service.findPreparationQuizById(req);
+		return JSON.parseObject(resp.data, PreparationQuiz.class);
 	}
 
 	public void addQuiz(PreparationQuiz quiz) {
 		quiz.setCreator(Session.get(Session.KEY_LOGIN_ID));
-		service.save(quiz);
+		
+		RequestEntity req = new RequestEntity();
+		req.set("quiz", quiz).end();
+		service.savePreparationQuiz(req);
 	}
 
 	public boolean checkFreeQuiz(Integer pid) {
-		int num = service.countFreeQuizByPreparationId(pid);
-		return num > 0;
+		RequestEntity req = new RequestEntity();
+		req.set("pid", pid).end();
+		
+		ResponseEntity resp = service.countFreeQuizByPreparationId(req);
+		return JSON.parseObject(resp.data, Integer.class) > 0;
 	}
 
 }

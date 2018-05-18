@@ -62,6 +62,7 @@ public class ClassAction extends BaseAction {
 
 	public void deleteClass(int id) {
 		Class clazz = new Class();
+		clazz.setId(id);
 		clazz.setDel(1);
 		clazz.setUpdater(Session.get(Session.KEY_LOGIN_ID));
 		

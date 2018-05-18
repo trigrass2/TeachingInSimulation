@@ -21,8 +21,7 @@ public class GoalCoverageAction extends BaseAction {
 
 	public List<GoalCoverage> findGidsByRid(Integer rid, int type) {
 		RequestEntity req = new RequestEntity();
-		req.set("rid", rid);
-		req.set("type", type);
+		req.set("rid", rid).set("type", type).end();
 		ResponseEntity resp = service.findGidsByRid(req);
 		return JSON.parseArray(resp.data, GoalCoverage.class);
 	}
@@ -34,23 +33,19 @@ public class GoalCoverageAction extends BaseAction {
 		coverage.setType(type);
 		coverage.setCreator(Session.get(Session.KEY_LOGIN_ID));
 		RequestEntity req = new RequestEntity();
-		req.set("coverage", coverage);
+		req.set("coverage", coverage).end();
 		service.saveGoalCoverage(req);
 	}
 
 	public void deleteRelationship(Integer gid, Integer rid, int type) {
 		RequestEntity req = new RequestEntity();
-		req.set("gid", gid);
-		req.set("rid", rid);
-		req.set("type", type);
-		req.set("creator", Session.get(Session.KEY_LOGIN_ID));
+		req.set("gid", gid).set("rid", rid).set("type", type).set("creator", Session.get(Session.KEY_LOGIN_ID)).end();
 		service.deleteRelationship(req);
 	}
 
 	public boolean checkObjectiveCoverage(Integer oid, Integer tid) {
 		RequestEntity req = new RequestEntity();
-		req.set("oid", oid);
-		req.set("tid", tid);
+		req.set("oid", oid).set("tid", tid).end();
 		ResponseEntity resp = service.checkObjectiveCoverage(req);
 		return JSON.parseObject(resp.data, Boolean.class);
 	}

@@ -7,9 +7,13 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Component;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.TypeReference;
 import com.cas.sim.tis.consts.AnswerState;
 import com.cas.sim.tis.entity.LibraryAnswer;
 import com.cas.sim.tis.services.LibraryAnswerService;
+import com.cas.sim.tis.thrift.RequestEntity;
+import com.cas.sim.tis.thrift.ResponseEntity;
 
 @Component
 public class LibraryAnswerAction extends BaseAction {
@@ -17,10 +21,16 @@ public class LibraryAnswerAction extends BaseAction {
 	private LibraryAnswerService service;
 
 	public List<LibraryAnswer> findAnswersByPublish(int pid, boolean onlyWrong) {
-		return service.findAnswersByPublish(pid, onlyWrong);
+		RequestEntity req = new RequestEntity();
+		req.set("pid", pid).set("onlyWrong", onlyWrong).end();
+		ResponseEntity resp = service.findAnswersByPublish(req);
+		return JSON.parseArray(resp.data, LibraryAnswer.class);
 	}
 
 	public Map<AnswerState, Integer> statisticsByQuestionId(int pid, int qid) {
-		return service.statisticsByQuestionId(pid, qid);
+		RequestEntity req = new RequestEntity();
+		req.set("pid", pid).set("qid", qid).end();
+		ResponseEntity resp = service.statisticsByQuestionId(req);
+		return JSON.parseObject(resp.data, new TypeReference<Map<AnswerState, Integer>>() {});
 	}
 }

@@ -125,7 +125,7 @@ public class PreviewQuestionPaper extends HBox implements IContent {
 	 * 界面初始化
 	 */
 	private void initialize() {
-		Library library = SpringUtil.getBean(LibraryAction.class).findLibraryByID(rid);
+		Library library = SpringUtil.getBean(LibraryAction.class).findLibraryById(rid);
 		this.libName.setText(library.getName());
 
 		if (readonly) {
@@ -281,7 +281,7 @@ public class PreviewQuestionPaper extends HBox implements IContent {
 			return;
 		}
 		// 创建考核记录
-		List<Class> classes = SpringUtil.getBean(ClassAction.class).findClassesByTeacher(Session.get(Session.KEY_LOGIN_ID));
+		List<Class> classes = SpringUtil.getBean(ClassAction.class).findClassesByTeacherId(Session.get(Session.KEY_LOGIN_ID));
 
 		Dialog<Integer> dialog = new Dialog<>();
 		dialog.setDialogPane(new ClassSelectDialog(classes));

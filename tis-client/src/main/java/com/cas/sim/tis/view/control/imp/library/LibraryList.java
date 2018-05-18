@@ -208,7 +208,7 @@ public class LibraryList extends HBox implements IContent {
 	}
 
 	private void modify(int id) {
-		Library library = SpringUtil.getBean(LibraryAction.class).findLibraryByID(id);
+		Library library = SpringUtil.getBean(LibraryAction.class).findLibraryById(id);
 
 		Dialog<Library> dialog = new Dialog<>();
 		dialog.setDialogPane(new LibraryModifyDialog(library));

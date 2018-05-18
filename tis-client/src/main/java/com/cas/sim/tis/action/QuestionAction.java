@@ -6,8 +6,12 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Component;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.TypeReference;
 import com.cas.sim.tis.entity.Question;
 import com.cas.sim.tis.services.QuestionService;
+import com.cas.sim.tis.thrift.RequestEntity;
+import com.cas.sim.tis.thrift.ResponseEntity;
 import com.github.pagehelper.PageInfo;
 
 @Component
@@ -23,11 +27,20 @@ public class QuestionAction extends BaseAction {
 	 * @return
 	 */
 	public PageInfo<Question> findQuestionsByLibrary(int pageIndex, int pageSize, int rid) {
-		return service.findQuestionsByLibrary(pageIndex, pageSize, rid);
+		RequestEntity req = new RequestEntity();
+		req.pageNum = pageIndex;
+		req.pageSize = pageSize;
+		req.set("rid", rid).end();
+		ResponseEntity resp = service.findQuestionsByLibrary(req);
+		return JSON.parseObject(resp.data, new TypeReference<PageInfo<Question>>() {});
 	}
 
 	public List<Question> findQuestionsByLibrary(Integer rid) {
-		return service.findQuestionsByLibrary(rid);
+		RequestEntity req = new RequestEntity();
+		req.set("rid", rid).end();
+
+		ResponseEntity resp = service.findQuestionsByLibrary(req);
+		return JSON.parseArray(resp.data, Question.class);
 	}
 
 	/**
@@ -36,11 +49,18 @@ public class QuestionAction extends BaseAction {
 	 * @return
 	 */
 	public List<Question> findQuestionsByLibraryAndQuestionType(int rid, int type) {
-		return service.findQuestionsByLibraryAndQuestionType(rid, type);
+		RequestEntity req = new RequestEntity();
+		req.set("rid", rid).set("type", type).end();
+
+		ResponseEntity resp = service.findQuestionsByLibraryAndQuestionType(req);
+		return JSON.parseArray(resp.data, Question.class);
 	}
 
 	public List<Question> findQuestionsByPublish(int pid, boolean mostWrong) {
-		return service.findQuestionsByPublish(pid, mostWrong);
+		RequestEntity req = new RequestEntity();
+		req.set("pid", pid).set("mostWrong", mostWrong).end();
+		ResponseEntity resp = service.findQuestionsByPublish(req);
+		return JSON.parseArray(resp.data, Question.class);
 	}
 
 	/**
@@ -48,7 +68,9 @@ public class QuestionAction extends BaseAction {
 	 * @param questions
 	 */
 	public void addQuestions(int rid, List<Question> questions) {
-		service.addQuestions(rid, questions);
+		RequestEntity req = new RequestEntity();
+		req.set("rid", rid).set("questions", questions).end();
+		service.addQuestions(req);
 	}
 
 	/**
@@ -57,7 +79,9 @@ public class QuestionAction extends BaseAction {
 	 * @return
 	 */
 	public boolean checkImportOrExport(int rid) {
-		int total = service.countQuestionByLibrary(rid);
-		return total > 0;
+		RequestEntity req = new RequestEntity();
+		req.set("rid", rid).end();
+		ResponseEntity resp = service.countQuestionByLibrary(req);
+		return JSON.parseObject(resp.data, Integer.class) > 0;
 	}
 }
