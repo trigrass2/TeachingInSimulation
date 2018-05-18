@@ -24,4 +24,6 @@ public class LoginMessage extends AbstractMessage {
 	private boolean focus;// 强制登录
 
 	private LoginResult result;
+	
+	private String user;
 }

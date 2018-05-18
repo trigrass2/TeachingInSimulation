@@ -6,6 +6,8 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Component;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.cas.sim.tis.config.ServerConfig;
 import com.cas.sim.tis.consts.LoginResult;
 import com.cas.sim.tis.consts.Session;
@@ -13,6 +15,8 @@ import com.cas.sim.tis.entity.User;
 import com.cas.sim.tis.message.LoginMessage;
 import com.cas.sim.tis.services.UserService;
 import com.cas.sim.tis.services.exception.ServiceException;
+import com.cas.sim.tis.thrift.RequestEntity;
+import com.cas.sim.tis.thrift.ResponseEntity;
 import com.jme3.network.HostedConnection;
 import com.jme3.network.message.DisconnectMessage;
 
@@ -37,7 +41,14 @@ public class LoginMessageHandler implements ServerHandler<LoginMessage> {
 //		准备一个消息用作服务器的响应消息
 		LoginMessage respMsg = (LoginMessage) m;
 		try {
-			final User user = userService.login(code, passwd);
+			JSONObject obj = new JSONObject();
+			obj.put("usercode ", code);
+			obj.put("password  ", passwd);
+			RequestEntity entity = new RequestEntity();
+			entity.data = JSON.toJSONString(entity);
+			ResponseEntity resp = userService.login(entity);
+			final User user = JSON.parseObject(resp.data, User.class);
+
 			List<HostedConnection> clients = serverConfig.getClients();
 //			进一步验证
 			if (clients.size() >= serverConfig.getMaxLogin()) {
@@ -59,6 +70,7 @@ public class LoginMessageHandler implements ServerHandler<LoginMessage> {
 				respMsg.setResult(LoginResult.SUCCESS);
 				respMsg.setUserId(user.getId());
 				respMsg.setUserType(user.getRole());
+				respMsg.setUser(resp.data);
 				source.send(respMsg);
 			} else if (m.isFocus()) {
 				DisconnectMessage disconnect = new DisconnectMessage();

@@ -2,9 +2,11 @@ package com.cas.sim.tis.message.handler;
 
 import org.springframework.boot.SpringApplication;
 
+import com.alibaba.fastjson.JSON;
 import com.cas.sim.tis.Application;
 import com.cas.sim.tis.consts.LoginResult;
 import com.cas.sim.tis.consts.Session;
+import com.cas.sim.tis.entity.User;
 import com.cas.sim.tis.message.LoginMessage;
 import com.cas.sim.tis.util.AppPropertiesUtil;
 import com.cas.sim.tis.view.controller.LoginController;
@@ -23,6 +25,7 @@ public class LoginMessageHandler implements ClientHandler<LoginMessage> {
 			Session.set(Session.KEY_LOGIN_ID, m.getUserId());
 			Session.set(Session.KEY_LOGIN_ROLE, m.getUserType());
 			Session.set(Session.KEY_LOGIN_ACCOUNT, m.getUserCode());
+			Session.set(Session.KEY_OBJECT, JSON.parseObject(m.getUser(), User.class));
 //			2、记录当前登录用户
 			AppPropertiesUtil.set("login.account", m.getUserCode());
 			AppPropertiesUtil.store();

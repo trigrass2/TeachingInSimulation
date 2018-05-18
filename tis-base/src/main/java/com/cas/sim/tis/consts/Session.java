@@ -24,14 +24,16 @@ public enum Session {
 	/**
 	 * 当前正在进行的考核发布记录编号
 	 */
-	KEY_LIBRARY_PUBLISH_ID;
+	KEY_LIBRARY_PUBLISH_ID,
+
+	KEY_OBJECT;
 
 	private final static Map<Session, Object> DATAS = new HashMap<>();
 
 	public static <T> void set(Session key, T value) {
 		DATAS.put(key, value);
 	}
-	
+
 	public static <T> T get(Session key) {
 		return get(key, null);
 	}
