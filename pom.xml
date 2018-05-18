@@ -9,8 +9,6 @@
 		<module>tis-server</module>
 		<module>tis-circuit</module>
 		<module>tis-client</module>
-		<module>tis-test-thrift</module>
-		<module>tis-test-swift</module>
 	</modules>
 	<name>仿真教学项目</name>
 	<properties>

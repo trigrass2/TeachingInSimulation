@@ -1,0 +1,5 @@
+thrift: 
+  port: 1101
+  host: 112.35.87.233
+  maxWorkerThreads: 10
+  minWorkerThreads: 5
