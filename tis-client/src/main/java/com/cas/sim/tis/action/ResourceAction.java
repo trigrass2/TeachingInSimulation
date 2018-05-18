@@ -6,18 +6,16 @@ import java.util.List;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
-import com.alibaba.dubbo.config.annotation.Reference;
 import com.cas.sim.tis.consts.Session;
 import com.cas.sim.tis.entity.Resource;
 import com.cas.sim.tis.services.ResourceService;
 import com.cas.sim.tis.view.control.imp.resource.ResourceList.ResourceMenuType;
 import com.cas.sim.tis.vo.ResourceInfo;
 import com.cas.util.StringUtil;
-import com.github.pagehelper.PageInfo;
 
 @Component
 public class ResourceAction extends BaseAction {
-	@Reference
+	@javax.annotation.Resource
 	private ResourceService service;
 
 //	public Integer addResource(Resource resource) {
@@ -29,7 +27,7 @@ public class ResourceAction extends BaseAction {
 		return service.addResources(resources);
 	}
 
-	public PageInfo<Resource> findResources(ResourceMenuType type, int pagination, int pageSize, List<Integer> resourceTypes, String keyword, String orderByClause, Integer creator) {
+	public List<Resource> findResources(ResourceMenuType type, int pagination, int pageSize, List<Integer> resourceTypes, String keyword, String orderByClause, Integer creator) {
 		if (ResourceMenuType.BROWSE == type) {
 			return service.findResourcesByBrowseHistory(pagination, pageSize, resourceTypes, keyword, orderByClause, creator);
 		} else if (ResourceMenuType.COLLECTION == type) {

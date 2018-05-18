@@ -4,12 +4,11 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Component;
 
-import com.alibaba.dubbo.config.annotation.Reference;
 import com.cas.sim.tis.services.CollectionService;
 
 @Component
 public class CollectionAction extends BaseAction {
-	@Reference
+	@Resource
 	private CollectionService service;
 
 	public boolean checkCollected(Integer rid) {

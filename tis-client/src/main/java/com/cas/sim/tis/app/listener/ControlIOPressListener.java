@@ -16,14 +16,14 @@ public class ControlIOPressListener extends MouseEventAdapter {
 	@Override
 	public void mousePressed(MouseEvent e) {
 		ControlIO c = e.getSpatial().getUserData("entity");
-		c.switchStateChanged(null);
+		c.getSwitchCtrl().switchStateChanged(null);
 		c.playMotion();
 	}
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
 		ControlIO c = e.getSpatial().getUserData("entity");
-		c.switchStateChanged(null);
+		c.getSwitchCtrl().switchStateChanged(null);
 		c.playMotion();
 	}
 

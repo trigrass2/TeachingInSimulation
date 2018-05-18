@@ -1,31 +1,39 @@
 package com.cas.sim.tis.services;
 
-import java.util.List;
-
-import org.apache.ibatis.exceptions.TooManyResultsException;
-
-import com.cas.sim.tis.entity.Class;
-import com.cas.sim.tis.entity.User;
 import com.cas.sim.tis.services.exception.ServiceException;
-import com.github.pagehelper.PageInfo;
+import com.cas.sim.tis.thrift.RequestEntity;
+import com.cas.sim.tis.thrift.ResponseEntity;
 
-public interface UserService extends BaseService<User> {
+import io.airlift.drift.annotations.ThriftException;
+import io.airlift.drift.annotations.ThriftMethod;
+import io.airlift.drift.annotations.ThriftService;
+
+@ThriftService
+public interface UserService {
 	/**
 	 * 用户登录
 	 * @param usercode 用户账号
 	 * @param password 用户密码（明文）
-	 * @return 
+	 * @return
 	 * @throws ServiceException
-	 * @throws TooManyResultsException
 	 */
-	User login(String usercode, String password) throws ServiceException, TooManyResultsException;
+	@ThriftMethod(exception = { @ThriftException(type = ServiceException.class, id = 1) })
+	ResponseEntity login(RequestEntity entity) throws ServiceException;
 
-	List<User> findTeachers();
+	@ThriftMethod
+	ResponseEntity findTeachers(RequestEntity entity);
 
-	PageInfo<User> findTeachers(int pageIndex, int pageSize);
+	/**
+	 * @param pageIndex
+	 * @param pageSize
+	 * @param classId
+	 * @return
+	 */
+	@ThriftMethod
+	ResponseEntity findStudents(RequestEntity entity);
 
-	PageInfo<User> findStudents(int pageIndex, int pageSize, int classId);
+//	void updateTeacherIdByClassId(Class claszz);
 
-	void updateTeacherIdByClassId(Class claszz);
-
+	@ThriftMethod
+	ResponseEntity findUserById(RequestEntity entity);
 }

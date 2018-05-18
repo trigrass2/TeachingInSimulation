@@ -1,15 +1,25 @@
 package com.cas.sim.tis.services;
 
-import java.util.List;
+import com.cas.sim.tis.thrift.RequestEntity;
+import com.cas.sim.tis.thrift.ResponseEntity;
 
-import com.cas.sim.tis.entity.LibraryAnswer;
-import com.cas.sim.tis.entity.LibraryRecord;
-import com.cas.sim.tis.vo.LibraryRecordInfo;
+import io.airlift.drift.annotations.ThriftMethod;
+import io.airlift.drift.annotations.ThriftService;
 
-public interface LibraryRecordService extends BaseService<LibraryRecord> {
+@ThriftService
+public interface LibraryRecordService {
+	/**
+	 * @param pid
+	 * @return
+	 */
+	@ThriftMethod
+	ResponseEntity findRecordByPublishId(RequestEntity entity);
 
-	List<LibraryRecordInfo> findRecordByPublishId(int pid);
-
-	void addRecord(LibraryRecord record, List<LibraryAnswer> answers);
+	/**
+	 * @param record
+	 * @param answers
+	 */
+	@ThriftMethod
+	void addRecord(RequestEntity entity);
 
 }

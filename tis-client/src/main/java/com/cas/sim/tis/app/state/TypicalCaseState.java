@@ -1,5 +1,7 @@
 package com.cas.sim.tis.app.state;
 
+import java.util.concurrent.Executors;
+
 import org.jetbrains.annotations.Nullable;
 
 import com.cas.circuit.vo.Archive;
@@ -17,10 +19,11 @@ import com.cas.sim.tis.util.AlertUtil;
 import com.cas.sim.tis.util.JmeUtil;
 import com.cas.sim.tis.util.MsgUtil;
 import com.cas.sim.tis.util.SpringUtil;
-import com.cas.sim.tis.view.control.imp.jme.Recongnize3D;
+import com.cas.sim.tis.view.control.imp.dialog.Tip.TipType;
 import com.cas.sim.tis.view.control.imp.jme.TypicalCase3D;
 import com.cas.sim.tis.view.controller.PageController;
 import com.jme3.asset.ModelKey;
+import com.jme3.collision.CollisionResults;
 import com.jme3.light.PointLight;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
@@ -103,12 +106,18 @@ public class TypicalCaseState extends BaseState {
 		// 尝试解析出存档对象
 		Archive archive = SpringUtil.getBean(ArchiveAction.class).parse(typicalCase.getArchivePath());
 		app.enqueue(() -> {
-			if (archive != null) {
-				circuitState.read(archive);
+			try {
+				if(archive != null) {
+					circuitState.read(archive);
+				}
+			} finally {
+				// 结束加载界面
+				Platform.runLater(() -> SpringUtil.getBean(PageController.class).hideLoading());
 			}
-			// 结束加载界面
-			Platform.runLater(() -> SpringUtil.getBean(PageController.class).hideLoading());
 		});
+		
+		
+		
 	}
 
 //	布置场景
@@ -213,8 +222,14 @@ public class TypicalCaseState extends BaseState {
 		if (elecComp == null) {
 			return;
 		}
-//		取消Holding的模型对鼠标透明
-		MouseEventState.setMouseVisible(elecComp.getSpatial(), true);
+
+		CollisionResults results = new CollisionResults();
+		circuitState.getRootCompNode().collideWith(elecComp.getSpatial().getWorldBound(), results);
+		if (results.size() > 0) {
+			Platform.runLater(() -> AlertUtil.showTip(TipType.WARN, MsgUtil.getMessage("alert.warning.collision")));
+			return;
+		}
+
 		try {
 			if (ElecComp.COMBINE_RELY_ON == elecComp.getCombine()) {
 //				需要底座的元器件不可直接加入电路板
@@ -229,6 +244,8 @@ public class TypicalCaseState extends BaseState {
 //				2、将元器件模型与元器件对象一起加入电路板中
 				circuitState.attachToCircuit(elecComp.getSpatial(), elecCompDef);
 			}
+//			取消Holding的模型对鼠标透明
+			MouseEventState.setMouseVisible(elecComp.getSpatial(), true);
 		} catch (Exception e) {
 //			删除出错的模型
 			elecComp.getSpatial().removeFromParent();
@@ -312,7 +329,7 @@ public class TypicalCaseState extends BaseState {
 	public void setUI(TypicalCase3D ui) {
 		this.ui = ui;
 	}
-	
+
 	public TypicalCase3D getUi() {
 		return ui;
 	}

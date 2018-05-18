@@ -9,7 +9,6 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-import com.alibaba.dubbo.config.spring.context.annotation.DubboComponentScan;
 import com.cas.sim.tis.config.ServerConfig;
 import com.cas.sim.tis.message.ExamMessage;
 import com.cas.sim.tis.message.LoginMessage;
@@ -18,12 +17,13 @@ import com.cas.sim.tis.message.handler.LoginMessageHandler;
 import com.cas.sim.tis.util.SpringUtil;
 import com.jme3.network.Server;
 
+import io.airlift.drift.server.DriftServer;
+
 @SpringBootApplication
 //开始事物
 //@EnableTransactionManagement
 // 在类中用注解@Mapper明确标出
 //@MapperScan("com.cas.sim.tis.mapper")
-@DubboComponentScan(basePackages = "com.cas.sim.tis.services.impl")
 public class Application implements CommandLineRunner {
 
 	@Resource
@@ -34,7 +34,9 @@ public class Application implements CommandLineRunner {
 
 	@Resource
 	private Server coreServer;
-
+	@Resource
+	private DriftServer driftServer;
+	
 	public static void jul2slf4j() {
 		java.util.logging.LogManager.getLogManager().reset();
 		SLF4JBridgeHandler.removeHandlersForRootLogger();
@@ -109,5 +111,7 @@ public class Application implements CommandLineRunner {
 		LoggerFactory.getLogger(Application.class).info("主服务器已启动");
 		ftpServer.start();
 		LoggerFactory.getLogger(Application.class).info("文件服务器已启动");
+		driftServer.start();
+		LoggerFactory.getLogger(Application.class).info("Drift服务器已启动");
 	}
 }

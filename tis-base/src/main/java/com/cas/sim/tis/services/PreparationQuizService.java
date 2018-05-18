@@ -1,14 +1,25 @@
 package com.cas.sim.tis.services;
 
-import java.util.List;
+import com.cas.sim.tis.thrift.RequestEntity;
+import com.cas.sim.tis.thrift.ResponseEntity;
 
-import com.cas.sim.tis.entity.PreparationQuiz;
-import com.cas.sim.tis.vo.PreparationInfo;
+import io.airlift.drift.annotations.ThriftMethod;
+import io.airlift.drift.annotations.ThriftService;
 
-public interface PreparationQuizService extends BaseService<PreparationQuiz> {
+@ThriftService
+public interface PreparationQuizService {
+	/**
+	 * @param pid
+	 * @return
+	 */
+	@ThriftMethod
+	ResponseEntity findQuizsByPreparationId(RequestEntity entity);
 
-	List<PreparationInfo> findQuizsByPreparationId(Integer pid);
-
-	int countFreeQuizByPreparationId(Integer pid);
+	/**
+	 * @param pid
+	 * @return
+	 */
+	@ThriftMethod
+	ResponseEntity countFreeQuizByPreparationId(RequestEntity entity);
 
 }

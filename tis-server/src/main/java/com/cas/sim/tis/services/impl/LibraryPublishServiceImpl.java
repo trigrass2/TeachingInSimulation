@@ -5,7 +5,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
-import com.alibaba.dubbo.config.annotation.Service;
+import org.springframework.stereotype.Service;
 
 import com.cas.sim.tis.config.ServerConfig;
 import com.cas.sim.tis.consts.Session;

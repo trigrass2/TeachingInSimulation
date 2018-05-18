@@ -1,7 +1,8 @@
 package com.cas.sim.tis.services;
 
-import com.cas.sim.tis.entity.GoalRelationship;
+import io.airlift.drift.annotations.ThriftService;
 
-public interface GoalRelationshipService extends BaseService<GoalRelationship> {
+@ThriftService
+public interface GoalRelationshipService {
 
 }

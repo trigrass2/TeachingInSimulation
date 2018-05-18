@@ -28,7 +28,6 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
-import com.jme3.scene.Spatial.CullHint;
 import com.jme3.scene.VertexBuffer;
 import com.jme3.scene.VertexBuffer.Type;
 import com.jme3.scene.debug.WireBox;

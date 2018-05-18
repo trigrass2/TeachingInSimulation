@@ -16,7 +16,7 @@ public class ControlIOClickListener extends MouseEventAdapter {
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		ControlIO c = e.getSpatial().getUserData("entity");
-		c.switchStateChanged(null);
+		c.getSwitchCtrl().switchStateChanged(null);
 		c.playMotion();
 	}
 

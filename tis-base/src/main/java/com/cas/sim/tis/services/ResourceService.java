@@ -2,36 +2,112 @@ package com.cas.sim.tis.services;
 
 import java.util.List;
 
-import com.cas.sim.tis.entity.Resource;
-import com.cas.sim.tis.vo.ResourceInfo;
-import com.github.pagehelper.PageInfo;
+import com.cas.sim.tis.thrift.RequestEntity;
+import com.cas.sim.tis.thrift.ResponseEntity;
 
-public interface ResourceService extends BaseService<Resource> {
-	ResourceInfo findResourceInfoByID(int id);
+import io.airlift.drift.annotations.ThriftMethod;
+import io.airlift.drift.annotations.ThriftService;
 
-	PageInfo<Resource> findResourcesByCreator(int pagination, int pageSize, List<Integer> resourceTypes, String keyword, String orderByClause, Integer creator);
+@ThriftService
+public interface ResourceService {
+	@ThriftMethod
+//	ThriftEntity findResourceInfoById(int id);
+	ResponseEntity findResourceInfoById(RequestEntity entity);
 
-	List<Resource> findResourcesByCreator(List<Integer> resourceTypes, String keyword, Integer creator);
+	/**
+	 * @param pagination
+	 * @param pageSize
+	 * @param resourceTypes
+	 * @param keyword
+	 * @param orderByClause
+	 * @param creator
+	 * @return
+	 */
+	@ThriftMethod
+	ResponseEntity findResourcesByCreator(RequestEntity entity);
 
-	PageInfo<Resource> findResourcesByBrowseHistory(int pagination, int pageSize, List<Integer> resourceTypes, String keyword, String orderByClause, Integer creater);
+	/**
+	 * @param pagination
+	 * @param pageSize
+	 * @param resourceTypes
+	 * @param keyword
+	 * @param orderByClause
+	 * @param creater
+	 * @return
+	 */
+	@ThriftMethod
+	ResponseEntity findResourcesByBrowseHistory(RequestEntity entity);
 
-	PageInfo<Resource> findResourcesByCollection(int pagination, int pageSize, List<Integer> resourceTypes, String keyword, String orderByClause, Integer creater);
+	/**
+	 * @param pagination
+	 * @param pageSize
+	 * @param resourceTypes
+	 * @param keyword
+	 * @param orderByClause
+	 * @param creater
+	 * @return
+	 */
+	@ThriftMethod
+	ResponseEntity findResourcesByCollection(RequestEntity entity);
 
-	int countResourceByType(int type, String keyword, Integer creator);
+	/**
+	 * @param type
+	 * @param keyword
+	 * @param creator
+	 * @return
+	 */
+	@ThriftMethod
+	ResponseEntity countResourceByType(RequestEntity entity);
 
-	int countBrowseResourceByType(int type, String keyword, Integer creator);
+	/**
+	 * @param type
+	 * @param keyword
+	 * @param creator
+	 * @return
+	 */
+	@ThriftMethod
+	ResponseEntity countBrowseResourceByType(RequestEntity entity);
 
-	int countCollectionResourceByType(int type, String keyword, Integer creator);
+	/**
+	 * @param type
+	 * @param keyword
+	 * @param creator
+	 * @return
+	 */
+	@ThriftMethod
+	ResponseEntity countCollectionResourceByType(RequestEntity entity);
 
-	Integer addResource(Resource resource);
-	
-	List<Integer> addResources(List<Resource> resources);
+	/**
+	 * @param resources
+	 * @return
+	 */
+	@ThriftMethod
+	List<Integer> addResources(RequestEntity entity);
 
-	void browsed(Integer id, Integer userId);
+	/**
+	 * @param id
+	 * @param userId
+	 */
+	@ThriftMethod
+	void browsed(RequestEntity entity);
 
-	void uncollect(Integer id, Integer userId);
+	/**
+	 * @param id
+	 * @param userId
+	 */
+	@ThriftMethod
+	void uncollect(RequestEntity entity);
 
-	void collected(Integer id, Integer userId);
+	/**
+	 * @param id
+	 * @param userId
+	 */
+	@ThriftMethod
+	void collected(RequestEntity entity);
 
-	void deteleResource(Integer id);
+	/**
+	 * @param id
+	 */
+	@ThriftMethod
+	void deteleResource(RequestEntity entity);
 }

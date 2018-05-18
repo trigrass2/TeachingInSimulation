@@ -1,12 +1,17 @@
 package com.cas.sim.tis.services;
 
-import java.util.List;
+import com.cas.sim.tis.thrift.RequestEntity;
+import com.cas.sim.tis.thrift.ResponseEntity;
 
-import com.cas.sim.tis.entity.PreparationResource;
-import com.cas.sim.tis.vo.PreparationInfo;
+import io.airlift.drift.annotations.ThriftService;
 
-public interface PreparationResourceService extends BaseService<PreparationResource> {
+@ThriftService
+public interface PreparationResourceService {
 
-	List<PreparationInfo> findResourcesByPreparationId(Integer pid);
+	/**
+	 * @param pid
+	 * @return List
+	 */
+	ResponseEntity findResourcesByPreparationId(RequestEntity entity);
 
 }

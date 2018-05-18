@@ -1,11 +1,20 @@
 package com.cas.sim.tis.services;
 
-import java.util.List;
+import com.cas.sim.tis.thrift.RequestEntity;
+import com.cas.sim.tis.thrift.ResponseEntity;
 
-import com.cas.sim.tis.entity.Goal;
+import io.airlift.drift.annotations.ThriftMethod;
+import io.airlift.drift.annotations.ThriftService;
 
-public interface GoalService extends BaseService<Goal> {
-	
-	List<Goal> findGoalsByRid(Integer rid, int type);
+@ThriftService
+public interface GoalService {
+
+	/**
+	 * @param rid
+	 * @param type
+	 * @return
+	 */
+	@ThriftMethod
+	ResponseEntity findGoalsByRid(RequestEntity entity);
 
 }

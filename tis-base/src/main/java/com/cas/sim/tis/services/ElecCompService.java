@@ -1,26 +1,30 @@
 package com.cas.sim.tis.services;
 
-import java.util.List;
-import java.util.Map;
-
 import javax.annotation.Nonnull;
 
-import com.cas.sim.tis.entity.ElecComp;
+import com.cas.sim.tis.thrift.RequestEntity;
+import com.cas.sim.tis.thrift.ResponseEntity;
 
-public interface ElecCompService extends BaseService<ElecComp> {
+import io.airlift.drift.annotations.ThriftMethod;
+import io.airlift.drift.annotations.ThriftService;
+
+@ThriftService
+public interface ElecCompService {
 	/**
 	 * 获取所有元器件的Map集合<br>
 	 * key:元器件型号<br>
-	 * value:元器件对象
+	 * value:元器件对象 Map<Integer, List<ElecComp>>
 	 * @return
 	 */
 	@Nonnull
-	Map<Integer, List<ElecComp>> findElecCompGroupByType();
+	@ThriftMethod
+	ResponseEntity findElecCompGroupByType();
 
 	/**
 	 * 根据元器件型号查找
 	 * @param model
 	 * @return
 	 */
-	ElecComp findElecCompByModel(String model);
+	@ThriftMethod
+	ResponseEntity findElecCompByModel(RequestEntity entity);
 }

@@ -1,13 +1,16 @@
 package com.cas.sim.tis.services;
 
-import java.util.List;
+import com.cas.sim.tis.thrift.ResponseEntity;
 
-import com.cas.sim.tis.entity.TypicalCase;
+import io.airlift.drift.annotations.ThriftMethod;
+import io.airlift.drift.annotations.ThriftService;
 
-public interface TypicalCaseService extends BaseService<TypicalCase> {
+@ThriftService
+public interface TypicalCaseService {
 
-	List<TypicalCase> findTypicalCasesByCreator(Integer creator);
+	@ThriftMethod
+	ResponseEntity findTypicalCasesByCreatorId(int creatorId);
 
-	int saveRetId(TypicalCase typicalCase);
-
+	@ThriftMethod
+	int saveRetId(ResponseEntity typicalCaseEntity);
 }

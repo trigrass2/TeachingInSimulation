@@ -6,7 +6,6 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Component;
 
-import com.alibaba.dubbo.config.annotation.Reference;
 import com.cas.sim.tis.entity.LibraryAnswer;
 import com.cas.sim.tis.entity.LibraryRecord;
 import com.cas.sim.tis.services.LibraryRecordService;
@@ -14,7 +13,7 @@ import com.cas.sim.tis.vo.LibraryRecordInfo;
 
 @Component
 public class LibraryRecordAction extends BaseAction {
-	@Reference
+	@Resource
 	private LibraryRecordService service;
 
 	/**

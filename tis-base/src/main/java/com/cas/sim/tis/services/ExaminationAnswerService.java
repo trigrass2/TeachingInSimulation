@@ -1,5 +1,6 @@
 package com.cas.sim.tis.services;
 
-import com.cas.sim.tis.entity.ExaminationAnswer;
+import io.airlift.drift.annotations.ThriftService;
 
-public interface ExaminationAnswerService extends BaseService<ExaminationAnswer> {}
+@ThriftService
+public interface ExaminationAnswerService {}

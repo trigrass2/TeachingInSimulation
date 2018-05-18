@@ -1,7 +1,17 @@
 package com.cas.sim.tis.services;
 
-import com.cas.sim.tis.entity.Collection;
+import com.cas.sim.tis.thrift.RequestEntity;
+import com.cas.sim.tis.thrift.ResponseEntity;
 
-public interface CollectionService extends BaseService<Collection> {
-	boolean checkCollected(Integer rid);
+import io.airlift.drift.annotations.ThriftMethod;
+import io.airlift.drift.annotations.ThriftService;
+
+@ThriftService
+public interface CollectionService {
+	/**
+	 * @param rid
+	 * @return
+	 */
+	@ThriftMethod
+	ResponseEntity checkCollected(RequestEntity entity);
 }

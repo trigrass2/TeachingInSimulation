@@ -6,7 +6,6 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Component;
 
-import com.alibaba.dubbo.config.annotation.Reference;
 import com.cas.sim.tis.consts.Session;
 import com.cas.sim.tis.entity.Class;
 import com.cas.sim.tis.services.ClassService;
@@ -15,7 +14,7 @@ import com.github.pagehelper.PageInfo;
 
 @Component
 public class ClassAction extends BaseAction {
-	@Reference
+	@Resource
 	private ClassService service;
 
 	public Class findClass(int id) {

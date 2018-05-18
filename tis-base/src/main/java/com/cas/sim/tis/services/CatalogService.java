@@ -1,10 +1,18 @@
 package com.cas.sim.tis.services;
 
-import java.util.List;
+import com.cas.sim.tis.thrift.RequestEntity;
+import com.cas.sim.tis.thrift.ResponseEntity;
 
-import com.cas.sim.tis.entity.Catalog;
+import io.airlift.drift.annotations.ThriftMethod;
+import io.airlift.drift.annotations.ThriftService;
 
-public interface CatalogService extends BaseService<Catalog> {
+@ThriftService
+public interface CatalogService {
 
-	List<Catalog> findCatalogsByParentId(Integer id);
+	/**
+	 * @param id
+	 * @return
+	 */
+	@ThriftMethod
+	ResponseEntity findCatalogsByParentId(RequestEntity entity);
 }

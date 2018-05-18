@@ -6,7 +6,6 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Component;
 
-import com.alibaba.dubbo.config.annotation.Reference;
 import com.cas.sim.tis.consts.Session;
 import com.cas.sim.tis.entity.Draw;
 import com.cas.sim.tis.services.DrawService;
@@ -14,7 +13,7 @@ import com.cas.sim.tis.services.DrawService;
 @Component
 public class DrawAction extends BaseAction {
 
-	@Reference
+	@Resource
 	private DrawService service;
 
 	public List<Draw> getDrawListAll() {

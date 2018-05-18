@@ -15,7 +15,7 @@ public class ControlIOWheelListener extends MouseEventAdapter {
 	@Override
 	public void mouseWheel(MouseEvent e) {
 		ControlIO c = e.getSpatial().getUserData("entity");
-		c.switchStateChanged(e.getWheel());
+		c.getSwitchCtrl().switchStateChanged(e.getWheel());
 		c.playMotion();
 	}
 }

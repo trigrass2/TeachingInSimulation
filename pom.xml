@@ -10,6 +10,7 @@
 		<module>tis-circuit</module>
 		<module>tis-client</module>
 		<module>tis-test-thrift</module>
+		<module>tis-test-swift</module>
 	</modules>
 	<name>仿真教学项目</name>
 	<properties>
@@ -56,6 +57,8 @@
 		<dubbo.version>2.5.10</dubbo.version>
 		<curator.version>2.12.0</curator.version>
 		<zkclient.version>0.5</zkclient.version>
+
+		<drift.version>1.11</drift.version>
 	</properties>
 	<!-- 发布设置 -->
 	<distributionManagement>
@@ -449,6 +452,30 @@
 				<groupId>com.alibaba</groupId>
 				<artifactId>fastjson</artifactId>
 				<version>1.2.39</version>
+			</dependency>
+			<!-- https://mvnrepository.com/artifact/io.airlift.drift/drift-codec -->
+			<dependency>
+				<groupId>io.airlift.drift</groupId>
+				<artifactId>drift-codec</artifactId>
+				<version>${drift.version}</version>
+			</dependency>
+			<!-- https://mvnrepository.com/artifact/io.airlift.drift/drift-transport-netty -->
+			<dependency>
+				<groupId>io.airlift.drift</groupId>
+				<artifactId>drift-transport-netty</artifactId>
+				<version>${drift.version}</version>
+			</dependency>
+			<!-- https://mvnrepository.com/artifact/io.airlift.drift/drift-client -->
+			<dependency>
+				<groupId>io.airlift.drift</groupId>
+				<artifactId>drift-client</artifactId>
+				<version>${drift.version}</version>
+			</dependency>
+			<!-- https://mvnrepository.com/artifact/io.airlift.drift/drift-server -->
+			<dependency>
+				<groupId>io.airlift.drift</groupId>
+				<artifactId>drift-server</artifactId>
+				<version>${drift.version}</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>

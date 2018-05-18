@@ -3,7 +3,7 @@ package com.cas.sim.tis.services.impl;
 import java.util.List;
 
 import org.apache.ibatis.exceptions.TooManyResultsException;
-import com.alibaba.dubbo.config.annotation.Service;
+import org.springframework.stereotype.Service;
 
 import com.cas.sim.tis.consts.RoleConst;
 import com.cas.sim.tis.entity.Class;
@@ -53,7 +53,7 @@ public class UserServiceImpl extends AbstractService<User> implements UserServic
 	}
 
 	@Override
-	public PageInfo<User> findTeachers(int pageIndex, int pageSize) {
+	public List<User> findTeachers(int pageIndex, int pageSize) {
 		Condition condition = new Condition(User.class);
 		Criteria criteria = condition.createCriteria();
 		criteria.andEqualTo("role", RoleConst.TEACHER);
@@ -63,11 +63,11 @@ public class UserServiceImpl extends AbstractService<User> implements UserServic
 		List<User> result = findByCondition(condition);
 		PageInfo<User> page = new PageInfo<>(result);
 		LOG.info("成功查找到{}条资源,当前页码{},每页{}条资源,共{}页", result.size(), pageIndex, pageSize, page.getPages());
-		return page;
+		return result;
 	}
 
 	@Override
-	public PageInfo<User> findStudents(int pageIndex, int pageSize, int classId) {
+	public List<User> findStudents(int pageIndex, int pageSize, int classId) {
 		Condition condition = new Condition(User.class);
 		Criteria criteria = condition.createCriteria();
 		criteria.andEqualTo("role", RoleConst.STUDENT);
@@ -78,12 +78,17 @@ public class UserServiceImpl extends AbstractService<User> implements UserServic
 		List<User> result = findByCondition(condition);
 		PageInfo<User> page = new PageInfo<>(result);
 		LOG.info("成功查找到{}条资源,当前页码{},每页{}条资源,共{}页", result.size(), pageIndex, pageSize, page.getPages());
-		return page;
+		return result;
 	}
 
 	@Override
 	public void updateTeacherIdByClassId(Class clazz) {
 		UserMapper mapper = (UserMapper) this.mapper;
 		mapper.updateTeacherIdByClassId(clazz.getId(), clazz.getTeacherId());
+	}
+	
+	@Override
+	public User findUserById(int id) {
+		return mapper.selectByPrimaryKey(id);
 	}
 }

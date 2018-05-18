@@ -1,14 +1,35 @@
 package com.cas.sim.tis.services;
 
-import java.util.List;
+import com.cas.sim.tis.thrift.RequestEntity;
+import com.cas.sim.tis.thrift.ResponseEntity;
 
-import com.cas.sim.tis.entity.GoalCoverage;
+import io.airlift.drift.annotations.ThriftMethod;
+import io.airlift.drift.annotations.ThriftService;
 
-public interface GoalCoverageService extends BaseService<GoalCoverage> {
+@ThriftService
+public interface GoalCoverageService {
+	/**
+	 * @param rid
+	 * @param type
+	 * @return
+	 */
+	@ThriftMethod
+	ResponseEntity findGidsByRid(RequestEntity entity);
 
-	List<GoalCoverage> findGidsByRid(Integer rid, int type);
-	
-	void deleteRelationship(Integer gid, Integer rid, int type, Integer creator);
+	/**
+	 * @param gid
+	 * @param rid
+	 * @param type
+	 * @param creator
+	 */
+	@ThriftMethod
+	void deleteRelationship(RequestEntity entity);
 
-	boolean checkObjectiveCoverage(Integer oid, Integer tid);
+	/**
+	 * @param oid
+	 * @param tid
+	 * @return
+	 */
+	@ThriftMethod
+	ResponseEntity checkObjectiveCoverage(RequestEntity entity);
 }

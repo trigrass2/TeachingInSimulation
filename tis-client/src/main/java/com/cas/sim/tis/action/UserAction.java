@@ -6,24 +6,33 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Component;
 
-import com.alibaba.dubbo.config.annotation.Reference;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.cas.sim.tis.consts.Session;
 import com.cas.sim.tis.entity.User;
 import com.cas.sim.tis.services.UserService;
-import com.github.pagehelper.PageInfo;
+import com.cas.sim.tis.thrift.RequestEntity;
+import com.cas.sim.tis.thrift.ResponseEntity;
 
 @Component
 public class UserAction extends BaseAction {
-	@Reference
+	@Resource
 	private UserService service;
 
-	public int getTeacherIdByStudentId(Integer studentId) {
-		User user = service.findById(studentId);
-		return user.getTeacherId();
-	}
+//	public int getTeacherIdByStudentId(Integer studentId) {
+//		User user = service.findById(studentId);
+//		return user.getTeacherId();
+//	}
 
 	public User findUserByID(int id) {
-		return service.findById(id);
+		RequestEntity entity = new RequestEntity();
+		JSONObject obj = new JSONObject();
+		obj.put("id", id);
+		entity.data = obj.toJSONString();
+
+		ResponseEntity resp = service.findUserById(entity);
+
+		return JSON.parseObject(resp.data, User.class);
 	}
 
 	public List<User> findTeachers() {

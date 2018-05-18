@@ -6,7 +6,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.apache.ibatis.exceptions.TooManyResultsException;
-import com.alibaba.dubbo.config.annotation.Service;
+import org.springframework.stereotype.Service;
 
 import com.cas.sim.tis.entity.ElecComp;
 import com.cas.sim.tis.mapper.ElecCompMapper;

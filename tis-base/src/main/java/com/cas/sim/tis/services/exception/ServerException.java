@@ -1,9 +1,12 @@
 package com.cas.sim.tis.services.exception;
 
+import io.airlift.drift.annotations.ThriftException;
+
 /**
  * 服务器异常
  * @author Administrator
  */
+@ThriftException(id = 1, type = RuntimeException.class)
 public class ServerException extends RuntimeException {
 
 	/**

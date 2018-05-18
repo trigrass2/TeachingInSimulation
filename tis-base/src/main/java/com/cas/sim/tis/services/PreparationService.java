@@ -1,11 +1,27 @@
 package com.cas.sim.tis.services;
 
-import com.cas.sim.tis.entity.Preparation;
+import com.cas.sim.tis.thrift.RequestEntity;
+import com.cas.sim.tis.thrift.ResponseEntity;
 
-public interface PreparationService extends BaseService<Preparation> {
+import io.airlift.drift.annotations.ThriftMethod;
+import io.airlift.drift.annotations.ThriftService;
 
-	Preparation findPreparationByTaskIdAndCreator(Integer cid, int creator);
+@ThriftService
+public interface PreparationService {
 
-	Preparation addPreparation(Preparation preparation);
+	/**
+	 * @param cid
+	 * @param creator
+	 * @return
+	 */
+	@ThriftMethod
+	ResponseEntity findPreparationByTaskIdAndCreator(RequestEntity entity);
+
+	/**
+	 * @param preparation
+	 * @return
+	 */
+	@ThriftMethod
+	ResponseEntity addPreparation(RequestEntity entity);
 
 }

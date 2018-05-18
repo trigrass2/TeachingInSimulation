@@ -1,18 +1,39 @@
 package com.cas.sim.tis.services;
 
-import java.util.List;
+import com.cas.sim.tis.thrift.RequestEntity;
+import com.cas.sim.tis.thrift.ResponseEntity;
 
-import com.cas.sim.tis.entity.Class;
-import com.cas.sim.tis.vo.ClassInfo;
-import com.github.pagehelper.PageInfo;
+import io.airlift.drift.annotations.ThriftMethod;
+import io.airlift.drift.annotations.ThriftService;
 
-public interface ClassService extends BaseService<com.cas.sim.tis.entity.Class> {
+@ThriftService
+public interface ClassService {
 
-	PageInfo<Class> findClasses(int pageIndex, int pageSize);
+	/**
+	 * @param pageIndex
+	 * @param pageSize
+	 * @return
+	 */
+	@ThriftMethod
+	ResponseEntity findClasses(RequestEntity entity);
 
-	List<Class> findClassesByTeacher(int teacherId);
+	/**
+	 * @param teacherId
+	 * @return
+	 */
+	@ThriftMethod
+	ResponseEntity findClassesByTeacher(RequestEntity entity);
 
-	void saveClasses(List<ClassInfo> infos, Integer creator);
+	/**
+	 * @param infos
+	 * @param creator
+	 */
+	@ThriftMethod
+	void saveClasses(RequestEntity entity);
 
-	void modifyClass(Class clazz);
+	/**
+	 * @param clazz
+	 */
+	@ThriftMethod
+	void modifyClass(RequestEntity entity);
 }

@@ -4,13 +4,12 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Component;
 
-import com.alibaba.dubbo.config.annotation.Reference;
 import com.cas.sim.tis.entity.Preparation;
 import com.cas.sim.tis.services.PreparationService;
 
 @Component
 public class PreparationAction extends BaseAction {
-	@Reference
+	@Resource
 	private PreparationService service;
 
 	/**

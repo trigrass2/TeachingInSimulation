@@ -1,8 +1,9 @@
 package com.cas.sim.tis.app.control;
 
+import java.util.function.Consumer;
+
 import org.jetbrains.annotations.NotNull;
 
-import com.cas.sim.tis.app.state.CircuitState;
 import com.cas.util.Util;
 import com.jme3.collision.CollisionResult;
 import com.jme3.collision.CollisionResults;
@@ -18,18 +19,27 @@ import com.jme3.scene.control.AbstractControl;
 
 public class ShowNameOnHoverControl extends AbstractControl {
 
+	public static final int DELAY = 2;
+	private int count;
+
 	private InputManager inputManager;
 	private Camera cam;
-	private CircuitState circuitState;
+	private Consumer<String> consumer;
 
-	public ShowNameOnHoverControl(CircuitState circuitState, InputManager inputManager, Camera cam) {
-		this.circuitState = circuitState;
+	public ShowNameOnHoverControl(Consumer<String> consumer, InputManager inputManager, Camera cam) {
 		this.inputManager = inputManager;
 		this.cam = cam;
+		this.consumer = consumer;
 	}
 
 	@Override
 	protected void controlUpdate(float tpf) {
+		if (count < DELAY) {
+			count++;
+			return;
+		}
+		count = 0;
+
 		Ray ray = getRay();
 
 		CollisionResults results = new CollisionResults();
@@ -43,9 +53,9 @@ public class ShowNameOnHoverControl extends AbstractControl {
 			@NotNull
 			String name = (@NotNull String) Util.getFieldValue(entity, "name");
 
-			circuitState.showName(name);
-		}else {
-			circuitState.showName(null);
+			consumer.accept(name);
+		} else {
+			consumer.accept(null);
 		}
 	}
 

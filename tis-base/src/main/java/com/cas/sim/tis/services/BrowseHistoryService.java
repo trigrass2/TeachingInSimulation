@@ -1,7 +1,8 @@
 package com.cas.sim.tis.services;
 
-import com.cas.sim.tis.entity.BrowseHistory;
+import io.airlift.drift.annotations.ThriftService;
 
-public interface BrowseHistoryService extends BaseService<BrowseHistory> {
-	
+@ThriftService
+public interface BrowseHistoryService {
+
 }

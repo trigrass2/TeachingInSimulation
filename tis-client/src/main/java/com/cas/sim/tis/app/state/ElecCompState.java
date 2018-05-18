@@ -1,22 +1,14 @@
 package com.cas.sim.tis.app.state;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 
-import com.cas.circuit.vo.ControlIO;
 import com.cas.circuit.vo.ElecCompDef;
-import com.cas.circuit.vo.Jack;
-import com.cas.circuit.vo.LightIO;
-import com.cas.circuit.vo.Terminal;
 import com.cas.sim.tis.action.ElecCompAction;
 import com.cas.sim.tis.anno.JmeThread;
-import com.cas.sim.tis.app.event.MouseEvent;
-import com.cas.sim.tis.app.event.MouseEventAdapter;
+import com.cas.sim.tis.app.control.ShowNameOnHoverControl;
 import com.cas.sim.tis.entity.ElecComp;
 import com.cas.sim.tis.util.AnimUtil;
 import com.cas.sim.tis.util.JmeUtil;
@@ -27,6 +19,7 @@ import com.cas.util.StringUtil;
 import com.jme3.asset.ModelKey;
 import com.jme3.light.PointLight;
 import com.jme3.math.ColorRGBA;
+import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
@@ -37,7 +30,6 @@ public class ElecCompState extends BaseState {
 
 	private static final String ROOT_NAME = "ELEC_COMP_ROOT";
 	private Node root;
-	private boolean pickEnable;
 	private boolean transparent;
 	private boolean explode;
 	private List<Spatial> shells = new ArrayList<>();
@@ -51,6 +43,10 @@ public class ElecCompState extends BaseState {
 	protected void initializeLocal() {
 //		认知模块的根节点
 		root = new Node(ROOT_NAME);
+		root.addControl(new ShowNameOnHoverControl((name) -> {
+			Vector2f point = inputManager.getCursorPosition();
+			Platform.runLater(() -> ui.showName(name, point.getX(), point.getY()));
+		}, inputManager, cam));
 		LOG.debug("创建元器件状态机的根节点{}", root.getName());
 		rootNode.attachChild(root);
 
@@ -106,22 +102,23 @@ public class ElecCompState extends BaseState {
 
 //		FIXME 这里应更为精准地设置为元器件模型。
 		elecCompDef.bindModel(root);
+		
+		model.setUserData("entity", elecCompDef);
 
-//		添加事件
-		Map<Spatial, String> nameMap = collectName(elecCompDef);
-
-		nameMap.entrySet().forEach(e -> addListener(e.getKey(), new MouseEventAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent evt) {
-				if (!pickEnable) {
-					return;
-				}
-//				FilterUtil.showOutlineEffect(evt.getSpatial());
-				System.out.println("ElecCompState.setElecComp(...).new MouseEventAdapter() {...}.mouseClicked()");
-				Vector3f point = cam.getScreenCoordinates(evt.getContactPoint());
-				Platform.runLater(() -> ui.showName(e.getValue(), point.getX(), point.getY()));
-			}
-		}));
+////		添加事件
+//		Map<Spatial, String> nameMap = collectName(elecCompDef);
+//
+//		nameMap.entrySet().forEach(e -> addListener(e.getKey(), new MouseEventAdapter() {
+//			@Override
+//			public void mouseClicked(MouseEvent evt) {
+//				if (!pickEnable) {
+//					return;
+//				}
+////				FilterUtil.showOutlineEffect(evt.getSpatial());
+//				System.out.println("ElecCompState.setElecComp(...).new MouseEventAdapter() {...}.mouseClicked()");
+//
+//			}
+//		}));
 
 		explode0();
 	}
@@ -130,33 +127,6 @@ public class ElecCompState extends BaseState {
 		shells.clear();
 		LOG.debug("移除{}中所有模型", root.getName());
 		root.detachAllChildren();
-	}
-
-	private Map<Spatial, String> collectName(ElecCompDef elecCompDef) {
-//		绑定连接头
-		Map<Spatial, String> nameMap = new HashMap<>();
-
-//		连接头
-		Map<Spatial, String> terminalMap = elecCompDef.getTerminalList().stream().collect(Collectors.toMap(Terminal::getSpatial, Terminal::getName));
-		nameMap.putAll(terminalMap);
-
-//		线缆插孔
-		Map<Spatial, String> jackMap = elecCompDef.getJackList().stream().collect(Collectors.toMap(Jack::getSpatial, Jack::getName));
-		nameMap.putAll(jackMap);
-
-		elecCompDef.getMagnetismList().forEach(m -> {
-//			按钮
-			Map<Spatial, String> controlMap = m.getControlIOList().stream().collect(Collectors.toMap(ControlIO::getSpatial, ControlIO::getName));
-			nameMap.putAll(controlMap);
-//			指示灯
-			Map<Spatial, String> lightMap = m.getLightIOList().stream().collect(Collectors.toMap(LightIO::getSpatial, LightIO::getName));
-			nameMap.putAll(lightMap);
-		});
-//		指示灯
-		Map<Spatial, String> lightMap = elecCompDef.getLightIOList().stream().collect(Collectors.toMap(LightIO::getSpatial, LightIO::getName));
-		nameMap.putAll(lightMap);
-
-		return nameMap;
 	}
 
 //	@param shell 元器件的外壳（由1个或多个节点组成）
@@ -228,10 +198,6 @@ public class ElecCompState extends BaseState {
 		} else {
 			shells.forEach(shell -> JmeUtil.untransparent(shell));
 		}
-	}
-
-	public void setNameVisible(@Nonnull Boolean n) {
-		this.pickEnable = n.booleanValue();
 	}
 
 	public void autoRotate(Boolean n) {

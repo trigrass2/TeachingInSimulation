@@ -1,21 +1,48 @@
 package com.cas.sim.tis.services;
 
-import java.util.List;
+import com.cas.sim.tis.thrift.RequestEntity;
+import com.cas.sim.tis.thrift.ResponseEntity;
 
-import com.cas.sim.tis.entity.Question;
-import com.github.pagehelper.PageInfo;
+import io.airlift.drift.annotations.ThriftMethod;
+import io.airlift.drift.annotations.ThriftService;
 
-public interface QuestionService extends BaseService<Question> {
+@ThriftService
+public interface QuestionService {
 
-	PageInfo<Question> findQuestionsByLibrary(int pageIndex, int pageSize, int rid);
+	/**
+	 * @param rid
+	 * @return
+	 */
+	@ThriftMethod
+	ResponseEntity findQuestionsByLibrary(RequestEntity entity);
 
-	List<Question> findQuestionsByLibrary(int rid);
+	/**
+	 * @param rid
+	 * @param type
+	 * @return
+	 */
+	@ThriftMethod
+	ResponseEntity findQuestionsByLibraryAndQuestionType(RequestEntity entity);
 
-	List<Question> findQuestionsByLibraryAndQuestionType(int rid, int type);
+	/**
+	 * @param pid
+	 * @param mostWrong
+	 * @return
+	 */
+	@ThriftMethod
+	ResponseEntity findQuestionsByPublish(RequestEntity entity);
 
-	List<Question> findQuestionsByPublish(int pid, boolean mostWrong);
+	/**
+	 * @param rid
+	 * @param questions
+	 */
+	@ThriftMethod
+	void addQuestions(RequestEntity entity);
 
-	void addQuestions(int rid,List<Question> questions);
-
-	int countQuestionByLibrary(int rid);
+	/**
+	 * @param rid
+	 * @return
+	 */
+	@ThriftMethod
+	ResponseEntity countQuestionByLibrary(RequestEntity entity);
 }

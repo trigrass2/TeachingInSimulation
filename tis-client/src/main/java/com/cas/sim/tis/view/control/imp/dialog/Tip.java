@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import javax.annotation.Nonnull;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,14 +36,18 @@ public class Tip extends HBox {
 	private TipDialog dialog;
 
 	public Tip() {
-		this(TipType.INFO, null);
+		initTip(TipType.INFO, "");
 	}
 
-	public Tip(TipType type) {
-		this(type, null);
+	public Tip(@Nonnull TipType type) {
+		initTip(type, "");
 	}
 
-	public Tip(TipType type, String msg) {
+	public Tip(@Nonnull TipType type, String msg) {
+		initTip(type, msg);
+	}
+
+	public void initTip(TipType type, String msg) {
 		loadFXML();
 		// 图标
 		switch (type) {

@@ -1,24 +1,57 @@
 package com.cas.sim.tis.services;
 
-import java.util.List;
+import com.cas.sim.tis.thrift.RequestEntity;
+import com.cas.sim.tis.thrift.ResponseEntity;
 
-import com.cas.sim.tis.entity.LibraryPublish;
-import com.cas.sim.tis.vo.LibraryPublishForStudent;
-import com.cas.sim.tis.vo.LibraryPublishForTeacher;
-import com.cas.sim.tis.vo.SubmitInfo;
-import com.github.pagehelper.PageInfo;
+import io.airlift.drift.annotations.ThriftMethod;
+import io.airlift.drift.annotations.ThriftService;
 
-public interface LibraryPublishService extends BaseService<LibraryPublish> {
+@ThriftService
+public interface LibraryPublishService {
+	/**
+	 * @param id
+	 * @return
+	 */
+	@ThriftMethod
+	ResponseEntity findPublishById(RequestEntity entity);
 
-	LibraryPublish findPublishById(int id);
+	/**
+	 * @param pageIndex
+	 * @param pageSize
+	 * @param creator
+	 * @return
+	 */
+	@ThriftMethod
+	ResponseEntity findPublishForTeacher(RequestEntity entity);
 
-	PageInfo<LibraryPublishForTeacher> findPublishForTeacher(int pageIndex, int pageSize, int creator);
+	/**
+	 * @param pageIndex
+	 * @param pageSize
+	 * @param type
+	 * @param creator
+	 * @return
+	 */
+	@ThriftMethod
+	ResponseEntity findPublishForStudent(RequestEntity entity);
 
-	PageInfo<LibraryPublishForStudent> findPublishForStudent(int pageIndex, int pageSize, int type, int creator);
+	/**
+	 * @param id
+	 * @return
+	 */
+	@ThriftMethod
+	ResponseEntity findSubmitStateById(RequestEntity entity);
 
-	List<SubmitInfo> findSubmitStateById(int id);
+	/**
+	 * @param publish
+	 * @return
+	 */
+	@ThriftMethod
+	ResponseEntity publishLibraryToClass(RequestEntity entity);
 
-	Integer publishLibraryToClass(LibraryPublish publish);
-
-	int practiceLibraryByStudent(LibraryPublish publish);
+	/**
+	 * @param publish
+	 * @return
+	 */
+	@ThriftMethod
+	ResponseEntity practiceLibraryByStudent(RequestEntity entity);
 }

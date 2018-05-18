@@ -1,11 +1,14 @@
 package com.cas.sim.tis.services;
 
-import java.util.List;
+import com.cas.sim.tis.thrift.RequestEntity;
+import com.cas.sim.tis.thrift.ResponseEntity;
 
-import com.cas.sim.tis.entity.Draw;
+import io.airlift.drift.annotations.ThriftMethod;
+import io.airlift.drift.annotations.ThriftService;
 
-public interface DrawService extends BaseService<Draw> {
-
-	List<Draw> findByCreatorId(int creatorId);
+@ThriftService
+public interface DrawService {
+	@ThriftMethod
+	ResponseEntity findDrawsByCreatorId(RequestEntity entity);
 
 }

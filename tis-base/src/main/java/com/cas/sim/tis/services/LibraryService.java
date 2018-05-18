@@ -1,14 +1,20 @@
 package com.cas.sim.tis.services;
 
-import java.util.List;
+import com.cas.sim.tis.thrift.RequestEntity;
+import com.cas.sim.tis.thrift.ResponseEntity;
 
-import com.cas.sim.tis.entity.Library;
-import com.github.pagehelper.PageInfo;
+import io.airlift.drift.annotations.ThriftMethod;
+import io.airlift.drift.annotations.ThriftService;
 
-public interface LibraryService extends BaseService<Library> {
+@ThriftService
+public interface LibraryService {
 
-	PageInfo<Library> findLibraryByType(int pageIndex, int pageSize, int type);
-
-	List<Library> findLibraryByType(int type, String key);
+	/**
+	 * @param type
+	 * @param key
+	 * @return
+	 */
+	@ThriftMethod
+	ResponseEntity findLibraryByType(RequestEntity entity);
 
 }

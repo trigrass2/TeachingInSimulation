@@ -1,7 +1,8 @@
 package com.cas.sim.tis.services;
 
-import com.cas.sim.tis.entity.BrokenCase;
+import io.airlift.drift.annotations.ThriftService;
 
-public interface BrokenCaseService extends BaseService<BrokenCase> {
+@ThriftService
+public interface BrokenCaseService {
 
 }

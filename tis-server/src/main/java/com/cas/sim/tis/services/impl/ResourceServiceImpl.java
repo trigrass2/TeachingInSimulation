@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
-import com.alibaba.dubbo.config.annotation.Service;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
@@ -45,13 +45,13 @@ public class ResourceServiceImpl extends AbstractService<Resource> implements Re
 	}
 
 	@Override
-	public PageInfo<Resource> findResourcesByCreator(int pagination, int pageSize, List<Integer> resourceTypes, String keyword, String orderByClause, Integer creator) {
+	public List<Resource> findResourcesByCreator(int pagination, int pageSize, List<Integer> resourceTypes, String keyword, String orderByClause, Integer creator) {
 //		获取当前登陆者身份信息
 		Condition condition = new Condition(Resource.class);
 		// 筛选创建人
 //		条件1、查找用户指定的几种资源类型
 		if (resourceTypes.size() == 0) {
-			return new PageInfo<Resource>(new ArrayList<Resource>());
+			return new ArrayList<Resource>();
 		} else {
 			Criteria criteria = condition.createCriteria();
 			criteria.andIn("type", resourceTypes);
@@ -76,7 +76,7 @@ public class ResourceServiceImpl extends AbstractService<Resource> implements Re
 //		解释一下：这个page.getTotal()，是所有符合条件的记录数。
 //		result.size()：是当前页中的数据量 <= pageSize
 		LOG.info("成功查找到{}条资源,当前页码{},每页{}条资源,共{}页", result.size(), pagination, pageSize, page.getPages());
-		return page;
+		return result;
 	}
 
 	@Override
@@ -109,7 +109,7 @@ public class ResourceServiceImpl extends AbstractService<Resource> implements Re
 	}
 
 	@Override
-	public PageInfo<Resource> findResourcesByBrowseHistory(int pagination, int pageSize, List<Integer> resourceTypes, String keyword, String orderByClause, Integer creator) {
+	public List<Resource> findResourcesByBrowseHistory(int pagination, int pageSize, List<Integer> resourceTypes, String keyword, String orderByClause, Integer creator) {
 		ResourceMapper resourceMapper = (ResourceMapper) mapper;
 		// 开始分页查询
 		PageHelper.startPage(pagination, pageSize, orderByClause);
@@ -119,11 +119,11 @@ public class ResourceServiceImpl extends AbstractService<Resource> implements Re
 //		解释一下：这个page.getTotal()，是所有符合条件的记录数。
 //		result.size()：是当前页中的数据量 <= pageSize
 		LOG.info("成功查找到{}条资源,当前页码{},每页{}条资源,共{}页", result.size(), pagination, pageSize, page.getPages());
-		return page;
+		return result;
 	}
 
 	@Override
-	public PageInfo<Resource> findResourcesByCollection(int pagination, int pageSize, List<Integer> resourceTypes, String keyword, String orderByClause, Integer creator) {
+	public List<Resource> findResourcesByCollection(int pagination, int pageSize, List<Integer> resourceTypes, String keyword, String orderByClause, Integer creator) {
 		ResourceMapper resourceMapper = (ResourceMapper) mapper;
 		// 开始分页查询
 		PageHelper.startPage(pagination, pageSize, orderByClause);
@@ -133,7 +133,7 @@ public class ResourceServiceImpl extends AbstractService<Resource> implements Re
 //		解释一下：这个page.getTotal()，是所有符合条件的记录数。
 //		result.size()：是当前页中的数据量 <= pageSize
 		LOG.info("成功查找到{}条资源,当前页码{},每页{}条资源,共{}页", result.size(), pagination, pageSize, page.getPages());
-		return page;
+		return result;
 	}
 
 	@Override

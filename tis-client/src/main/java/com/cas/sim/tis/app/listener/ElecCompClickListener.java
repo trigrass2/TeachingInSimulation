@@ -1,8 +1,6 @@
 package com.cas.sim.tis.app.listener;
 
 import com.cas.circuit.vo.ElecCompDef;
-import com.cas.sim.tis.Application;
-import com.cas.sim.tis.app.control.HintControl;
 import com.cas.sim.tis.app.event.MouseEvent;
 import com.cas.sim.tis.app.event.MouseEventAdapter;
 import com.cas.sim.tis.app.state.CircuitState;
@@ -12,13 +10,9 @@ import com.cas.sim.tis.util.SpringUtil;
 import com.cas.sim.tis.view.control.IContent;
 import com.cas.sim.tis.view.control.imp.jme.TypicalCase3D;
 import com.cas.sim.tis.view.controller.PageController;
-import com.jme3.material.Material;
-import com.jme3.material.RenderState.BlendMode;
-import com.jme3.math.ColorRGBA;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.Spatial.CullHint;
-import com.jme3.scene.shape.Box;
 
 import javafx.application.Platform;
 
@@ -45,7 +39,7 @@ public class ElecCompClickListener extends MouseEventAdapter {
 		}
 
 		Spatial newWireNode = e.getSpatial();
-		camera.setCamFocus(newWireNode.getLocalTranslation(), true);
+		camera.setCamFocus(newWireNode.getWorldTranslation(), true);
 
 //		如果两次选择的模型一样，则视为取消选中
 		if (selectedComp == newWireNode) {

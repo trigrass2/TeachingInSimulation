@@ -10,10 +10,11 @@ import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import com.cas.circuit.CfgConst;
+import com.cas.circuit.Voltage;
+import com.cas.circuit.util.R;
 import com.cas.circuit.vo.Archive;
 import com.cas.circuit.vo.Base;
 import com.cas.circuit.vo.ControlIO;
@@ -178,7 +179,10 @@ public class CircuitState extends BaseState {
 		rootCompNode = new Node(COMP_ROOT);
 		root.attachChild(rootCompNode);
 //		
-		rootCompNode.addControl(new ShowNameOnHoverControl(this, inputManager, cam));
+		rootCompNode.addControl(new ShowNameOnHoverControl((name) -> {
+			Vector2f pos = inputManager.getCursorPosition();
+			Platform.runLater(() -> caseState.getUi().showName(name, pos.x, pos.y));
+		}, inputManager, cam));
 
 //		存放导线的根节点
 		rootWireNode = new Node(WIRE_ROOT);
@@ -301,6 +305,11 @@ public class CircuitState extends BaseState {
 	}
 
 	public void onTernialClick(Terminal t) {
+		if (t.getWires().size() >= 2) {
+			Platform.runLater(() -> AlertUtil.showTip(TipType.WARN, MsgUtil.getMessage("alert.warning.wire.max")));
+			return;
+		}
+
 		if (state == null || state == State.Ending) {
 			connectPre(t);
 //			设置接线状态为开始
@@ -330,13 +339,21 @@ public class CircuitState extends BaseState {
 		// 导线一头连接在当前连接头上
 		wire.bind(t);
 
-		// FIXME 导线连接的位置，多跟导线的情况下错开
-		Vector3f dest = t.getSpatial().getWorldTranslation().clone();
-		// 获取导线连接的方向
+//		获取导线连接的方向
 		dir = t.getElecCompDef().getSpatial().getLocalRotation().mult(t.getDirection());
 		midAxis = roll90.mult(dir);
 
-		// 钱三段导线
+//		导线连接的位置，多跟导线的情况下错开
+		Vector3f dest = new Vector3f();
+		if (t.getWires().size() == 2) {
+//			第二根线
+			dest.set(t.getSpatial().getWorldTranslation().add(midAxis.normalize().mult(0.002f)));
+		} else {
+//			第一根线
+			dest.set(t.getSpatial().getWorldTranslation().add(midAxis.normalize().mult(0.002f).negate()));
+		}
+
+//		前三段导线
 		startLine1 = new Line(dest, dest);//
 		startLine2 = new Line(dest, dest);
 		startLine3 = new Line(dest, dest);
@@ -379,11 +396,20 @@ public class CircuitState extends BaseState {
 	}
 
 	private void connectEnding(Terminal t) {
-		// 终点
-		Vector3f dest = t.getSpatial().getWorldTranslation().clone();
-		// 重点线头连出的方向
+//		重点线头连出的方向
 		dir = t.getElecCompDef().getSpatial().getLocalRotation().mult(t.getDirection());
-		//
+//		终点
+		Vector3f dest = new Vector3f();
+
+		Vector3f axis = roll90.mult(dir);
+		if (t.getWires().size() == 1) {
+//			第二根线
+			dest.set(t.getSpatial().getWorldTranslation().add(axis.normalize().mult(0.002f)));
+		} else {
+//			第一根线
+			dest.set(t.getSpatial().getWorldTranslation().add(axis.normalize().mult(0.002f).negate()));
+		}
+
 		// ##最终是在终点dest和startPoint之间创建导线##
 		Vector3f startPoint = JmeUtil.getLineStart(midLine1);
 
@@ -546,6 +572,18 @@ public class CircuitState extends BaseState {
 		}
 		readEleccomps(archive.getCompList());
 		readWires(archive.getWireList());
+
+		Map<String, ElecCompDef> compMap = compList.stream().collect(Collectors.toMap(x -> x.getProxy().getUuid(), x -> x));
+//		FIXME 找到电源（这里讲QF1元器件看做电源）
+		ElecCompDef power = compMap.get("cbdc09e1-54ef-43eb-8fd6-77960334614c");
+		if (power != null) {
+			Terminal r0 = power.getTerminal("1");
+			Terminal s0 = power.getTerminal("3");
+
+//			List<R> powerAC = R.create3Phase("AlphaPawer", r0, s0, t0, new Terminal(), 380);
+			R r = R.create("AlphaPower", Voltage.IS_DC, r0, s0, 24);
+			r.shareVoltage();
+		}
 	}
 
 	private void readEleccomps(@Nonnull List<ElecCompProxy> compProxyList) {
@@ -644,9 +682,9 @@ public class CircuitState extends BaseState {
 			WireProxy wireProxy = wire.getProxy();
 
 			wireProxy.setNumber(wire.getWireNum());
-			wireProxy.setComp1Uuid(wire.getTerm1().getElecComp().getProxy().getUuid());
+			wireProxy.setComp1Uuid(wire.getTerm1().getElecCompDef().getProxy().getUuid());
 			wireProxy.setTernimal1Id(wire.getTerm1().getId());
-			wireProxy.setComp2Uuid(wire.getTerm2().getElecComp().getProxy().getUuid());
+			wireProxy.setComp2Uuid(wire.getTerm2().getElecCompDef().getProxy().getUuid());
 			wireProxy.setTernimal2Id(wire.getTerm2().getId());
 //			
 			archive.getWireList().add(wireProxy);
@@ -868,9 +906,7 @@ public class CircuitState extends BaseState {
 		}
 	}
 
-	public void showName(@NotNull String name) {
-		Vector2f pos = inputManager.getCursorPosition();
-		Platform.runLater(() -> caseState.getUi().showName(name, pos.x, pos.y));
+	public Node getRootCompNode() {
+		return rootCompNode;
 	}
-
 }

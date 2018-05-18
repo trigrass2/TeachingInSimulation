@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.alibaba.dubbo.config.annotation.Service;
+import org.springframework.stereotype.Service;
 
 import com.cas.sim.tis.consts.AnswerState;
 import com.cas.sim.tis.entity.LibraryAnswer;
