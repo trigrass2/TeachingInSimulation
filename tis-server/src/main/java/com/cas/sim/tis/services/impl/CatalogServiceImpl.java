@@ -3,37 +3,48 @@ package com.cas.sim.tis.services.impl;
 import java.util.Collections;
 import java.util.List;
 
+import javax.annotation.Resource;
+
 import org.springframework.stereotype.Service;
 
 import com.cas.sim.tis.entity.Catalog;
 import com.cas.sim.tis.mapper.CatalogMapper;
 import com.cas.sim.tis.services.CatalogService;
+import com.cas.sim.tis.thrift.RequestEntity;
+import com.cas.sim.tis.thrift.ResponseEntity;
 
+import lombok.extern.slf4j.Slf4j;
 import tk.mybatis.mapper.entity.Condition;
 import tk.mybatis.mapper.entity.Example.Criteria;
 
 @Service
-public class CatalogServiceImpl extends AbstractService<Catalog> implements CatalogService {
+@Slf4j
+public class CatalogServiceImpl implements CatalogService {
+
+	@Resource
+	private CatalogMapper mapper;
 
 	@Override
-	public List<Catalog> findCatalogsByParentId(Integer rid) {
+	public ResponseEntity findCatalogsByParentId(RequestEntity entity) {
+		int rid = entity.getInt("rid");
+
 		Condition condition = new Condition(Catalog.class);
 		Criteria criteria = condition.createCriteria();
 		criteria.andEqualTo("rid", rid);
 		criteria.andEqualTo("del", 0);
-		
-		CatalogMapper catalogMapper = (CatalogMapper) mapper;
-		catalogMapper.selectByCondition(condition);
-		
+
+		mapper.selectByCondition(condition);
+
 		List<Catalog> catalogs = null;
 		try {
-			catalogs = catalogMapper.selectByCondition(condition);
-			LOG.debug("查询到子节点数量：{}", catalogs.size());
+			catalogs = mapper.selectByCondition(condition);
+			log.debug("查询到子节点数量：{}", catalogs.size());
 		} catch (Exception e) {
-			LOG.error("查询ID{}下子节点失败！", rid);
+			log.error("查询ID{}下子节点失败！", rid);
 			catalogs = Collections.emptyList();
 		}
-		return catalogs;
+
+		return ResponseEntity.success(catalogs);
 	}
 
 }

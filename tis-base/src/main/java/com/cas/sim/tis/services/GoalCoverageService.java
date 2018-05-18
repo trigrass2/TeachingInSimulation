@@ -32,4 +32,7 @@ public interface GoalCoverageService {
 	 */
 	@ThriftMethod
 	ResponseEntity checkObjectiveCoverage(RequestEntity entity);
+
+	@ThriftMethod
+	void saveGoalCoverage(RequestEntity req);
 }

@@ -1,28 +1,37 @@
 package com.cas.sim.tis.services.impl;
 
+import javax.annotation.Resource;
+
 import org.springframework.stereotype.Service;
 
 import com.cas.sim.tis.entity.Collection;
+import com.cas.sim.tis.mapper.CollectionMapper;
 import com.cas.sim.tis.services.CollectionService;
+import com.cas.sim.tis.thrift.RequestEntity;
+import com.cas.sim.tis.thrift.ResponseEntity;
 
 import tk.mybatis.mapper.entity.Condition;
 import tk.mybatis.mapper.entity.Example.Criteria;
 
 @Service
-public class CollectionServiceImpl extends AbstractService<Collection> implements CollectionService {
+public class CollectionServiceImpl implements CollectionService {
+	
+	@Resource
+	private CollectionMapper mapper;
 	
 	@Override
-	public boolean checkCollected(Integer rid) {
+	public ResponseEntity checkCollected(RequestEntity entity) {
+		int rid = entity.getInt("rid");
+		
 		Condition condition = new Condition(Collection.class);
 		Criteria criteria = condition.createCriteria();
 		criteria.andEqualTo("resourceId", rid);
-
-		int total = getTotalBy(condition);
+		
+		int total = mapper.selectCountByCondition(condition);
 		if (total == 0) {
-			return false;
+			return ResponseEntity.success(false);
 		} else {
-			return true;
+			return ResponseEntity.success(true);
 		}
 	}
-
 }

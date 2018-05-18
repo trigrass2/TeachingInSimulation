@@ -4,7 +4,10 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Component;
 
+import com.alibaba.fastjson.JSON;
 import com.cas.sim.tis.services.CollectionService;
+import com.cas.sim.tis.thrift.RequestEntity;
+import com.cas.sim.tis.thrift.ResponseEntity;
 
 @Component
 public class CollectionAction extends BaseAction {
@@ -15,7 +18,11 @@ public class CollectionAction extends BaseAction {
 		if (rid == null) {
 			return false;
 		}
-		return service.checkCollected(rid);
+		RequestEntity req = new RequestEntity();
+		req.set("rid", rid);
+
+		ResponseEntity resp = service.checkCollected(req);
+		return JSON.parseObject(resp.data, Boolean.class);
 	}
 
 }

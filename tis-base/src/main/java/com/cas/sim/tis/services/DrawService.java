@@ -8,7 +8,7 @@ import io.airlift.drift.annotations.ThriftService;
 
 @ThriftService
 public interface DrawService {
+	
 	@ThriftMethod
-	ResponseEntity findDrawsByCreatorId(RequestEntity entity);
-
+	ResponseEntity findDraws(RequestEntity entity);
 }

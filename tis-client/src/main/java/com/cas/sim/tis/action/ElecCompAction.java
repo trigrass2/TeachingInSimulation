@@ -8,9 +8,13 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Component;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.TypeReference;
 import com.cas.circuit.vo.ElecCompDef;
 import com.cas.sim.tis.entity.ElecComp;
 import com.cas.sim.tis.services.ElecCompService;
+import com.cas.sim.tis.thrift.RequestEntity;
+import com.cas.sim.tis.thrift.ResponseEntity;
 import com.cas.sim.tis.util.HTTPUtils;
 import com.cas.sim.tis.xml.util.JaxbUtil;
 
@@ -21,7 +25,8 @@ public class ElecCompAction extends BaseAction {
 	private ElecCompService service;
 
 	public List<ElecComp> getElecCompList() {
-		return service.findAll();
+		ResponseEntity resp = service.findElecComps();
+		return JSON.parseArray(resp.data, ElecComp.class);
 	}
 
 	/**
@@ -29,12 +34,16 @@ public class ElecCompAction extends BaseAction {
 	 * @return
 	 */
 	public Map<Integer, List<ElecComp>> getElecCompMap() {
-		return service.findElecCompGroupByType();
+		ResponseEntity resp = service.findElecCompGroupByType();
+		return JSON.parseObject(resp.data, new TypeReference<Map<Integer, List<ElecComp>>>() {});
 	}
 
 	@Nullable
 	public ElecComp getElecComp(String model) {
-		return service.findElecCompByModel(model);
+		RequestEntity req = new RequestEntity();
+		req.set("model", model).end();
+		ResponseEntity resp = service.findElecCompByModel(req);
+		return JSON.parseObject(resp.data, ElecComp.class);
 	}
 
 	public ElecCompDef parse(String cfgPath) {
@@ -42,7 +51,10 @@ public class ElecCompAction extends BaseAction {
 	}
 
 	public ElecComp findElecCompById(Integer id) {
-		return service.findById(id);
+		RequestEntity req = new RequestEntity();
+		req.set("id", id).end();
+		ResponseEntity resp = service.findElecCompById(req);
+		return JSON.parseObject(resp.data, ElecComp.class);
 	}
 
 }

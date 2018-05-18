@@ -21,10 +21,25 @@ public interface ElecCompService {
 	ResponseEntity findElecCompGroupByType();
 
 	/**
+	 * 根据元器件ID查找
+	 * @param id
+	 * @return
+	 */
+	@ThriftMethod
+	ResponseEntity findElecCompById(RequestEntity req);
+
+	/**
 	 * 根据元器件型号查找
 	 * @param model
 	 * @return
 	 */
 	@ThriftMethod
 	ResponseEntity findElecCompByModel(RequestEntity entity);
+
+	/**
+	 * 获取所有元器件集合
+	 * @return
+	 */
+	@ThriftMethod
+	ResponseEntity findElecComps();
 }
