@@ -2,7 +2,6 @@ package com.cas.sim.tis.thrift;
 
 import io.airlift.drift.annotations.ThriftField;
 import io.airlift.drift.annotations.ThriftStruct;
-import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
@@ -10,6 +9,11 @@ import lombok.ToString;
 @EqualsAndHashCode
 @ToString
 public class ResponseEntity {
+//	正常返回200
+	public static final int SUCCESS = 200;
+//	服务器出现任何异常，返回500
+	public static final int FAILURE = 500;
+
 	@ThriftField(1)
 	/**
 	 * 返回码, 1成功，0失败
