@@ -26,6 +26,8 @@ import com.github.pagehelper.PageInfo;
 import com.jme3.network.Filters;
 import com.jme3.network.HostedConnection;
 
+import tk.mybatis.mapper.entity.Condition;
+
 @Service
 public class LibraryPublishServiceImpl implements LibraryPublishService {
 	private static final Logger LOG = LoggerFactory.getLogger(LibraryPublishServiceImpl.class);
@@ -44,9 +46,8 @@ public class LibraryPublishServiceImpl implements LibraryPublishService {
 
 	@Override
 	public ResponseEntity findPublishForTeacher(RequestEntity entity) {
-		LibraryPublishMapper publishMapper = (LibraryPublishMapper) mapper;
 		PageHelper.startPage(entity.pageNum, entity.pageSize);
-		List<LibraryPublishForTeacher> result = publishMapper.findPublishForTeacher(entity.getInt("creator"));
+		List<LibraryPublishForTeacher> result = mapper.findPublishForTeacher(entity.getInt("creator"));
 		PageInfo<LibraryPublishForTeacher> page = new PageInfo<>(result);
 		LOG.info("成功查找到{}条资源,当前页码{},每页{}条资源,共{}页", result.size(), entity.pageNum, entity.pageSize, page.getPages());
 		return ResponseEntity.success(result);
@@ -54,9 +55,8 @@ public class LibraryPublishServiceImpl implements LibraryPublishService {
 
 	@Override
 	public ResponseEntity findPublishForStudent(RequestEntity entity) {
-		LibraryPublishMapper publishMapper = (LibraryPublishMapper) mapper;
 		PageHelper.startPage(entity.pageNum, entity.pageSize);
-		List<LibraryPublishForStudent> result = publishMapper.findPublishForStudent(entity.getInt("type"), entity.getInt("creator"));
+		List<LibraryPublishForStudent> result = mapper.findPublishForStudent(entity.getInt("type"), entity.getInt("creator"));
 		PageInfo<LibraryPublishForStudent> page = new PageInfo<>(result);
 		LOG.info("成功查找到{}条资源,当前页码{},每页{}条资源,共{}页", result.size(), entity.pageNum, entity.pageSize, page.getPages());
 		return ResponseEntity.success(result);
@@ -97,6 +97,19 @@ public class LibraryPublishServiceImpl implements LibraryPublishService {
 		// 记录考核发布记录
 		mapper.insert(publish);
 		return ResponseEntity.success(publish.getId());
+	}
+
+	@Override
+	public ResponseEntity publishLibrary(RequestEntity entity) {
+		LibraryPublish libraryPublish = new LibraryPublish();
+		libraryPublish.setId(entity.getInt("id"));
+		libraryPublish.setState(true);
+		// 记录考核发布记录
+		mapper.updateByPrimaryKeySelective(libraryPublish);
+
+//		将修改后的实体返回
+		libraryPublish = mapper.selectByPrimaryKey(entity.getInt("id"));
+		return ResponseEntity.success(libraryPublish);
 	}
 
 }

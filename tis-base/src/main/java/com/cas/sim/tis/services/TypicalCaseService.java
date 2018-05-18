@@ -13,5 +13,14 @@ public interface TypicalCaseService {
 	ResponseEntity findTypicalCasesByCreatorId(RequestEntity entity);
 
 	@ThriftMethod
+	ResponseEntity findTypicalCasesById(RequestEntity entity);
+
+	@ThriftMethod
 	ResponseEntity saveTypicalCase(RequestEntity entity);
+
+	@ThriftMethod
+	void deleteTypicalCaseById(RequestEntity entity);
+
+	@ThriftMethod
+	void updateTypicalCase(RequestEntity entity);
 }

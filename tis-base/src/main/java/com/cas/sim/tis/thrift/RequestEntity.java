@@ -7,7 +7,6 @@ import java.util.Map;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
-import com.cas.sim.tis.consts.Session;
 
 import io.airlift.drift.annotations.ThriftField;
 import io.airlift.drift.annotations.ThriftStruct;
@@ -30,9 +29,6 @@ public class RequestEntity {
 //	每页的数量
 	@ThriftField(3)
 	public int pageSize = 10;
-
-	@ThriftField(4)
-	public int userid = Session.get(Session.KEY_LOGIN_ID);
 
 	private JSONObject json;
 

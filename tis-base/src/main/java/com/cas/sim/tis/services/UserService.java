@@ -17,8 +17,8 @@ public interface UserService {
 	 * @return
 	 * @throws ServiceException
 	 */
-	@ThriftMethod(exception = { @ThriftException(type = ServiceException.class, id = 1) })
-	ResponseEntity login(RequestEntity entity) throws ServiceException;
+	@ThriftMethod
+	ResponseEntity login(RequestEntity entity);
 
 	@ThriftMethod
 	ResponseEntity findTeachers(RequestEntity entity);

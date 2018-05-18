@@ -54,4 +54,7 @@ public interface LibraryPublishService {
 	 */
 	@ThriftMethod
 	ResponseEntity practiceLibraryByStudent(RequestEntity entity);
+
+	@ThriftMethod
+	ResponseEntity publishLibrary(RequestEntity entity);
 }

@@ -17,9 +17,9 @@ import com.cas.sim.tis.consts.ResourceType;
 import com.cas.sim.tis.entity.BrowseHistory;
 import com.cas.sim.tis.entity.Collection;
 import com.cas.sim.tis.entity.Resource;
+import com.cas.sim.tis.mapper.BrowseHistoryMapper;
+import com.cas.sim.tis.mapper.CollectionMapper;
 import com.cas.sim.tis.mapper.ResourceMapper;
-import com.cas.sim.tis.services.BrowseHistoryService;
-import com.cas.sim.tis.services.CollectionService;
 import com.cas.sim.tis.services.ResourceService;
 import com.cas.sim.tis.thrift.RequestEntity;
 import com.cas.sim.tis.thrift.ResponseEntity;
@@ -43,13 +43,30 @@ public class ResourceServiceImpl implements ResourceService {
 	@javax.annotation.Resource
 	private OfficeConverter converter;
 	@javax.annotation.Resource
-	private CollectionService collectionService;
+	private CollectionMapper collectionMapper;
 	@javax.annotation.Resource
-	private BrowseHistoryService browseHistoryService;
+	private BrowseHistoryMapper browseHistoryMapper;
 
 	@Override
 	public ResponseEntity findResourceInfoById(RequestEntity entity) {
 		ResourceInfo result = mapper.selectResourceInfoByID(entity.getInt("id"));
+		return ResponseEntity.success(result);
+	}
+
+	@Override
+	public ResponseEntity findResourceById(RequestEntity entity) {
+		Resource result = mapper.selectByPrimaryKey(entity.getInt("id"));
+		return ResponseEntity.success(result);
+	}
+
+	@Override
+	public ResponseEntity findResourceByIds(RequestEntity entity) {
+		Condition condition = new Condition(Resource.class);
+		condition.createCriteria()//
+				.andEqualTo("del", 0)//
+				.andIn("id", entity.getList("ids", Integer.class));//
+
+		List<Resource> result = mapper.selectByCondition(condition);
 		return ResponseEntity.success(result);
 	}
 
@@ -65,7 +82,7 @@ public class ResourceServiceImpl implements ResourceService {
 		}
 		Criteria criteria = condition.createCriteria();
 //		获取当前登陆者身份信息
-		criteria.andEqualTo("creator", entity.userid)//
+		criteria.andEqualTo("creator", entity.getInt("creator"))//
 				.andEqualTo("del", 0)//
 				.andIn("type", resourceTypes);
 //		条件2、关键字搜索
@@ -87,7 +104,7 @@ public class ResourceServiceImpl implements ResourceService {
 
 		List<Integer> resourceTypes = JSON.parseArray(entity.getString("resourceTypes"), Integer.class);
 
-		List<Resource> result = mapper.findResourcesByBrowseHistory(resourceTypes, entity.getString("keyword"), entity.userid);
+		List<Resource> result = mapper.findResourcesByBrowseHistory(resourceTypes, entity.getString("keyword"), entity.getInt("creator"));
 		PageInfo<Resource> page = new PageInfo<Resource>(result);
 //		查到的总记录数
 //		解释一下：这个page.getTotal()，是所有符合条件的记录数。
@@ -101,7 +118,7 @@ public class ResourceServiceImpl implements ResourceService {
 		// 开始分页查询
 		PageHelper.startPage(entity.pageNum, entity.pageSize, entity.getString("orderByClause"));
 		List<Integer> resourceTypes = JSON.parseArray(entity.getString("resourceTypes"), Integer.class);
-		List<Resource> result = mapper.findResourcesByCollection(resourceTypes, entity.getString("keyword"), entity.userid);
+		List<Resource> result = mapper.findResourcesByCollection(resourceTypes, entity.getString("keyword"), entity.getInt("creator"));
 		PageInfo<Resource> page = new PageInfo<Resource>(result);
 //		查到的总记录数
 //		解释一下：这个page.getTotal()，是所有符合条件的记录数。
@@ -115,7 +132,7 @@ public class ResourceServiceImpl implements ResourceService {
 		Condition condition = new Condition(Resource.class);
 		condition.createCriteria()
 				// 获取当前登陆者身份信息
-				.andEqualTo("creator", entity.userid)
+				.andEqualTo("creator", entity.getInt("creator"))
 				// 条件1、查找用户指定的资源类型
 				.andEqualTo("type", entity.getString("type"));
 		String keyword = entity.getString("keyword");
@@ -134,13 +151,13 @@ public class ResourceServiceImpl implements ResourceService {
 
 	@Override
 	public ResponseEntity countBrowseResourceByType(RequestEntity entity) {
-		int data = mapper.countBrowseResourceByType(entity.getInt("type"), entity.getString("keyword"), entity.userid);
+		int data = mapper.countBrowseResourceByType(entity.getInt("type"), entity.getString("keyword"), entity.getInt("creator"));
 		return ResponseEntity.success(data);
 	}
 
 	@Override
 	public ResponseEntity countCollectionResourceByType(RequestEntity entity) {
-		int data = mapper.countCollectionResourceByType(entity.getInt("type"), entity.getString("keyword"), entity.userid);
+		int data = mapper.countCollectionResourceByType(entity.getInt("type"), entity.getString("keyword"), entity.getInt("creator"));
 		return ResponseEntity.success(data);
 	}
 
@@ -154,23 +171,27 @@ public class ResourceServiceImpl implements ResourceService {
 		def.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW);
 		// 4.获得事务状态
 		TransactionStatus status = transactionManager.getTransaction(def);
-		try {
-			List<Resource> resources = entity.getList("resources", Resource.class);
-			for (Resource resource : resources) {
-				ResourceType type = ResourceType.getResourceType(resource.getType());
-				if (type.isConvertable()) {
-					converter.resourceConverter(resource.getPath());
-				}
+		List<Resource> resources = entity.getList("resources", Resource.class);
+		for (Resource resource : resources) {
+			ResourceType type = ResourceType.getResourceType(resource.getType());
+			if (type.isConvertable()) {
+				converter.resourceConverter(resource.getPath());
 			}
+		}
+		List<Integer> ids = new ArrayList<>(resources.size());
+		try {
 			mapper.insertList(resources);
 
+			resources.forEach(r -> ids.add(r.getId()));
+
 			transactionManager.commit(status);
+
 		} catch (Exception e) {
 			e.printStackTrace();
 			transactionManager.rollback(status);
 		}
 
-		return null;
+		return ResponseEntity.success(ids);
 	}
 
 	@Override
@@ -192,22 +213,23 @@ public class ResourceServiceImpl implements ResourceService {
 			Condition condition = new Condition(BrowseHistory.class);
 			condition.orderBy("createDate").asc();
 			Criteria criteria = condition.createCriteria();
-			criteria.andEqualTo("creator", entity.userid);
-			List<BrowseHistory> histories = browseHistoryService.findByCondition(condition);
+			criteria.andEqualTo("creator", entity.getInt("creator"));
+			List<BrowseHistory> histories = browseHistoryMapper.selectByCondition(condition);
 			// 查看历史记录是否超过100条，注意这里是物理删除！！！
 			if (histories.size() >= 100) {
 				BrowseHistory history = histories.get(0);
-				browseHistoryService.deleteById(history.getId());
+				browseHistoryMapper.deleteByPrimaryKey(history.getId());
 			}
 			BrowseHistory history = new BrowseHistory();
 			history.setResourceId(entity.getInt("id"));
-			history.setCreator(entity.userid);
-			browseHistoryService.save(history);
+			history.setCreator(entity.getInt("creator"));
+			browseHistoryMapper.insert(history);
 			transactionManager.commit(status);
 		} catch (Exception e) {
 			e.printStackTrace();
 			transactionManager.rollback(status);
 		}
+		return ResponseEntity.success(null);
 	}
 
 	@Override
@@ -230,20 +252,21 @@ public class ResourceServiceImpl implements ResourceService {
 			// 修改用户收藏记录
 			Condition condition = new Condition(Collection.class);
 			Criteria criteria = condition.createCriteria();
-			criteria.andEqualTo("creator", entity.userid);
+			criteria.andEqualTo("creator", entity.getInt("creator"));
 			criteria.andEqualTo("resourceId", entity.getInt("id"));
 			criteria.andEqualTo("del", 0);
 
-			List<Collection> collections = collectionService.findByCondition(condition);
+			List<Collection> collections = collectionMapper.selectByCondition(condition);
 			for (Collection collection : collections) {
 				collection.setDel(1);
-				collectionService.update(collection);
+				collectionMapper.updateByPrimaryKeySelective(collection);
 			}
 			transactionManager.commit(status);
 		} catch (Exception e) {
 			e.printStackTrace();
 			transactionManager.rollback(status);
 		}
+		return ResponseEntity.success(null);
 	}
 
 	@Override
@@ -263,21 +286,21 @@ public class ResourceServiceImpl implements ResourceService {
 			// 新增用户收藏记录
 			Collection collection = new Collection();
 			collection.setResourceId(entity.getInt("id"));
-			collection.setCreator(entity.userid);
+			collection.setCreator(entity.getInt("creator"));
 //			FIXME
-			collectionService.save(collection);
+			collectionMapper.insert(collection);
 			transactionManager.commit(status);
 		} catch (Exception e) {
 			e.printStackTrace();
 			transactionManager.rollback(status);
 		}
+		return ResponseEntity.success(null);
 	}
 
 	@Override
 	public ResponseEntity deteleResource(RequestEntity entity) {
-		Condition condition = new Condition(Resource.class);
-		condition.selectProperties("id", "del");
-		Resource resource = JSON.parseObject(entity.data, Resource.class);
+		Resource resource = new Resource();
+		resource.setId(entity.getInt("id"));
 		resource.setDel(true);
 		mapper.updateByPrimaryKeySelective(resource);
 

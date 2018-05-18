@@ -37,4 +37,28 @@ public class TypicalCaseServiceImpl implements TypicalCaseService {
 		mapper.insert(typicalCase);
 		return ResponseEntity.success(typicalCase);
 	}
+
+	@Override
+	public ResponseEntity findTypicalCasesById(RequestEntity entity) {
+		Condition condition = new Condition(TypicalCase.class);
+		condition.createCriteria()//
+				.andEqualTo("del", 0)//
+				.andEqualTo("id", entity.getInt("id"));
+		TypicalCase result = mapper.selectOneByExample(condition);
+		return ResponseEntity.success(result);
+	}
+
+	@Override
+	public void deleteTypicalCaseById(RequestEntity entity) {
+		TypicalCase typicalCase = new TypicalCase();
+		typicalCase.setId(entity.getInt("id"));
+		typicalCase.setDel(true);
+		mapper.updateByPrimaryKeySelective(typicalCase);
+	}
+
+	@Override
+	public void updateTypicalCase(RequestEntity entity) {
+		TypicalCase typicalCase = entity.getObject("typicalCase", TypicalCase.class);
+		mapper.updateByPrimaryKeySelective(typicalCase);
+	}
 }

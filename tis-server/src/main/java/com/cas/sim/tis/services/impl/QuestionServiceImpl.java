@@ -1,6 +1,5 @@
 package com.cas.sim.tis.services.impl;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -15,19 +14,16 @@ import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import com.cas.sim.tis.entity.Library;
 import com.cas.sim.tis.entity.Question;
-import com.cas.sim.tis.mapper.PreparationMapper;
+import com.cas.sim.tis.mapper.LibraryMapper;
 import com.cas.sim.tis.mapper.QuestionMapper;
-import com.cas.sim.tis.services.LibraryService;
 import com.cas.sim.tis.services.QuestionService;
 import com.cas.sim.tis.thrift.RequestEntity;
 import com.cas.sim.tis.thrift.ResponseEntity;
 import com.cas.sim.tis.util.SpringUtil;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.mysql.fabric.Response;
 
 import tk.mybatis.mapper.entity.Condition;
-import tk.mybatis.mapper.entity.Example.Criteria;
 
 @Service
 public class QuestionServiceImpl implements QuestionService {
@@ -37,7 +33,7 @@ public class QuestionServiceImpl implements QuestionService {
 	private QuestionMapper mapper;
 
 	@Resource
-	private LibraryService libraryService;
+	private LibraryMapper libraryMapper;
 
 	@Override
 	public ResponseEntity findQuestionsByLibrary(RequestEntity entity) {
@@ -45,10 +41,17 @@ public class QuestionServiceImpl implements QuestionService {
 		condition.createCriteria()//
 				.andEqualTo("relateId", entity.getInt("rid"));
 		condition.orderBy("type").asc();
-		PageHelper.startPage(entity.pageNum, entity.pageSize);
+
+		if (entity.pageNum != -1) {
+			PageHelper.startPage(entity.pageNum, entity.pageSize);
+		}
+
 		List<Question> result = mapper.selectByCondition(condition);
-		PageInfo<Question> page = new PageInfo<>(result);
-		LOG.info("成功查找到{}条资源,当前页码{},每页{}条资源,共{}页", result.size(), entity.pageNum, entity.pageSize, page.getPages());
+
+		if (entity.pageNum != -1) {
+			PageInfo<Question> page = new PageInfo<>(result);
+			LOG.info("成功查找到{}条资源,当前页码{},每页{}条资源,共{}页", result.size(), entity.pageNum, entity.pageSize, page.getPages());
+		}
 		return ResponseEntity.success(result);
 	}
 
@@ -82,10 +85,10 @@ public class QuestionServiceImpl implements QuestionService {
 		try {
 			int count = mapper.insertList(questions);
 
-			Library library = libraryService.findById(entity.getInt("rid"));
+			Library library = libraryMapper.selectByPrimaryKey(entity.getInt("rid"));
 			library.setNum(count);
 
-			libraryService.update(library);
+			libraryMapper.updateByPrimaryKeySelective(library);
 			transactionManager.commit(status);
 		} catch (Exception e) {
 			e.printStackTrace();

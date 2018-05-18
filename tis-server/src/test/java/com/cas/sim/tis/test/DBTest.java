@@ -39,7 +39,11 @@ public class DBTest {
 	}
 	@Test
 	public void testUserMapper() throws Exception {
-		userMapper.selectAll().forEach(System.out::println);
+		Condition condition = new Condition(User.class);
+		
+		condition.createCriteria().andEqualTo("name", "11");
+		List<User> result = userMapper.selectByCondition(condition);
+		System.out.println(result);
 	}
 
 	@Test

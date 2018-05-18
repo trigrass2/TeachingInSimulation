@@ -16,12 +16,11 @@ import com.cas.sim.tis.entity.LibraryAnswer;
 import com.cas.sim.tis.entity.LibraryPublish;
 import com.cas.sim.tis.entity.LibraryRecord;
 import com.cas.sim.tis.entity.User;
-import com.cas.sim.tis.mapper.LibraryMapper;
+import com.cas.sim.tis.mapper.LibraryAnswerMapper;
+import com.cas.sim.tis.mapper.LibraryPublishMapper;
 import com.cas.sim.tis.mapper.LibraryRecordMapper;
-import com.cas.sim.tis.services.LibraryAnswerService;
-import com.cas.sim.tis.services.LibraryPublishService;
+import com.cas.sim.tis.mapper.UserMapper;
 import com.cas.sim.tis.services.LibraryRecordService;
-import com.cas.sim.tis.services.UserService;
 import com.cas.sim.tis.thrift.RequestEntity;
 import com.cas.sim.tis.thrift.ResponseEntity;
 import com.cas.sim.tis.util.SpringUtil;
@@ -40,11 +39,11 @@ public class LibraryRecordServiceImpl implements LibraryRecordService {
 	private LibraryRecordMapper mapper;
 
 	@Resource
-	private UserService userService;
+	private UserMapper userMapper;
 	@Resource
-	private LibraryPublishService publishService;
+	private LibraryPublishMapper publishMapper;
 	@Resource
-	private LibraryAnswerService answerService;
+	private LibraryAnswerMapper answerMapper;
 
 	@Override
 	public ResponseEntity findRecordByPublishId(RequestEntity entity) {
@@ -74,9 +73,9 @@ public class LibraryRecordServiceImpl implements LibraryRecordService {
 			for (LibraryAnswer answer : answers) {
 				answer.setRecordId(recordId);
 			}
-			answerService.save(answers);
+			answerMapper.insertList(answers);
 
-			LibraryPublish publish = publishService.findById(record.getPublishId());
+			LibraryPublish publish = publishMapper.selectByPrimaryKey(record.getPublishId());
 
 			// 获得班级总人数
 			if (publish.getClassId() == null) {
@@ -86,14 +85,14 @@ public class LibraryRecordServiceImpl implements LibraryRecordService {
 				Criteria criteria = userCon.createCriteria();
 				criteria.andEqualTo("classId", publish.getClassId());
 				criteria.andEqualTo("del", 0);
-				int total = userService.getTotalBy(userCon);
+				int total = userMapper.selectCountByCondition(userCon);
 				// 获得已交卷成绩总和
 				LibraryRecordMapper recordMapper = (LibraryRecordMapper) mapper;
 				float sum = recordMapper.getRecordScoresSumByPublishId(publish.getId());
 				publish.setAverage(MathUtil.round(2, sum / total));
 			}
 			// 更新平均成绩
-			publishService.update(publish);
+			publishMapper.updateByPrimaryKeySelective(publish);
 
 			transactionManager.commit(status);
 		} catch (Exception e) {

@@ -9,8 +9,13 @@ import io.airlift.drift.annotations.ThriftService;
 @ThriftService
 public interface ResourceService {
 	@ThriftMethod
-//	ThriftEntity findResourceInfoById(int id);
+	ResponseEntity findResourceById(RequestEntity entity);
+
+	@ThriftMethod
 	ResponseEntity findResourceInfoById(RequestEntity entity);
+
+	@ThriftMethod
+	ResponseEntity findResourceByIds(RequestEntity entity);
 
 	/**
 	 * @param pagination
@@ -77,7 +82,7 @@ public interface ResourceService {
 
 	/**
 	 * @param resources
-	 * @return
+	 * @return 返回上传资源的ID集合
 	 */
 	@ThriftMethod
 	ResponseEntity addResources(RequestEntity entity);
@@ -108,4 +113,5 @@ public interface ResourceService {
 	 */
 	@ThriftMethod
 	ResponseEntity deteleResource(RequestEntity entity);
+
 }
