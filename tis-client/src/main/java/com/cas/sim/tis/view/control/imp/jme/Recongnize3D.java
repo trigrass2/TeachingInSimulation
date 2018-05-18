@@ -20,11 +20,9 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Label;
-import javafx.scene.effect.DropShadow;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
-import javafx.scene.paint.Color;
 
 public class Recongnize3D implements IContent {
 
@@ -65,9 +63,7 @@ public class Recongnize3D implements IContent {
 		nameLabel = new Label();
 //		TODO 调样式
 		nameLabel.setId("RecognizeNameLabel");
-		nameLabel.setTextFill(Color.WHITE);
-		nameLabel.setEffect(new DropShadow(3, Color.BLACK));
-		
+
 		pane = new AnchorPane(nameLabel);
 		pane.setPickOnBounds(false);
 		pane.setMouseTransparent(true);
@@ -78,8 +74,6 @@ public class Recongnize3D implements IContent {
 		try {
 			btns = loader.load(Recongnize3D.class.getResourceAsStream("/view/jme/Recognize.fxml"));
 			RecongnizeBtnController btnController = loader.getController();
-
-			nameLabel.visibleProperty().bind(btnController.getShowName().selectedProperty());
 			btnController.setState(compState);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -119,6 +113,6 @@ public class Recongnize3D implements IContent {
 ////	详见JFXMouseInput:
 ////	    private boolean useLocalCoords;
 ////		private boolean inverseYCoord;
-		nameLabel.setLayoutY(canvas.getHeight() - y);
+		nameLabel.setLayoutY(canvas.getHeight() - y + 20);
 	}
 }

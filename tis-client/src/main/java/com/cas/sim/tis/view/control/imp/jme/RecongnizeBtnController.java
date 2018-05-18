@@ -18,8 +18,6 @@ public class RecongnizeBtnController implements Initializable {
 	@FXML
 	private CheckBox transparent;
 	@FXML
-	private CheckBox showName;
-	@FXML
 	private CheckBox autoRoate;
 	@FXML
 	private Control reset;
@@ -44,9 +42,6 @@ public class RecongnizeBtnController implements Initializable {
 		transparent.selectedProperty().addListener((s, o, n) -> {
 			compState.transparent(n);
 		});
-		showName.selectedProperty().addListener((s, o, n) -> {
-			compState.setNameVisible(n);
-		});
 		autoRoate.selectedProperty().addListener((s, o, n) -> {
 			compState.autoRotate(n);
 		});
@@ -63,10 +58,6 @@ public class RecongnizeBtnController implements Initializable {
 
 	public void setState(ElecCompState compState) {
 		this.compState = compState;
-	}
-
-	public CheckBox getShowName() {
-		return showName;
 	}
 
 }
