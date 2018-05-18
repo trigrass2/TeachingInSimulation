@@ -2,30 +2,39 @@ package com.cas.sim.tis.services.impl;
 
 import java.util.List;
 
+import javax.annotation.Resource;
+
 import org.springframework.stereotype.Service;
 
+import com.alibaba.fastjson.JSON;
 import com.cas.sim.tis.entity.TypicalCase;
+import com.cas.sim.tis.mapper.TypicalCaseMapper;
 import com.cas.sim.tis.services.TypicalCaseService;
+import com.cas.sim.tis.thrift.RequestEntity;
+import com.cas.sim.tis.thrift.ResponseEntity;
 
 import tk.mybatis.mapper.entity.Condition;
-import tk.mybatis.mapper.entity.Example.Criteria;
 
 @Service
-public class TypicalCaseServiceImpl extends AbstractService<TypicalCase> implements TypicalCaseService {
+public class TypicalCaseServiceImpl implements TypicalCaseService {
+	@Resource
+	private TypicalCaseMapper mapper;
 
 	@Override
-	public List<TypicalCase> findTypicalCasesByCreator(Integer creator) {
+	public ResponseEntity findTypicalCasesByCreatorId(RequestEntity entity) {
 		Condition condition = new Condition(TypicalCase.class);
-		Criteria criteria = condition.createCriteria();
-		criteria.andEqualTo("del", 0);
-		criteria.andEqualTo("creator", creator);
+		condition.createCriteria()//
+				.andEqualTo("del", 0)//
+				.andEqualTo("creator", entity.getInt("creator"));
 		condition.orderBy("createDate").desc();
-		return findByCondition(condition);
+		List<TypicalCase> result = mapper.selectByCondition(condition);
+		return ResponseEntity.success(result);
 	}
 
 	@Override
-	public int saveRetId(TypicalCase typicalCase) {
-		saveUseGeneratedKeys(typicalCase);
-		return typicalCase.getId();
+	public ResponseEntity saveTypicalCase(RequestEntity entity) {
+		TypicalCase typicalCase = JSON.parseObject(entity.data, TypicalCase.class);
+		mapper.insert(typicalCase);
+		return ResponseEntity.success(typicalCase);
 	}
 }

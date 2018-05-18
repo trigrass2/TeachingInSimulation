@@ -3,12 +3,16 @@ package com.cas.sim.tis.services.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 
+import com.alibaba.fastjson.JSON;
 import com.cas.sim.tis.consts.ResourceType;
 import com.cas.sim.tis.entity.BrowseHistory;
 import com.cas.sim.tis.entity.Collection;
@@ -17,6 +21,8 @@ import com.cas.sim.tis.mapper.ResourceMapper;
 import com.cas.sim.tis.services.BrowseHistoryService;
 import com.cas.sim.tis.services.CollectionService;
 import com.cas.sim.tis.services.ResourceService;
+import com.cas.sim.tis.thrift.RequestEntity;
+import com.cas.sim.tis.thrift.ResponseEntity;
 import com.cas.sim.tis.util.SpringUtil;
 import com.cas.sim.tis.utils.OfficeConverter;
 import com.cas.sim.tis.vo.ResourceInfo;
@@ -28,7 +34,11 @@ import tk.mybatis.mapper.entity.Condition;
 import tk.mybatis.mapper.entity.Example.Criteria;
 
 @Service
-public class ResourceServiceImpl extends AbstractService<Resource> implements ResourceService {
+public class ResourceServiceImpl implements ResourceService {
+	private static final Logger LOG = LoggerFactory.getLogger(ResourceServiceImpl.class);
+
+	@javax.annotation.Resource
+	private ResourceMapper mapper;
 
 	@javax.annotation.Resource
 	private OfficeConverter converter;
@@ -38,151 +48,104 @@ public class ResourceServiceImpl extends AbstractService<Resource> implements Re
 	private BrowseHistoryService browseHistoryService;
 
 	@Override
-	public ResourceInfo findResourceInfoByID(int id) {
-		ResourceMapper resourceMapper = (ResourceMapper) mapper;
-		ResourceInfo result = resourceMapper.selectResourceInfoByID(id);
-		return result;
+	public ResponseEntity findResourceInfoById(RequestEntity entity) {
+		ResourceInfo result = mapper.selectResourceInfoByID(entity.getInt("id"));
+		return ResponseEntity.success(result);
 	}
 
 	@Override
-	public List<Resource> findResourcesByCreator(int pagination, int pageSize, List<Integer> resourceTypes, String keyword, String orderByClause, Integer creator) {
-//		获取当前登陆者身份信息
+	public ResponseEntity findResourcesByCreator(RequestEntity entity) {
+
 		Condition condition = new Condition(Resource.class);
 		// 筛选创建人
 //		条件1、查找用户指定的几种资源类型
+		List<Integer> resourceTypes = JSON.parseArray(entity.getString("resourceTypes"), Integer.class);
 		if (resourceTypes.size() == 0) {
-			return new ArrayList<Resource>();
-		} else {
-			Criteria criteria = condition.createCriteria();
-			criteria.andIn("type", resourceTypes);
-		}
-//		条件2、关键字搜索
-		if (keyword != null && !"".equals(keyword)) {
-			Criteria criteria = condition.createCriteria();
-			List<String> words = StringUtil.split(keyword, ' ');
-			for (String word : words) {
-				criteria.orLike("keyword", "%" + word + "%");
-			}
-			condition.and(criteria);
+			return ResponseEntity.success(new ArrayList<Resource>());
 		}
 		Criteria criteria = condition.createCriteria();
-		criteria.andEqualTo("creator", creator);
-		condition.and(criteria);
-//		开始分页查询
-		PageHelper.startPage(pagination, pageSize, orderByClause);
-		List<Resource> result = findByCondition(condition);
-		PageInfo<Resource> page = new PageInfo<Resource>(result);
-//		查到的总记录数
-//		解释一下：这个page.getTotal()，是所有符合条件的记录数。
-//		result.size()：是当前页中的数据量 <= pageSize
-		LOG.info("成功查找到{}条资源,当前页码{},每页{}条资源,共{}页", result.size(), pagination, pageSize, page.getPages());
-		return result;
-	}
-
-	@Override
-	public List<Resource> findResourcesByCreator(List<Integer> resourceTypes, String keyword, Integer creator) {
 //		获取当前登陆者身份信息
-		Condition condition = new Condition(Resource.class);
-		// 筛选创建人
-//		条件1、查找用户指定的几种资源类型
-		if (resourceTypes.size() == 0) {
-			return new ArrayList<Resource>();
-		} else {
-			Criteria criteria = condition.createCriteria();
-			criteria.andIn("type", resourceTypes);
-		}
+		criteria.andEqualTo("creator", entity.userid)//
+				.andEqualTo("del", 0)//
+				.andIn("type", resourceTypes);
 //		条件2、关键字搜索
-		if (keyword != null && !"".equals(keyword)) {
-			Criteria criteria = condition.createCriteria();
+		String keyword = entity.getString("keyword");
+		if (StringUtils.isNotBlank(keyword)) {
 			List<String> words = StringUtil.split(keyword, ' ');
 			for (String word : words) {
-				criteria.orLike("keyword", "%" + word + "%");
+				criteria.orLike("keyword", String.format("%%%s%%", word));
 			}
-			condition.and(criteria);
 		}
-		Criteria criteria = condition.createCriteria();
-		criteria.andEqualTo("creator", creator);
-		criteria.andEqualTo("del", 0);
-		condition.and(criteria);
-		List<Resource> result = findByCondition(condition);
-		return result;
+		List<Resource> result = mapper.selectByCondition(condition);
+		return ResponseEntity.success(result);
 	}
 
 	@Override
-	public List<Resource> findResourcesByBrowseHistory(int pagination, int pageSize, List<Integer> resourceTypes, String keyword, String orderByClause, Integer creator) {
-		ResourceMapper resourceMapper = (ResourceMapper) mapper;
+	public ResponseEntity findResourcesByBrowseHistory(RequestEntity entity) {
 		// 开始分页查询
-		PageHelper.startPage(pagination, pageSize, orderByClause);
-		List<Resource> result = resourceMapper.findResourcesByBrowseHistory(resourceTypes, keyword, creator);
+		PageHelper.startPage(entity.pageNum, entity.pageSize, entity.getString("orderByClause"));
+
+		List<Integer> resourceTypes = JSON.parseArray(entity.getString("resourceTypes"), Integer.class);
+
+		List<Resource> result = mapper.findResourcesByBrowseHistory(resourceTypes, entity.getString("keyword"), entity.userid);
 		PageInfo<Resource> page = new PageInfo<Resource>(result);
 //		查到的总记录数
 //		解释一下：这个page.getTotal()，是所有符合条件的记录数。
 //		result.size()：是当前页中的数据量 <= pageSize
-		LOG.info("成功查找到{}条资源,当前页码{},每页{}条资源,共{}页", result.size(), pagination, pageSize, page.getPages());
-		return result;
+		LOG.info("成功查找到{}条资源,当前页码{},每页{}条资源,共{}页", result.size(), entity.pageNum, entity.pageSize, page.getPages());
+		return ResponseEntity.success(result);
 	}
 
 	@Override
-	public List<Resource> findResourcesByCollection(int pagination, int pageSize, List<Integer> resourceTypes, String keyword, String orderByClause, Integer creator) {
-		ResourceMapper resourceMapper = (ResourceMapper) mapper;
+	public ResponseEntity findResourcesByCollection(RequestEntity entity) {
 		// 开始分页查询
-		PageHelper.startPage(pagination, pageSize, orderByClause);
-		List<Resource> result = resourceMapper.findResourcesByCollection(resourceTypes, keyword, creator);
+		PageHelper.startPage(entity.pageNum, entity.pageSize, entity.getString("orderByClause"));
+		List<Integer> resourceTypes = JSON.parseArray(entity.getString("resourceTypes"), Integer.class);
+		List<Resource> result = mapper.findResourcesByCollection(resourceTypes, entity.getString("keyword"), entity.userid);
 		PageInfo<Resource> page = new PageInfo<Resource>(result);
 //		查到的总记录数
 //		解释一下：这个page.getTotal()，是所有符合条件的记录数。
 //		result.size()：是当前页中的数据量 <= pageSize
-		LOG.info("成功查找到{}条资源,当前页码{},每页{}条资源,共{}页", result.size(), pagination, pageSize, page.getPages());
-		return result;
+		LOG.info("成功查找到{}条资源,当前页码{},每页{}条资源,共{}页", result.size(), entity.pageNum, entity.pageSize, page.getPages());
+		return ResponseEntity.success(result);
 	}
 
 	@Override
-	public int countResourceByType(int type, String keyword, Integer creator) {
-//		获取当前登陆者身份信息
+	public ResponseEntity countResourceByType(RequestEntity entity) {
 		Condition condition = new Condition(Resource.class);
-		Criteria criteria1 = condition.createCriteria();
-//		条件1、查找用户指定的资源类型
-		criteria1.andEqualTo("type", type);
-//		条件2、关键字搜索
-		if (keyword != null && !"".equals(keyword)) {
+		condition.createCriteria()
+				// 获取当前登陆者身份信息
+				.andEqualTo("creator", entity.userid)
+				// 条件1、查找用户指定的资源类型
+				.andEqualTo("type", entity.getString("type"));
+		String keyword = entity.getString("keyword");
+		// 条件2、关键字搜索
+		if (StringUtils.isNotBlank(keyword)) {
 			Criteria criteria2 = condition.createCriteria();
 			List<String> words = StringUtil.split(keyword, ' ');
 			for (String word : words) {
-				criteria2.orLike("keyword", "%" + word + "%");
+				criteria2.orLike("keyword", String.format("%%%s%%", word));
 			}
 			condition.and(criteria2);
 		}
-		Criteria criteria3 = condition.createCriteria();
-		criteria3.andEqualTo("creator", creator);
-		condition.and(criteria3);
-		return getTotalBy(condition);
+		Object data = mapper.selectCountByCondition(condition);
+		return ResponseEntity.success(data);
 	}
 
 	@Override
-	public int countBrowseResourceByType(int type, String keyword, Integer creator) {
-		ResourceMapper resourceMapper = (ResourceMapper) mapper;
-		return resourceMapper.countBrowseResourceByType(type, keyword, creator);
+	public ResponseEntity countBrowseResourceByType(RequestEntity entity) {
+		int data = mapper.countBrowseResourceByType(entity.getInt("type"), entity.getString("keyword"), entity.userid);
+		return ResponseEntity.success(data);
 	}
 
 	@Override
-	public int countCollectionResourceByType(int type, String keyword, Integer creator) {
-		ResourceMapper resourceMapper = (ResourceMapper) mapper;
-		return resourceMapper.countCollectionResourceByType(type, keyword, creator);
+	public ResponseEntity countCollectionResourceByType(RequestEntity entity) {
+		int data = mapper.countCollectionResourceByType(entity.getInt("type"), entity.getString("keyword"), entity.userid);
+		return ResponseEntity.success(data);
 	}
 
 	@Override
-	public Integer addResource(Resource resource) {
-		// 判断是否需要转化
-		ResourceType type = ResourceType.getResourceType(resource.getType());
-		if (type.isConvertable()) {
-			converter.resourceConverter(resource.getPath());
-		}
-		saveUseGeneratedKeys(resource);
-		return resource.getId();
-	}
-
-	@Override
-	public List<Integer> addResources(List<Resource> resources) {
+	public ResponseEntity addResources(RequestEntity entity) {
 		// 1.获取事务控制管理器
 		DataSourceTransactionManager transactionManager = SpringUtil.getBean(DataSourceTransactionManager.class);
 		// 2.获取事务定义
@@ -192,26 +155,26 @@ public class ResourceServiceImpl extends AbstractService<Resource> implements Re
 		// 4.获得事务状态
 		TransactionStatus status = transactionManager.getTransaction(def);
 		try {
-			List<Integer> ids = new ArrayList<>();
+			List<Resource> resources = entity.getList("resources", Resource.class);
 			for (Resource resource : resources) {
 				ResourceType type = ResourceType.getResourceType(resource.getType());
 				if (type.isConvertable()) {
 					converter.resourceConverter(resource.getPath());
 				}
-				saveUseGeneratedKeys(resource);
-				ids.add(resource.getId());
 			}
+			mapper.insertList(resources);
+
 			transactionManager.commit(status);
-			return ids;
 		} catch (Exception e) {
 			e.printStackTrace();
 			transactionManager.rollback(status);
-			return null;
 		}
+
+		return null;
 	}
 
 	@Override
-	public void browsed(Integer id, Integer userId) {
+	public ResponseEntity browsed(RequestEntity entity) {
 		// 1.获取事务控制管理器
 		DataSourceTransactionManager transactionManager = SpringUtil.getBean(DataSourceTransactionManager.class);
 		// 2.获取事务定义
@@ -224,12 +187,12 @@ public class ResourceServiceImpl extends AbstractService<Resource> implements Re
 		try {
 			// 增加资源查看数量
 			ResourceMapper resourceMapper = (ResourceMapper) mapper;
-			resourceMapper.increaseBrowse(id);
+			resourceMapper.increaseBrowse(entity.getInt("id"));
 
 			Condition condition = new Condition(BrowseHistory.class);
 			condition.orderBy("createDate").asc();
 			Criteria criteria = condition.createCriteria();
-			criteria.andEqualTo("creator", userId);
+			criteria.andEqualTo("creator", entity.userid);
 			List<BrowseHistory> histories = browseHistoryService.findByCondition(condition);
 			// 查看历史记录是否超过100条，注意这里是物理删除！！！
 			if (histories.size() >= 100) {
@@ -237,8 +200,8 @@ public class ResourceServiceImpl extends AbstractService<Resource> implements Re
 				browseHistoryService.deleteById(history.getId());
 			}
 			BrowseHistory history = new BrowseHistory();
-			history.setResourceId(id);
-			history.setCreator(userId);
+			history.setResourceId(entity.getInt("id"));
+			history.setCreator(entity.userid);
 			browseHistoryService.save(history);
 			transactionManager.commit(status);
 		} catch (Exception e) {
@@ -248,7 +211,7 @@ public class ResourceServiceImpl extends AbstractService<Resource> implements Re
 	}
 
 	@Override
-	public void uncollect(Integer id, Integer userId) {
+	public ResponseEntity uncollect(RequestEntity entity) {
 		// 1.获取事务控制管理器
 		DataSourceTransactionManager transactionManager = SpringUtil.getBean(DataSourceTransactionManager.class);
 		// 2.获取事务定义
@@ -261,13 +224,14 @@ public class ResourceServiceImpl extends AbstractService<Resource> implements Re
 		try {
 			// 减少资源收藏数量
 			ResourceMapper resourceMapper = (ResourceMapper) mapper;
-			resourceMapper.decreaseCollection(id);
+			resourceMapper.decreaseCollection(entity.getInt("id"));
 
+//			FIXME SQL优化
 			// 修改用户收藏记录
 			Condition condition = new Condition(Collection.class);
 			Criteria criteria = condition.createCriteria();
-			criteria.andEqualTo("creator", userId);
-			criteria.andEqualTo("resourceId", id);
+			criteria.andEqualTo("creator", entity.userid);
+			criteria.andEqualTo("resourceId", entity.getInt("id"));
 			criteria.andEqualTo("del", 0);
 
 			List<Collection> collections = collectionService.findByCondition(condition);
@@ -283,7 +247,7 @@ public class ResourceServiceImpl extends AbstractService<Resource> implements Re
 	}
 
 	@Override
-	public void collected(Integer id, Integer userId) {
+	public ResponseEntity collected(RequestEntity entity) {
 		// 1.获取事务控制管理器
 		DataSourceTransactionManager transactionManager = SpringUtil.getBean(DataSourceTransactionManager.class);
 		// 2.获取事务定义
@@ -294,13 +258,13 @@ public class ResourceServiceImpl extends AbstractService<Resource> implements Re
 		TransactionStatus status = transactionManager.getTransaction(def);
 		try {
 			// 增加资源收藏数量
-			ResourceMapper resourceMapper = (ResourceMapper) mapper;
-			resourceMapper.increaseCollection(id);
+			mapper.increaseCollection(entity.getInt("id"));
 
 			// 新增用户收藏记录
 			Collection collection = new Collection();
-			collection.setResourceId(id);
-			collection.setCreator(userId);
+			collection.setResourceId(entity.getInt("id"));
+			collection.setCreator(entity.userid);
+//			FIXME
 			collectionService.save(collection);
 			transactionManager.commit(status);
 		} catch (Exception e) {
@@ -310,10 +274,14 @@ public class ResourceServiceImpl extends AbstractService<Resource> implements Re
 	}
 
 	@Override
-	public void deteleResource(Integer id) {
-		Resource resource = findById(id);
+	public ResponseEntity deteleResource(RequestEntity entity) {
+		Condition condition = new Condition(Resource.class);
+		condition.selectProperties("id", "del");
+		Resource resource = JSON.parseObject(entity.data, Resource.class);
 		resource.setDel(true);
-		update(resource);
+		mapper.updateByPrimaryKeySelective(resource);
+
+		return ResponseEntity.success(null);
 	}
 
 }

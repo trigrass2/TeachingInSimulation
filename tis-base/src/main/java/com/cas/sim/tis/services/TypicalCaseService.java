@@ -1,5 +1,6 @@
 package com.cas.sim.tis.services;
 
+import com.cas.sim.tis.thrift.RequestEntity;
 import com.cas.sim.tis.thrift.ResponseEntity;
 
 import io.airlift.drift.annotations.ThriftMethod;
@@ -9,8 +10,8 @@ import io.airlift.drift.annotations.ThriftService;
 public interface TypicalCaseService {
 
 	@ThriftMethod
-	ResponseEntity findTypicalCasesByCreatorId(int creatorId);
+	ResponseEntity findTypicalCasesByCreatorId(RequestEntity entity);
 
 	@ThriftMethod
-	int saveRetId(ResponseEntity typicalCaseEntity);
+	ResponseEntity saveTypicalCase(RequestEntity entity);
 }

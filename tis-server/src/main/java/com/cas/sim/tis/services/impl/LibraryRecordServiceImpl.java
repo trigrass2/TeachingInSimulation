@@ -4,6 +4,8 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.TransactionDefinition;
@@ -14,11 +16,14 @@ import com.cas.sim.tis.entity.LibraryAnswer;
 import com.cas.sim.tis.entity.LibraryPublish;
 import com.cas.sim.tis.entity.LibraryRecord;
 import com.cas.sim.tis.entity.User;
+import com.cas.sim.tis.mapper.LibraryMapper;
 import com.cas.sim.tis.mapper.LibraryRecordMapper;
 import com.cas.sim.tis.services.LibraryAnswerService;
 import com.cas.sim.tis.services.LibraryPublishService;
 import com.cas.sim.tis.services.LibraryRecordService;
 import com.cas.sim.tis.services.UserService;
+import com.cas.sim.tis.thrift.RequestEntity;
+import com.cas.sim.tis.thrift.ResponseEntity;
 import com.cas.sim.tis.util.SpringUtil;
 import com.cas.sim.tis.vo.LibraryRecordInfo;
 import com.cas.util.MathUtil;
@@ -27,7 +32,12 @@ import tk.mybatis.mapper.entity.Condition;
 import tk.mybatis.mapper.entity.Example.Criteria;
 
 @Service
-public class LibraryRecordServiceImpl extends AbstractService<LibraryRecord> implements LibraryRecordService {
+public class LibraryRecordServiceImpl implements LibraryRecordService {
+
+	private static final Logger LOG = LoggerFactory.getLogger(LibraryRecordServiceImpl.class);
+
+	@Resource
+	private LibraryRecordMapper mapper;
 
 	@Resource
 	private UserService userService;
@@ -37,13 +47,13 @@ public class LibraryRecordServiceImpl extends AbstractService<LibraryRecord> imp
 	private LibraryAnswerService answerService;
 
 	@Override
-	public List<LibraryRecordInfo> findRecordByPublishId(int pid) {
-		LibraryRecordMapper recordMapper = (LibraryRecordMapper) mapper;
-		return recordMapper.findRecordByPublishId(pid);
+	public ResponseEntity findRecordByPublishId(RequestEntity entity) {
+		List<LibraryRecordInfo> result = mapper.findRecordByPublishId(entity.getInt("pid"));
+		return ResponseEntity.success(result);
 	}
 
 	@Override
-	public void addRecord(LibraryRecord record, List<LibraryAnswer> answers) {
+	public void addRecord(RequestEntity entity) {
 		// 1.获取事务控制管理器
 		DataSourceTransactionManager transactionManager = SpringUtil.getBean(DataSourceTransactionManager.class);
 		// 2.获取事务定义
@@ -54,9 +64,13 @@ public class LibraryRecordServiceImpl extends AbstractService<LibraryRecord> imp
 		TransactionStatus status = transactionManager.getTransaction(def);
 
 		try {
-			saveUseGeneratedKeys(record);
+			LibraryRecord record = entity.getObject("record", LibraryRecord.class);
+			mapper.insert(record);
 
 			int recordId = record.getId();
+
+			List<LibraryAnswer> answers = entity.getList("entity", LibraryAnswer.class);
+
 			for (LibraryAnswer answer : answers) {
 				answer.setRecordId(recordId);
 			}

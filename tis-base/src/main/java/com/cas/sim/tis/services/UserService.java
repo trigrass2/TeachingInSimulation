@@ -36,4 +36,10 @@ public interface UserService {
 
 	@ThriftMethod
 	ResponseEntity findUserById(RequestEntity entity);
+
+	void saveUsers(RequestEntity entity);
+
+	void updateUser(RequestEntity entity);
+
+	void deleteUser(RequestEntity entity);
 }

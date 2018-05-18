@@ -1,40 +1,40 @@
 package com.cas.sim.tis.services.impl;
 
-import java.util.List;
+import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
 
+import com.alibaba.fastjson.JSON;
 import com.cas.sim.tis.entity.Preparation;
+import com.cas.sim.tis.mapper.PreparationMapper;
 import com.cas.sim.tis.services.PreparationService;
+import com.cas.sim.tis.thrift.RequestEntity;
+import com.cas.sim.tis.thrift.ResponseEntity;
 
 import tk.mybatis.mapper.entity.Condition;
-import tk.mybatis.mapper.entity.Example.Criteria;
+
 @Service
-public class PreparationServiceImpl extends AbstractService<Preparation> implements PreparationService {
+public class PreparationServiceImpl implements PreparationService {
+	@Resource
+	private PreparationMapper mapper;
 
 	@Override
-	public Preparation findPreparationByTaskIdAndCreator(Integer cid, int creator) {
+	public ResponseEntity findPreparationByTaskIdAndCreator(RequestEntity entity) {
 		Condition condition = new Condition(Preparation.class);
-		Criteria criteria = condition.createCriteria();
-		criteria.andEqualTo("catalogId", cid);
-		criteria.andEqualTo("creator", creator);
-		criteria.andEqualTo("del", 0);
+		condition.createCriteria()//
+				.andEqualTo("catalogId", entity.getInt("cid"))//
+				.andEqualTo("creator", entity.getInt("creator"))//
+				.andEqualTo("del", 0);
 
-		List<Preparation> preparations = findByCondition(condition);
-		if (preparations.size() == 1) {
-			return preparations.get(0);
-		} else if (preparations.size() == 0) {
-			return null;
-		} else {
-			LOG.warn("关联编号{}，创建人{}的有效备课信息应仅有一条！", cid, creator);
-			return preparations.get(0);
-		}
+		Preparation preparation = mapper.selectOneByExample(condition);
+		return ResponseEntity.success(preparation);
 	}
 
 	@Override
-	public Preparation addPreparation(Preparation preparation) {
-		int id = saveUseGeneratedKeys(preparation);
-		return findById(id);
+	public ResponseEntity addPreparation(RequestEntity entity) {
+		Preparation preparation = JSON.parseObject(entity.data, Preparation.class);
+		mapper.insert(preparation);
+		return ResponseEntity.success(preparation);
 	}
 
 }

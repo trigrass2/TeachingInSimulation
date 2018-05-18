@@ -7,6 +7,7 @@ import java.util.Map;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
+import com.cas.sim.tis.consts.Session;
 
 import io.airlift.drift.annotations.ThriftField;
 import io.airlift.drift.annotations.ThriftStruct;
@@ -30,6 +31,9 @@ public class RequestEntity {
 	@ThriftField(3)
 	public int pageSize = 10;
 
+	@ThriftField(4)
+	public int userid = Session.get(Session.KEY_LOGIN_ID);
+
 	private JSONObject json;
 
 	public RequestEntity set(String key, Object value) {
@@ -40,8 +44,9 @@ public class RequestEntity {
 		return this;
 	}
 
-	public void end() {
+	public RequestEntity end() {
 		this.data = json.toJSONString();
+		return this;
 	}
 
 	public Integer getInt(String key) {
@@ -56,6 +61,13 @@ public class RequestEntity {
 			json = JSON.parseObject(data);
 		}
 		return json.getString(key);
+	}
+
+	public Boolean getBoolean(String key) {
+		if (json == null) {
+			json = JSON.parseObject(data);
+		}
+		return json.getBoolean(key);
 	}
 
 	public <T> T getObject(String key, Class<T> clazz) {

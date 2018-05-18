@@ -1,7 +1,5 @@
 package com.cas.sim.tis.services;
 
-import java.util.List;
-
 import com.cas.sim.tis.thrift.RequestEntity;
 import com.cas.sim.tis.thrift.ResponseEntity;
 
@@ -82,32 +80,32 @@ public interface ResourceService {
 	 * @return
 	 */
 	@ThriftMethod
-	List<Integer> addResources(RequestEntity entity);
+	ResponseEntity addResources(RequestEntity entity);
 
 	/**
 	 * @param id
 	 * @param userId
 	 */
 	@ThriftMethod
-	void browsed(RequestEntity entity);
+	ResponseEntity browsed(RequestEntity entity);
 
 	/**
 	 * @param id
 	 * @param userId
 	 */
 	@ThriftMethod
-	void uncollect(RequestEntity entity);
+	ResponseEntity uncollect(RequestEntity entity);
 
 	/**
 	 * @param id
 	 * @param userId
 	 */
 	@ThriftMethod
-	void collected(RequestEntity entity);
+	ResponseEntity collected(RequestEntity entity);
 
 	/**
 	 * @param id
 	 */
 	@ThriftMethod
-	void deteleResource(RequestEntity entity);
+	ResponseEntity deteleResource(RequestEntity entity);
 }

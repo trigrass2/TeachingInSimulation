@@ -1,7 +1,8 @@
 package com.cas.sim.tis.services.impl;
 
-import java.util.ArrayList;
 import java.util.List;
+
+import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
 
@@ -9,33 +10,32 @@ import com.cas.sim.tis.consts.PreparationQuizType;
 import com.cas.sim.tis.entity.PreparationQuiz;
 import com.cas.sim.tis.mapper.PreparationQuizMapper;
 import com.cas.sim.tis.services.PreparationQuizService;
+import com.cas.sim.tis.thrift.RequestEntity;
+import com.cas.sim.tis.thrift.ResponseEntity;
 import com.cas.sim.tis.vo.PreparationInfo;
 
 import tk.mybatis.mapper.entity.Condition;
-import tk.mybatis.mapper.entity.Example.Criteria;
 
 @Service
-public class PreparationQuizServiceImpl extends AbstractService<PreparationQuiz> implements PreparationQuizService {
+public class PreparationQuizServiceImpl implements PreparationQuizService {
+	@Resource
+	private PreparationQuizMapper mapper;
 
 	@Override
-	public List<PreparationInfo> findQuizsByPreparationId(Integer pid) {
-		PreparationQuizMapper mapper = (PreparationQuizMapper) this.mapper;
-		List<PreparationInfo> tests = mapper.findQuizsByPreparationId(pid);
-		if (tests == null) {
-			return new ArrayList<>();
-		} else {
-			return tests;
-		}
+	public ResponseEntity findQuizsByPreparationId(RequestEntity entity) {
+		List<PreparationInfo> tests = mapper.findQuizsByPreparationId(entity.getInt("pid"));
+		return ResponseEntity.success(tests);
 	}
 
 	@Override
-	public int countFreeQuizByPreparationId(Integer pid) {
+	public ResponseEntity countFreeQuizByPreparationId(RequestEntity entity) {
 		Condition condition = new Condition(PreparationQuiz.class);
-		Criteria criteria = condition.createCriteria();
-		criteria.andEqualTo("preparationId", pid);
-		criteria.andEqualTo("type", PreparationQuizType.FREE.getType());
-		criteria.andEqualTo("del", 0);
-		return getTotalBy(condition);
+		condition.createCriteria()//
+				.andEqualTo("preparationId", entity.getInt("pid"))//
+				.andEqualTo("type", PreparationQuizType.FREE.getType())//
+				.andEqualTo("del", 0);
+		int result = mapper.selectCountByCondition(condition);
+		return ResponseEntity.success(result);
 	}
 
 }

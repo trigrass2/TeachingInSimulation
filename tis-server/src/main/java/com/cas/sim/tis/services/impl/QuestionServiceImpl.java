@@ -5,6 +5,8 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.TransactionDefinition;
@@ -13,65 +15,61 @@ import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import com.cas.sim.tis.entity.Library;
 import com.cas.sim.tis.entity.Question;
+import com.cas.sim.tis.mapper.PreparationMapper;
 import com.cas.sim.tis.mapper.QuestionMapper;
 import com.cas.sim.tis.services.LibraryService;
 import com.cas.sim.tis.services.QuestionService;
+import com.cas.sim.tis.thrift.RequestEntity;
+import com.cas.sim.tis.thrift.ResponseEntity;
 import com.cas.sim.tis.util.SpringUtil;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.mysql.fabric.Response;
 
 import tk.mybatis.mapper.entity.Condition;
 import tk.mybatis.mapper.entity.Example.Criteria;
 
 @Service
-public class QuestionServiceImpl extends AbstractService<Question> implements QuestionService {
+public class QuestionServiceImpl implements QuestionService {
+
+	private static final Logger LOG = LoggerFactory.getLogger(QuestionServiceImpl.class);
+	@Resource
+	private QuestionMapper mapper;
 
 	@Resource
 	private LibraryService libraryService;
 
 	@Override
-	public PageInfo<Question> findQuestionsByLibrary(int pageIndex, int pageSize, int rid) {
+	public ResponseEntity findQuestionsByLibrary(RequestEntity entity) {
 		Condition condition = new Condition(Question.class);
-		Criteria criteria = condition.createCriteria();
-		criteria.andEqualTo("relateId", rid);
-		PageHelper.startPage(pageIndex, pageSize);
-		List<Question> result = findByCondition(condition);
-		PageInfo<Question> page = new PageInfo<>(result);
-		LOG.info("成功查找到{}条资源,当前页码{},每页{}条资源,共{}页", result.size(), pageIndex, pageSize, page.getPages());
-		return page;
-	}
-
-	@Override
-	public List<Question> findQuestionsByLibrary(int rid) {
-		Condition condition = new Condition(Question.class);
-		Criteria criteria = condition.createCriteria();
-		criteria.andEqualTo("relateId", rid);
+		condition.createCriteria()//
+				.andEqualTo("relateId", entity.getInt("rid"));
 		condition.orderBy("type").asc();
-		List<Question> result = findByCondition(condition);
-		if (result == null) {
-			return new ArrayList<>();
-		} else {
-			return result;
-		}
+		PageHelper.startPage(entity.pageNum, entity.pageSize);
+		List<Question> result = mapper.selectByCondition(condition);
+		PageInfo<Question> page = new PageInfo<>(result);
+		LOG.info("成功查找到{}条资源,当前页码{},每页{}条资源,共{}页", result.size(), entity.pageNum, entity.pageSize, page.getPages());
+		return ResponseEntity.success(result);
 	}
 
 	@Override
-	public List<Question> findQuestionsByLibraryAndQuestionType(int rid, int type) {
+	public ResponseEntity findQuestionsByLibraryAndQuestionType(RequestEntity entity) {
 		Condition condition = new Condition(Question.class);
-		Criteria criteria = condition.createCriteria();
-		criteria.andEqualTo("relateId", rid);
-		criteria.andEqualTo("type", type);
-		return findByCondition(condition);
+		condition.createCriteria()//
+				.andEqualTo("relateId", entity.getInt("rid"))//
+				.andEqualTo("type", entity.getInt("type"));
+		List<Question> result = mapper.selectByCondition(condition);
+		return ResponseEntity.success(result);
 	}
 
 	@Override
-	public List<Question> findQuestionsByPublish(int pid, boolean mostWrong) {
-		QuestionMapper questionMapper = (QuestionMapper) mapper;
-		return questionMapper.findQuestionsByPublish(pid, mostWrong);
+	public ResponseEntity findQuestionsByPublish(RequestEntity entity) {
+		List<Question> result = mapper.findQuestionsByPublish(entity.getInt("pid"), entity.getBoolean("mostWrong"));
+		return ResponseEntity.success(result);
 	}
 
 	@Override
-	public void addQuestions(int rid, List<Question> questions) {
+	public void addQuestions(RequestEntity entity) {
 		// 1.获取事务控制管理器
 		DataSourceTransactionManager transactionManager = SpringUtil.getBean(DataSourceTransactionManager.class);
 		// 2.获取事务定义
@@ -80,11 +78,11 @@ public class QuestionServiceImpl extends AbstractService<Question> implements Qu
 		def.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW);
 		// 4.获得事务状态
 		TransactionStatus status = transactionManager.getTransaction(def);
-
+		List<Question> questions = entity.getList("questions", Question.class);
 		try {
-			int count = save(questions);
+			int count = mapper.insertList(questions);
 
-			Library library = libraryService.findById(rid);
+			Library library = libraryService.findById(entity.getInt("rid"));
 			library.setNum(count);
 
 			libraryService.update(library);
@@ -96,11 +94,12 @@ public class QuestionServiceImpl extends AbstractService<Question> implements Qu
 	}
 
 	@Override
-	public int countQuestionByLibrary(int rid) {
+	public ResponseEntity countQuestionByLibrary(RequestEntity entity) {
 		Condition condition = new Condition(Question.class);
-		Criteria criteria = condition.createCriteria();
-		criteria.andEqualTo("relateId", rid);
-		return getTotalBy(condition);
+		condition.createCriteria()//
+				.andEqualTo("relateId", entity.getInt("rid"));
+		int result = mapper.selectCountByCondition(condition);
+		return ResponseEntity.success(result);
 	}
 
 }

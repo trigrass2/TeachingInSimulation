@@ -4,33 +4,42 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.Resource;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.cas.sim.tis.consts.AnswerState;
 import com.cas.sim.tis.entity.LibraryAnswer;
 import com.cas.sim.tis.mapper.LibraryAnswerMapper;
 import com.cas.sim.tis.services.LibraryAnswerService;
+import com.cas.sim.tis.thrift.RequestEntity;
+import com.cas.sim.tis.thrift.ResponseEntity;
 
 @Service
-public class LibraryAnswerServiceImpl extends AbstractService<LibraryAnswer> implements LibraryAnswerService {
+public class LibraryAnswerServiceImpl implements LibraryAnswerService {
+	private static final Logger LOG = LoggerFactory.getLogger(LibraryAnswerServiceImpl.class);
+
+	@Resource
+	private LibraryAnswerMapper mapper;
 
 	@Override
-	public List<LibraryAnswer> findAnswersByPublish(int pid, boolean onlyWrong) {
-		LibraryAnswerMapper answerMapper = (LibraryAnswerMapper) mapper;
-		return answerMapper.findAnswersByPublish(pid, onlyWrong);
+	public ResponseEntity findAnswersByPublish(RequestEntity entity) {
+		List<LibraryAnswer> result = mapper.findAnswersByPublish(entity.getInt("pid"), entity.getBoolean("onlyWrong"));
+		return ResponseEntity.success(result);
 	}
 
 	@Override
-	public Map<AnswerState, Integer> statisticsByQuestionId(int pid, int qid) {
+	public ResponseEntity statisticsByQuestionId(RequestEntity entity) {
 		LibraryAnswerMapper answerMapper = (LibraryAnswerMapper) mapper;
 
 		Map<AnswerState, Integer> statistics = new HashMap<>();
 		for (AnswerState state : AnswerState.values()) {
-			int num = answerMapper.statisticsByQuestionId(pid, qid, state.getType());
+			int num = answerMapper.statisticsByQuestionId(entity.getInt("pid"), entity.getInt("qid"), state.getType());
 			statistics.put(state, num);
 		}
-		return statistics;
-
+		return ResponseEntity.success(statistics);
 	}
 
 }

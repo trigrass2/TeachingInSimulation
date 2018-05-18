@@ -2,93 +2,115 @@ package com.cas.sim.tis.services.impl;
 
 import java.util.List;
 
-import org.apache.ibatis.exceptions.TooManyResultsException;
+import javax.annotation.Resource;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.cas.sim.tis.consts.RoleConst;
-import com.cas.sim.tis.entity.Class;
 import com.cas.sim.tis.entity.User;
 import com.cas.sim.tis.mapper.UserMapper;
 import com.cas.sim.tis.services.UserService;
-import com.cas.sim.tis.services.exception.ServerException;
 import com.cas.sim.tis.services.exception.ServiceException;
+import com.cas.sim.tis.thrift.RequestEntity;
+import com.cas.sim.tis.thrift.ResponseEntity;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 
 import tk.mybatis.mapper.entity.Condition;
-import tk.mybatis.mapper.entity.Example.Criteria;
 
 @Service
-public class UserServiceImpl extends AbstractService<User> implements UserService {
+public class UserServiceImpl implements UserService {
+	private static final Logger LOG = LoggerFactory.getLogger(UserServiceImpl.class);
+
+	@Resource
+	private UserMapper mapper;
+
 	@Override
-	public User login(String usercode, String password) {
+	public ResponseEntity login(RequestEntity entity) throws ServiceException {
+
 		Condition condition = new Condition(User.class);
-		Criteria criteria = condition.createCriteria();
-		criteria.andEqualTo("code", usercode);
-		criteria.andEqualTo("password", password);
-		criteria.andEqualTo("del", 0);
-		List<User> user = null;
+		condition.createCriteria()//
+				.andEqualTo("code", entity.getString("usercode"))//
+				.andEqualTo("password", entity.getString("password"))//
+				.andEqualTo("del", 0);
+		User user = null;
 		try {
-			user = mapper.selectByCondition(condition);
+			user = mapper.selectOneByExample(condition);
 		} catch (Exception e) {
-			throw new ServerException("服务器异常", e);
-		}
-		if (user.size() == 1) {
-			return user.get(0);
-		} else if (user.size() == 0) {
 			throw new ServiceException("用户名或密码错误！");
-		} else {
-			throw new TooManyResultsException();
 		}
+
+		return ResponseEntity.success(user);
 	}
 
 	@Override
-	public List<User> findTeachers() {
-		Condition condition = new Condition(User.class);
-		Criteria criteria = condition.createCriteria();
-		criteria.andEqualTo("role", RoleConst.TEACHER);
-		criteria.andEqualTo("del", 0);
-		condition.orderBy("createDate").desc();
-		return findByCondition(condition);
-	}
+	public ResponseEntity findTeachers(RequestEntity entity) {
+		if (entity != null && entity.pageNum != -1) {
+//			分页
+			PageHelper.startPage(entity.pageNum, entity.pageSize);
+		}
 
-	@Override
-	public List<User> findTeachers(int pageIndex, int pageSize) {
 		Condition condition = new Condition(User.class);
-		Criteria criteria = condition.createCriteria();
-		criteria.andEqualTo("role", RoleConst.TEACHER);
-		criteria.andEqualTo("del", 0);
+		condition.createCriteria()//
+				.andEqualTo("role", RoleConst.TEACHER)//
+				.andEqualTo("del", 0);//
 		condition.orderBy("createDate").desc();
-		PageHelper.startPage(pageIndex, pageSize);
-		List<User> result = findByCondition(condition);
+
+		List<User> result = mapper.selectByCondition(condition);
 		PageInfo<User> page = new PageInfo<>(result);
-		LOG.info("成功查找到{}条资源,当前页码{},每页{}条资源,共{}页", result.size(), pageIndex, pageSize, page.getPages());
-		return result;
+		LOG.info("成功查找到{}条资源,当前页码{},每页{}条资源,共{}页", result.size(), entity.pageNum, entity.pageSize, page.getPages());
+
+		return ResponseEntity.success(result);
 	}
 
 	@Override
-	public List<User> findStudents(int pageIndex, int pageSize, int classId) {
+	public ResponseEntity findStudents(RequestEntity entity) {
+
 		Condition condition = new Condition(User.class);
-		Criteria criteria = condition.createCriteria();
-		criteria.andEqualTo("role", RoleConst.STUDENT);
-		criteria.andEqualTo("classId", classId);
-		criteria.andEqualTo("del", 0);
+		condition.createCriteria()//
+				.andEqualTo("role", RoleConst.STUDENT)//
+				.andEqualTo("classId", entity.getInt("classId"))//
+				.andEqualTo("del", 0);
 		condition.orderBy("createDate").desc();
-		PageHelper.startPage(pageIndex, pageSize);
-		List<User> result = findByCondition(condition);
+
+		if (entity.pageNum != -1) {
+			PageHelper.startPage(entity.pageNum, entity.pageSize);
+		}
+		List<User> result = mapper.selectByCondition(condition);
 		PageInfo<User> page = new PageInfo<>(result);
-		LOG.info("成功查找到{}条资源,当前页码{},每页{}条资源,共{}页", result.size(), pageIndex, pageSize, page.getPages());
-		return result;
+		LOG.info("成功查找到{}条资源,当前页码{},每页{}条资源,共{}页", result.size(), entity.pageNum, entity.pageSize, page.getPages());
+		return ResponseEntity.success(result);
 	}
 
 	@Override
-	public void updateTeacherIdByClassId(Class clazz) {
-		UserMapper mapper = (UserMapper) this.mapper;
-		mapper.updateTeacherIdByClassId(clazz.getId(), clazz.getTeacherId());
+	public ResponseEntity findUserById(RequestEntity entity) {
+		User user = mapper.selectByPrimaryKey(entity.getInt("id"));
+		return ResponseEntity.success(user);
 	}
-	
+
 	@Override
-	public User findUserById(int id) {
-		return mapper.selectByPrimaryKey(id);
+	public void saveUsers(RequestEntity entity) {
+		List<User> users = entity.getList("users", User.class);
+		mapper.insertList(users);
+	}
+
+	@Override
+	public void updateUser(RequestEntity entity) {
+		User user = entity.getObject("user", User.class);
+		mapper.updateByPrimaryKeySelective(user);
+	}
+
+	@Override
+	public void deleteUser(RequestEntity entity) {
+		Integer id = entity.getInt("id");
+		Condition condition = new Condition(User.class);
+		condition.setForUpdate(true);
+
+		User user = new User();
+		user.setId(id);
+		user.setDel(true);
+		mapper.updateByPrimaryKeySelective(user);
 	}
 }
