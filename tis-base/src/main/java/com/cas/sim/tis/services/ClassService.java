@@ -11,7 +11,7 @@ public interface ClassService {
 
 	/**
 	 * 根据ID查询班级信息
-	 * @param id
+	 * @param id 班级编号
 	 * @return
 	 */
 	@ThriftMethod

@@ -11,6 +11,7 @@ import com.cas.sim.tis.consts.Session;
 import com.cas.sim.tis.entity.Draw;
 import com.cas.sim.tis.services.DrawService;
 import com.cas.sim.tis.thrift.RequestEntity;
+import com.cas.sim.tis.thrift.RequestEntityBuilder;
 import com.cas.sim.tis.thrift.ResponseEntity;
 
 @Component
@@ -24,7 +25,7 @@ public class DrawAction extends BaseAction {
 	 * @return 返回图纸信息集合(id, name, paths, createDate)
 	 */
 	public List<Draw> getDrawListAll() {
-		ResponseEntity resp = service.findDraws(new RequestEntity());
+		ResponseEntity resp = service.findDraws(new RequestEntityBuilder().build());
 		return JSON.parseArray(resp.data, Draw.class);
 	}
 
@@ -33,8 +34,9 @@ public class DrawAction extends BaseAction {
 	 * @return 返回图纸信息集合(id, name, paths, createDate)
 	 */
 	public List<Draw> getDrawBySystem() {
-		RequestEntity req = new RequestEntity();
-		req.set("creator", 1).end();
+		RequestEntity req = new RequestEntityBuilder()//
+				.set("creator", 1)//
+				.build();
 		ResponseEntity resp = service.findDraws(req);
 		return JSON.parseArray(resp.data, Draw.class);
 	}
@@ -44,8 +46,9 @@ public class DrawAction extends BaseAction {
 	 * @return 返回图纸信息集合(id, name, paths, createDate)
 	 */
 	public List<Draw> getDrawByMine() {
-		RequestEntity req = new RequestEntity();
-		req.set("creator", Session.get(Session.KEY_LOGIN_ID)).end();
+		RequestEntity req = new RequestEntityBuilder()//
+				.set("creator", Session.get(Session.KEY_LOGIN_ID))//
+				.build();
 		ResponseEntity resp = service.findDraws(req);
 		return JSON.parseArray(resp.data, Draw.class);
 	}

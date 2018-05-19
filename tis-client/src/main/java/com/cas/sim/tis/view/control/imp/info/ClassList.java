@@ -139,7 +139,7 @@ public class ClassList extends HBox implements IContent {
 		del.setCellFactory(BtnCell.forTableColumn(MsgUtil.getMessage("button.delete"), Priority.ALWAYS, "blue-btn", id -> {
 			AlertUtil.showConfirm(MsgUtil.getMessage("alert.confirmation.data.delete"), response -> {
 				if (response == ButtonType.YES) {
-					SpringUtil.getBean(ClassAction.class).deleteClass((int) id);
+					SpringUtil.getBean(ClassAction.class).deleteClassByLogic((int) id);
 					pagination.reload();
 				}
 			});
