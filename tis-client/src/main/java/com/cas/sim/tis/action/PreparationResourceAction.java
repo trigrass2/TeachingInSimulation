@@ -1,5 +1,6 @@
 package com.cas.sim.tis.action;
 
+import java.util.Arrays;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -46,9 +47,15 @@ public class PreparationResourceAction extends BaseAction {
 		service.updatePreparationResource(req);
 	}
 
+	public void addResources(PreparationResource... resources) {
+		RequestEntity req = new RequestEntity();
+		req.set("resources", Arrays.asList(resources)).end();
+		service.savePreparationResources(req);
+	}
+	
 	public void addResources(List<PreparationResource> resources) {
 		RequestEntity req = new RequestEntity();
-		req.set("resources", resources).end();
+		req.set("resources", Arrays.asList(resources)).end();
 		service.savePreparationResources(req);
 	}
 

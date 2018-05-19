@@ -7,11 +7,13 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Component;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.TypeReference;
 import com.cas.sim.tis.consts.Session;
 import com.cas.sim.tis.entity.User;
 import com.cas.sim.tis.services.UserService;
 import com.cas.sim.tis.thrift.RequestEntity;
 import com.cas.sim.tis.thrift.ResponseEntity;
+import com.github.pagehelper.PageInfo;
 
 @Component
 public class UserAction extends BaseAction {
@@ -29,21 +31,21 @@ public class UserAction extends BaseAction {
 		return JSON.parseArray(resp.data, User.class);
 	}
 
-	public List<User> findTeachers(int pageIndex, int pageSize) {
+	public PageInfo<User> findTeachers(int pageIndex, int pageSize) {
 		RequestEntity req = new RequestEntity();
 		req.pageNum = pageIndex;
 		req.pageSize = pageSize;
 		ResponseEntity resp = service.findTeachers(req);
-		return JSON.parseArray(resp.data, User.class);
+		return JSON.parseObject(resp.data, new TypeReference<PageInfo<User>>() {});
 	}
 
-	public List<User> findStudents(int pageIndex, int pageSize, int classId) {
+	public PageInfo<User> findStudents(int pageIndex, int pageSize, int classId) {
 		RequestEntity req = new RequestEntity();
 		req.pageNum = pageIndex;
 		req.pageSize = pageSize;
 		req.set("classId", classId).end();
 		ResponseEntity resp = service.findStudents(req);
-		return JSON.parseArray(resp.data, User.class);
+		return JSON.parseObject(resp.data, new TypeReference<PageInfo<User>>() {});
 	}
 
 	public void addUsers(List<User> users) {

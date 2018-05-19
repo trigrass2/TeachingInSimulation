@@ -491,7 +491,7 @@ public class PreparationDetail extends HBox implements IContent {
 		resource.setPreparationId(preparation.getId());
 		resource.setType(type);
 		try {
-			SpringUtil.getBean(PreparationResourceAction.class).addResource(resource);
+			SpringUtil.getBean(PreparationResourceAction.class).addResources(resource);
 			loadResources();
 			AlertUtil.showAlert(AlertType.INFORMATION, MsgUtil.getMessage("alert.information.data.add.success"));
 		} catch (Exception e) {

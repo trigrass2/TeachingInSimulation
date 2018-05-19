@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.TypeReference;
 import com.cas.sim.tis.consts.Session;
 import com.cas.sim.tis.entity.Resource;
 import com.cas.sim.tis.services.ResourceService;
@@ -14,6 +15,7 @@ import com.cas.sim.tis.thrift.RequestEntity;
 import com.cas.sim.tis.thrift.ResponseEntity;
 import com.cas.sim.tis.view.control.imp.resource.ResourceList.ResourceMenuType;
 import com.cas.sim.tis.vo.ResourceInfo;
+import com.github.pagehelper.PageInfo;
 
 @Component
 public class ResourceAction extends BaseAction {
@@ -33,7 +35,7 @@ public class ResourceAction extends BaseAction {
 		return JSON.parseArray(resp.data, Integer.class);
 	}
 
-	public List<Resource> findResources(ResourceMenuType type, int pagination, int pageSize, List<Integer> resourceTypes, String keyword, String orderByClause, Integer creator) {
+	public PageInfo<Resource> findResources(ResourceMenuType type, int pagination, int pageSize, List<Integer> resourceTypes, String keyword, String orderByClause, Integer creator) {
 		RequestEntity req = new RequestEntity()//
 				.set("resourceTypes", resourceTypes)//
 				.set("keyword", keyword) //
@@ -52,7 +54,7 @@ public class ResourceAction extends BaseAction {
 		} else {
 			resp = service.findResourcesByCreator(req);
 		}
-		return JSON.parseArray(resp.data, Resource.class);
+		return JSON.parseObject(resp.data, new TypeReference<PageInfo<Resource>>() {});
 	}
 
 	public int countResourceByType(ResourceMenuType menuType, int type, String keyword, Integer creator) {

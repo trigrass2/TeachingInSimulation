@@ -1,8 +1,8 @@
 package com.cas.sim.tis.view.control.imp.resource;
 
-import com.cas.sim.tis.action.UserAction;
 import com.cas.sim.tis.consts.RoleConst;
 import com.cas.sim.tis.consts.Session;
+import com.cas.sim.tis.entity.User;
 import com.cas.sim.tis.util.MsgUtil;
 import com.cas.sim.tis.util.SpringUtil;
 import com.cas.sim.tis.view.control.imp.LeftMenu;
@@ -36,8 +36,9 @@ public class ResourceMenu extends LeftMenu {
 				controller.loadContent(new ResourceList(ResourceMenuType.STUDENT_SYS, 1), PageLevel.Level1);
 			});
 			addMenuItem(MsgUtil.getMessage("resource.menu.teacher"), "iconfont.svg.resource", e -> {
+				User user = Session.get(Session.KEY_OBJECT);
 				// 获得教师编号
-				Integer tearcherId = SpringUtil.getBean(UserAction.class).getTeacherIdByStudentId(Session.get(Session.KEY_LOGIN_ID));
+				Integer tearcherId = user.getTeacherId();
 				PageController controller = SpringUtil.getBean(PageController.class);
 				controller.loadContent(new ResourceList(ResourceMenuType.STUDENT_TECH, tearcherId), PageLevel.Level1);
 			});
