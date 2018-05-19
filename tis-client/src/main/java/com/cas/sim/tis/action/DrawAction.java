@@ -19,11 +19,19 @@ public class DrawAction extends BaseAction {
 	@Resource
 	private DrawService service;
 
+	/**
+	 * 无条件查询所有图纸信息
+	 * @return 返回图纸信息集合(id, name, paths, createDate)
+	 */
 	public List<Draw> getDrawListAll() {
 		ResponseEntity resp = service.findDraws(new RequestEntity());
 		return JSON.parseArray(resp.data, Draw.class);
 	}
 
+	/**
+	 * 查询系统图纸（即管理员提交图纸creator=1）
+	 * @return 返回图纸信息集合(id, name, paths, createDate)
+	 */
 	public List<Draw> getDrawBySystem() {
 		RequestEntity req = new RequestEntity();
 		req.set("creator", 1).end();
@@ -31,6 +39,10 @@ public class DrawAction extends BaseAction {
 		return JSON.parseArray(resp.data, Draw.class);
 	}
 
+	/**
+	 * 查询用户上传图纸
+	 * @return 返回图纸信息集合(id, name, paths, createDate)
+	 */
 	public List<Draw> getDrawByMine() {
 		RequestEntity req = new RequestEntity();
 		req.set("creator", Session.get(Session.KEY_LOGIN_ID)).end();

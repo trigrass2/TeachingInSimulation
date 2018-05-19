@@ -26,6 +26,7 @@ public class DrawServiceImpl implements DrawService {
 		Integer creatorId = entity.getObject("creator", Integer.class);
 
 		Condition condition = new Condition(Draw.class);
+		condition.selectProperties("id", "name", "paths", "createDate");
 
 		Criteria criteria = condition.createCriteria();
 		if (creatorId != null) {
