@@ -2,11 +2,13 @@ package com.cas.sim.tis.action;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
 import com.cas.sim.tis.consts.Session;
 import com.cas.sim.tis.entity.Resource;
@@ -42,7 +44,7 @@ public class ResourceAction extends BaseAction {
 				.set("keyword", keyword) //
 				.set("creator", creator)//
 				.set("orderByClause", orderByClause)//
-//				分页信息
+				// 分页信息
 				.pageNum(pagination)//
 				.pageSize(pageSize)//
 				.build();
@@ -73,6 +75,24 @@ public class ResourceAction extends BaseAction {
 			resp = service.countResourceByType(req);
 		}
 		return Integer.parseInt(resp.data);
+	}
+
+	public Map<Integer, Integer> countResourceByType(ResourceMenuType menuType, List<Integer> types, String keyword, int creator) {
+		RequestEntity req = new RequestEntityBuilder()//
+				.set("types", types)//
+				.set("keyword", keyword) //
+				.set("creator", creator)//
+				.build();
+		ResponseEntity resp;
+		if (ResourceMenuType.BROWSE == menuType) {
+			resp = service.countBrowseResourceByTypes(req);
+		} else if (ResourceMenuType.COLLECTION == menuType) {
+			resp = service.countCollectionResourceByTypes(req);
+		} else {
+			resp = service.countResourceByTypes(req);
+		}
+		JSONObject obj = JSON.parseObject(resp.data);
+		return null;
 	}
 
 	public ResourceInfo findResourceInfoByID(int id) {
@@ -142,4 +162,5 @@ public class ResourceAction extends BaseAction {
 				.build();
 		service.deteleResource(req);
 	}
+
 }

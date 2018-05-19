@@ -81,6 +81,30 @@ public interface ResourceService {
 	ResponseEntity countCollectionResourceByType(RequestEntity entity);
 
 	/**
+	 * 各类资源浏览数量
+	 * @param req
+	 * @return
+	 */
+	@ThriftMethod
+	ResponseEntity countBrowseResourceByTypes(RequestEntity req);
+
+	/**
+	 * 各类资源收藏数量
+	 * @param req
+	 * @return
+	 */
+	@ThriftMethod
+	ResponseEntity countCollectionResourceByTypes(RequestEntity req);
+
+	/**
+	 * 各类资源总数量
+	 * @param req
+	 * @return
+	 */
+	@ThriftMethod
+	ResponseEntity countResourceByTypes(RequestEntity req);
+
+	/**
 	 * @param resources
 	 * @return 返回上传资源的ID集合
 	 */
@@ -113,5 +137,4 @@ public interface ResourceService {
 	 */
 	@ThriftMethod
 	ResponseEntity deteleResource(RequestEntity entity);
-
 }

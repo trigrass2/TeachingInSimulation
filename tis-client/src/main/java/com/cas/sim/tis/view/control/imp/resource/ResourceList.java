@@ -333,6 +333,22 @@ public class ResourceList extends HBox implements IContent {
 
 		PageInfo<Resource> page = null;
 //		取出用户所选资源的类型
+		List<Integer> types = getSelectedTypes();
+		page = action.findResources(type, curr, pageSize, types, keyword, orderByClause, creator);
+		if (page == null) {
+			pagination.setPageCount(0);
+			table.setItems(null);
+			table.build();
+		} else {
+			pagination.setPageCount((int) page.getPages());
+			JSONArray array = new JSONArray();
+			array.addAll(page.getList());
+			table.setItems(array);
+			table.build();
+		}
+	}
+
+	private List<Integer> getSelectedTypes() {
 		List<Integer> types = new ArrayList<>();
 		if (picCheck.isSelected()) {
 			types.add(ResourceType.IMAGE.getType());
@@ -358,18 +374,7 @@ public class ResourceList extends HBox implements IContent {
 		if (pdfCheck.isSelected()) {
 			types.add(ResourceType.PDF.getType());
 		}
-		page = action.findResources(type, curr, pageSize, types, keyword, orderByClause, creator);
-		if (page == null) {
-			pagination.setPageCount(0);
-			table.setItems(null);
-			table.build();
-		} else {
-			pagination.setPageCount((int) page.getPages());
-			JSONArray array = new JSONArray();
-			array.addAll(page.getList());
-			table.setItems(array);
-			table.build();
-		}
+		return types;
 	}
 
 	/**
@@ -377,6 +382,12 @@ public class ResourceList extends HBox implements IContent {
 	 */
 	private void loadPieChart() {
 		String keyword = search.getText();
+
+//		统计各类型的资源数量
+		List<Integer> types = getSelectedTypes();
+		action.countResourceByType(type, types, keyword, creator);
+		
+		
 		int picNum = picCheck.isSelected() ? action.countResourceByType(type, ResourceType.IMAGE.getType(), keyword, creator) : 0;
 		int swfNum = swfCheck.isSelected() ? action.countResourceByType(type, ResourceType.SWF.getType(), keyword, creator) : 0;
 		int videoNum = videoCheck.isSelected() ? action.countResourceByType(type, ResourceType.VIDEO.getType(), keyword, creator) : 0;

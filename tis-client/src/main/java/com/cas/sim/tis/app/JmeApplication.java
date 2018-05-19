@@ -2,9 +2,6 @@ package com.cas.sim.tis.app;
 
 import java.util.prefs.Preferences;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.cas.sim.tis.app.event.MouseEventState;
 import com.cas.sim.tis.consts.SettingConsts;
 import com.jme3.app.FlyCamAppState;
@@ -13,8 +10,10 @@ import com.jme3.system.AppSettings;
 import com.jme3x.jfx.injfx.JmeToJFXApplication;
 import com.jme3x.jfx.injfx.JmeToJFXIntegrator;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public class JmeApplication extends JmeToJFXApplication {
-	public static final Logger LOG = LoggerFactory.getLogger(JmeApplication.class);
 
 	public JmeApplication() {
 		AppSettings settings = getAppSetting();
@@ -35,7 +34,7 @@ public class JmeApplication extends JmeToJFXApplication {
 
 	@Override
 	public void start() {
-		LOG.info("start");
+		log.info("start");
 		super.start();
 	}
 
@@ -73,19 +72,19 @@ public class JmeApplication extends JmeToJFXApplication {
 		try {
 			super.update();
 		} catch (Exception e) {
-			LOG.error("出现一个未知的异常", e);
+			log.error("出现一个未知的异常", e);
 		}
 	}
 
 	@Override
 	public void stop() {
-		LOG.info("stop");
+		log.info("stop");
 		super.stop();
 	}
 
 	@Override
 	public void destroy() {
-		LOG.info("destroy");
+		log.info("destroy");
 		super.destroy();
 	}
 

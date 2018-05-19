@@ -21,6 +21,11 @@
 		<result property="browsedTimes" column="browsed_times" />
 		<result property="collectedTimes" column="collected_times" />
 	</resultMap>
+	
+	<resultMap id="ResourceSearchResultMap" type="com.cas.sim.tis.mapper.data.ReserchResult">
+		<result property="type" column="type" />
+		<result property="size" column="size" />
+	</resultMap>
 
 	<select id="selectResourceInfoByID" resultMap="ResourceInfoMap">
 		select
@@ -101,6 +106,63 @@
 		</if>
 	</select>
 
+	<select id="countResourceByTypes" resultMap="ResourceSearchResultMap">
+		select
+			r.type, count(r.id)
+		from
+			collection
+		where
+			c.del=0 
+		<if test="keyword != null and keyword != ''">
+			and r.keyword like '%${keyword}%'
+		</if>
+			and c.creator=#{creator} 
+			and r.type in
+		<foreach item="type" collection="types" open="(" separator="," close=")">
+			#{type}
+		</foreach>
+		group by
+			r.type
+	</select>
+
+	<select id="countBrowseResourceByTypes" resultMap="ResourceSearchResultMap">
+		select
+			r.type, count(r.id)
+		from
+			browse_history b left out join resource r on b.rid = r.id
+		where
+			c.del=0 
+		<if test="keyword != null and keyword != ''">
+			and r.keyword like '%${keyword}%'
+		</if>
+			and b.creator=#{creator} 
+			and r.type in
+		<foreach item="type" collection="types" open="(" separator="," close=")">
+			#{type}
+		</foreach>
+		group by
+			r.type
+	</select>
+
+	<select id="countCollectionResourceByTypes" resultMap="ResourceSearchResultMap">
+		select
+			r.type, count(r.id)
+		from
+			collection c left out join resource r on b.rid = r.id
+		where
+			c.del=0 
+		<if test="keyword != null and keyword != ''">
+			and r.keyword like '%${keyword}%'
+		</if>
+			and c.creator=#{creator} 
+			and r.type in
+		<foreach item="type" collection="types" open="(" separator="," close=")">
+			#{type}
+		</foreach>
+		group by
+			r.type
+	</select>
+
 	<update id="increaseBrowse">
 		update resource set browsed_times=browsed_times+1 where id=#{id}
 	</update>
@@ -112,4 +174,6 @@
 	<update id="decreaseCollection">
 		update resource set collected_times=collected_times-1 where id=#{id}
 	</update>
+	
+	
 </mapper>
