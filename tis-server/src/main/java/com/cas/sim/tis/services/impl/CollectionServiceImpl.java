@@ -22,10 +22,13 @@ public class CollectionServiceImpl implements CollectionService {
 	@Override
 	public ResponseEntity checkCollected(RequestEntity entity) {
 		int rid = entity.getInt("rid");
+		int creator = entity.getInt("creator");
 		
 		Condition condition = new Condition(Collection.class);
 		Criteria criteria = condition.createCriteria();
 		criteria.andEqualTo("resourceId", rid);
+		criteria.andEqualTo("creator", creator);
+		criteria.andEqualTo("del", 0);
 		
 		int total = mapper.selectCountByCondition(condition);
 		if (total == 0) {

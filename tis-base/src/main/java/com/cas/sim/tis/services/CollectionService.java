@@ -9,8 +9,8 @@ import io.airlift.drift.annotations.ThriftService;
 @ThriftService
 public interface CollectionService {
 	/**
-	 * @param rid
-	 * @return
+	 * @param rid 资源编号
+	 * @return 返回boolean是否收藏
 	 */
 	@ThriftMethod
 	ResponseEntity checkCollected(RequestEntity entity);
