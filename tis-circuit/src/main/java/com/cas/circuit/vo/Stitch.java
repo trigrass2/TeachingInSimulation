@@ -15,7 +15,6 @@ public class Stitch extends Terminal {
 	}
 
 	public Stitch(Integer index) {
-		super();
 		this.index = index;
 	}
 

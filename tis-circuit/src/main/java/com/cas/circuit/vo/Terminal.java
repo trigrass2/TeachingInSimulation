@@ -20,6 +20,7 @@ import com.cas.circuit.CfgConst;
 import com.cas.circuit.ElecCompCPU;
 import com.cas.circuit.TermTeam;
 import com.cas.circuit.Voltage;
+import com.cas.circuit.consts.IOType;
 import com.cas.circuit.xml.adapter.AxisAdapter;
 import com.cas.circuit.xml.adapter.StringArrayAdapter;
 import com.cas.circuit.xml.adapter.VoltageAdapter;
@@ -30,7 +31,7 @@ import com.jme3.math.Vector3f;
 import com.jme3.scene.Spatial;
 
 @XmlAccessorType(XmlAccessType.NONE)
-public class Terminal extends SwitchCtrl implements Savable {// <TerminalPO> implements Savable, ILinkTarget {
+public class Terminal implements Savable {
 	private static final Logger LOG = LoggerFactory.getLogger(Terminal.class);
 	@XmlAttribute
 	private String id;
@@ -51,13 +52,33 @@ public class Terminal extends SwitchCtrl implements Savable {// <TerminalPO> imp
 	@XmlJavaTypeAdapter(StringArrayAdapter.class)
 	private String[] switchIn;
 	@XmlAttribute
-	private String type;
+	private String type = IOType.BOTH;
 	@XmlAttribute
 	private String team;
 	@XmlAttribute
 	private Integer num;// 限制可连接导线的数量，要么是1，要么是2.
 
 //	----------------------------------------------------------
+
+	private ElecCompDef elecCompDef;
+
+	private SwitchCtrl switchCtrl = new SwitchCtrl() {
+
+		@Override
+		protected void changeStateIndex(Integer index) {
+			// 往复切换state
+			if (switchIndex == 0) {
+				switchIndex = 1;
+			} else {
+				switchIndex = 0;
+			}
+		}
+
+		@Override
+		protected ElecCompDef getElecComp() {
+			return Terminal.this.elecCompDef;
+		}
+	};
 
 	private List<VoltageIO> voltIOs = new ArrayList<VoltageIO>();
 
@@ -77,15 +98,26 @@ public class Terminal extends SwitchCtrl implements Savable {// <TerminalPO> imp
 
 	private TermTeam termTeam;
 
-	private ElecCompDef elecCompDef;
-
 	public Terminal() {
 	}
 
-	public void afterUnmarshal(Unmarshaller u, Object parent) {
+	public void beforeUnmarshal(Unmarshaller u, Object parent) {
 		if (parent instanceof ElecCompDef) {
 			this.elecCompDef = (ElecCompDef) parent;
+		} else if (parent instanceof Jack) {
+			this.elecCompDef = ((Jack) parent).getElecCompDef();
 		}
+	}
+
+	public ElecCompDef getElecCompDef() {
+		return elecCompDef;
+	}
+
+	public void setElecComp(ElecCompDef elecCompDef) {
+		this.elecCompDef = elecCompDef;
+	}
+
+	public void afterUnmarshal(Unmarshaller u, Object parent) {
 	}
 
 	public String getId() {
@@ -104,16 +136,6 @@ public class Terminal extends SwitchCtrl implements Savable {// <TerminalPO> imp
 		return wires;
 	}
 
-	@Override
-	protected void changeStateIndex(Integer index) {
-		// 往复切换state
-		if (switchIndex == 0) {
-			switchIndex = 1;
-		} else {
-			switchIndex = 0;
-		}
-	}
-
 	public Terminal getContacted() {
 		return contacted;
 	}
@@ -124,7 +146,9 @@ public class Terminal extends SwitchCtrl implements Savable {// <TerminalPO> imp
 
 	public void setSpatial(Spatial spatial) {
 		if (spatial == null) {
-			LOG.error("没有找到Terminal::ID为{}的模型{}", getId(), mdlName);
+			String errMsg = String.format("没有找到Terminal::ID为%s的模型%s", getId(), mdlName);
+			LOG.error(errMsg);
+			throw new RuntimeException(errMsg);
 		}
 		this.spatial = spatial;
 		spatial.setUserData("entity", this);
@@ -267,29 +291,31 @@ public class Terminal extends SwitchCtrl implements Savable {// <TerminalPO> imp
 
 	private void calculateVoltage() {
 		boolean hasVolt = residualVolt.size() > 0;
-//		for (Voltage volt : residualVolt.values()) {
-//			hasVolt = hasVolt || volt.getValue() > 0;
-//		}
 
-//		if (model != null) {
-//			if (hasVolt) {
+		for (Voltage volt : residualVolt.values()) {
+			hasVolt = hasVolt || volt.getValue() > 0;
+		}
+		if (spatial != null) {
+			if (hasVolt) {
 //				FilterUtil.setSpatialElectrical(model, true);
-//			} else {
+				System.out.println(getName() + "-> 有电");
+			} else {
 //				FilterUtil.setSpatialElectrical(model, false);
-//			}
-//		}
+				System.out.println(getName() + "-> 没电");
+			}
+		}
 		for (Wire wire : wires) {
 			wire.voltageChanged(hasVolt);
 		}
 
-		elecComp.getLogic().onReceived(this);
+		elecCompDef.getLogic().onReceived(this);
 	}
 
 	/**
 	 * 
 	 */
 	public void pulse() {
-		BaseElectricCompLogic bec = elecComp.getLogic();
+		BaseElectricCompLogic bec = elecCompDef.getLogic();
 		if (bec instanceof ElecCompCPU) {
 			((ElecCompCPU) bec).onPulse(this);
 		}
@@ -325,6 +351,10 @@ public class Terminal extends SwitchCtrl implements Savable {// <TerminalPO> imp
 		this.num = num;
 	}
 
+	public String getType() {
+		return type;
+	}
+
 	/**
 	 * @return the team
 	 */
@@ -342,8 +372,8 @@ public class Terminal extends SwitchCtrl implements Savable {// <TerminalPO> imp
 		this.termTeam = termTeam;
 	}
 
-	public ElecCompDef getElecCompDef() {
-		return elecCompDef;
+	public SwitchCtrl getSwitchCtrl() {
+		return switchCtrl;
 	}
 
 	@Override
@@ -357,4 +387,5 @@ public class Terminal extends SwitchCtrl implements Savable {// <TerminalPO> imp
 		// TODO Auto-generated method stub
 
 	}
+
 }

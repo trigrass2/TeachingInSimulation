@@ -61,7 +61,7 @@ public class BaseElectricCompLogic {
 	 * @param terminal
 	 */
 	public final void onReceived(Terminal terminal) {
-		if (terminal.getIoType() == IOType.OUTPUT) {
+		if (terminal.getType() == IOType.OUTPUT) {
 			return;
 		}
 		TermTeam team = terminal.getTermTeam();

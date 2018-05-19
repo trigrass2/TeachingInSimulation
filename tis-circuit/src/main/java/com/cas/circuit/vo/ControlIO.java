@@ -3,9 +3,11 @@ package com.cas.circuit.vo;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
 
+import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -35,7 +37,7 @@ import com.jme3.scene.Spatial;
  * 包括:按钮(button) 和 旋钮(switch)
  */
 @XmlAccessorType(XmlAccessType.NONE)
-public class ControlIO extends SwitchCtrl implements Savable {
+public class ControlIO implements Savable {
 	private static final Logger LOG = LoggerFactory.getLogger(Terminal.class);
 
 	/**
@@ -87,11 +89,52 @@ public class ControlIO extends SwitchCtrl implements Savable {
 	@XmlElementWrapper(name = "Params")
 	private List<Param> params = new ArrayList<>();
 
+//	--------------------------------------------------------------------
+
+	private ElecCompDef elecCompDef;
+
+	private SwitchCtrl switchCtrl = new SwitchCtrl() {
+
+		@Override
+		protected ElecCompDef getElecComp() {
+			return ControlIO.this.elecCompDef;
+		}
+
+		/**
+		 * 对ROTATE类型：index 0：向上滚， 1：向下滚. 对非ROTATE类型：index 为null
+		 */
+		@Override
+		public void switchStateChanged(final Integer wheel) {
+			switchStart(1 - switchIndex);
+		}
+
+		@Override
+		protected void changeStateIndex(Integer index) {
+			switchIndex = 1 - switchIndex;
+		}
+
+		@Override
+		public List<String> getResisStateIds() {
+			if (switchIn != null) {
+				return Arrays.asList(switchIn);
+			}
+			return super.getResisStateIds();
+		}
+	};
+
 	private Spatial spatial;
 
 	private Vector3f zeroIndexLocation;
 
 	private int motionIndex = 0;
+
+	public void beforeUnmarshal(Unmarshaller u, Object parent) {
+		this.elecCompDef = ((Magnetism) parent).getElecCompDef();
+	}
+
+	public ElecCompDef getElecCompDef() {
+		return elecCompDef;
+	}
 
 	public String getMdlName() {
 		return mdlName;
@@ -108,44 +151,13 @@ public class ControlIO extends SwitchCtrl implements Savable {
 		return interact;
 	}
 
-	@Override
-	protected void changeStateIndex(Integer index) {
-		switchIndex = 1 - switchIndex;
-	}
-
-	/**
-	 * 对ROTATE类型：index 0：向上滚， 1：向下滚. 对非ROTATE类型：index 为null
-	 */
-	public void switchStateChanged(final Integer wheel) {
-//		if (INTERACT_CLICK.equals(po.getInteract())) {
-//			switchStart(1 - switchIndex);
-//		} else if (INTERACT_PRESS.equals(po.getInteract())) {
-//			if (switchIndex == 0 || (switchIndex == 1 && !((Magnetism) parent).isEffect())) {
-//				switchStart(1 - switchIndex);
-//			}
-////		} else if (INTERACT_UNIDIR.equals(po.getInteract())) {
-////			if (switchIndex == 1) {
-////				switchStart(0);
-////				// 磁生力
-////				for (ControlIO otherButton : ((Magnetism) parent).getControlIOs()) {
-////					if (otherButton != ControlIO.this && otherButton.getPO().getType().contains(CfgConst.SWITCH_CTRL_OUTPUT)) {
-////						otherButton.doSwitch(1);
-////					}
-////				}
-////			}
-//		}
-////		}
-//		
-		switchStart(1 - switchIndex);
-	}
-
 	/**
 	 * 对ROTATE类型：index 0：向上滚， 1：向下滚. 对非ROTATE类型：index 0：弹起， 1：按下
 	 */
 	public void playMotion() {
 		if (CfgConst.BUTTON_MOTION_ROTATE.equals(motion)) {
 //			迅速动
-			rotateModel(spatial, motionParams[1 - motionIndex] - motionParams[motionIndex], (v) -> switchEnd());
+			rotateModel(spatial, motionParams[1 - motionIndex] - motionParams[motionIndex], (v) -> switchCtrl.switchEnd());
 		} else if (CfgConst.BUTTON_MOTION_MOVE.equals(motion)) {
 			if (smooth) {
 			} else if (motionIndex == 0) {// 如果是从
@@ -153,14 +165,16 @@ public class ControlIO extends SwitchCtrl implements Savable {
 			} else {
 				spatial.setLocalTranslation(zeroIndexLocation);
 			}
-			moveModel(spatial, motionParams[1 - motionIndex] - motionParams[motionIndex], (v) -> switchEnd());
+			moveModel(spatial, motionParams[1 - motionIndex] - motionParams[motionIndex], (v) -> switchCtrl.switchEnd());
 		}
 		motionIndex = 1 - motionIndex;
 	}
 
 	public void setSpatial(Spatial spatial) {
 		if (spatial == null) {
-			LOG.error("没有找到ControlIO::name为{}的模型{}", name, mdlName);
+			String errMsg = String.format("没有找到ControlIO::name为%s的模型%s", name, mdlName);
+			LOG.error(errMsg);
+			throw new RuntimeException(errMsg);
 		}
 		this.spatial = spatial;
 		spatial.setUserData("entity", this);
@@ -220,5 +234,9 @@ public class ControlIO extends SwitchCtrl implements Savable {
 
 	@Override
 	public void read(JmeImporter im) throws IOException {
+	}
+
+	public SwitchCtrl getSwitchCtrl() {
+		return switchCtrl;
 	}
 }

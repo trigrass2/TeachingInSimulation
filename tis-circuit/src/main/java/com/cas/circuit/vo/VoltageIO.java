@@ -2,6 +2,7 @@ package com.cas.circuit.vo;
 
 import java.util.List;
 
+import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -12,47 +13,50 @@ import com.cas.circuit.consts.IOType;
 import com.cas.circuit.xml.adapter.StringArrayAdapter;
 import com.cas.circuit.xml.adapter.VoltageAdapter;
 
+import lombok.Getter;
+import lombok.Setter;
+
 @XmlAccessorType(XmlAccessType.NONE)
-public class VoltageIO extends SwitchCtrl {
+public class VoltageIO {
 	@XmlAttribute
-	private String type;// input|output|both
+	@Getter
+	private String type = IOType.BOTH;// input|output|both
 	@XmlAttribute
+	@Getter
 	private String term1Id;
 	@XmlAttribute
+	@Getter
 	private String term2Id;
 	@XmlAttribute
+	@Getter
 	@XmlJavaTypeAdapter(VoltageAdapter.class)
 	private Voltage voltage;
 	@XmlAttribute
+	@Getter
 	@XmlJavaTypeAdapter(StringArrayAdapter.class)
 	private String[] switchIn;
 	@XmlAttribute
+	@Getter
 	private Float deviation;
 	@XmlAttribute
+	@Getter
 	private String group;
-
+//	--------------------------------------------------------------------
+	@Getter
+	private ElecCompDef elecCompDef;
+	@Getter
+	private SwitchCtrl switchCtrl;
+	@Getter
+	@Setter
 	private Terminal term1;
+	@Getter
+	@Setter
 	private Terminal term2;
+	@Getter
 	private float requireVolt;
 
-	public String getType() {
-		if (null == type) {
-			return IOType.BOTH;
-		}
-		return type;
-	}
-
-	public String getTerm1Id() {
-		return term1Id;
-	}
-
-	public String getTerm2Id() {
-		return term2Id;
-	}
-
-	@Override
-	protected void changeStateIndex(Integer index) {
-
+	public void beforeUnmarshal(Unmarshaller u, Object parent) {
+		this.elecCompDef = ((Magnetism) parent).getElecCompDef();
 	}
 
 	public boolean relateWith(List<VoltageIO> voltIos) {
@@ -83,36 +87,9 @@ public class VoltageIO extends SwitchCtrl {
 		}
 	}
 
-	public float getRequireVolt() {
-		return requireVolt;
-	}
-
-	public float getDeviation() {
-		return deviation;
-	}
-
-	public Terminal getTerm1() {
-		return term1;
-	}
-
-	public void setTerm1(Terminal term1) {
-		this.term1 = term1;
-	}
-
-	public Terminal getTerm2() {
-		return term2;
-	}
-
-	public void setTerm2(Terminal term2) {
-		this.term2 = term2;
-	}
-
-	public Voltage getVoltage() {
-		return voltage;
-	}
-
 	@Override
 	public String toString() {
 		return getTerm1Id() + "--" + getTerm2Id();
 	}
+
 }

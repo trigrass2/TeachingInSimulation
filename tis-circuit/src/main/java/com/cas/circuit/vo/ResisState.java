@@ -3,6 +3,7 @@ package com.cas.circuit.vo;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -27,6 +28,20 @@ public class ResisState {// extends BaseVO<ResisStatePO> {
 
 	@XmlElement(name = "ResisRelation")
 	private List<ResisRelation> resisRelationList = new ArrayList<>();
+
+//	-------------------------------------------------
+
+	private ElecCompDef elecCompDef;
+
+	public void beforeUnmarshal(Unmarshaller u, Object parent) {
+		if (parent instanceof ElecCompDef) {
+			this.elecCompDef = (ElecCompDef) parent;
+		}
+	}
+
+	public ElecCompDef getElecCompDef() {
+		return elecCompDef;
+	}
 
 	public String getId() {
 		return id;

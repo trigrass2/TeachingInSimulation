@@ -443,7 +443,7 @@ public class R {
 		}
 
 		if (cr.getValue() == CR.MIN_RESIS_VALUE) {
-			startTerminal.getElecComp().powerShorted(startTerminal, endTerminal);
+			startTerminal.getElecCompDef().powerShorted(startTerminal, endTerminal);
 			return false;
 		}
 
@@ -550,7 +550,7 @@ public class R {
 //		ElecCompDef toRemove = null;
 
 		terminals.forEach(t -> {
-			ElecCompDef comp = t.getElecComp();
+			ElecCompDef comp = t.getElecCompDef();
 
 			if (!considerEVN || t.getResidualVolt().containsKey(voltage.getEnv())) {
 				if (comp == null) {

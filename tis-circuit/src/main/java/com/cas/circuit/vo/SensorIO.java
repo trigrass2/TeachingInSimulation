@@ -8,7 +8,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import com.cas.circuit.xml.adapter.StringArrayAdapter;
 
 @XmlAccessorType(XmlAccessType.NONE)
-public class SensorIO extends SwitchCtrl {
+public class SensorIO {
 
 	@XmlAttribute
 	@XmlJavaTypeAdapter(StringArrayAdapter.class)

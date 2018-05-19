@@ -79,6 +79,7 @@ public class Jack implements Savable {
 	private List<Param> params = new ArrayList<>();
 
 //	------------------------------
+	private ElecCompDef elecCompDef;
 
 //	该插孔上所插入的电缆线
 	@Setter
@@ -98,18 +99,24 @@ public class Jack implements Savable {
 	@Setter
 	private boolean stopSend;
 
-	@Nullable
-	public Stitch getStitch(Integer index) {
-		return stitchMap.get(index);
+	public void beforeUnmarshal(Unmarshaller u, Object parent) {
+		this.elecCompDef = (ElecCompDef) parent;
 	}
 
 	public void afterUnmarshal(Unmarshaller u, Object parent) {
 		stitchMap = stitchList.stream().collect(Collectors.toMap(Stitch::getIndex, data -> data));
 	}
 
+	@Nullable
+	public Stitch getStitch(Integer index) {
+		return stitchMap.get(index);
+	}
+
 	public void setSpatial(Spatial spatial) {
 		if (spatial == null) {
-			LOG.error("没有找到Jack::ID为{}的模型{}", getId(), mdlName);
+			String errMsg = String.format("没有找到Jack::ID为%s的模型%s", getId(), mdlName);
+			LOG.error(errMsg);
+			throw new RuntimeException(errMsg);
 		}
 		this.spatial = spatial;
 		spatial.setUserData("entity", this);

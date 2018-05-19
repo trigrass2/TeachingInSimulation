@@ -77,11 +77,7 @@ public class RotateCtrl extends AbstractControl {
 		if (!enabled) {
 			currRad = 0;
 			if (end != null) {
-				try {
-					end.accept(null);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
+				end.accept(null);
 			}
 		}
 	}

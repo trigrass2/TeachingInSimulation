@@ -36,41 +36,35 @@ import com.sun.tools.internal.xjc.runtime.ZeroOneBooleanAdapter;
 
 import lombok.Getter;
 
+@Getter
 @XmlAccessorType(XmlAccessType.NONE)
 @XmlRootElement(name = "ElecCompDef")
-@Getter
 public class ElecCompDef implements Savable {// extends BaseVO<ElecCompDefPO> {
 	public static final String PARAM_KEY_SHELL = "shell";
 
 	@XmlAttribute
 	private String id;
-
 	@XmlAttribute
 	private String name;
 	/**
 	 * key : model【型号】
 	 */
-
 	@XmlAttribute
 	private String model;
-
 	@XmlAttribute
 	private String desc;
 //	元器件模型名称
-
 	@XmlAttribute
 	private String mdlName;
 
 	@XmlElement(name = "Base")
 	private Base base;
-
 	@XmlElement(name = "RelyOn")
 	private RelyOn relyOn;
 
 ////	元器件标签名
 //	@XmlAttribute
 //	private String tagName;
-
 	@XmlAttribute(name = "appStateCls")
 	@XmlJavaTypeAdapter(CompLogicAdapter.class)
 	private BaseElectricCompLogic logic;
@@ -80,42 +74,32 @@ public class ElecCompDef implements Savable {// extends BaseVO<ElecCompDefPO> {
 	@XmlJavaTypeAdapter(ZeroOneBooleanAdapter.class)
 	@XmlAttribute
 	private Boolean isCable;
-
 	@XmlElement(name = "Terminal")
 	private List<Terminal> terminalList = new ArrayList<>();
-
 	@XmlElement(name = "Jack")
 	private List<Jack> jackList = new ArrayList<>();
-
 	@XmlElement(name = "Magnetism")
 	private List<Magnetism> magnetismList = new ArrayList<>();
-
 	@XmlElement(name = "ResisState")
 	private List<ResisState> resisStateList = new ArrayList<>();
 //	@XmlElement(name = "BlockState")
 //	private List<BlockState> blockStateList = new ArrayList<>();
-
 	@XmlElement(name = "LightIO")
 	private List<LightIO> lightIOList = new ArrayList<>();
 
 //	----------------------------------------------------------------------
 
 //	Key:电缆插孔的名字
-
 	private Map<String, Jack> jackMap = new LinkedHashMap<String, Jack>();
 //	Key: id
 //	存放所有的连接头
-
 	private Map<String, Terminal> terminalMap = new LinkedHashMap<String, Terminal>();
 //	Key: id
 //	存放所有连接头及插孔中的针脚
-
 	private Map<String, Terminal> termAndStich = new LinkedHashMap<String, Terminal>();
-
 
 	private Map<String, ResisState> resisStatesMap = new LinkedHashMap<String, ResisState>();
 //	key: terminal ID
-
 	private Map<String, List<ResisRelation>> nowResisRelations = new LinkedHashMap<String, List<ResisRelation>>();
 //	属性
 	private Map<String, String> paramMap;
@@ -123,7 +107,6 @@ public class ElecCompDef implements Savable {// extends BaseVO<ElecCompDefPO> {
 	private Set<String> createdEnv = null;
 
 //	元器件模型
-
 	private Node spatial;
 
 	private ElecCompProxy proxy;
@@ -135,53 +118,49 @@ public class ElecCompDef implements Savable {// extends BaseVO<ElecCompDefPO> {
 	}
 
 	public void afterUnmarshal(Unmarshaller u, Object parent) {
+//		一、将List转化为Map存储
+//		1、插孔
 		jackMap = jackList.stream().collect(Collectors.toMap(Jack::getId, data -> data));
+//		2、连接头
 		terminalMap = terminalList.stream().collect(Collectors.toMap(Terminal::getId, data -> data));
+//		3、电阻状态
 		resisStatesMap = resisStateList.stream().collect(Collectors.toMap(ResisState::getId, data -> data));
-//
+//		4、其他参数
+		paramMap = params.stream().collect(Collectors.toMap(Param::getKey, Param::getValue));
+
+//		二、搜集所有连接头【接线柱和插孔内的针脚】
 		termAndStich.putAll(terminalMap);
 		jackList.stream().forEach(jack -> termAndStich.putAll(jack.getStitchList().stream().collect(Collectors.toMap(Terminal::getId, Function.identity(), (key1, key2) -> key2, HashMap::new))));
 
+//		三、将所有连接头进行分类
+//		Key：TeamName， List<Terminal>一组的连接头
+		Map<String, List<Terminal>> groupTerminals = termAndStich.values().stream().filter(t -> t.getTeam() != null).collect(Collectors.groupingBy(Terminal::getTeam));
+		groupTerminals.entrySet().forEach(e -> new TermTeam(e.getKey(), e.getValue()));
+
+//		四、根据Terminal的ID注入对象
+//		1、磁环静内的电压开关
 		magnetismList.stream().forEach(mag -> {
 			mag.getVoltageIOList().forEach(io -> {
 				Terminal term1 = getTerminal(io.getTerm1Id());
+				term1.getVoltIOs().add(io);
+				io.setTerm1(term1);
+
 				Terminal term2 = getTerminal(io.getTerm2Id());
-				if (term1 == null) {
-					throw new NullPointerException(name + "里的" + io.getTerm1Id() + "端子没找到");
-				} else {
-					term1.getVoltIOs().add(io);
-					io.setTerm1(term1);
-				}
-				if (term2 == null) {
-					throw new NullPointerException(name + "里的" + io.getTerm2Id() + "端子没找到");
-				} else {
-					term2.getVoltIOs().add(io);
-					io.setTerm2(term2);
-				}
+				term2.getVoltIOs().add(io);
+				io.setTerm2(term2);
 			});
 		});
-
+//		2、电阻状态内的terminal
 		resisStateList.stream().forEach(state -> {
 			state.getResisRelationList().forEach(resis -> {
 				resis.setTerm1(getTerminal(resis.getTerm1Id()));
 				resis.setTerm2(getTerminal(resis.getTerm2Id()));
-				if (state.getIsDef() == null) {
-					System.out.println("ElecCompDef.build()");
-				}
-				if (state.getIsDef()) {
-					resisRelationAdded(resis);
-				}
+
+				if (state.getIsDef()) resisRelationAdded(resis);
 			});
 		});
 
-		terminalList.forEach(t -> t.setElecComp(this));
-
-//		将所有连接头进行分类
-//		Key：分类的名称， List<Terminal>一组的连接头
-		Map<String, List<Terminal>> groupTerminals = termAndStich.values().stream().filter(t -> t.getTeam() != null).collect(Collectors.groupingBy(Terminal::getTeam));
-		groupTerminals.entrySet().forEach(e -> new TermTeam(e.getKey(), e.getValue()));
-
-		paramMap = params.stream().collect(Collectors.toMap(Param::getKey, Param::getValue));
+//		terminalList.forEach(t -> t.setElecComp(this));
 
 //		------------------
 		if (logic == null) {
@@ -194,7 +173,7 @@ public class ElecCompDef implements Savable {// extends BaseVO<ElecCompDefPO> {
 	public void bindModel(Node spatial) {
 		this.spatial = spatial;
 		spatial.setUserData("entity", this);
-		
+
 //		遍历元气件中所有插座
 		jackList.forEach(jack -> jack.setSpatial(spatial.getChild(jack.getMdlName())));
 //		遍历元气件中所有连接头
@@ -213,10 +192,6 @@ public class ElecCompDef implements Savable {// extends BaseVO<ElecCompDefPO> {
 		if (magnetismList.size() == 0) {
 			return;
 		}
-//		System.out.println(ref.getTagName());
-//		if ("VC1".equals(ref.getTagName())) {
-//			System.out.println(this + "@" + hashCode() + ref.getTagName() + " createdEnv=" + createdEnv);
-//		}
 		String env_prefix = "";// ref.getCompState().getEquipmentState().getEquipment().getNumber() + ref.getTagName() + ref.hashCode();
 		for (Magnetism magnetism : magnetismList) {
 			float bili = 0;
@@ -231,8 +206,8 @@ public class ElecCompDef implements Savable {// extends BaseVO<ElecCompDefPO> {
 				if (realVolt != null && (createdEnv == null || !createdEnv.contains(realVolt.getEvn()))) {
 					bili = realVolt.getVolt() / requireVolt;
 					effectVoltageIO = voltageIO;
-					if (!magnetism.isEffect() && voltageIO.getResisStateIds().size() == 2) {
-						voltageIO.doSwitch(1);
+					if (!magnetism.isEffect() && voltageIO.getSwitchCtrl().getResisStateIds().size() == 2) {
+						voltageIO.getSwitchCtrl().doSwitch(1);
 					}
 					break;
 				}
@@ -260,8 +235,8 @@ public class ElecCompDef implements Savable {// extends BaseVO<ElecCompDefPO> {
 				// 磁生力
 				for (final ControlIO outputControlIO : magnetism.getOutputControlIOs()) {
 					if (ControlIO.INTERACT_PRESS.equals(outputControlIO.getInteract())) {
-						if (!magnetism.isEffect() && outputControlIO.getSwitchIndex() == 0) {
-							outputControlIO.switchStateChanged(null);
+						if (!magnetism.isEffect() && outputControlIO.getSwitchCtrl().getSwitchIndex() == 0) {
+							outputControlIO.getSwitchCtrl().switchStateChanged(null);
 //							FIXME outputControlIO.playMotion(Dispatcher.getIns().getMainApp().getAssetManager(), null);
 						}
 					}
@@ -277,17 +252,17 @@ public class ElecCompDef implements Savable {// extends BaseVO<ElecCompDefPO> {
 //				System.err.println(ref.getTagName() + "上不满足输入条件");
 				for (final ControlIO outputControlIO : magnetism.getOutputControlIOs()) {
 					if (ControlIO.INTERACT_PRESS.equals(outputControlIO.getInteract())) {
-						if (magnetism.isEffect() && outputControlIO.getSwitchIndex() == 1) {
+						if (magnetism.isEffect() && outputControlIO.getSwitchCtrl().getSwitchIndex() == 1) {
 //								outputControlIO.doSwitch(0);
-							outputControlIO.switchStateChanged(null);
+							outputControlIO.getSwitchCtrl().switchStateChanged(null);
 //							FIXME outputControlIO.playMotion(Dispatcher.getIns().getMainApp().getAssetManager(), null);
 						}
 					}
 				}
 				if (magnetism.isEffect()) {
 					for (VoltageIO inputVoltIO : magnetism.getInputVoltageIOs()) {
-						if (inputVoltIO.getResisStateIds().size() == 2) {
-							inputVoltIO.doSwitch(0);
+						if (inputVoltIO.getSwitchCtrl().getResisStateIds().size() == 2) {
+							inputVoltIO.getSwitchCtrl().doSwitch(0);
 						}
 					}
 				}
@@ -408,7 +383,7 @@ public class ElecCompDef implements Savable {// extends BaseVO<ElecCompDefPO> {
 
 	public String getParam(String key, String def) {
 		String v = getParam(key);
-		if(v == null) {
+		if (v == null) {
 			v = def;
 		}
 		return v;
