@@ -8,6 +8,7 @@ import com.alibaba.fastjson.JSON;
 import com.cas.sim.tis.entity.Preparation;
 import com.cas.sim.tis.services.PreparationService;
 import com.cas.sim.tis.thrift.RequestEntity;
+import com.cas.sim.tis.thrift.RequestEntityBuilder;
 import com.cas.sim.tis.thrift.ResponseEntity;
 
 @Component
@@ -22,15 +23,18 @@ public class PreparationAction extends BaseAction {
 	 * @return
 	 */
 	public Preparation findPreparationByTaskIdAndCreator(Integer cid, int creator) {
-		RequestEntity req = new RequestEntity();
-		req.set("cid", cid).set("creator", creator).end();
+		RequestEntity req = new RequestEntityBuilder()//
+				.set("cid", cid)//
+				.set("creator", creator)//
+				.build();
 		ResponseEntity resp = service.findPreparationByTaskIdAndCreator(req);
 		return JSON.parseObject(resp.data, Preparation.class);
 	}
 
 	public Preparation addPreparation(Preparation preparation) {
-		RequestEntity req = new RequestEntity();
-		req.set("preparation", preparation).end();
+		RequestEntity req = new RequestEntityBuilder()//
+				.set("preparation", preparation)//
+				.build();
 		ResponseEntity resp = service.addPreparation(req);
 		return JSON.parseObject(resp.data, Preparation.class);
 	}

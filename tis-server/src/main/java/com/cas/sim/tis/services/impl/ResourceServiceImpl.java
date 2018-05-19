@@ -92,7 +92,18 @@ public class ResourceServiceImpl implements ResourceService {
 				criteria.orLike("keyword", String.format("%%%s%%", word));
 			}
 		}
+
+		if (entity.pageNum != -1) {
+//			开始分页查询
+			PageHelper.startPage(entity.pageNum, entity.pageSize);
+		}
 		List<Resource> result = mapper.selectByCondition(condition);
+
+		if (entity.pageNum != -1) {
+			PageInfo<Resource> page = new PageInfo<Resource>(result);
+			log.info("成功查找到{}条资源,当前页码{},每页{}条资源,共{}页", result.size(), entity.pageNum, entity.pageSize, page.getPages());
+			return ResponseEntity.success(page);
+		}
 		return ResponseEntity.success(result);
 	}
 
@@ -121,13 +132,13 @@ public class ResourceServiceImpl implements ResourceService {
 
 	@Override
 	public ResponseEntity findResourcesByCollection(RequestEntity entity) {
-		if(entity.pageNum == -1) {
+		if (entity.pageNum == -1) {
 //			分页查询
 			PageHelper.startPage(entity.pageNum, entity.pageSize, entity.getString("orderByClause"));
 		}
 		List<Integer> resourceTypes = JSON.parseArray(entity.getString("resourceTypes"), Integer.class);
 		List<Resource> result = mapper.findResourcesByCollection(resourceTypes, entity.getString("keyword"), entity.getInt("creator"));
-		if(entity.pageNum == -1) {
+		if (entity.pageNum == -1) {
 			PageInfo<Resource> page = new PageInfo<Resource>(result);
 //			查到的总记录数
 //			解释一下：这个page.getTotal()，是所有符合条件的记录数。
@@ -144,7 +155,9 @@ public class ResourceServiceImpl implements ResourceService {
 		condition.createCriteria()
 				// 获取当前登陆者身份信息
 				.andEqualTo("creator", entity.getInt("creator"))
-				// 条件1、查找用户指定的资源类型
+				// 未删除
+				.andEqualTo("del", 0)
+				// 查找用户指定的资源类型
 				.andEqualTo("type", entity.getString("type"));
 		String keyword = entity.getString("keyword");
 		// 条件2、关键字搜索

@@ -105,9 +105,9 @@ public class TypicalCaseAction extends BaseAction {
 			}
 		} else {
 			typicalCase.setUpdater(Session.get(Session.KEY_LOGIN_ID));
-			RequestEntity req = new RequestEntity()//
+			RequestEntity req = new RequestEntityBuilder()//
 					.set("typicalCase", typicalCase)//
-					.end();
+					.build();
 			service.updateTypicalCase(req);
 		}
 	}

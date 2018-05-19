@@ -15,6 +15,7 @@ import com.cas.sim.tis.message.LoginMessage;
 import com.cas.sim.tis.services.UserService;
 import com.cas.sim.tis.services.exception.ServiceException;
 import com.cas.sim.tis.thrift.RequestEntity;
+import com.cas.sim.tis.thrift.RequestEntityBuilder;
 import com.cas.sim.tis.thrift.ResponseEntity;
 import com.jme3.network.HostedConnection;
 import com.jme3.network.message.DisconnectMessage;
@@ -40,8 +41,10 @@ public class LoginMessageHandler implements ServerHandler<LoginMessage> {
 //		准备一个消息用作服务器的响应消息
 		LoginMessage respMsg = (LoginMessage) m;
 		try {
-			RequestEntity entity = new RequestEntity();
-			entity.set("usercode", code).set("password", passwd).end();
+			RequestEntity entity = new RequestEntityBuilder()//
+					.set("usercode", code)//
+					.set("password", passwd)//
+					.build();
 			ResponseEntity resp = userService.login(entity);
 			final User user = JSON.parseObject(resp.data, User.class);
 

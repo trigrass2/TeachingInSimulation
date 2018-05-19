@@ -11,6 +11,7 @@ import com.cas.sim.tis.consts.Session;
 import com.cas.sim.tis.entity.PreparationQuiz;
 import com.cas.sim.tis.services.PreparationQuizService;
 import com.cas.sim.tis.thrift.RequestEntity;
+import com.cas.sim.tis.thrift.RequestEntityBuilder;
 import com.cas.sim.tis.thrift.ResponseEntity;
 import com.cas.sim.tis.vo.PreparationInfo;
 
@@ -20,17 +21,17 @@ public class PreparationQuizAction extends BaseAction {
 	private PreparationQuizService service;
 
 	public List<PreparationInfo> findQuizsByPreparationId(Integer pid) {
-		RequestEntity req = new RequestEntity()//
+		RequestEntity req = new RequestEntityBuilder()//
 				.set("pid", pid)//
-				.end();
+				.build();
 		ResponseEntity resp = service.findQuizsByPreparationId(req);
 		return JSON.parseArray(resp.data, PreparationInfo.class);
 	}
 
 	public PreparationQuiz findQuizById(Integer id) {
-		RequestEntity req = new RequestEntity()//
+		RequestEntity req = new RequestEntityBuilder()//
 				.set("id", id)//
-				.end();
+				.build();
 		ResponseEntity resp = service.findPreparationQuizById(req);
 		return JSON.parseObject(resp.data, PreparationQuiz.class);
 	}
@@ -38,16 +39,16 @@ public class PreparationQuizAction extends BaseAction {
 	public void addQuiz(PreparationQuiz quiz) {
 		quiz.setCreator(Session.get(Session.KEY_LOGIN_ID));
 
-		RequestEntity req = new RequestEntity()//
+		RequestEntity req = new RequestEntityBuilder()//
 				.set("quiz", quiz)//
-				.end();
+				.build();
 		service.savePreparationQuiz(req);
 	}
 
 	public boolean checkFreeQuiz(Integer pid) {
-		RequestEntity req = new RequestEntity()//
+		RequestEntity req = new RequestEntityBuilder()//
 				.set("pid", pid)//
-				.end();
+				.build();
 
 		ResponseEntity resp = service.countFreeQuizByPreparationId(req);
 		return JSON.parseObject(resp.data, Integer.class) > 0;

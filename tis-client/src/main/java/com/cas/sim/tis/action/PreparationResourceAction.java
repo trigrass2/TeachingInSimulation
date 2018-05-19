@@ -12,6 +12,7 @@ import com.cas.sim.tis.consts.Session;
 import com.cas.sim.tis.entity.PreparationResource;
 import com.cas.sim.tis.services.PreparationResourceService;
 import com.cas.sim.tis.thrift.RequestEntity;
+import com.cas.sim.tis.thrift.RequestEntityBuilder;
 import com.cas.sim.tis.thrift.ResponseEntity;
 import com.cas.sim.tis.vo.PreparationInfo;
 
@@ -21,17 +22,17 @@ public class PreparationResourceAction extends BaseAction {
 	private PreparationResourceService service;
 
 	public List<PreparationInfo> findResourcesByPreparationId(Integer pid) {
-		RequestEntity req = new RequestEntity()//
+		RequestEntity req = new RequestEntityBuilder()//
 				.set("pid", pid)//
-				.end();
+				.build();
 		ResponseEntity resp = service.findResourcesByPreparationId(req);
 		return JSON.parseArray(resp.data, PreparationInfo.class);
 	}
 
 	public PreparationResource findResourceById(Integer id) {
-		RequestEntity req = new RequestEntity()//
+		RequestEntity req = new RequestEntityBuilder()//
 				.set("id", id)//
-				.end();
+				.build();
 		ResponseEntity resp = service.findPreparationResourceById(req);
 		return JSON.parseObject(resp.data, PreparationResource.class);
 	}
@@ -42,20 +43,23 @@ public class PreparationResourceAction extends BaseAction {
 		resource.setDel(true);
 		resource.setUpdater(Session.get(Session.KEY_LOGIN_ID));
 
-		RequestEntity req = new RequestEntity();
-		req.set("resource", resource).end();
+		RequestEntity req = new RequestEntityBuilder()//
+				.set("resource", resource)//
+				.build();
 		service.updatePreparationResource(req);
 	}
 
 	public void addResources(PreparationResource... resources) {
-		RequestEntity req = new RequestEntity();
-		req.set("resources", Arrays.asList(resources)).end();
+		RequestEntity req = new RequestEntityBuilder()//
+				.set("resources", Arrays.asList(resources))//
+				.build();
 		service.savePreparationResources(req);
 	}
-	
+
 	public void addResources(List<PreparationResource> resources) {
-		RequestEntity req = new RequestEntity();
-		req.set("resources", Arrays.asList(resources)).end();
+		RequestEntity req = new RequestEntityBuilder()//
+				.set("resources", Arrays.asList(resources))//
+				.build();
 		service.savePreparationResources(req);
 	}
 

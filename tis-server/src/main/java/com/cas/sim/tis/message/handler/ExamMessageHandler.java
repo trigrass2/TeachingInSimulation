@@ -14,6 +14,7 @@ import com.cas.sim.tis.entity.LibraryPublish;
 import com.cas.sim.tis.message.ExamMessage;
 import com.cas.sim.tis.services.LibraryPublishService;
 import com.cas.sim.tis.thrift.RequestEntity;
+import com.cas.sim.tis.thrift.RequestEntityBuilder;
 import com.cas.sim.tis.thrift.ResponseEntity;
 import com.jme3.network.Filters;
 import com.jme3.network.HostedConnection;
@@ -29,9 +30,9 @@ public class ExamMessageHandler implements ServerHandler<ExamMessage> {
 	public void execute(HostedConnection source, ExamMessage m) throws Exception {
 		if (ExamMessage.EXAM_OVER == m.getType()) {
 //			获得发布记录对象
-			RequestEntity req = new RequestEntity()//
+			RequestEntity req = new RequestEntityBuilder()//
 					.set("id", m.getPid())//
-					.end();
+					.build();
 			ResponseEntity resp = libraryPublishService.publishLibrary(req);
 			LibraryPublish publish = JSON.parseObject(resp.data, LibraryPublish.class);
 //			通知当前考试学生考试结束

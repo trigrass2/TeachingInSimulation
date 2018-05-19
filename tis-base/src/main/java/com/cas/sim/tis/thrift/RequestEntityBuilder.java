@@ -1,11 +1,14 @@
 package com.cas.sim.tis.thrift;
 
-public class RequestEntityBuilder {
+import com.alibaba.fastjson.JSONObject;
 
+public class RequestEntityBuilder {
 	private RequestEntity entity = new RequestEntity();
 
+	private JSONObject json = new JSONObject();
+
 	public RequestEntityBuilder set(String key, Object value) {
-		entity.set(key, value);
+		json.put(key, value);
 		return this;
 	}
 
@@ -20,6 +23,7 @@ public class RequestEntityBuilder {
 	}
 
 	public RequestEntity build() {
+		entity.data = json.toString();
 		return entity;
 	}
 

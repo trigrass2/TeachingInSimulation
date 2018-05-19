@@ -32,19 +32,6 @@ public class RequestEntity {
 
 	private JSONObject json;
 
-	public RequestEntity set(String key, Object value) {
-		if (json == null) {
-			json = new JSONObject();
-		}
-		json.put(key, value);
-		return this;
-	}
-
-	public RequestEntity end() {
-		this.data = json.toJSONString();
-		return this;
-	}
-
 	public Integer getInt(String key) {
 		if (json == null) {
 			json = JSON.parseObject(data);

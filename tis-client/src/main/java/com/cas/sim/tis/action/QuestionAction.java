@@ -10,6 +10,7 @@ import com.alibaba.fastjson.JSON;
 import com.cas.sim.tis.entity.Question;
 import com.cas.sim.tis.services.QuestionService;
 import com.cas.sim.tis.thrift.RequestEntity;
+import com.cas.sim.tis.thrift.RequestEntityBuilder;
 import com.cas.sim.tis.thrift.ResponseEntity;
 
 @Component
@@ -25,9 +26,9 @@ public class QuestionAction extends BaseAction {
 	 * @return
 	 */
 	public List<Question> findQuestionsByLibrary(int pageIndex, int pageSize, int rid) {
-		RequestEntity req = new RequestEntity()//
+		RequestEntity req = new RequestEntityBuilder()//
 				.set("rid", rid)//
-				.end();
+				.build();
 //		分页信息
 		req.pageNum = pageIndex;
 		req.pageSize = pageSize;
@@ -45,19 +46,19 @@ public class QuestionAction extends BaseAction {
 	 * @return
 	 */
 	public List<Question> findQuestionsByLibraryAndQuestionType(int rid, int type) {
-		RequestEntity req = new RequestEntity()//
+		RequestEntity req = new RequestEntityBuilder()//
 				.set("rid", rid)//
 				.set("type", type)//
-				.end();
+				.build();
 		ResponseEntity resp = service.findQuestionsByLibraryAndQuestionType(req);
 		return JSON.parseArray(resp.data, Question.class);
 	}
 
 	public List<Question> findQuestionsByPublish(int pid, boolean mostWrong) {
-		RequestEntity req = new RequestEntity()//
+		RequestEntity req = new RequestEntityBuilder()//
 				.set("pid", pid)//
 				.set("mostWrong", mostWrong)//
-				.end();
+				.build();
 		ResponseEntity resp = service.findQuestionsByPublish(req);
 		return JSON.parseArray(resp.data, Question.class);
 	}
@@ -67,10 +68,10 @@ public class QuestionAction extends BaseAction {
 	 * @param questions
 	 */
 	public void addQuestions(int rid, List<Question> questions) {
-		RequestEntity req = new RequestEntity()//
+		RequestEntity req = new RequestEntityBuilder()//
 				.set("questions", questions)//
 				.set("rid", rid)//
-				.end();
+				.build();
 		service.addQuestions(req);
 	}
 
@@ -80,9 +81,9 @@ public class QuestionAction extends BaseAction {
 	 * @return
 	 */
 	public boolean checkImportOrExport(int rid) {
-		RequestEntity req = new RequestEntity()//
+		RequestEntity req = new RequestEntityBuilder()//
 				.set("rid", rid)//
-				.end();
+				.build();
 		ResponseEntity resp = service.countQuestionByLibrary(req);
 		return Integer.parseInt(resp.data) > 0;
 	}
