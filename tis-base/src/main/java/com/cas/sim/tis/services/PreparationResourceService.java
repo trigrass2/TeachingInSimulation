@@ -14,4 +14,10 @@ public interface PreparationResourceService {
 	 */
 	ResponseEntity findResourcesByPreparationId(RequestEntity entity);
 
+	ResponseEntity findPreparationResourceById(RequestEntity req);
+
+	void updatePreparationResource(RequestEntity req);
+
+	void savePreparationResources(RequestEntity req);
+
 }

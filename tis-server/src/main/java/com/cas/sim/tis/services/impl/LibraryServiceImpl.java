@@ -4,8 +4,6 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -17,13 +15,13 @@ import com.cas.sim.tis.thrift.ResponseEntity;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 
+import lombok.extern.slf4j.Slf4j;
 import tk.mybatis.mapper.entity.Condition;
 import tk.mybatis.mapper.entity.Example.Criteria;
 
 @Service
+@Slf4j
 public class LibraryServiceImpl implements LibraryService {
-
-	private static final Logger LOG = LoggerFactory.getLogger(LibraryServiceImpl.class);
 
 	@Resource
 	private LibraryMapper mapper;
@@ -41,7 +39,25 @@ public class LibraryServiceImpl implements LibraryService {
 		PageHelper.startPage(entity.pageNum, entity.pageSize);
 		List<Library> result = mapper.selectByCondition(condition);
 		PageInfo<Library> page = new PageInfo<Library>(result);
-		LOG.info("成功查找到{}条资源,当前页码{},每页{}条资源,共{}页", result.size(), entity.pageNum, entity.pageSize, page.getPages());
+		log.info("成功查找到{}条资源,当前页码{},每页{}条资源,共{}页", result.size(), entity.pageNum, entity.pageSize, page.getPages());
 		return ResponseEntity.success(result);
+	}
+
+	@Override
+	public ResponseEntity findLibraryById(RequestEntity req) {
+		int id = req.getInt("id");
+		return ResponseEntity.success(mapper.selectByPrimaryKey(id));
+	}
+
+	@Override
+	public void savelibrary(RequestEntity req) {
+		Library library = req.getObject("library", Library.class);
+		mapper.insert(library);
+	}
+
+	@Override
+	public void updatelibrary(RequestEntity req) {
+		Library library = req.getObject("library", Library.class);
+		mapper.updateByPrimaryKeySelective(library);
 	}
 }

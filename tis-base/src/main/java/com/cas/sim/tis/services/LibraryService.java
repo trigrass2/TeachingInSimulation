@@ -17,4 +17,13 @@ public interface LibraryService {
 	@ThriftMethod
 	ResponseEntity findLibraryByType(RequestEntity entity);
 
+	@ThriftMethod
+	ResponseEntity findLibraryById(RequestEntity req);
+
+	@ThriftMethod
+	void savelibrary(RequestEntity req);
+
+	@ThriftMethod
+	void updatelibrary(RequestEntity req);
+
 }

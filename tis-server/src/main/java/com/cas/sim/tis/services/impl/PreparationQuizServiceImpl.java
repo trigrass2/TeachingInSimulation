@@ -38,4 +38,16 @@ public class PreparationQuizServiceImpl implements PreparationQuizService {
 		return ResponseEntity.success(result);
 	}
 
+	@Override
+	public ResponseEntity findPreparationQuizById(RequestEntity req) {
+		int id = req.getInt("id");
+		return ResponseEntity.success(mapper.selectByPrimaryKey(id));
+	}
+
+	@Override
+	public void savePreparationQuiz(RequestEntity req) {
+		PreparationQuiz quiz = req.getObject("quiz", PreparationQuiz.class);
+		mapper.insertSelective(quiz);
+	}
+
 }

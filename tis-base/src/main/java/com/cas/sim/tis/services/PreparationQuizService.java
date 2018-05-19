@@ -22,4 +22,10 @@ public interface PreparationQuizService {
 	@ThriftMethod
 	ResponseEntity countFreeQuizByPreparationId(RequestEntity entity);
 
+	@ThriftMethod
+	ResponseEntity findPreparationQuizById(RequestEntity req);
+
+	@ThriftMethod
+	void savePreparationQuiz(RequestEntity req);
+
 }
