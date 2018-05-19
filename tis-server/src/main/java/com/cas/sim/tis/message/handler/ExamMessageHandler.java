@@ -33,7 +33,7 @@ public class ExamMessageHandler implements ServerHandler<ExamMessage> {
 			RequestEntity req = new RequestEntityBuilder()//
 					.set("id", m.getPid())//
 					.build();
-			ResponseEntity resp = libraryPublishService.publishLibrary(req);
+			ResponseEntity resp = libraryPublishService.updatePublishLibrary(req);
 			LibraryPublish publish = JSON.parseObject(resp.data, LibraryPublish.class);
 //			通知当前考试学生考试结束
 			List<HostedConnection> collection = new ArrayList<>();

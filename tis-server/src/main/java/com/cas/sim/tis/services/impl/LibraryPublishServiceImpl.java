@@ -98,7 +98,7 @@ public class LibraryPublishServiceImpl implements LibraryPublishService {
 	}
 
 	@Override
-	public ResponseEntity publishLibrary(RequestEntity entity) {
+	public ResponseEntity updatePublishLibrary(RequestEntity entity) {
 		LibraryPublish libraryPublish = new LibraryPublish();
 		libraryPublish.setId(entity.getInt("id"));
 		libraryPublish.setState(true);
