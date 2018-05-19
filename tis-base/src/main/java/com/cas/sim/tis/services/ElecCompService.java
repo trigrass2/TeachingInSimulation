@@ -11,19 +11,18 @@ import io.airlift.drift.annotations.ThriftService;
 @ThriftService
 public interface ElecCompService {
 	/**
-	 * 获取所有元器件的Map集合<br>
-	 * key:元器件型号<br>
-	 * value:元器件对象 Map<Integer, List<ElecComp>>
-	 * @return
+	 * 获取所有元器件按元器件类型分类的Map集合<br>
+	 * @return key:元器件型号<br>
+	 *         value:元器件对象 List<ElecComp>
 	 */
 	@Nonnull
 	@ThriftMethod
 	ResponseEntity findElecCompGroupByType();
 
 	/**
-	 * 根据元器件ID查找
-	 * @param id
-	 * @return
+	 * 根据元器件编号获得的元器件对象
+	 * @param id 元器件编号
+	 * @return 元器件对象
 	 */
 	@ThriftMethod
 	ResponseEntity findElecCompById(RequestEntity req);
