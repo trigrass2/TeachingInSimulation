@@ -57,9 +57,11 @@ public class UserServiceImpl implements UserService {
 		condition.orderBy("createDate").desc();
 
 		List<User> result = mapper.selectByCondition(condition);
-		PageInfo<User> page = new PageInfo<>(result);
-		log.info("成功查找到{}条资源,当前页码{},每页{}条资源,共{}页", result.size(), entity.pageNum, entity.pageSize, page.getPages());
-
+		if (entity != null && entity.pageNum != -1) {
+			PageInfo<User> page = new PageInfo<>(result);
+			log.info("成功查找到{}条资源,当前页码{},每页{}条资源,共{}页", result.size(), entity.pageNum, entity.pageSize, page.getPages());
+			return ResponseEntity.success(page);
+		}
 		return ResponseEntity.success(result);
 	}
 
@@ -77,8 +79,11 @@ public class UserServiceImpl implements UserService {
 			PageHelper.startPage(entity.pageNum, entity.pageSize);
 		}
 		List<User> result = mapper.selectByCondition(condition);
-		PageInfo<User> page = new PageInfo<>(result);
-		log.info("成功查找到{}条资源,当前页码{},每页{}条资源,共{}页", result.size(), entity.pageNum, entity.pageSize, page.getPages());
+		if (entity.pageNum != -1) {
+			PageInfo<User> page = new PageInfo<>(result);
+			log.info("成功查找到{}条资源,当前页码{},每页{}条资源,共{}页", result.size(), entity.pageNum, entity.pageSize, page.getPages());
+			return ResponseEntity.success(page);
+		}
 		return ResponseEntity.success(result);
 	}
 

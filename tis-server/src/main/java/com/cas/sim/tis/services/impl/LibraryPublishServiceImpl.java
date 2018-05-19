@@ -48,7 +48,7 @@ public class LibraryPublishServiceImpl implements LibraryPublishService {
 		List<LibraryPublishForTeacher> result = mapper.findPublishForTeacher(entity.getInt("creator"));
 		PageInfo<LibraryPublishForTeacher> page = new PageInfo<>(result);
 		log.info("成功查找到{}条资源,当前页码{},每页{}条资源,共{}页", result.size(), entity.pageNum, entity.pageSize, page.getPages());
-		return ResponseEntity.success(result);
+		return ResponseEntity.success(page);
 	}
 
 	@Override
@@ -57,7 +57,7 @@ public class LibraryPublishServiceImpl implements LibraryPublishService {
 		List<LibraryPublishForStudent> result = mapper.findPublishForStudent(entity.getInt("type"), entity.getInt("creator"));
 		PageInfo<LibraryPublishForStudent> page = new PageInfo<>(result);
 		log.info("成功查找到{}条资源,当前页码{},每页{}条资源,共{}页", result.size(), entity.pageNum, entity.pageSize, page.getPages());
-		return ResponseEntity.success(result);
+		return ResponseEntity.success(page);
 	}
 
 	@Override

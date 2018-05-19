@@ -98,31 +98,43 @@ public class ResourceServiceImpl implements ResourceService {
 
 	@Override
 	public ResponseEntity findResourcesByBrowseHistory(RequestEntity entity) {
-		// 开始分页查询
-		PageHelper.startPage(entity.pageNum, entity.pageSize, entity.getString("orderByClause"));
+		if (entity.pageNum != -1) {
+//			开始分页查询
+			PageHelper.startPage(entity.pageNum, entity.pageSize, entity.getString("orderByClause"));
+		}
 
 		List<Integer> resourceTypes = JSON.parseArray(entity.getString("resourceTypes"), Integer.class);
 
 		List<Resource> result = mapper.findResourcesByBrowseHistory(resourceTypes, entity.getString("keyword"), entity.getInt("creator"));
-		PageInfo<Resource> page = new PageInfo<Resource>(result);
-//		查到的总记录数
-//		解释一下：这个page.getTotal()，是所有符合条件的记录数。
-//		result.size()：是当前页中的数据量 <= pageSize
-		log.info("成功查找到{}条资源,当前页码{},每页{}条资源,共{}页", result.size(), entity.pageNum, entity.pageSize, page.getPages());
+
+		if (entity.pageNum != -1) {
+			PageInfo<Resource> page = new PageInfo<Resource>(result);
+//			查到的总记录数
+//			解释一下：这个page.getTotal()，是所有符合条件的记录数。
+//			result.size()：是当前页中的数据量 <= pageSize
+			log.info("成功查找到{}条资源,当前页码{},每页{}条资源,共{}页", result.size(), entity.pageNum, entity.pageSize, page.getPages());
+			return ResponseEntity.success(page);
+		}
+
 		return ResponseEntity.success(result);
 	}
 
 	@Override
 	public ResponseEntity findResourcesByCollection(RequestEntity entity) {
-		// 开始分页查询
-		PageHelper.startPage(entity.pageNum, entity.pageSize, entity.getString("orderByClause"));
+		if(entity.pageNum == -1) {
+//			分页查询
+			PageHelper.startPage(entity.pageNum, entity.pageSize, entity.getString("orderByClause"));
+		}
 		List<Integer> resourceTypes = JSON.parseArray(entity.getString("resourceTypes"), Integer.class);
 		List<Resource> result = mapper.findResourcesByCollection(resourceTypes, entity.getString("keyword"), entity.getInt("creator"));
-		PageInfo<Resource> page = new PageInfo<Resource>(result);
-//		查到的总记录数
-//		解释一下：这个page.getTotal()，是所有符合条件的记录数。
-//		result.size()：是当前页中的数据量 <= pageSize
-		log.info("成功查找到{}条资源,当前页码{},每页{}条资源,共{}页", result.size(), entity.pageNum, entity.pageSize, page.getPages());
+		if(entity.pageNum == -1) {
+			PageInfo<Resource> page = new PageInfo<Resource>(result);
+//			查到的总记录数
+//			解释一下：这个page.getTotal()，是所有符合条件的记录数。
+//			result.size()：是当前页中的数据量 <= pageSize
+			log.info("成功查找到{}条资源,当前页码{},每页{}条资源,共{}页", result.size(), entity.pageNum, entity.pageSize, page.getPages());
+			return ResponseEntity.success(page);
+		}
 		return ResponseEntity.success(result);
 	}
 
