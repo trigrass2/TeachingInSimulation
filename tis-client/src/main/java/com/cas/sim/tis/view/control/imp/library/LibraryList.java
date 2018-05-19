@@ -157,7 +157,7 @@ public class LibraryList extends HBox implements IContent {
 			del.setCellFactory(BtnCell.forTableColumn(MsgUtil.getMessage("button.delete"), Priority.ALWAYS, "blue-btn", id -> {
 				AlertUtil.showConfirm(MsgUtil.getMessage("alert.confirmation.data.delete"), response -> {
 					if (response == ButtonType.YES) {
-						SpringUtil.getBean(LibraryAction.class).deleteLibrary((int) id);
+						SpringUtil.getBean(LibraryAction.class).deleteLibraryByLogic((int) id);
 						pagination.reload();
 					}
 				});

@@ -29,6 +29,7 @@ public class LibraryServiceImpl implements LibraryService {
 	@Override
 	public ResponseEntity findLibraryByType(RequestEntity entity) {
 		Condition condition = new Condition(Library.class);
+		condition.selectProperties("id", "name", "time", "num", "createDate");
 		Criteria criteria = condition.createCriteria()//
 				.andEqualTo("type", entity.getInt("type"))//
 				.andEqualTo("del", 0);
