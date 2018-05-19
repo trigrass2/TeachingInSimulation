@@ -13,6 +13,7 @@ import com.cas.sim.tis.entity.LibraryPublish;
 import com.cas.sim.tis.entity.LibraryPublish.LibraryPublishType;
 import com.cas.sim.tis.services.LibraryPublishService;
 import com.cas.sim.tis.thrift.RequestEntity;
+import com.cas.sim.tis.thrift.RequestEntityBuilder;
 import com.cas.sim.tis.thrift.ResponseEntity;
 import com.cas.sim.tis.vo.LibraryPublishForStudent;
 import com.cas.sim.tis.vo.LibraryPublishForTeacher;
@@ -25,52 +26,70 @@ public class LibraryPublishAction extends BaseAction {
 	private LibraryPublishService service;
 
 	/**
-	 * 查询考核记录
-	 * @param pageIndex 列表当前页
-	 * @param pageSize 列表一页记录条数
-	 * @param creator 记录创建人（教师、学生）
-	 * @return
+	 * 根据教师编号获得该用户发布的试题考核
+	 * @param pageIndex 当前页
+	 * @param pageSize 查询条数
+	 * @param creator 教师编号
+	 * @return 教师查看的分页集合
 	 */
 	public PageInfo<LibraryPublishForTeacher> findPublishForTeacher(int pageIndex, int pageSize, int creator) {
-		RequestEntity req = new RequestEntity();
-		req.pageNum = pageIndex;
-		req.pageSize = pageSize;
-		req.set("creator", creator).end();
+		RequestEntity req = new RequestEntityBuilder()//
+				.pageNum(pageIndex)//
+				.pageSize(pageSize)//
+				.set("creator", creator)//
+				.build();
 		ResponseEntity resp = service.findPublishForTeacher(req);
 		return JSON.parseObject(resp.data, new TypeReference<PageInfo<LibraryPublishForTeacher>>() {});
 	}
 
+	/**
+	 * 根据学生编号获得该用户发布的试题练习/参与的试题考核
+	 * @param pageIndex 当前页
+	 * @param pageSize 查询条数
+	 * @param type 试题发布类型：PublishType
+	 * @param creator 学生编号
+	 * @return 学生查看的分页集合
+	 */
 	public PageInfo<LibraryPublishForStudent> findPublishForStudent(int pageIndex, int pageSize, int type, int creator) {
-		RequestEntity req = new RequestEntity();
-		req.pageNum = pageIndex;
-		req.pageSize = pageSize;
-		req.set("type", type).set("creator", creator).end();
+		RequestEntity req = new RequestEntityBuilder()//
+				.pageNum(pageIndex)//
+				.pageSize(pageSize)//
+				.set("type", type)//
+				.set("creator", creator)//
+				.build();
 		ResponseEntity resp = service.findPublishForStudent(req);
 		return JSON.parseObject(resp.data, new TypeReference<PageInfo<LibraryPublishForStudent>>() {});
 	}
 
 	/**
-	 * 根据发布编号查询
-	 * @param pid
-	 * @return
+	 * 根据试题考核发布编号查询试题考核发布对象
+	 * @param id 试题考核发布编号
+	 * @return 试题考核发布对象
 	 */
 	public LibraryPublish findPublishById(int id) {
-		RequestEntity req = new RequestEntity();
-		req.set("id", id).end();
+		RequestEntity req = new RequestEntityBuilder()//
+				.set("id", id)//
+				.build();
 		ResponseEntity resp = service.findPublishById(req);
 		return JSON.parseObject(resp.data, LibraryPublish.class);
 	}
 
+	/**
+	 * 根据试题考核发布编号获得学生提交状态
+	 * @param id 试题考核发布编号
+	 * @return 学生提交状态集合
+	 */
 	public List<SubmitInfo> findSubmitStateById(int id) {
-		RequestEntity req = new RequestEntity();
-		req.set("id", id).end();
+		RequestEntity req = new RequestEntityBuilder()//
+				.set("id", id)//
+				.build();
 		ResponseEntity resp = service.findSubmitStateById(req);
 		return JSON.parseArray(resp.data, SubmitInfo.class);
 	}
 
 	/**
-	 * 教师发布考核
-	 * @param rid 题库编号
+	 * 教师发布考核，并向考核班级所有学生广播考核开始
+	 * @param rid 试题库编号
 	 * @param cid 班级编号
 	 * @return
 	 */
@@ -80,24 +99,31 @@ public class LibraryPublishAction extends BaseAction {
 		publish.setClassId(cid);
 		publish.setCreator(Session.get(Session.KEY_LOGIN_ID));
 		publish.setType(LibraryPublishType.EXAM.getType());
-		
-		RequestEntity req = new RequestEntity();
-		req.set("publish", publish).end();
-		
+
+		RequestEntity req = new RequestEntityBuilder()//
+				.set("publish", publish)//
+				.build();
+
 		ResponseEntity resp = service.publishLibraryToClass(req);
 		return JSON.parseObject(resp.data, Integer.class);
 	}
 
+	/**
+	 * 学生发布练习
+	 * @param rid 试题库编号
+	 * @return
+	 */
 	public int practiceLibraryByStudent(int rid) {
 
 		LibraryPublish publish = new LibraryPublish();
 		publish.setLibraryId(rid);
 		publish.setCreator(Session.get(Session.KEY_LOGIN_ID));
 		publish.setType(LibraryPublishType.PRACTICE.getType());
-		
-		RequestEntity req = new RequestEntity();
-		req.set("publish", publish).end();
-		
+
+		RequestEntity req = new RequestEntityBuilder()//
+				.set("publish", publish)//
+				.build();
+
 		ResponseEntity resp = service.practiceLibraryByStudent(req);
 		return JSON.parseObject(resp.data, Integer.class);
 	}
