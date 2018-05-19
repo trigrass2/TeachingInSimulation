@@ -13,7 +13,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.cas.sim.tis.Application;
-import com.cas.sim.tis.services.ResourceService;
+import com.cas.sim.tis.mapper.ResourceMapper;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 
@@ -24,7 +24,7 @@ import tk.mybatis.mapper.entity.Example.Criteria;
 @SpringBootTest(classes = Application.class)
 public class PageHelpTest {
 	@Resource
-	private ResourceService resourceService;
+	private ResourceMapper resourceMapper;
 
 	@Test
 	public void testPage() throws Exception {
@@ -39,7 +39,7 @@ public class PageHelpTest {
 		criteria.orEqualTo("share", true);
 
 		PageHelper.startPage(0, 2);
-		List<com.cas.sim.tis.entity.Resource> resources = resourceService.findByCondition(condition);
+		List<com.cas.sim.tis.entity.Resource> resources = resourceMapper.selectByCondition(condition);
 
 		PageInfo<com.cas.sim.tis.entity.Resource> page = new PageInfo<com.cas.sim.tis.entity.Resource>(resources);
 		System.out.println(page.getTotal());
