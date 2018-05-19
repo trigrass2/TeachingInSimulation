@@ -5,8 +5,6 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSON;
@@ -26,11 +24,11 @@ import com.github.pagehelper.PageInfo;
 import com.jme3.network.Filters;
 import com.jme3.network.HostedConnection;
 
-import tk.mybatis.mapper.entity.Condition;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
+@Slf4j
 public class LibraryPublishServiceImpl implements LibraryPublishService {
-	private static final Logger LOG = LoggerFactory.getLogger(LibraryPublishServiceImpl.class);
 
 	@Resource
 	private LibraryPublishMapper mapper;
@@ -49,7 +47,7 @@ public class LibraryPublishServiceImpl implements LibraryPublishService {
 		PageHelper.startPage(entity.pageNum, entity.pageSize);
 		List<LibraryPublishForTeacher> result = mapper.findPublishForTeacher(entity.getInt("creator"));
 		PageInfo<LibraryPublishForTeacher> page = new PageInfo<>(result);
-		LOG.info("成功查找到{}条资源,当前页码{},每页{}条资源,共{}页", result.size(), entity.pageNum, entity.pageSize, page.getPages());
+		log.info("成功查找到{}条资源,当前页码{},每页{}条资源,共{}页", result.size(), entity.pageNum, entity.pageSize, page.getPages());
 		return ResponseEntity.success(result);
 	}
 
@@ -58,7 +56,7 @@ public class LibraryPublishServiceImpl implements LibraryPublishService {
 		PageHelper.startPage(entity.pageNum, entity.pageSize);
 		List<LibraryPublishForStudent> result = mapper.findPublishForStudent(entity.getInt("type"), entity.getInt("creator"));
 		PageInfo<LibraryPublishForStudent> page = new PageInfo<>(result);
-		LOG.info("成功查找到{}条资源,当前页码{},每页{}条资源,共{}页", result.size(), entity.pageNum, entity.pageSize, page.getPages());
+		log.info("成功查找到{}条资源,当前页码{},每页{}条资源,共{}页", result.size(), entity.pageNum, entity.pageSize, page.getPages());
 		return ResponseEntity.success(result);
 	}
 

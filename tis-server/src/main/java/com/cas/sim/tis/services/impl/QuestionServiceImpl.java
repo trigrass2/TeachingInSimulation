@@ -4,8 +4,6 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.TransactionDefinition;
@@ -23,12 +21,13 @@ import com.cas.sim.tis.util.SpringUtil;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 
+import lombok.extern.slf4j.Slf4j;
 import tk.mybatis.mapper.entity.Condition;
 
 @Service
+@Slf4j
 public class QuestionServiceImpl implements QuestionService {
 
-	private static final Logger LOG = LoggerFactory.getLogger(QuestionServiceImpl.class);
 	@Resource
 	private QuestionMapper mapper;
 
@@ -50,7 +49,7 @@ public class QuestionServiceImpl implements QuestionService {
 
 		if (entity.pageNum != -1) {
 			PageInfo<Question> page = new PageInfo<>(result);
-			LOG.info("成功查找到{}条资源,当前页码{},每页{}条资源,共{}页", result.size(), entity.pageNum, entity.pageSize, page.getPages());
+			log.info("成功查找到{}条资源,当前页码{},每页{}条资源,共{}页", result.size(), entity.pageNum, entity.pageSize, page.getPages());
 		}
 		return ResponseEntity.success(result);
 	}

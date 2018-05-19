@@ -6,8 +6,6 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.cas.sim.tis.consts.AnswerState;
@@ -19,8 +17,6 @@ import com.cas.sim.tis.thrift.ResponseEntity;
 
 @Service
 public class LibraryAnswerServiceImpl implements LibraryAnswerService {
-	private static final Logger LOG = LoggerFactory.getLogger(LibraryAnswerServiceImpl.class);
-
 	@Resource
 	private LibraryAnswerMapper mapper;
 

@@ -4,8 +4,6 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.cas.sim.tis.consts.RoleConst;
@@ -18,12 +16,12 @@ import com.cas.sim.tis.thrift.ResponseEntity;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 
+import lombok.extern.slf4j.Slf4j;
 import tk.mybatis.mapper.entity.Condition;
 
 @Service
+@Slf4j
 public class UserServiceImpl implements UserService {
-	private static final Logger LOG = LoggerFactory.getLogger(UserServiceImpl.class);
-
 	@Resource
 	private UserMapper mapper;
 
@@ -60,7 +58,7 @@ public class UserServiceImpl implements UserService {
 
 		List<User> result = mapper.selectByCondition(condition);
 		PageInfo<User> page = new PageInfo<>(result);
-		LOG.info("成功查找到{}条资源,当前页码{},每页{}条资源,共{}页", result.size(), entity.pageNum, entity.pageSize, page.getPages());
+		log.info("成功查找到{}条资源,当前页码{},每页{}条资源,共{}页", result.size(), entity.pageNum, entity.pageSize, page.getPages());
 
 		return ResponseEntity.success(result);
 	}
@@ -80,7 +78,7 @@ public class UserServiceImpl implements UserService {
 		}
 		List<User> result = mapper.selectByCondition(condition);
 		PageInfo<User> page = new PageInfo<>(result);
-		LOG.info("成功查找到{}条资源,当前页码{},每页{}条资源,共{}页", result.size(), entity.pageNum, entity.pageSize, page.getPages());
+		log.info("成功查找到{}条资源,当前页码{},每页{}条资源,共{}页", result.size(), entity.pageNum, entity.pageSize, page.getPages());
 		return ResponseEntity.success(result);
 	}
 

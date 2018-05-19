@@ -4,8 +4,6 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.TransactionDefinition;
@@ -32,8 +30,6 @@ import tk.mybatis.mapper.entity.Example.Criteria;
 
 @Service
 public class LibraryRecordServiceImpl implements LibraryRecordService {
-
-	private static final Logger LOG = LoggerFactory.getLogger(LibraryRecordServiceImpl.class);
 
 	@Resource
 	private LibraryRecordMapper mapper;

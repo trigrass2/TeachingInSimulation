@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.TransactionDefinition;
@@ -30,12 +28,13 @@ import com.cas.util.StringUtil;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 
+import lombok.extern.slf4j.Slf4j;
 import tk.mybatis.mapper.entity.Condition;
 import tk.mybatis.mapper.entity.Example.Criteria;
 
 @Service
+@Slf4j
 public class ResourceServiceImpl implements ResourceService {
-	private static final Logger LOG = LoggerFactory.getLogger(ResourceServiceImpl.class);
 
 	@javax.annotation.Resource
 	private ResourceMapper mapper;
@@ -109,7 +108,7 @@ public class ResourceServiceImpl implements ResourceService {
 //		查到的总记录数
 //		解释一下：这个page.getTotal()，是所有符合条件的记录数。
 //		result.size()：是当前页中的数据量 <= pageSize
-		LOG.info("成功查找到{}条资源,当前页码{},每页{}条资源,共{}页", result.size(), entity.pageNum, entity.pageSize, page.getPages());
+		log.info("成功查找到{}条资源,当前页码{},每页{}条资源,共{}页", result.size(), entity.pageNum, entity.pageSize, page.getPages());
 		return ResponseEntity.success(result);
 	}
 
@@ -123,7 +122,7 @@ public class ResourceServiceImpl implements ResourceService {
 //		查到的总记录数
 //		解释一下：这个page.getTotal()，是所有符合条件的记录数。
 //		result.size()：是当前页中的数据量 <= pageSize
-		LOG.info("成功查找到{}条资源,当前页码{},每页{}条资源,共{}页", result.size(), entity.pageNum, entity.pageSize, page.getPages());
+		log.info("成功查找到{}条资源,当前页码{},每页{}条资源,共{}页", result.size(), entity.pageNum, entity.pageSize, page.getPages());
 		return ResponseEntity.success(result);
 	}
 

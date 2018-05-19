@@ -5,6 +5,7 @@ import java.util.Set;
 
 import javax.annotation.Resource;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -85,13 +86,16 @@ public class SwiftConfig {
 	@Resource
 	private GoalRelationshipService goalRelationshipService;
 
+	@Value(value = "${server.thrift.port}")
+	private Integer thriftPort;
+
 	@Bean
 	public DriftServer thriftServer() {
 		DriftNettyServerConfig config = new DriftNettyServerConfig();
-		config.setPort(1101);
-		
+		config.setPort(thriftPort);
+
 		ByteBufAllocator allocator = new PooledByteBufAllocator();
-		
+
 		Set<DriftService> services = new HashSet<>();
 		services.add(new DriftService(userService));
 		services.add(new DriftService(classService));
