@@ -273,7 +273,7 @@ public class PreparationDetail extends HBox implements IContent {
 	}
 
 	private void loadASK(Integer rid, int type) {
-		List<GoalCoverage> coverages = SpringUtil.getBean(GoalCoverageAction.class).findGidsByRid(rid, type);
+		List<GoalCoverage> coverages = SpringUtil.getBean(GoalCoverageAction.class).findGoalIdsByRid(rid, type);
 		for (CheckBox box : askChecks.values()) {
 			box.setSelected(false);
 		}
