@@ -12,6 +12,7 @@ import com.cas.sim.tis.consts.Session;
 import com.cas.sim.tis.entity.Resource;
 import com.cas.sim.tis.services.ResourceService;
 import com.cas.sim.tis.thrift.RequestEntity;
+import com.cas.sim.tis.thrift.RequestEntityBuilder;
 import com.cas.sim.tis.thrift.ResponseEntity;
 import com.cas.sim.tis.view.control.imp.resource.ResourceList.ResourceMenuType;
 import com.cas.sim.tis.vo.ResourceInfo;
@@ -28,23 +29,23 @@ public class ResourceAction extends BaseAction {
 //	}
 
 	public List<Integer> addResources(List<Resource> resources) {
-		RequestEntity req = new RequestEntity()//
+		RequestEntity req = new RequestEntityBuilder()//
 				.set("resources", resources)//
-				.end();
+				.build();
 		ResponseEntity resp = service.addResources(req);
 		return JSON.parseArray(resp.data, Integer.class);
 	}
 
 	public PageInfo<Resource> findResources(ResourceMenuType type, int pagination, int pageSize, List<Integer> resourceTypes, String keyword, String orderByClause, Integer creator) {
-		RequestEntity req = new RequestEntity()//
+		RequestEntity req = new RequestEntityBuilder()//
 				.set("resourceTypes", resourceTypes)//
 				.set("keyword", keyword) //
 				.set("creator", creator)//
 				.set("orderByClause", orderByClause)//
-				.end();
-//		分页信息
-		req.pageNum = pagination;
-		req.pageSize = pageSize;
+//				分页信息
+				.pageNum(pagination)//
+				.pageSize(pageSize)//
+				.build();
 
 		ResponseEntity resp;
 		if (ResourceMenuType.BROWSE == type) {
@@ -58,11 +59,11 @@ public class ResourceAction extends BaseAction {
 	}
 
 	public int countResourceByType(ResourceMenuType menuType, int type, String keyword, Integer creator) {
-		RequestEntity req = new RequestEntity()//
+		RequestEntity req = new RequestEntityBuilder()//
 				.set("type", type)//
 				.set("keyword", keyword) //
 				.set("creator", creator)//
-				.end();
+				.build();
 		ResponseEntity resp;
 		if (ResourceMenuType.BROWSE == menuType) {
 			resp = service.countBrowseResourceByType(req);
@@ -75,27 +76,27 @@ public class ResourceAction extends BaseAction {
 	}
 
 	public ResourceInfo findResourceInfoByID(int id) {
-		RequestEntity req = new RequestEntity()//
+		RequestEntity req = new RequestEntityBuilder()//
 				.set("id", id)//
-				.end();
+				.build();
 		ResponseEntity resp = service.findResourceInfoById(req);
 		return JSON.parseObject(resp.data, ResourceInfo.class);
 	}
 
 	public Resource findResourceByID(Integer id) {
-		RequestEntity req = new RequestEntity()//
+		RequestEntity req = new RequestEntityBuilder()//
 				.set("id", id)//
-				.end();
+				.build();
 		ResponseEntity resp = service.findResourceById(req);
 		return JSON.parseObject(resp.data, Resource.class);
 	}
 
 	public List<Resource> findResourcesByCreator(List<Integer> types, String keyword, Integer creator) {
-		RequestEntity req = new RequestEntity()//
+		RequestEntity req = new RequestEntityBuilder()//
 				.set("resourceTypes", types)//
 				.set("keyword", keyword) //
 				.set("creator", creator)//
-				.end();
+				.build();
 		ResponseEntity resp = service.findResourcesByCreator(req);
 		return JSON.parseArray(resp.data, Resource.class);
 	}
@@ -104,42 +105,41 @@ public class ResourceAction extends BaseAction {
 		if (StringUtils.isEmpty(ids)) {
 			return new ArrayList<>();
 		}
-		RequestEntity req = new RequestEntity()//
+		RequestEntity req = new RequestEntityBuilder()//
 				.set("ids", ids)//
-				.end();
+				.build();
 
 		ResponseEntity resp = service.findResourceByIds(req);
 		return JSON.parseArray(resp.data, Resource.class);
 	}
 
 	public void browsed(Integer id) {
-		RequestEntity req = new RequestEntity()//
+		RequestEntity req = new RequestEntityBuilder()//
 				.set("id", id)//
-				.set("creator", Session.get(Session.KEY_LOGIN_ID))//
-				.end();
-		service.findResourcesByCreator(req);
+				.build();
+		service.findResourceById(req);
 	}
 
 	public void uncollect(Integer id) {
-		RequestEntity req = new RequestEntity()//
+		RequestEntity req = new RequestEntityBuilder()//
 				.set("id", id)//
 				.set("creator", Session.get(Session.KEY_LOGIN_ID))//
-				.end();
+				.build();
 		service.uncollect(req);
 	}
 
 	public void collected(Integer id) {
-		RequestEntity req = new RequestEntity()//
+		RequestEntity req = new RequestEntityBuilder()//
 				.set("id", id)//
 				.set("creator", Session.get(Session.KEY_LOGIN_ID))//
-				.end();
+				.build();
 		service.collected(req);
 	}
 
 	public void detele(Integer id) {
-		RequestEntity req = new RequestEntity()//
+		RequestEntity req = new RequestEntityBuilder()//
 				.set("id", id)//
-				.end();
+				.build();
 		service.deteleResource(req);
 	}
 }

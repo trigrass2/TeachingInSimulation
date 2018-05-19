@@ -8,6 +8,7 @@ import com.alibaba.fastjson.JSON;
 import com.cas.sim.tis.consts.Session;
 import com.cas.sim.tis.services.CollectionService;
 import com.cas.sim.tis.thrift.RequestEntity;
+import com.cas.sim.tis.thrift.RequestEntityBuilder;
 import com.cas.sim.tis.thrift.ResponseEntity;
 
 @Component
@@ -24,9 +25,10 @@ public class CollectionAction extends BaseAction {
 		if (rid == null) {
 			return false;
 		}
-		RequestEntity req = new RequestEntity();
-		req.set("rid", rid);
-		req.set("creator", Session.get(Session.KEY_LOGIN_ID));
+		RequestEntity req = new RequestEntityBuilder()//
+				.set("rid", rid)//
+				.set("creator", Session.get(Session.KEY_LOGIN_ID))//
+				.build();
 
 		ResponseEntity resp = service.checkCollected(req);
 		return JSON.parseObject(resp.data, Boolean.class);

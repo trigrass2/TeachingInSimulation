@@ -18,6 +18,7 @@ import com.cas.sim.tis.entity.TypicalCase;
 import com.cas.sim.tis.services.TypicalCaseService;
 import com.cas.sim.tis.services.exception.ServiceException;
 import com.cas.sim.tis.thrift.RequestEntity;
+import com.cas.sim.tis.thrift.RequestEntityBuilder;
 import com.cas.sim.tis.thrift.ResponseEntity;
 import com.cas.sim.tis.util.FTPUtils;
 import com.cas.sim.tis.xml.util.JaxbUtil;
@@ -28,13 +29,17 @@ public class TypicalCaseAction extends BaseAction {
 	private TypicalCaseService service;
 
 	public TypicalCase findTypicalCaseById(Integer id) {
-		RequestEntity entity = new RequestEntity().set("id", id).end();
+		RequestEntity entity = new RequestEntityBuilder()//
+				.set("id", id)//
+				.build();
 		ResponseEntity resp = service.findTypicalCasesById(entity);
 		return JSON.parseObject(resp.data, TypicalCase.class);
 	}
 
 	public List<TypicalCase> getTypicalCasesByCreator(Integer creator) {
-		RequestEntity req = new RequestEntity().set("creator", creator).end();
+		RequestEntity req = new RequestEntityBuilder()//
+				.set("creator", creator)//
+				.build();
 		ResponseEntity resp = service.findTypicalCasesByCreatorId(req);
 		return JSON.parseArray(resp.data, TypicalCase.class);
 	}
@@ -86,9 +91,9 @@ public class TypicalCaseAction extends BaseAction {
 			typicalCase.setCreator(Session.get(Session.KEY_LOGIN_ID));
 //			FIXME 修改当前案例的主键ID，原因：前端根据ID判断是新增还是修改。
 
-			RequestEntity req = new RequestEntity()//
+			RequestEntity req = new RequestEntityBuilder()//
 					.set("typicalCase", typicalCase)//
-					.end();
+					.build();
 
 			ResponseEntity resp = service.saveTypicalCase(req);
 //			小细节， 将服务器返回的新的对象属性拷贝到原来的对象中
@@ -113,7 +118,9 @@ public class TypicalCaseAction extends BaseAction {
 //	}
 
 	public void delete(Integer id) {
-		RequestEntity req = new RequestEntity().set("id", id).end();
+		RequestEntity req = new RequestEntityBuilder()//
+				.set("id", id)//
+				.build();
 		service.deleteTypicalCaseById(req);
 //		不用删除服务器中的文件
 //		try {
