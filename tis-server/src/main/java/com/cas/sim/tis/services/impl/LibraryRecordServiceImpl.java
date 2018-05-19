@@ -20,9 +20,7 @@ import com.cas.sim.tis.mapper.LibraryRecordMapper;
 import com.cas.sim.tis.mapper.UserMapper;
 import com.cas.sim.tis.services.LibraryRecordService;
 import com.cas.sim.tis.thrift.RequestEntity;
-import com.cas.sim.tis.thrift.ResponseEntity;
 import com.cas.sim.tis.util.SpringUtil;
-import com.cas.sim.tis.vo.LibraryRecordInfo;
 import com.cas.util.MathUtil;
 
 import tk.mybatis.mapper.entity.Condition;
@@ -40,12 +38,6 @@ public class LibraryRecordServiceImpl implements LibraryRecordService {
 	private LibraryPublishMapper publishMapper;
 	@Resource
 	private LibraryAnswerMapper answerMapper;
-
-	@Override
-	public ResponseEntity findRecordByPublishId(RequestEntity entity) {
-		List<LibraryRecordInfo> result = mapper.findRecordByPublishId(entity.getInt("pid"));
-		return ResponseEntity.success(result);
-	}
 
 	@Override
 	public void addRecord(RequestEntity entity) {
