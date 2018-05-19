@@ -110,13 +110,13 @@
 		select
 			r.type, count(r.id)
 		from
-			collection
+			resource r
 		where
-			c.del=0 
+			r.del=0 
 		<if test="keyword != null and keyword != ''">
 			and r.keyword like '%${keyword}%'
 		</if>
-			and c.creator=#{creator} 
+			and r.creator=#{creator} 
 			and r.type in
 		<foreach item="type" collection="types" open="(" separator="," close=")">
 			#{type}
@@ -129,13 +129,13 @@
 		select
 			r.type, count(r.id)
 		from
-			browse_history b left out join resource r on b.rid = r.id
+			browse_history b left join resource r on b.rid = r.id
 		where
-			c.del=0 
+			r.del=0 
 		<if test="keyword != null and keyword != ''">
 			and r.keyword like '%${keyword}%'
 		</if>
-			and b.creator=#{creator} 
+			and b.creator=#{creator}
 			and r.type in
 		<foreach item="type" collection="types" open="(" separator="," close=")">
 			#{type}
@@ -148,9 +148,10 @@
 		select
 			r.type, count(r.id)
 		from
-			collection c left out join resource r on b.rid = r.id
+			collection c left join resource r on c.rid = r.id
 		where
-			c.del=0 
+			c.del = 0
+			and r.del = 0
 		<if test="keyword != null and keyword != ''">
 			and r.keyword like '%${keyword}%'
 		</if>
