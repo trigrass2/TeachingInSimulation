@@ -21,10 +21,11 @@ public class LibraryAction extends BaseAction {
 	private LibraryService service;
 
 	public PageInfo<Library> findLibraryByType(int pageIndex, int pageSize, int type) {
-		RequestEntity req = new RequestEntity();
+		RequestEntity req = new RequestEntity()//
+				.set("type", type)//
+				.end();
 		req.pageNum = pageIndex;
 		req.pageSize = pageSize;
-		req.set("type", type).end();
 		ResponseEntity resp = service.findLibraryByType(req);
 		return JSON.parseObject(resp.data, new TypeReference<PageInfo<Library>>() {});
 	}
