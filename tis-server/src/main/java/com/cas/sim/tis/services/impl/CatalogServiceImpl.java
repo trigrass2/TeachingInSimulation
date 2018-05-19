@@ -26,11 +26,12 @@ public class CatalogServiceImpl implements CatalogService {
 
 	@Override
 	public ResponseEntity findCatalogsByParentId(RequestEntity entity) {
-		int rid = entity.getInt("rid");
+		int parentId = entity.getInt("parentId");
 
 		Condition condition = new Condition(Catalog.class);
+		condition.selectProperties("id", "name", "type", "lessons", "rid");
 		Criteria criteria = condition.createCriteria();
-		criteria.andEqualTo("rid", rid);
+		criteria.andEqualTo("rid", parentId);
 		criteria.andEqualTo("del", 0);
 
 		mapper.selectByCondition(condition);
@@ -40,7 +41,7 @@ public class CatalogServiceImpl implements CatalogService {
 			catalogs = mapper.selectByCondition(condition);
 			log.debug("查询到子节点数量：{}", catalogs.size());
 		} catch (Exception e) {
-			log.error("查询ID{}下子节点失败！", rid);
+			log.error("查询ID{}下子节点失败！", parentId);
 			catalogs = Collections.emptyList();
 		}
 

@@ -10,8 +10,8 @@ import io.airlift.drift.annotations.ThriftService;
 public interface CatalogService {
 
 	/**
-	 * @param id
-	 * @return
+	 * @param parentId 父节点编号
+	 * @return 指定父节点下的子项目集合（id,name,type,lessons,rid）
 	 */
 	@ThriftMethod
 	ResponseEntity findCatalogsByParentId(RequestEntity entity);
