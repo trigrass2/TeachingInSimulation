@@ -19,7 +19,7 @@ public class GoalCoverageServiceImpl implements GoalCoverageService {
 	private GoalCoverageMapper mapper;
 
 	@Override
-	public ResponseEntity findGidsByRid(RequestEntity entity) {
+	public ResponseEntity findGoalIdsByRid(RequestEntity entity) {
 		int rid = entity.getInt("rid");
 		int type = entity.getInt("type");
 		

@@ -9,30 +9,37 @@ import io.airlift.drift.annotations.ThriftService;
 @ThriftService
 public interface GoalCoverageService {
 	/**
-	 * @param rid
-	 * @param type
-	 * @return
+	 * 根据关联编号与关联类型获得相关的目标ASK编号集合
+	 * @param rid 关联编号
+	 * @param type 关联类型
+	 * @return 目标ASK编号集合(id)
 	 */
 	@ThriftMethod
-	ResponseEntity findGidsByRid(RequestEntity entity);
+	ResponseEntity findGoalIdsByRid(RequestEntity entity);
 
 	/**
-	 * @param gid
-	 * @param rid
-	 * @param type
-	 * @param creator
+	 * 根据条件删除目标ASK关系表信息（物理删除）
+	 * @param gid 目标ASK编号
+	 * @param rid 关联编号
+	 * @param type 关联类型
+	 * @param creator 关系创建人
 	 */
 	@ThriftMethod
 	void deleteRelationship(RequestEntity entity);
 
 	/**
-	 * @param oid
-	 * @param tid
-	 * @return
+	 * 验证目标O是否被任务ASK覆盖
+	 * @param oid 目标O编号
+	 * @param tid 任务编号
+	 * @return 返回boolean是否覆盖
 	 */
 	@ThriftMethod
 	ResponseEntity checkObjectiveCoverage(RequestEntity entity);
 
+	/**
+	 * 保存目标ASK覆盖关系
+	 * @param coverage 目标ASK覆盖关系对象
+	 */
 	@ThriftMethod
 	void saveGoalCoverage(RequestEntity req);
 }

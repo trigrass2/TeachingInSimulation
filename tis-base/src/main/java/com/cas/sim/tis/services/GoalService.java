@@ -10,9 +10,10 @@ import io.airlift.drift.annotations.ThriftService;
 public interface GoalService {
 
 	/**
-	 * @param rid
-	 * @param type
-	 * @return
+	 * 根据ASK关联标号查询ASK目标对象
+	 * @param rid ASK关联编号
+	 * @param type ASK类型
+	 * @return ASK目标集合
 	 */
 	@ThriftMethod
 	ResponseEntity findGoalsByRid(RequestEntity entity);
