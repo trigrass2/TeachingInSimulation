@@ -30,40 +30,40 @@ public class UserAction extends BaseAction {
 	}
 
 	public List<User> findTeachers(int pageIndex, int pageSize) {
-		RequestEntity entity = new RequestEntity();
-		entity.pageNum = pageIndex;
-		entity.pageSize = pageSize;
-		ResponseEntity resp = service.findTeachers(entity);
+		RequestEntity req = new RequestEntity();
+		req.pageNum = pageIndex;
+		req.pageSize = pageSize;
+		ResponseEntity resp = service.findTeachers(req);
 		return JSON.parseArray(resp.data, User.class);
 	}
 
 	public List<User> findStudents(int pageIndex, int pageSize, int classId) {
-		RequestEntity entity = new RequestEntity();
-		entity.pageNum = pageIndex;
-		entity.pageSize = pageSize;
-		entity.set("classId", classId).end();
-		ResponseEntity resp = service.findStudents(entity);
+		RequestEntity req = new RequestEntity();
+		req.pageNum = pageIndex;
+		req.pageSize = pageSize;
+		req.set("classId", classId).end();
+		ResponseEntity resp = service.findStudents(req);
 		return JSON.parseArray(resp.data, User.class);
 	}
 
 	public void addUsers(List<User> users) {
-		RequestEntity entity = new RequestEntity();
-		entity.set("users", users).end();
-		service.saveUsers(entity);
+		RequestEntity req = new RequestEntity();
+		req.set("users", users).end();
+		service.saveUsers(req);
 	}
 
 	public void modifyUser(User user) {
 		user.setUpdater(Session.get(Session.KEY_LOGIN_ID));
 
-		RequestEntity entity = new RequestEntity();
-		entity.set("user", user).end();
-		service.updateUser(entity);
+		RequestEntity req = new RequestEntity();
+		req.set("user", user).end();
+		service.updateUser(req);
 	}
 
 	public void deleteUser(int id) {
-		RequestEntity entity = new RequestEntity();
-		entity.set("id", id).end();
-		service.deleteUser(entity);
+		RequestEntity req = new RequestEntity();
+		req.set("id", id).end();
+		service.deleteUser(req);
 	}
 
 }

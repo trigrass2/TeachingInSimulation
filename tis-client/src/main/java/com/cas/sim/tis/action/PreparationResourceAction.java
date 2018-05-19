@@ -20,15 +20,17 @@ public class PreparationResourceAction extends BaseAction {
 	private PreparationResourceService service;
 
 	public List<PreparationInfo> findResourcesByPreparationId(Integer pid) {
-		RequestEntity req = new RequestEntity();
-		req.set("pid", pid).end();
+		RequestEntity req = new RequestEntity()//
+				.set("pid", pid)//
+				.end();
 		ResponseEntity resp = service.findResourcesByPreparationId(req);
 		return JSON.parseArray(resp.data, PreparationInfo.class);
 	}
 
 	public PreparationResource findResourceById(Integer id) {
-		RequestEntity req = new RequestEntity();
-		req.set("id", id).end();
+		RequestEntity req = new RequestEntity()//
+				.set("id", id)//
+				.end();
 		ResponseEntity resp = service.findPreparationResourceById(req);
 		return JSON.parseObject(resp.data, PreparationResource.class);
 	}
@@ -38,7 +40,7 @@ public class PreparationResourceAction extends BaseAction {
 		resource.setId(id);
 		resource.setDel(true);
 		resource.setUpdater(Session.get(Session.KEY_LOGIN_ID));
-		
+
 		RequestEntity req = new RequestEntity();
 		req.set("resource", resource).end();
 		service.updatePreparationResource(req);

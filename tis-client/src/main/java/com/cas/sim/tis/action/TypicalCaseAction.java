@@ -1,19 +1,24 @@
 package com.cas.sim.tis.action;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.beanutils.BeanUtils;
 import org.springframework.stereotype.Component;
 
+import com.alibaba.fastjson.JSON;
 import com.cas.circuit.vo.Archive;
 import com.cas.sim.tis.consts.Session;
 import com.cas.sim.tis.entity.TypicalCase;
 import com.cas.sim.tis.services.TypicalCaseService;
 import com.cas.sim.tis.services.exception.ServiceException;
+import com.cas.sim.tis.thrift.RequestEntity;
+import com.cas.sim.tis.thrift.ResponseEntity;
 import com.cas.sim.tis.util.FTPUtils;
 import com.cas.sim.tis.xml.util.JaxbUtil;
 
@@ -23,11 +28,15 @@ public class TypicalCaseAction extends BaseAction {
 	private TypicalCaseService service;
 
 	public TypicalCase findTypicalCaseById(Integer id) {
-		return service.findById(id);
+		RequestEntity entity = new RequestEntity().set("id", id).end();
+		ResponseEntity resp = service.findTypicalCasesById(entity);
+		return JSON.parseObject(resp.data, TypicalCase.class);
 	}
 
 	public List<TypicalCase> getTypicalCasesByCreator(Integer creator) {
-		return service.findTypicalCasesByCreator(creator);
+		RequestEntity req = new RequestEntity().set("creator", creator).end();
+		ResponseEntity resp = service.findTypicalCasesByCreatorId(req);
+		return JSON.parseArray(resp.data, TypicalCase.class);
 	}
 
 	public void save(TypicalCase typicalCase, Archive archive) {
@@ -76,30 +85,42 @@ public class TypicalCaseAction extends BaseAction {
 		if (typicalCase.getId() == null) {
 			typicalCase.setCreator(Session.get(Session.KEY_LOGIN_ID));
 //			FIXME 修改当前案例的主键ID，原因：前端根据ID判断是新增还是修改。
-			int id = service.saveRetId(typicalCase);
-//			！由于是使用RMI，不能实现保存对象就能将ID自动填充的效果，所以保存后，手动设置ID！
-			typicalCase.setId(id);
+
+			RequestEntity req = new RequestEntity()//
+					.set("typicalCase", typicalCase)//
+					.end();
+
+			ResponseEntity resp = service.saveTypicalCase(req);
+//			小细节， 将服务器返回的新的对象属性拷贝到原来的对象中
+			TypicalCase ret = JSON.parseObject(resp.data, TypicalCase.class);
+			try {
+				BeanUtils.copyProperties(typicalCase, ret);
+			} catch (IllegalAccessException | InvocationTargetException e) {
+				e.printStackTrace();
+			}
 		} else {
 			typicalCase.setUpdater(Session.get(Session.KEY_LOGIN_ID));
-			service.update(typicalCase);
+			RequestEntity req = new RequestEntity()//
+					.set("typicalCase", typicalCase)//
+					.end();
+			service.updateTypicalCase(req);
 		}
 	}
 
-	public void modify(TypicalCase typicalCase) {
-		typicalCase.setUpdater(Session.get(Session.KEY_LOGIN_ID));
-		service.update(typicalCase);
-	}
+//	public void modify(TypicalCase typicalCase) {
+//		typicalCase.setUpdater(Session.get(Session.KEY_LOGIN_ID));
+//		service.update(typicalCase);
+//	}
 
 	public void delete(Integer id) {
-		TypicalCase typicalCase = service.findById(id);
-		try {
-			FTPUtils.connect().cd("/archives").deleteFile(typicalCase.getArchivePath()).disconnect();
-		} catch (Exception e) {
-			LOG.warn("删除文件失败", e);
-		}
-		typicalCase.setDel(true);
-		typicalCase.setUpdater(Session.get(Session.KEY_LOGIN_ID));
-		service.update(typicalCase);
+		RequestEntity req = new RequestEntity().set("id", id).end();
+		service.deleteTypicalCaseById(req);
+//		不用删除服务器中的文件
+//		try {
+//			FTPUtils.connect().cd("/archives").deleteFile(typicalCase.getArchivePath()).disconnect();
+//		} catch (Exception e) {
+//			LOG.warn("删除文件失败", e);
+//		}
 	}
 
 }

@@ -7,12 +7,10 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Component;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.TypeReference;
 import com.cas.sim.tis.entity.Question;
 import com.cas.sim.tis.services.QuestionService;
 import com.cas.sim.tis.thrift.RequestEntity;
 import com.cas.sim.tis.thrift.ResponseEntity;
-import com.github.pagehelper.PageInfo;
 
 @Component
 public class QuestionAction extends BaseAction {
@@ -26,21 +24,19 @@ public class QuestionAction extends BaseAction {
 	 * @param rid
 	 * @return
 	 */
-	public PageInfo<Question> findQuestionsByLibrary(int pageIndex, int pageSize, int rid) {
-		RequestEntity req = new RequestEntity();
+	public List<Question> findQuestionsByLibrary(int pageIndex, int pageSize, int rid) {
+		RequestEntity req = new RequestEntity()//
+				.set("rid", rid)//
+				.end();
+//		分页信息
 		req.pageNum = pageIndex;
 		req.pageSize = pageSize;
-		req.set("rid", rid).end();
 		ResponseEntity resp = service.findQuestionsByLibrary(req);
-		return JSON.parseObject(resp.data, new TypeReference<PageInfo<Question>>() {});
+		return JSON.parseArray(resp.data, Question.class);
 	}
 
 	public List<Question> findQuestionsByLibrary(Integer rid) {
-		RequestEntity req = new RequestEntity();
-		req.set("rid", rid).end();
-
-		ResponseEntity resp = service.findQuestionsByLibrary(req);
-		return JSON.parseArray(resp.data, Question.class);
+		return this.findQuestionsByLibrary(-1, 0, rid);
 	}
 
 	/**
@@ -49,16 +45,19 @@ public class QuestionAction extends BaseAction {
 	 * @return
 	 */
 	public List<Question> findQuestionsByLibraryAndQuestionType(int rid, int type) {
-		RequestEntity req = new RequestEntity();
-		req.set("rid", rid).set("type", type).end();
-
+		RequestEntity req = new RequestEntity()//
+				.set("rid", rid)//
+				.set("type", type)//
+				.end();
 		ResponseEntity resp = service.findQuestionsByLibraryAndQuestionType(req);
 		return JSON.parseArray(resp.data, Question.class);
 	}
 
 	public List<Question> findQuestionsByPublish(int pid, boolean mostWrong) {
-		RequestEntity req = new RequestEntity();
-		req.set("pid", pid).set("mostWrong", mostWrong).end();
+		RequestEntity req = new RequestEntity()//
+				.set("pid", pid)//
+				.set("mostWrong", mostWrong)//
+				.end();
 		ResponseEntity resp = service.findQuestionsByPublish(req);
 		return JSON.parseArray(resp.data, Question.class);
 	}
@@ -68,8 +67,10 @@ public class QuestionAction extends BaseAction {
 	 * @param questions
 	 */
 	public void addQuestions(int rid, List<Question> questions) {
-		RequestEntity req = new RequestEntity();
-		req.set("rid", rid).set("questions", questions).end();
+		RequestEntity req = new RequestEntity()//
+				.set("questions", questions)//
+				.set("rid", rid)//
+				.end();
 		service.addQuestions(req);
 	}
 
@@ -79,9 +80,10 @@ public class QuestionAction extends BaseAction {
 	 * @return
 	 */
 	public boolean checkImportOrExport(int rid) {
-		RequestEntity req = new RequestEntity();
-		req.set("rid", rid).end();
+		RequestEntity req = new RequestEntity()//
+				.set("rid", rid)//
+				.end();
 		ResponseEntity resp = service.countQuestionByLibrary(req);
-		return JSON.parseObject(resp.data, Integer.class) > 0;
+		return Integer.parseInt(resp.data) > 0;
 	}
 }

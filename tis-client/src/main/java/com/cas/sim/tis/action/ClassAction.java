@@ -33,7 +33,7 @@ public class ClassAction extends BaseAction {
 		RequestEntity req = new RequestEntity();
 		req.pageNum = pageIndex;
 		req.pageSize = pageSize;
-		
+
 		ResponseEntity resp = service.findClasses(req);
 		return JSON.parseObject(resp.data, new TypeReference<PageInfo<Class>>() {});
 	}
