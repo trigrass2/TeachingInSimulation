@@ -32,3 +32,4 @@ tis-*/.settings
 tis-*/target
 tis-*/assets
 tis-*/cas.timestamp
+tis-*/*.classpath
