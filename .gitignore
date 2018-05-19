@@ -28,6 +28,7 @@
 hs_err_pid*
 *.timestamp
 tis-*/.classpath
+tis-*/.settings
 tis-*/target
 tis-*/assets
-tis-server/cas.timestamp
+tis-*/cas.timestamp
