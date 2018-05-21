@@ -190,7 +190,7 @@ public class PreparationDetail extends HBox implements IContent {
 			delete.setCellFactory(BtnCell.forTableColumn(MsgUtil.getMessage("button.delete"), "blue-btn", rid -> {
 				AlertUtil.showConfirm(MsgUtil.getMessage("alert.confirmation.data.delete"), response -> {
 					if (response == ButtonType.YES) {
-						SpringUtil.getBean(PreparationResourceAction.class).detele((Integer) rid);
+						SpringUtil.getBean(PreparationResourceAction.class).deteleByLogic((Integer) rid);
 						loadResources();
 					}
 				});
@@ -253,7 +253,7 @@ public class PreparationDetail extends HBox implements IContent {
 			delete.setCellFactory(BtnCell.forTableColumn(MsgUtil.getMessage("button.delete"), "blue-btn", rid -> {
 				AlertUtil.showConfirm(MsgUtil.getMessage("alert.confirmation.data.delete"), response -> {
 					if (response == ButtonType.YES) {
-						SpringUtil.getBean(PreparationResourceAction.class).detele((Integer) rid);
+						SpringUtil.getBean(PreparationResourceAction.class).deteleByLogic((Integer) rid);
 						loadResources();
 					}
 				});

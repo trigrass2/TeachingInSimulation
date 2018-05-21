@@ -66,7 +66,7 @@ public class QuestionServiceImpl implements QuestionService {
 	}
 
 	@Override
-	public ResponseEntity findQuestionsByPublish(RequestEntity entity) {
+	public ResponseEntity findQuestionsByPublishId(RequestEntity entity) {
 		List<Question> result = mapper.findQuestionsByPublish(entity.getInt("pid"), entity.getBoolean("mostWrong"));
 		return ResponseEntity.success(result);
 	}
@@ -97,7 +97,7 @@ public class QuestionServiceImpl implements QuestionService {
 	}
 
 	@Override
-	public ResponseEntity countQuestionByLibrary(RequestEntity entity) {
+	public ResponseEntity countQuestionByLibraryId(RequestEntity entity) {
 		Condition condition = new Condition(Question.class);
 		condition.createCriteria()//
 				.andEqualTo("relateId", entity.getInt("rid"));

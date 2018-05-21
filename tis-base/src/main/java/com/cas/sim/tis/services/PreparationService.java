@@ -10,16 +10,17 @@ import io.airlift.drift.annotations.ThriftService;
 public interface PreparationService {
 
 	/**
-	 * @param cid
-	 * @param creator
-	 * @return
+	 * 根据任务编号和创建人获得备课内容
+	 * @param entity （cid 任务编号；creator 创建人）
+	 * @return 备课信息对象
 	 */
 	@ThriftMethod
 	ResponseEntity findPreparationByTaskIdAndCreator(RequestEntity entity);
 
 	/**
-	 * @param preparation
-	 * @return
+	 * 新增备课
+	 * @param entity （preparation 备课信息对象）
+	 * @return 备课信息对象
 	 */
 	@ThriftMethod
 	ResponseEntity addPreparation(RequestEntity entity);

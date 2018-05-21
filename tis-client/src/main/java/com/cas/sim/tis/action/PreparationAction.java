@@ -18,9 +18,9 @@ public class PreparationAction extends BaseAction {
 
 	/**
 	 * 根据任务编号和创建人获得备课内容
-	 * @param cid
-	 * @param creator
-	 * @return
+	 * @param cid 任务编号
+	 * @param creator 创建人
+	 * @return 备课信息对象
 	 */
 	public Preparation findPreparationByTaskIdAndCreator(Integer cid, int creator) {
 		RequestEntity req = new RequestEntityBuilder()//
@@ -31,6 +31,11 @@ public class PreparationAction extends BaseAction {
 		return JSON.parseObject(resp.data, Preparation.class);
 	}
 
+	/**
+	 * 新增备课
+	 * @param preparation 备课信息对象
+	 * @return 备课信息对象
+	 */
 	public Preparation addPreparation(Preparation preparation) {
 		RequestEntity req = new RequestEntityBuilder()//
 				.set("preparation", preparation)//

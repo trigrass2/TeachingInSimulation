@@ -126,7 +126,7 @@ public class TeacherQuestionPaper extends HBox implements IContent {
 		if (toggle != null) {
 			mostWrong = Boolean.valueOf((String) order.getSelectedToggle().getUserData());
 		}
-		List<Question> questions = SpringUtil.getBean(QuestionAction.class).findQuestionsByPublish(pid, mostWrong);
+		List<Question> questions = SpringUtil.getBean(QuestionAction.class).findQuestionsByPublishId(pid, mostWrong);
 		for (int i = 0; i < questions.size(); i++) {
 			int index = i + 1;
 			Question question = questions.get(i);

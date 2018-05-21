@@ -20,6 +20,11 @@ public class PreparationQuizAction extends BaseAction {
 	@Resource
 	private PreparationQuizService service;
 
+	/**
+	 * 通过备课编号获得备课试题集合
+	 * @param pid 备课编号
+	 * @return List PreparationInfo集合
+	 */
 	public List<PreparationInfo> findQuizsByPreparationId(Integer pid) {
 		RequestEntity req = new RequestEntityBuilder()//
 				.set("pid", pid)//
@@ -28,6 +33,11 @@ public class PreparationQuizAction extends BaseAction {
 		return JSON.parseArray(resp.data, PreparationInfo.class);
 	}
 
+	/**
+	 * 根据备课试题编号获得备课试题对象
+	 * @param id 备课试题编号
+	 * @return PreparationQuiz 备课试题对象
+	 */
 	public PreparationQuiz findQuizById(Integer id) {
 		RequestEntity req = new RequestEntityBuilder()//
 				.set("id", id)//
@@ -36,6 +46,10 @@ public class PreparationQuizAction extends BaseAction {
 		return JSON.parseObject(resp.data, PreparationQuiz.class);
 	}
 
+	/**
+	 * 保存备课试题对象
+	 * @param quiz 备课试题对象
+	 */
 	public void addQuiz(PreparationQuiz quiz) {
 		quiz.setCreator(Session.get(Session.KEY_LOGIN_ID));
 
@@ -45,6 +59,11 @@ public class PreparationQuizAction extends BaseAction {
 		service.savePreparationQuiz(req);
 	}
 
+	/**
+	 * 根据备课编号统计备课自由接线案例的数量
+	 * @param pid 备课编号
+	 * @return int 自由接线案例数量
+	 */
 	public boolean checkFreeQuiz(Integer pid) {
 		RequestEntity req = new RequestEntityBuilder()//
 				.set("pid", pid)//
