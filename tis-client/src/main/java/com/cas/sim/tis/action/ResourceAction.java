@@ -1,8 +1,11 @@
 package com.cas.sim.tis.action;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.annotation.Nonnull;
 
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -30,6 +33,11 @@ public class ResourceAction extends BaseAction {
 //		return service.addResource(resource);
 //	}
 
+	/**
+	 * 批量新增资源
+	 * @param resources 资源集合
+	 * @return 返回新增资源的ID
+	 */
 	public List<Integer> addResources(List<Resource> resources) {
 		RequestEntity req = new RequestEntityBuilder()//
 				.set("resources", resources)//
@@ -77,6 +85,7 @@ public class ResourceAction extends BaseAction {
 		return Integer.parseInt(resp.data);
 	}
 
+	@Nonnull
 	public Map<Integer, Integer> countResourceByType(ResourceMenuType menuType, List<Integer> types, String keyword, int creator) {
 		RequestEntity req = new RequestEntityBuilder()//
 				.set("types", types)//
@@ -92,7 +101,18 @@ public class ResourceAction extends BaseAction {
 			resp = service.countResourceByTypes(req);
 		}
 		JSONObject obj = JSON.parseObject(resp.data);
-		return null;
+		if (obj == null) {
+			Map<Integer, Integer> result = new HashMap<>(types.size());
+			types.forEach(t -> result.put(t, 0));
+			return result;
+		}
+		Map<Integer, Integer> result = obj.toJavaObject(new TypeReference<Map<Integer, Integer>>() {});
+		types.forEach(t -> {
+			if (!result.containsKey(t)) {
+				result.put(t, 0);
+			}
+		});
+		return result;
 	}
 
 	public ResourceInfo findResourceInfoByID(int id) {
