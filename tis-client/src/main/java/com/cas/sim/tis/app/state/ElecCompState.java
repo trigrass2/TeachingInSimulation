@@ -25,7 +25,13 @@ import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 
 import javafx.application.Platform;
-
+import lombok.extern.slf4j.Slf4j;
+/**
+ * 元器件认知模块
+ * @author Administrator
+ *
+ */
+@Slf4j
 public class ElecCompState extends BaseState {
 
 	private static final String ROOT_NAME = "ELEC_COMP_ROOT";
@@ -47,7 +53,7 @@ public class ElecCompState extends BaseState {
 			Vector2f point = inputManager.getCursorPosition();
 			Platform.runLater(() -> ui.showName(name, point.getX(), point.getY()));
 		}, inputManager, cam));
-		LOG.debug("创建元器件状态机的根节点{}", root.getName());
+		log.debug("创建元器件状态机的根节点{}", root.getName());
 		rootNode.attachChild(root);
 
 		setupLight();
@@ -125,7 +131,7 @@ public class ElecCompState extends BaseState {
 
 	private void cleanRoot() {
 		shells.clear();
-		LOG.debug("移除{}中所有模型", root.getName());
+		log.debug("移除{}中所有模型", root.getName());
 		root.detachAllChildren();
 	}
 
@@ -140,7 +146,7 @@ public class ElecCompState extends BaseState {
 			if (shellNode != null) {
 				shells.add(shellNode);
 			} else {
-				LOG.error("模型{}中没有名为{}的节点", root, s);
+				log.error("模型{}中没有名为{}的节点", root, s);
 			}
 		});
 
@@ -151,9 +157,9 @@ public class ElecCompState extends BaseState {
 	public void cleanup() {
 		boolean result = root.removeFromParent();
 		if (result) {
-			LOG.debug("删除根节点{}", root.getName());
+			log.debug("删除根节点{}", root.getName());
 		} else {
-			LOG.warn("删除根节点{}失败", root.getName());
+			log.warn("删除根节点{}失败", root.getName());
 		}
 
 		shells.clear();

@@ -7,9 +7,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.cas.sim.tis.app.JmeApplication;
 import com.cas.sim.tis.app.event.MouseEventListener;
 import com.cas.sim.tis.app.event.MouseEventState;
@@ -26,9 +23,10 @@ import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.system.AppSettings;
 
-public abstract class BaseState extends AbstractAppState {
+import lombok.extern.slf4j.Slf4j;
 
-	protected static final Logger LOG = LoggerFactory.getLogger(BaseState.class);
+@Slf4j
+public abstract class BaseState extends AbstractAppState {
 
 	protected JmeApplication app;
 
@@ -79,7 +77,7 @@ public abstract class BaseState extends AbstractAppState {
 
 	protected void addListener(Spatial sp, MouseEventListener l) {
 		if (mouseEventState == null) {
-			LOG.warn("没有MouseEventState");
+			log.warn("没有MouseEventState");
 			return;
 		}
 		mouseEventState.addCandidate(sp, l);
@@ -88,7 +86,7 @@ public abstract class BaseState extends AbstractAppState {
 
 	@Override
 	public void stateAttached(AppStateManager stateManager) {
-		LOG.debug("添加状态机{}", getClass());
+		log.debug("添加状态机{}", getClass());
 		super.stateAttached(stateManager);
 	}
 
@@ -116,22 +114,22 @@ public abstract class BaseState extends AbstractAppState {
 
 	@Override
 	public void stateDetached(AppStateManager stateManager) {
-		LOG.debug("移除状态机{}", getClass());
+		log.debug("移除状态机{}", getClass());
 		super.stateDetached(stateManager);
 	}
 
 	@Override
 	public void cleanup() {
-		LOG.info("清除{}中添加的事件映射及监听", getClass());
+		log.info("清除{}中添加的事件映射及监听", getClass());
 		inputMappings.entrySet().stream().forEach(e -> e.getValue().forEach(t -> inputManager.deleteTrigger(e.getKey(), t)));// 删除
 		inputMappings.clear();
 		inputListeners.stream().forEach(inputManager::removeListener);
 		inputListeners.clear();
 
 		if (mouseEventState == null) {
-			LOG.warn("没有MouseEventState");
+			log.warn("没有MouseEventState");
 		} else {
-			LOG.info("清除{}中添加的鼠标事件监听", getClass());
+			log.info("清除{}中添加的鼠标事件监听", getClass());
 			candidates.forEach(c -> mouseEventState.removeCandidate(c));
 			candidates.clear();
 		}
@@ -143,11 +141,11 @@ public abstract class BaseState extends AbstractAppState {
 		T t = null;
 		try {
 			t = assetManager.loadAsset(key);
-			LOG.info("加载资源{}", key);
+			log.info("加载资源{}", key);
 			return t;
 		} catch (Exception e) {
 			String errMsg = MessageFormat.format("加载{0}加载失败", key);
-			LOG.warn(errMsg, e);
+			log.warn(errMsg, e);
 			throw new RuntimeException(MessageFormat.format("无法加载资源{0}", key));
 		}
 	}

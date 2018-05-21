@@ -18,8 +18,8 @@ import org.apache.commons.net.ftp.FTPClientConfig;
 import org.apache.commons.net.ftp.FTPFile;
 import org.apache.commons.net.ftp.FTPReply;
 import org.jetbrains.annotations.NotNull;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @功能 FTP服务器工具类
@@ -27,8 +27,8 @@ import org.slf4j.LoggerFactory;
  * @创建日期 2016年1月26日
  * @修改人 ScOrPiO
  */
+@Slf4j
 public class FTPUtils {
-	private static final Logger LOG = LoggerFactory.getLogger(FTPUtils.class);
 	private static final String FTP_ENCODE = "ISO-8859-1";
 	private FTPClient ftpClient;
 
@@ -81,7 +81,7 @@ public class FTPUtils {
 			if (!FTPReply.isPositiveCompletion(ftpClient.getReplyCode())) {
 				// 不合法时断开连接
 				String errMsg = String.format("不合法的连接，服务器返回码%s", ftpClient.getReplyCode());
-				LOG.warn(errMsg);
+				log.warn(errMsg);
 				// 结束程序
 				util.disconnect();
 				throw new RuntimeException(errMsg);
@@ -95,7 +95,7 @@ public class FTPUtils {
 	public FTPUtils cd(String pathname) throws IOException {
 		boolean result = ftpClient.changeWorkingDirectory(pathname);
 		if (!result) {
-			LOG.warn("进入目录{}失败", pathname);
+			log.warn("进入目录{}失败", pathname);
 			mkDir(pathname);
 			result = ftpClient.changeWorkingDirectory(pathname);
 		}
@@ -145,7 +145,7 @@ public class FTPUtils {
 	}
 
 	public boolean mkDir(String directory) {
-		LOG.info("准备创建目录:{}", directory);
+		log.info("准备创建目录:{}", directory);
 //		格式化路径
 		directory = directory.replaceAll("//", "/");
 		if (directory.startsWith("/")) {
@@ -166,31 +166,31 @@ public class FTPUtils {
 //					目录不存在，则创建
 					boolean success = ftpClient.makeDirectory(dirName);
 					if (success) {
-						LOG.info("成功创建目录【{}】", str[i]);
+						log.info("成功创建目录【{}】", str[i]);
 					} else {
-						LOG.warn("创建目录【{}】失败", str[i]);
+						log.warn("创建目录【{}】失败", str[i]);
 						throw new RuntimeException(String.format("创建目录【%1$s】失败", str[i]));
 					}
 				} else {
-					LOG.info("目录【{}】已存在", str[i]);
+					log.info("目录【{}】已存在", str[i]);
 				}
 //				进入子目录中
 				boolean enter = ftpClient.changeWorkingDirectory(dirName);
 				if (enter) {
 					parent += "../";
 				} else {
-					LOG.warn("进入目录【{}】失败", str[i]);
+					log.warn("进入目录【{}】失败", str[i]);
 					throw new RuntimeException(String.format("进入目录【%1$s】失败", str[i]));
 				}
 			}
 //			创建完成后回到之前的目录中
 			if (str.length >= 1) {
-				LOG.info("创建完成后回到之前的目录中");
+				log.info("创建完成后回到之前的目录中");
 				ftpClient.changeWorkingDirectory(parent);
 			}
 			return true;
 		} catch (IOException e) {
-			LOG.warn("创建目录时出现了一个错误", e);
+			log.warn("创建目录时出现了一个错误", e);
 			return false;
 		}
 	}
@@ -218,9 +218,9 @@ public class FTPUtils {
 			// 上传文件
 			boolean result = ftpClient.storeFile(convertToFtpEncode(storedName), ins);
 			if (result) {
-				LOG.info("本地文件【{}】已上传至服务器目录【{}】中，并且命名为【{}】", file.getPath(), remotePath, storedName);
+				log.info("本地文件【{}】已上传至服务器目录【{}】中，并且命名为【{}】", file.getPath(), remotePath, storedName);
 			} else {
-				LOG.error("文件【{}】上传失败", file.getPath());
+				log.error("文件【{}】上传失败", file.getPath());
 			}
 		}
 		return this;
@@ -279,9 +279,9 @@ public class FTPUtils {
 					OutputStream out = new FileOutputStream(local);
 					boolean flg = ftpClient.retrieveFile(ftpFile.getName(), out);
 					if (flg) {
-						LOG.info("与服务器同步文件成功：{}", local);
+						log.info("与服务器同步文件成功：{}", local);
 					} else {
-						LOG.info("与服务器同步文件失败：{}", local);
+						log.info("与服务器同步文件失败：{}", local);
 					}
 					out.close();
 					if (listener != null) listener.finished(file.length, local);
@@ -307,12 +307,12 @@ public class FTPUtils {
 //			// 获取文件输入流
 //			result = ftpClient.retrieveFile(fileName, new FileOutputStream(localPath));
 //		} catch (Exception e) {
-//			LOG.warn("下载文件时出现了一个错误", e);
+//			log.warn("下载文件时出现了一个错误", e);
 //		}
 //		if (result) {
-//			LOG.info("下载文件{}成功", fileName);
+//			log.info("下载文件{}成功", fileName);
 //		} else {
-//			LOG.warn("下载文件{}失败", fileName);
+//			log.warn("下载文件{}失败", fileName);
 //		}
 //		return result;
 //	}
@@ -328,7 +328,7 @@ public class FTPUtils {
 	 */
 	public FTPUtils deleteFile(String fileName) throws IOException {
 		ftpClient.deleteFile(fileName);
-		LOG.info("删除文件{}成功", fileName);
+		log.info("删除文件{}成功", fileName);
 		return this;
 	}
 
@@ -364,7 +364,7 @@ public class FTPUtils {
 			if (ftpClient.isConnected()) {
 				ftpClient.disconnect();
 				ftpClient = null;
-				LOG.info("主动与服务器断开连接");
+				log.info("主动与服务器断开连接");
 			}
 		} catch (IOException e) {
 			e.printStackTrace();

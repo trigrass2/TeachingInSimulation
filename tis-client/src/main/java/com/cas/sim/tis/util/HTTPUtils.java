@@ -4,10 +4,12 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class HTTPUtils {
 	private static String host;
 	private static Integer port;
@@ -16,7 +18,7 @@ public class HTTPUtils {
 		port = AppPropertiesUtil.getIntValue("server.httpd.port");
 	}
 
-	public static URL getUrl(String path) {
+	public static URL getUrl(@Nonnull String path) {
 		path = path.replaceAll("//", "/");
 		if (path.startsWith("/")) {
 			path = path.substring(1);
@@ -27,12 +29,11 @@ public class HTTPUtils {
 			if (HttpURLConnection.HTTP_OK == conn.getResponseCode()) {
 				return url;
 			} else if (HttpURLConnection.HTTP_NOT_FOUND == conn.getResponseCode()) {
-				LoggerFactory.getLogger(HTTPUtils.class).warn("资源不存在:{}", url.toString());
+				log.warn("资源不存在:{}", url.toString());
 			}
 		} catch (IOException e) {
 			String msg = "无效的地址:" + path;
-			LoggerFactory.getLogger(HTTPUtils.class).warn(msg, e);
-//			throw new RuntimeException(msg, e);
+			log.warn(msg, e);
 		}
 		return null;
 	}

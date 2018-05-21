@@ -73,7 +73,8 @@ import com.jme3.scene.Spatial.CullHint;
 import com.jme3.scene.shape.Line;
 
 import javafx.application.Platform;
-
+import lombok.extern.slf4j.Slf4j;
+@Slf4j
 public class CircuitState extends BaseState {
 //	导线工连接头接出的最小长度
 	private static final float minLen = 0.01f;
@@ -201,7 +202,7 @@ public class CircuitState extends BaseState {
 
 		bindCircuitBoardEvents();
 
-		LOG.info("CircuitState完成初始化");
+		log.info("CircuitState完成初始化");
 	}
 
 	private void bindCircuitBoardEvents() {
@@ -568,7 +569,7 @@ public class CircuitState extends BaseState {
 	public void read(Archive archive) {
 		// 等待初始化完成
 		while (!initialized) {
-			LOG.debug("正在等待初始化完成。。。");
+			log.debug("正在等待初始化完成。。。");
 		}
 		readEleccomps(archive.getCompList());
 		readWires(archive.getWireList());
@@ -595,7 +596,7 @@ public class CircuitState extends BaseState {
 			ElecComp elecComp = action.findElecCompById(proxyComp.getId());
 			if (elecComp == null) {
 				String errMsg = String.format("没有找到ID号为%s的元器件", proxyComp.getId());
-				LOG.warn(errMsg);
+				log.warn(errMsg);
 				throw new RuntimeException(errMsg);
 			}
 //			2、加载模型，同时设置好坐标与旋转
@@ -784,7 +785,7 @@ public class CircuitState extends BaseState {
 		if (relyOn != null) {
 			ElecCompDef baseDef = relyOn.getBaseDef();
 			if (baseDef == null) {
-				LOG.error("组合使用元器件不可能没有底座！");
+				log.error("组合使用元器件不可能没有底座！");
 				return;
 			}
 			for (String relyId : relyOn.getRelyIds()) {
@@ -897,7 +898,7 @@ public class CircuitState extends BaseState {
 					if (shellNode != null) {
 						JmeUtil.transparent(shellNode, .7f);
 					} else {
-						LOG.error("模型{}中没有名为{}的节点", elecCompMdl, s);
+						log.error("模型{}中没有名为{}的节点", elecCompMdl, s);
 					}
 				});
 			});

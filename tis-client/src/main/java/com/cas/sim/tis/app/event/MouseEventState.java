@@ -22,10 +22,13 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * 注意：在使用ChaseCamera时候，要调用chaser.setHideCursorOnRotate(false);否则会影响本类的运行
  * @author Administrator
  */
+@Slf4j
 public class MouseEventState extends BaseState {
 	public static final String TO_MOUSE_VISIBLE = "ToMouseVisible";
 
@@ -220,10 +223,10 @@ public class MouseEventState extends BaseState {
 		List<MouseEventListener> listeners = getListenerList(node);
 		boolean result = listeners.remove(eventListener);
 		if (result) {
-			LOG.info("删除指定的鼠标监听 成功！");
+			log.info("删除指定的鼠标监听 成功！");
 			mouseButtonPressed = false;
 		} else {
-			LOG.warn("");
+			log.warn("");
 		}
 		if (listeners.size() == 0) {
 			removeCandidate(node);
@@ -351,7 +354,7 @@ public class MouseEventState extends BaseState {
 				}
 			}
 		} catch (Exception e) {
-			LOG.warn("事件异常", e);
+			log.warn("事件异常", e);
 			throw new RuntimeException(e);
 		}
 	}

@@ -1,7 +1,5 @@
 package com.cas.sim.tis.app.state;
 
-import java.util.concurrent.Executors;
-
 import org.jetbrains.annotations.Nullable;
 
 import com.cas.circuit.vo.Archive;
@@ -33,7 +31,13 @@ import com.jme3.scene.Spatial;
 
 import javafx.application.Platform;
 import javafx.scene.control.Alert.AlertType;
+import lombok.extern.slf4j.Slf4j;
 
+/**
+ * 典型案例模块
+ * @author Administrator
+ */
+@Slf4j
 public class TypicalCaseState extends BaseState {
 //	每次打开新的案例，都会创建一个新的节点，存放与案例相关的模型
 	private static final String TYPICAL_CASE_ROOT_NODE = "TYPICAL_CASE_ROOT_NODE";
@@ -107,7 +111,7 @@ public class TypicalCaseState extends BaseState {
 		Archive archive = SpringUtil.getBean(ArchiveAction.class).parse(typicalCase.getArchivePath());
 		app.enqueue(() -> {
 			try {
-				if(archive != null) {
+				if (archive != null) {
 					circuitState.read(archive);
 				}
 			} finally {
@@ -115,9 +119,7 @@ public class TypicalCaseState extends BaseState {
 				Platform.runLater(() -> SpringUtil.getBean(PageController.class).hideLoading());
 			}
 		});
-		
-		
-		
+
 	}
 
 //	布置场景
@@ -249,7 +251,7 @@ public class TypicalCaseState extends BaseState {
 		} catch (Exception e) {
 //			删除出错的模型
 			elecComp.getSpatial().removeFromParent();
-			LOG.error("初始化元器件{}时出现了一个错误:{}", elecComp.getModel(), e.getMessage());
+			log.error("初始化元器件{}时出现了一个错误:{}", elecComp.getModel(), e.getMessage());
 			e.printStackTrace();
 		} finally {
 			elecComp = null;
@@ -302,7 +304,7 @@ public class TypicalCaseState extends BaseState {
 //			删除出错的模型
 			if (elecComp != null) {
 				elecComp.getSpatial().removeFromParent();
-				LOG.error("初始化元器件{}时出现了一个错误:{}", elecComp.getModel(), e.getMessage());
+				log.error("初始化元器件{}时出现了一个错误:{}", elecComp.getModel(), e.getMessage());
 			}
 			e.printStackTrace();
 		}

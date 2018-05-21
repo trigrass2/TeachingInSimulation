@@ -12,6 +12,9 @@ import com.cas.sim.tis.xml.util.JaxbUtil;
 public class ArchiveAction {
 	@Nullable
 	public Archive parse(String archivePath) {
+		if(archivePath == null) {
+			return null;
+		}
 		return JaxbUtil.converyToJavaBean(HTTPUtils.getUrl(archivePath), Archive.class);
 	}
 
