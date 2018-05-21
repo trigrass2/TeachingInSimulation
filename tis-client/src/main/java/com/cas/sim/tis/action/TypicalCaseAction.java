@@ -28,6 +28,11 @@ public class TypicalCaseAction extends BaseAction {
 	@Resource
 	private TypicalCaseService service;
 
+	/**
+	 * 根据典型案例编号查询典型案例
+	 * @param id 典型案例编号
+	 * @return 典型案例对象
+	 */
 	public TypicalCase findTypicalCaseById(Integer id) {
 		RequestEntity entity = new RequestEntityBuilder()//
 				.set("id", id)//
@@ -36,6 +41,11 @@ public class TypicalCaseAction extends BaseAction {
 		return JSON.parseObject(resp.data, TypicalCase.class);
 	}
 
+	/**
+	 * 根据创建人获得典型案例集合
+	 * @param creator 创建人编号
+	 * @return List 典型案例集合
+	 */
 	public List<TypicalCase> getTypicalCasesByCreator(Integer creator) {
 		RequestEntity req = new RequestEntityBuilder()//
 				.set("creator", creator)//
@@ -44,6 +54,11 @@ public class TypicalCaseAction extends BaseAction {
 		return JSON.parseArray(resp.data, TypicalCase.class);
 	}
 
+	/**
+	 * 保存新的典型案例
+	 * @param typicalCase 典型案例对象
+	 * @param archive 典型案例存档对象
+	 */
 	public void save(TypicalCase typicalCase, Archive archive) {
 //		1、 将存档对象转换为XML文件
 		String xmlContent = JaxbUtil.convertToXml(archive, "utf-8");
@@ -117,11 +132,14 @@ public class TypicalCaseAction extends BaseAction {
 //		service.update(typicalCase);
 //	}
 
-	public void delete(Integer id) {
+	public void deleteByLogic(Integer id) {
+		TypicalCase typicalCase = new TypicalCase();
+		typicalCase.setId(id);
+		typicalCase.setDel(true);
 		RequestEntity req = new RequestEntityBuilder()//
-				.set("id", id)//
+				.set("typicalCase", typicalCase)//
 				.build();
-		service.deleteTypicalCaseById(req);
+		service.updateTypicalCase(req);
 //		不用删除服务器中的文件
 //		try {
 //			FTPUtils.connect().cd("/archives").deleteFile(typicalCase.getArchivePath()).disconnect();

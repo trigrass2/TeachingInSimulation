@@ -112,7 +112,7 @@ public class TypicalCaseSelectDialog extends DialogPane<Integer> {
 					if (response == ButtonType.NO) {
 						return;
 					}
-					SpringUtil.getBean(TypicalCaseAction.class).delete((Integer) rid);
+					SpringUtil.getBean(TypicalCaseAction.class).deleteByLogic((Integer) rid);
 					reload();
 				});
 			}));

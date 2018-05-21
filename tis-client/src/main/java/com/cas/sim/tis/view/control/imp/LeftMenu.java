@@ -8,11 +8,9 @@ import java.util.function.Consumer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.cas.sim.tis.action.UserAction;
 import com.cas.sim.tis.consts.Session;
 import com.cas.sim.tis.entity.User;
 import com.cas.sim.tis.svg.SVGGlyph;
-import com.cas.sim.tis.util.SpringUtil;
 import com.cas.sim.tis.view.control.ILeftContent;
 
 import javafx.fxml.FXML;
@@ -66,7 +64,7 @@ public abstract class LeftMenu extends VBox implements ILeftContent, Initializab
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		User user = SpringUtil.getBean(UserAction.class).findUserByID(Session.get(Session.KEY_LOGIN_ID));
+		User user = Session.get(Session.KEY_OBJECT);
 		name.setText(user.getName());
 		code.setText(user.getCode());
 	}

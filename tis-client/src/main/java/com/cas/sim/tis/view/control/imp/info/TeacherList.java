@@ -127,7 +127,7 @@ public class TeacherList extends HBox implements IContent {
 		del.setCellFactory(BtnCell.forTableColumn(MsgUtil.getMessage("button.delete"), Priority.ALWAYS, "blue-btn", id -> {
 			AlertUtil.showConfirm(MsgUtil.getMessage("alert.confirmation.data.delete"), response -> {
 				if (response == ButtonType.YES) {
-					SpringUtil.getBean(UserAction.class).deleteUser((int) id);
+					SpringUtil.getBean(UserAction.class).deleteUserByLogic((int) id);
 					pagination.reload();
 				}
 			});
@@ -223,7 +223,7 @@ public class TeacherList extends HBox implements IContent {
 	}
 
 	private void modify(int id) {
-		User teacher = SpringUtil.getBean(UserAction.class).findUserByID(id);
+		User teacher = SpringUtil.getBean(UserAction.class).findUserById(id);
 
 		Dialog<User> dialog = new Dialog<>();
 		dialog.setDialogPane(new TeacherModifyDialog(teacher));

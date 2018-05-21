@@ -248,7 +248,7 @@ public class SettingDialog extends DialogPane<Boolean> {
 			AlertUtil.showAlert(AlertType.WARNING, MsgUtil.getMessage("alert.warning.password.unmatch"));
 			return;
 		}
-		User user = SpringUtil.getBean(UserAction.class).findUserByID(Session.get(Session.KEY_LOGIN_ID));
+		User user = SpringUtil.getBean(UserAction.class).findUserById(Session.get(Session.KEY_LOGIN_ID));
 		if (!user.getPassword().equals(oldPwd)) {
 			AlertUtil.showAlert(AlertType.WARNING, MsgUtil.getMessage("alert.warning.password.error"));
 			return;

@@ -287,7 +287,7 @@ public class PreparationDetail extends HBox implements IContent {
 		int role = Session.get(Session.KEY_LOGIN_ROLE);
 		int creator = Session.get(Session.KEY_LOGIN_ID);
 		if (RoleConst.STUDENT == role) {
-			User user = SpringUtil.getBean(UserAction.class).findUserByID(creator);
+			User user = SpringUtil.getBean(UserAction.class).findUserById(creator);
 			creator = user.getTeacherId();
 		}
 		// 查询是否存在自定义备课内容
@@ -539,7 +539,7 @@ public class PreparationDetail extends HBox implements IContent {
 	private void openResource(Integer id) {
 		ResourceAction action = SpringUtil.getBean(ResourceAction.class);
 		action.browsed(id);
-		Resource resource = action.findResourceByID(id);
+		Resource resource = action.findResourceById(id);
 		// 跳转到查看页面
 		PageController controller = SpringUtil.getBean(PageController.class);
 		controller.loadContent(new ResourceViewer(resource), PageLevel.Level2);

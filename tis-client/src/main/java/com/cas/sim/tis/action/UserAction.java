@@ -21,7 +21,12 @@ public class UserAction extends BaseAction {
 	@Resource
 	private UserService service;
 
-	public User findUserByID(int id) {
+	/**
+	 * 根据用户编号查询用户对象
+	 * @param id 用户编号
+	 * @return 用户对象
+	 */
+	public User findUserById(int id) {
 		RequestEntity req = new RequestEntityBuilder()//
 				.set("id", id)//
 				.build();
@@ -30,11 +35,21 @@ public class UserAction extends BaseAction {
 		return JSON.parseObject(resp.data, User.class);
 	}
 
+	/**
+	 * 查询所有教师信息
+	 * @return 教师信息集合
+	 */
 	public List<User> findTeachers() {
 		ResponseEntity resp = service.findTeachers(null);
 		return JSON.parseArray(resp.data, User.class);
 	}
 
+	/**
+	 * 分页查询教师信息
+	 * @param pageIndex 查询页
+	 * @param pageSize 查询条数
+	 * @return 教师信息分页集合
+	 */
 	public PageInfo<User> findTeachers(int pageIndex, int pageSize) {
 		RequestEntity req = new RequestEntityBuilder()//
 				.pageNum(pageIndex)//
@@ -44,6 +59,13 @@ public class UserAction extends BaseAction {
 		return JSON.parseObject(resp.data, new TypeReference<PageInfo<User>>() {});
 	}
 
+	/**
+	 * 按班级分页查询学生信息
+	 * @param pageIndex 查询页
+	 * @param pageSize 查询条数
+	 * @param classId
+	 * @return 学生信息分页集合
+	 */
 	public PageInfo<User> findStudents(int pageIndex, int pageSize, int classId) {
 		RequestEntity req = new RequestEntityBuilder()//
 				.pageNum(pageIndex)//
@@ -54,6 +76,10 @@ public class UserAction extends BaseAction {
 		return JSON.parseObject(resp.data, new TypeReference<PageInfo<User>>() {});
 	}
 
+	/**
+	 * 批量新增用户信息
+	 * @param users 用户集合
+	 */
 	public void addUsers(List<User> users) {
 		RequestEntity req = new RequestEntityBuilder()//
 				.set("users", users)//
@@ -61,6 +87,10 @@ public class UserAction extends BaseAction {
 		service.saveUsers(req);
 	}
 
+	/**
+	 * 修改用户信息
+	 * @param user 用户信息
+	 */
 	public void modifyUser(User user) {
 		user.setUpdater(Session.get(Session.KEY_LOGIN_ID));
 		RequestEntity req = new RequestEntityBuilder()//
@@ -69,11 +99,19 @@ public class UserAction extends BaseAction {
 		service.updateUser(req);
 	}
 
-	public void deleteUser(int id) {
+	/**
+	 * 逻辑删除用户信息
+	 * @param user 用户信息
+	 */
+	public void deleteUserByLogic(int id) {
+		User user = new User();
+		user.setId(id);
+		user.setDel(true);
+		user.setUpdater(Session.get(Session.KEY_LOGIN_ID));
 		RequestEntity req = new RequestEntityBuilder()//
-				.set("id", id)//
+				.set("user", user)//
 				.build();
-		service.deleteUser(req);
+		service.updateUser(req);
 	}
 
 }

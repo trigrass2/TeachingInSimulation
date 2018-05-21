@@ -296,7 +296,7 @@ public class ResourceList extends HBox implements IContent {
 		view.setCellFactory(BtnCell.forTableColumn(MsgUtil.getMessage("button.view"), Priority.ALWAYS, "blue-btn", rid -> {
 			SpringUtil.getBean(ResourceAction.class).browsed((Integer) rid);
 			ResourceAction action = SpringUtil.getBean(ResourceAction.class);
-			Resource resource = action.findResourceByID((Integer) rid);
+			Resource resource = action.findResourceById((Integer) rid);
 			// 跳转到查看页面
 			PageController controller = SpringUtil.getBean(PageController.class);
 			controller.loadContent(new ResourceViewer(resource), PageLevel.Level2);
@@ -309,7 +309,7 @@ public class ResourceList extends HBox implements IContent {
 			delete.setCellFactory(BtnCell.forTableColumn(MsgUtil.getMessage("button.delete"), "blue-btn", rid -> {
 				AlertUtil.showConfirm(MsgUtil.getMessage("alert.confirmation.data.delete"), response -> {
 					if (response == ButtonType.YES) {
-						SpringUtil.getBean(ResourceAction.class).detele((Integer) rid);
+						SpringUtil.getBean(ResourceAction.class).deteleByLogic((Integer) rid);
 						pagination.reload();
 					}
 				});

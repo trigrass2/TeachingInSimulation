@@ -95,7 +95,7 @@ public class DrawingSelectDialog extends DialogPane<Integer> {
 		delete.setCellFactory(BtnCell.forTableColumn(MsgUtil.getMessage("button.delete"), "blue-btn", rid -> {
 			AlertUtil.showConfirm(dialog.getWindow(), MsgUtil.getMessage("alert.confirmation.data.delete"), response -> {
 				if (response == ButtonType.YES) {
-					SpringUtil.getBean(ResourceAction.class).detele((Integer) rid);
+					SpringUtil.getBean(ResourceAction.class).deteleByLogic((Integer) rid);
 					reload();
 				}
 			});

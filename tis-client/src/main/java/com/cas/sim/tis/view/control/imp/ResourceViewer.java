@@ -271,7 +271,7 @@ public class ResourceViewer extends VBox implements IContent {
 	 * 加载资源信息
 	 */
 	private void loadResourceInfo() {
-		ResourceInfo info = SpringUtil.getBean(ResourceAction.class).findResourceInfoByID(resource.getId());
+		ResourceInfo info = SpringUtil.getBean(ResourceAction.class).findResourceInfoById(resource.getId());
 		if (info != null) {
 			this.creator.setText(MsgUtil.getMessage("resource.creator", info.getCreator()));
 			this.createDate.setText(MsgUtil.getMessage("resource.create.date", DateUtil.date2Str(info.getCreateDate(), DateUtil.DATE_SHT_PAT_10_)));
