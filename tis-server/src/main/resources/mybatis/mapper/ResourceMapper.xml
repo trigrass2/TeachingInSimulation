@@ -22,11 +22,6 @@
 		<result property="collectedTimes" column="collected_times" />
 	</resultMap>
 
-	<resultMap id="ResourceSearchResultMap" type="com.cas.sim.tis.vo.ReserchCount">
-		<result property="type" column="type" />
-		<result property="size" column="size" />
-	</resultMap>
-
 	<select id="selectResourceInfoByID" resultMap="ResourceInfoMap">
 		select
 		u.name as creator,r.create_date,r.browsed_times,r.collected_times

@@ -50,8 +50,12 @@ public class AppPropertiesUtil {
 		return intVal.intValue();
 	}
 
-	public static void set(String key, String value) {
-		PROPERTIES.setProperty(key, value);
+	public static void set(String key, Object value) {
+		if (value == null) {
+			PROPERTIES.setProperty(key, null);
+		} else {
+			PROPERTIES.setProperty(key, String.valueOf(value));
+		}
 	}
 
 	public static void store() {

@@ -10,7 +10,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
-import java.util.prefs.Preferences;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,7 +17,6 @@ import org.springframework.util.StringUtils;
 
 import com.cas.sim.tis.action.UserAction;
 import com.cas.sim.tis.consts.Session;
-import com.cas.sim.tis.consts.SettingConsts;
 import com.cas.sim.tis.entity.User;
 import com.cas.sim.tis.util.AlertUtil;
 import com.cas.sim.tis.util.AppPropertiesUtil;
@@ -258,13 +256,13 @@ public class SettingDialog extends DialogPane<Boolean> {
 
 	@FXML
 	private void saveSetting() {
-		Preferences prefs = Preferences.userRoot().node(SettingConsts.REG_APP_PATH);
 		LangItem item = language.getSelectionModel().getSelectedItem();
-		prefs.put(SettingConsts.LANGUAGE, item.getLang());
+		AppPropertiesUtil.set("setting.language", item.getLang());
 		Resolution resolution = this.resolution.getValue();
-		prefs.putInt(SettingConsts.RESOLUTION_WIDTH, resolution.getWidth());
-		prefs.putInt(SettingConsts.RESOLUTION_HEIGHT, resolution.getHeight());
-		prefs.putBoolean(SettingConsts.SCREEN_MODE, full.isSelected());
+		AppPropertiesUtil.set("setting.resolution.width", resolution.getWidth());
+		AppPropertiesUtil.set("setting.resolution.height", resolution.getHeight());
+		AppPropertiesUtil.set("setting.fullscreen.mode", full.isSelected()?1:0);
+		AppPropertiesUtil.store();
 		dialog.close();
 		AlertUtil.showAlert(AlertType.INFORMATION, MsgUtil.getMessage("alert.information.setting.after.reset"));
 	}
