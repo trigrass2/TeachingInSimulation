@@ -21,7 +21,7 @@ public interface ElecCompService {
 
 	/**
 	 * 根据元器件编号获得的元器件对象
-	 * @param id 元器件编号
+	 * @param entity （id 元器件编号）
 	 * @return 元器件对象
 	 */
 	@ThriftMethod
@@ -29,15 +29,15 @@ public interface ElecCompService {
 
 	/**
 	 * 根据元器件型号查找
-	 * @param model
-	 * @return
+	 * @param entity （model 元器件型号）
+	 * @return 元器件对象
 	 */
 	@ThriftMethod
 	ResponseEntity findElecCompByModel(RequestEntity entity);
 
 	/**
 	 * 获取所有元器件集合
-	 * @return
+	 * @return 所有元器件集合
 	 */
 	@ThriftMethod
 	ResponseEntity findElecComps();

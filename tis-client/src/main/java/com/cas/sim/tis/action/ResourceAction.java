@@ -30,6 +30,11 @@ public class ResourceAction extends BaseAction {
 //		return service.addResource(resource);
 //	}
 
+	/**
+	 * 批量新增资源
+	 * @param resources 资源集合
+	 * @return 返回新增资源的ID
+	 */
 	public List<Integer> addResources(List<Resource> resources) {
 		RequestEntity req = new RequestEntityBuilder()//
 				.set("resources", resources)//

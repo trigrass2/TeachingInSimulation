@@ -11,40 +11,38 @@ public interface ClassService {
 
 	/**
 	 * 根据ID查询班级信息
-	 * @param id 班级编号
-	 * @return
+	 * @param entity （id 班级编号）
+	 * @return 班级信息对象
 	 */
 	@ThriftMethod
 	ResponseEntity findClassById(RequestEntity entity);
 
 	/**
 	 * 分页查询班级信息
-	 * @param pageIndex
-	 * @param pageSize
-	 * @return
+	 * @param entity （pageIndex 当前页；pageSize 查询条数）
+	 * @return 分页对象
 	 */
 	@ThriftMethod
 	ResponseEntity findClasses(RequestEntity entity);
 
 	/**
 	 * 根据教师编号查询班级集合
-	 * @param teacherId
-	 * @return
+	 * @param entity （teacherId 教师编号）
+	 * @return 班级信息集合
 	 */
 	@ThriftMethod
 	ResponseEntity findClassesByTeacherId(RequestEntity entity);
 
 	/**
 	 * 批量保存班级信息
-	 * @param infos
-	 * @param creator
+	 * @param entity （infos 班级导入信息对象；creator 创建人）
 	 */
 	@ThriftMethod
 	void saveClasses(RequestEntity entity);
 
 	/**
 	 * 修改班级信息
-	 * @param clazz
+	 * @param entity （clazz 班级信息对象）
 	 */
 	@ThriftMethod
 	void modifyClass(RequestEntity entity);

@@ -11,8 +11,7 @@ public interface GoalService {
 
 	/**
 	 * 根据ASK关联标号查询ASK目标对象
-	 * @param rid ASK关联编号
-	 * @param type ASK类型
+	 * @param entity （rid ASK关联编号；type ASK类型）
 	 * @return ASK目标集合
 	 */
 	@ThriftMethod
