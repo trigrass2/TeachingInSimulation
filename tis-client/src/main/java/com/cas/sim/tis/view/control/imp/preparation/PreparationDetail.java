@@ -3,6 +3,7 @@ package com.cas.sim.tis.view.control.imp.preparation;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -486,18 +487,7 @@ public class PreparationDetail extends HBox implements IContent {
 	}
 
 	private void addResource(Integer id, int type) {
-		PreparationResource resource = new PreparationResource();
-		resource.setRelationId(id);
-		resource.setPreparationId(preparation.getId());
-		resource.setType(type);
-		try {
-			SpringUtil.getBean(PreparationResourceAction.class).addResources(resource);
-			loadResources();
-			AlertUtil.showAlert(AlertType.INFORMATION, MsgUtil.getMessage("alert.information.data.add.success"));
-		} catch (Exception e) {
-			e.printStackTrace();
-			AlertUtil.showAlert(AlertType.ERROR, e.getMessage());
-		}
+		addResources(Arrays.asList(new Integer[] { id }), type);
 	}
 
 	private void addResources(List<Integer> ids, int type) {

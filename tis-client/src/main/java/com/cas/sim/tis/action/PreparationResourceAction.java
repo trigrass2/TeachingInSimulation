@@ -68,10 +68,7 @@ public class PreparationResourceAction extends BaseAction {
 	 * @param resources 备课资源对对象集合
 	 */
 	public void addResources(PreparationResource... resources) {
-		RequestEntity req = new RequestEntityBuilder()//
-				.set("resources", Arrays.asList(resources))//
-				.build();
-		service.savePreparationResources(req);
+		addResources(Arrays.asList(resources));
 	}
 
 	/**
@@ -80,7 +77,7 @@ public class PreparationResourceAction extends BaseAction {
 	 */
 	public void addResources(List<PreparationResource> resources) {
 		RequestEntity req = new RequestEntityBuilder()//
-				.set("resources", Arrays.asList(resources))//
+				.set("resources", resources)//
 				.build();
 		service.savePreparationResources(req);
 	}
