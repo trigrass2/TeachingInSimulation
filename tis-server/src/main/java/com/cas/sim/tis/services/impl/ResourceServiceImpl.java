@@ -190,7 +190,7 @@ public class ResourceServiceImpl implements ResourceService {
 	@Override
 	public ResponseEntity countBrowseResourceByTypes(RequestEntity entity) {
 		List<ReserchResult> data = mapper.countBrowseResourceByTypes(//
-				entity.getList("type", Integer.class), //
+				entity.getList("types", Integer.class), //
 				entity.getString("keyword"), //
 				entity.getInt("creator"));
 		JSONObject obj = new JSONObject();
@@ -201,7 +201,7 @@ public class ResourceServiceImpl implements ResourceService {
 	@Override
 	public ResponseEntity countCollectionResourceByTypes(RequestEntity entity) {
 		List<ReserchResult> data = mapper.countCollectionResourceByTypes(//
-				entity.getList("type", Integer.class), //
+				entity.getList("types", Integer.class), //
 				entity.getString("keyword"), //
 				entity.getInt("creator"));
 		JSONObject obj = new JSONObject();
@@ -212,7 +212,7 @@ public class ResourceServiceImpl implements ResourceService {
 	@Override
 	public ResponseEntity countResourceByTypes(RequestEntity entity) {
 		List<ReserchResult> data = mapper.countResourceByTypes(//
-				entity.getList("type", Integer.class), //
+				entity.getList("types", Integer.class), //
 				entity.getString("keyword"), //
 				entity.getInt("creator"));
 		JSONObject obj = new JSONObject();
