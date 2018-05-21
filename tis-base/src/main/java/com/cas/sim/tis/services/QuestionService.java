@@ -42,7 +42,7 @@ public interface QuestionService {
 
 	/**
 	 * 统计当前试题库下的试题数量
-	 * @param rid 试题库编号
+	 * @param entity （rid 试题库编号）
 	 * @return int 试题数量
 	 */
 	@ThriftMethod

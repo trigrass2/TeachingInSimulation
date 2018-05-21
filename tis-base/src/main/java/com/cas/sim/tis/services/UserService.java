@@ -4,7 +4,6 @@ import com.cas.sim.tis.services.exception.ServiceException;
 import com.cas.sim.tis.thrift.RequestEntity;
 import com.cas.sim.tis.thrift.ResponseEntity;
 
-import io.airlift.drift.annotations.ThriftException;
 import io.airlift.drift.annotations.ThriftMethod;
 import io.airlift.drift.annotations.ThriftService;
 
@@ -37,9 +36,12 @@ public interface UserService {
 	@ThriftMethod
 	ResponseEntity findUserById(RequestEntity entity);
 
+	@ThriftMethod
 	void saveUsers(RequestEntity entity);
 
+	@ThriftMethod
 	void updateUser(RequestEntity entity);
 
+	@ThriftMethod
 	void deleteUser(RequestEntity entity);
 }
