@@ -1,8 +1,11 @@
 package com.cas.sim.tis.action;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.annotation.Nonnull;
 
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -110,6 +113,7 @@ public class ResourceAction extends BaseAction {
 	 *         Key:资源类型<br>
 	 *         Value:对应数量
 	 */
+	@Nonnull
 	public Map<Integer, Integer> countResourceByType(ResourceMenuType menuType, List<Integer> types, String keyword, int creator) {
 		RequestEntity req = new RequestEntityBuilder()//
 				.set("types", types)//

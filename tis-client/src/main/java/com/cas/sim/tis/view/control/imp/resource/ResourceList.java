@@ -6,6 +6,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.UUID;
 import java.util.function.Function;
@@ -385,18 +386,15 @@ public class ResourceList extends HBox implements IContent {
 
 //		统计各类型的资源数量
 		List<Integer> types = getSelectedTypes();
-		action.countResourceByType(type, types, keyword, creator);
-		
-		
-		int picNum = picCheck.isSelected() ? action.countResourceByType(type, ResourceType.IMAGE.getType(), keyword, creator) : 0;
-		int swfNum = swfCheck.isSelected() ? action.countResourceByType(type, ResourceType.SWF.getType(), keyword, creator) : 0;
-		int videoNum = videoCheck.isSelected() ? action.countResourceByType(type, ResourceType.VIDEO.getType(), keyword, creator) : 0;
-		int txtNum = txtCheck.isSelected() ? action.countResourceByType(type, ResourceType.TXT.getType(), keyword, creator) : 0;
-		int wordNum = wordCheck.isSelected() ? action.countResourceByType(type, ResourceType.WORD.getType(), keyword, creator) : 0;
-		int pptNum = pptCheck.isSelected() ? action.countResourceByType(type, ResourceType.PPT.getType(), keyword, creator) : 0;
-		int excelNum = excelCheck.isSelected() ? action.countResourceByType(type, ResourceType.EXCEL.getType(), keyword, creator) : 0;
-		int pdfNum = pdfCheck.isSelected() ? action.countResourceByType(type, ResourceType.PDF.getType(), keyword, creator) : 0;
-
+		Map<Integer, Integer> counts = action.countResourceByType(type, types, keyword, creator);
+		int picNum = picCheck.isSelected() ? counts.get(ResourceType.IMAGE.getType()) : 0;
+		int swfNum = swfCheck.isSelected() ? counts.get(ResourceType.SWF.getType()) : 0;
+		int videoNum = videoCheck.isSelected() ? counts.get(ResourceType.VIDEO.getType()) : 0;
+		int txtNum = txtCheck.isSelected() ? counts.get(ResourceType.TXT.getType()) : 0;
+		int wordNum = wordCheck.isSelected() ? counts.get(ResourceType.WORD.getType()) : 0;
+		int pptNum = pptCheck.isSelected() ? counts.get(ResourceType.PPT.getType()) : 0;
+		int excelNum = excelCheck.isSelected() ? counts.get(ResourceType.EXCEL.getType()) : 0;
+		int pdfNum = pdfCheck.isSelected() ? counts.get(ResourceType.PDF.getType()) : 0;
 		ObservableList<Data> datas = FXCollections.observableArrayList(new PieChart.Data(MsgUtil.getMessage("resource.pdf"), pdfNum), //
 				new PieChart.Data(MsgUtil.getMessage("resource.ppt"), pptNum), //
 				new PieChart.Data(MsgUtil.getMessage("resource.txt"), txtNum), //
@@ -406,6 +404,15 @@ public class ResourceList extends HBox implements IContent {
 				new PieChart.Data(MsgUtil.getMessage("resource.word"), wordNum), //
 				new PieChart.Data(MsgUtil.getMessage("resource.swf"), swfNum)); //
 		chart.setData(datas);
+
+		pic.setText(String.format("%s:%s", MsgUtil.getMessage("resource.pic"), picNum));
+		swf.setText(String.format("%s:%s", MsgUtil.getMessage("resource.swf"), swfNum));
+		video.setText(String.format("%s:%s", MsgUtil.getMessage("resource.video"), videoNum));
+		txt.setText(String.format("%s:%s", MsgUtil.getMessage("resource.txt"), txtNum));
+		word.setText(String.format("%s:%s", MsgUtil.getMessage("resource.word"), wordNum));
+		ppt.setText(String.format("%s:%s", MsgUtil.getMessage("resource.ppt"), pptNum));
+		excel.setText(String.format("%s:%s", MsgUtil.getMessage("resource.excel"), excelNum));
+		pdf.setText(String.format("%s:%s", MsgUtil.getMessage("resource.pdf"), pdfNum));
 
 		chart.setOnMouseMoved(e -> {
 			tip.setTranslateX(e.getX());
@@ -422,14 +429,6 @@ public class ResourceList extends HBox implements IContent {
 
 			});
 		}
-		pic.setText(String.format("%s:%s", MsgUtil.getMessage("resource.pic"), picNum));
-		swf.setText(String.format("%s:%s", MsgUtil.getMessage("resource.swf"), swfNum));
-		video.setText(String.format("%s:%s", MsgUtil.getMessage("resource.video"), videoNum));
-		txt.setText(String.format("%s:%s", MsgUtil.getMessage("resource.txt"), txtNum));
-		word.setText(String.format("%s:%s", MsgUtil.getMessage("resource.word"), wordNum));
-		ppt.setText(String.format("%s:%s", MsgUtil.getMessage("resource.ppt"), pptNum));
-		excel.setText(String.format("%s:%s", MsgUtil.getMessage("resource.excel"), excelNum));
-		pdf.setText(String.format("%s:%s", MsgUtil.getMessage("resource.pdf"), pdfNum));
 	}
 
 	@FXML
