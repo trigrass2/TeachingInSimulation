@@ -23,8 +23,8 @@
 	</resultMap>
 	
 	<resultMap id="ResourceSearchResultMap" type="com.cas.sim.tis.mapper.data.ReserchResult">
-		<result property="type" column="type" />
-		<result property="size" column="size" />
+		<result property="type" column="type" jdbcType="VARCHAR" />
+		<result property="size" column="size" jdbcType="INTEGER" />
 	</resultMap>
 
 	<select id="selectResourceInfoByID" resultMap="ResourceInfoMap">
@@ -108,7 +108,7 @@
 
 	<select id="countResourceByTypes" resultMap="ResourceSearchResultMap">
 		select
-			r.type, count(r.id)
+			r.type type, count(r.id) size
 		from
 			resource r
 		where
@@ -127,7 +127,7 @@
 
 	<select id="countBrowseResourceByTypes" resultMap="ResourceSearchResultMap">
 		select
-			r.type, count(r.id)
+			r.type type, count(r.id) size
 		from
 			browse_history b left join resource r on b.rid = r.id
 		where
@@ -146,7 +146,7 @@
 
 	<select id="countCollectionResourceByTypes" resultMap="ResourceSearchResultMap">
 		select
-			r.type, count(r.id)
+			r.type type, count(r.id) size
 		from
 			collection c left join resource r on c.rid = r.id
 		where
