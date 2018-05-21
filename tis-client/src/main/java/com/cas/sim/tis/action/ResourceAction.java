@@ -1,6 +1,7 @@
 package com.cas.sim.tis.action;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -19,6 +20,7 @@ import com.cas.sim.tis.thrift.RequestEntityBuilder;
 import com.cas.sim.tis.thrift.ResponseEntity;
 import com.cas.sim.tis.view.control.imp.resource.ResourceList.ResourceMenuType;
 import com.cas.sim.tis.vo.ResourceInfo;
+import com.cas.util.StringUtil;
 import com.github.pagehelper.PageInfo;
 
 @Component
@@ -127,7 +129,8 @@ public class ResourceAction extends BaseAction {
 		} else {
 			resp = service.countResourceByTypes(req);
 		}
-		return JSON.parseObject(resp.data, new TypeReference<Map<Integer, Integer>>() {});
+		List<String> data = JSON.parseArray(resp.data, String.class);
+		return JSON.parseObject(String.format("{%s}", StringUtil.combine(data,',')), new TypeReference<HashMap<Integer, Integer>>() {});
 	}
 
 	/**

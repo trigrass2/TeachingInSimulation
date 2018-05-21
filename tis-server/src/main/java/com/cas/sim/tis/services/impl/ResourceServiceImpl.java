@@ -11,7 +11,6 @@ import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import com.cas.sim.tis.consts.ResourceType;
 import com.cas.sim.tis.entity.BrowseHistory;
 import com.cas.sim.tis.entity.Collection;
@@ -19,7 +18,6 @@ import com.cas.sim.tis.entity.Resource;
 import com.cas.sim.tis.mapper.BrowseHistoryMapper;
 import com.cas.sim.tis.mapper.CollectionMapper;
 import com.cas.sim.tis.mapper.ResourceMapper;
-import com.cas.sim.tis.mapper.data.ReserchResult;
 import com.cas.sim.tis.services.ResourceService;
 import com.cas.sim.tis.thrift.RequestEntity;
 import com.cas.sim.tis.thrift.ResponseEntity;
@@ -189,35 +187,29 @@ public class ResourceServiceImpl implements ResourceService {
 
 	@Override
 	public ResponseEntity countBrowseResourceByTypes(RequestEntity entity) {
-		List<ReserchResult> data = mapper.countBrowseResourceByTypes(//
+		List<String> data = mapper.countBrowseResourceByTypes(//
 				entity.getList("types", Integer.class), //
 				entity.getString("keyword"), //
 				entity.getInt("creator"));
-		JSONObject obj = new JSONObject();
-		data.forEach(d -> obj.put(d.getType(), d.getSize()));
-		return ResponseEntity.success(obj);
+		return ResponseEntity.success(data);
 	}
 
 	@Override
 	public ResponseEntity countCollectionResourceByTypes(RequestEntity entity) {
-		List<ReserchResult> data = mapper.countCollectionResourceByTypes(//
+		List<String> data = mapper.countCollectionResourceByTypes(//
 				entity.getList("types", Integer.class), //
 				entity.getString("keyword"), //
 				entity.getInt("creator"));
-		JSONObject obj = new JSONObject();
-		data.forEach(d -> obj.put(d.getType(), d.getSize()));
-		return ResponseEntity.success(obj);
+		return ResponseEntity.success(data);
 	}
 
 	@Override
 	public ResponseEntity countResourceByTypes(RequestEntity entity) {
-		List<ReserchResult> data = mapper.countResourceByTypes(//
+		List<String> data = mapper.countResourceByTypes(//
 				entity.getList("types", Integer.class), //
 				entity.getString("keyword"), //
 				entity.getInt("creator"));
-		JSONObject obj = new JSONObject();
-		data.forEach(d -> obj.put(d.getType(), d.getSize()));
-		return ResponseEntity.success(obj);
+		return ResponseEntity.success(data);
 	}
 
 	@Override
@@ -357,12 +349,9 @@ public class ResourceServiceImpl implements ResourceService {
 	}
 
 	@Override
-	public ResponseEntity deteleResource(RequestEntity entity) {
-		Resource resource = new Resource();
-		resource.setId(entity.getInt("id"));
-		resource.setDel(true);
+	public ResponseEntity updateResource(RequestEntity entity) {
+		Resource resource = entity.getObject("resource", Resource.class);
 		mapper.updateByPrimaryKeySelective(resource);
-
 		return ResponseEntity.success(null);
 	}
 

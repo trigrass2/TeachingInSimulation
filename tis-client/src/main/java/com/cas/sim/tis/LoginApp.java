@@ -6,12 +6,11 @@ import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
-import java.util.prefs.Preferences;
 
 import org.slf4j.bridge.SLF4JBridgeHandler;
 
-import com.cas.sim.tis.consts.SettingConsts;
 import com.cas.sim.tis.svg.SVGHelper;
+import com.cas.sim.tis.util.AppPropertiesUtil;
 import com.cas.sim.tis.view.controller.LoginController;
 import com.cas.sim.tis.view.controller.NetworkController;
 
@@ -24,7 +23,7 @@ import javafx.stage.StageStyle;
 public class LoginApp extends javafx.application.Application {
 	private double xOffset;
 	private double yOffset;
-
+	
 	public static void main(String[] args) {
 		loadConfiguration();
 		
@@ -92,9 +91,8 @@ public class LoginApp extends javafx.application.Application {
 // 		初始化awt工具包使JavaFx中可以使用GraphicsEnvironment功能获得屏幕可支持分辨率
         java.awt.Toolkit.getDefaultToolkit();
 		
-		Preferences prefs = Preferences.userRoot().node(SettingConsts.REG_APP_PATH);
 //		设置语言下拉框的默认值
-		String userLang = prefs.get(SettingConsts.LANGUAGE, Locale.CHINA.toString());
+        String userLang =  AppPropertiesUtil.getStringValue("setting.language", Locale.CHINA.toString());
 		String[] arr = userLang.split("_");
 		Locale userLocale = new Locale(arr[0], arr[1]);
 		Locale.setDefault(userLocale);

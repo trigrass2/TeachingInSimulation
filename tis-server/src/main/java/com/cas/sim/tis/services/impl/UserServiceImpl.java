@@ -104,16 +104,4 @@ public class UserServiceImpl implements UserService {
 		User user = entity.getObject("user", User.class);
 		mapper.updateByPrimaryKeySelective(user);
 	}
-
-	@Override
-	public void deleteUser(RequestEntity entity) {
-		Integer id = entity.getInt("id");
-		Condition condition = new Condition(User.class);
-		condition.setForUpdate(true);
-
-		User user = new User();
-		user.setId(id);
-		user.setDel(true);
-		mapper.updateByPrimaryKeySelective(user);
-	}
 }

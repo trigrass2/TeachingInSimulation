@@ -21,6 +21,7 @@ import com.cas.sim.tis.consts.Session;
 import com.cas.sim.tis.consts.SettingConsts;
 import com.cas.sim.tis.entity.User;
 import com.cas.sim.tis.util.AlertUtil;
+import com.cas.sim.tis.util.AppPropertiesUtil;
 import com.cas.sim.tis.util.MsgUtil;
 import com.cas.sim.tis.util.SpringUtil;
 import com.cas.sim.tis.view.control.imp.dialog.DialogPane;
@@ -165,11 +166,8 @@ public class SettingDialog extends DialogPane<Boolean> {
 //			在setting.properties中配置
 			this.language.getItems().add(new LangItem(language, langDesc));
 		}
-//		TODO 获取注册表中的设置信息
-		Preferences prefs = Preferences.userRoot().node(SettingConsts.REG_APP_PATH);
 //		设置语言下拉框的默认值
-//		userLang = zh
-		String userLang = prefs.get(SettingConsts.LANGUAGE, Locale.CHINA.toString());
+		String userLang = AppPropertiesUtil.getStringValue("setting.language", Locale.CHINA.toString());
 
 		String userLangDesc = MsgUtil.getMessage(userLang);
 		language.getSelectionModel().select(new LangItem(userLang, userLangDesc));
@@ -207,19 +205,18 @@ public class SettingDialog extends DialogPane<Boolean> {
 			}
 		});
 		resolution.getItems().addAll(resolutions);
-		Preferences prefs = Preferences.userRoot().node(SettingConsts.REG_APP_PATH);
 //		分辨率
-		int width = prefs.getInt(SettingConsts.RESOLUTION_WIDTH, 1366);
+		int width = AppPropertiesUtil.getIntValue("setting.resolution.width", 1366);
 		if (width < 1366) {
 			width = 1366;
 		}
-		int height = prefs.getInt(SettingConsts.RESOLUTION_HEIGHT, 768);
+		int height = AppPropertiesUtil.getIntValue("setting.resolution.height", 768);
 		if (height < 768) {
 			height = 768;
 		}
 		resolution.getSelectionModel().select(new Resolution(width, height));
 
-		boolean fullscreen = prefs.getBoolean(SettingConsts.SCREEN_MODE, false);
+		boolean fullscreen = AppPropertiesUtil.getIntValue("setting.fullscreen.mode", 0) > 0;
 		full.setSelected(fullscreen);
 	}
 

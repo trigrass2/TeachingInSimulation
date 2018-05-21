@@ -1,7 +1,5 @@
 package com.cas.sim.tis;
 
-import java.util.prefs.Preferences;
-
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.boot.ApplicationArguments;
@@ -11,8 +9,8 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.ConfigurableApplicationContext;
 
-import com.cas.sim.tis.consts.SettingConsts;
 import com.cas.sim.tis.util.AlertUtil;
+import com.cas.sim.tis.util.AppPropertiesUtil;
 import com.cas.sim.tis.util.MsgUtil;
 import com.cas.sim.tis.view.HomeView;
 import com.teamdev.jxbrowser.chromium.Refine;
@@ -47,15 +45,13 @@ public class Application extends AbstractJavaFxApplicationSupport implements App
 			}
 			Scene scene = new Scene(new Region());
 
-			Preferences prefs = Preferences.userRoot().node(SettingConsts.REG_APP_PATH);
-//			分辨率
-			int width = prefs.getInt(SettingConsts.RESOLUTION_WIDTH, 1366);
-			int height = prefs.getInt(SettingConsts.RESOLUTION_HEIGHT, 768);
-
+			int width = AppPropertiesUtil.getIntValue("setting.resolution.width", 1366);
+			int height = AppPropertiesUtil.getIntValue("setting.resolution.height", 768);
+			boolean fullscreen = AppPropertiesUtil.getIntValue("setting.fullscreen.mode", 0) > 0;
 			stage.setWidth(width);
 			stage.setHeight(height);
 			LoggerFactory.getLogger(getClass()).info("窗口大小：{}x{}", width, height);
-			stage.setFullScreen(prefs.getBoolean(SettingConsts.SCREEN_MODE, false));
+			stage.setFullScreen(fullscreen);
 			LoggerFactory.getLogger(getClass()).info("窗口全屏：{}", stage.isFullScreen());
 			stage.setOnCloseRequest(value -> {
 				AlertUtil.showConfirm(MsgUtil.getMessage("alert.confirmation.exit"), resp -> {

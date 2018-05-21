@@ -21,8 +21,8 @@
 		<result property="browsedTimes" column="browsed_times" />
 		<result property="collectedTimes" column="collected_times" />
 	</resultMap>
-	
-	<resultMap id="ResourceSearchResultMap" type="com.cas.sim.tis.mapper.data.ReserchResult">
+
+	<resultMap id="ResourceSearchResultMap" type="com.cas.sim.tis.vo.ReserchCount">
 		<result property="type" column="type" />
 		<result property="size" column="size" />
 	</resultMap>
@@ -106,62 +106,55 @@
 		</if>
 	</select>
 
-	<select id="countResourceByTypes" resultMap="ResourceSearchResultMap">
+	<select id="countResourceByTypes" resultType="java.lang.String">
+		<foreach item="type" collection="types" open="" separator="union" close="">
 		select
-			r.type, count(r.id)
+		CONCAT(${type} ,":", COUNT(r.id)+"") as value
 		from
-			resource r
+		resource r
 		where
-			r.del=0 
+		r.del=0
 		<if test="keyword != null and keyword != ''">
 			and r.keyword like '%${keyword}%'
 		</if>
-			and r.creator=#{creator} 
-			and r.type in
-		<foreach item="type" collection="types" open="(" separator="," close=")">
-			#{type}
+		and r.creator=#{creator}
+		and r.type =#{type}
 		</foreach>
-		group by
-			r.type
 	</select>
 
-	<select id="countBrowseResourceByTypes" resultMap="ResourceSearchResultMap">
+	<select id="countBrowseResourceByTypes" resultType="java.lang.String">
+		<foreach item="type" collection="types" open="" separator="union" close="">
 		select
-			r.type, count(r.id)
+		CONCAT(${type} ,":", COUNT(r.id)+"") as value
 		from
-			browse_history b left join resource r on b.rid = r.id
+		browse_history b left join resource r on b.rid = r.id
 		where
-			r.del=0 
+		r.del=0
 		<if test="keyword != null and keyword != ''">
 			and r.keyword like '%${keyword}%'
 		</if>
-			and b.creator=#{creator}
-			and r.type in
-		<foreach item="type" collection="types" open="(" separator="," close=")">
+		and b.creator=#{creator}
+		and r.type =
 			#{type}
 		</foreach>
-		group by
-			r.type
 	</select>
 
-	<select id="countCollectionResourceByTypes" resultMap="ResourceSearchResultMap">
+	<select id="countCollectionResourceByTypes" resultType="java.lang.String">
+		<foreach item="type" collection="types" open="" separator="union" close="">
 		select
-			r.type, count(r.id)
+		CONCAT(${type} ,":", COUNT(r.id)+"") as value
 		from
-			collection c left join resource r on c.rid = r.id
+		collection c left join resource r on c.rid = r.id
 		where
-			c.del = 0
-			and r.del = 0
+		c.del = 0
+		and r.del = 0
 		<if test="keyword != null and keyword != ''">
 			and r.keyword like '%${keyword}%'
 		</if>
-			and c.creator=#{creator} 
-			and r.type in
-		<foreach item="type" collection="types" open="(" separator="," close=")">
+		and c.creator=#{creator}
+		and r.type =
 			#{type}
 		</foreach>
-		group by
-			r.type
 	</select>
 
 	<update id="increaseBrowse">
@@ -175,6 +168,6 @@
 	<update id="decreaseCollection">
 		update resource set collected_times=collected_times-1 where id=#{id}
 	</update>
-	
-	
+
+
 </mapper>

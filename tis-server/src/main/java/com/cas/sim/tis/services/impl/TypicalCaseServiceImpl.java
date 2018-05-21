@@ -49,14 +49,6 @@ public class TypicalCaseServiceImpl implements TypicalCaseService {
 	}
 
 	@Override
-	public void deleteTypicalCaseById(RequestEntity entity) {
-		TypicalCase typicalCase = new TypicalCase();
-		typicalCase.setId(entity.getInt("id"));
-		typicalCase.setDel(true);
-		mapper.updateByPrimaryKeySelective(typicalCase);
-	}
-
-	@Override
 	public void updateTypicalCase(RequestEntity entity) {
 		TypicalCase typicalCase = entity.getObject("typicalCase", TypicalCase.class);
 		mapper.updateByPrimaryKeySelective(typicalCase);

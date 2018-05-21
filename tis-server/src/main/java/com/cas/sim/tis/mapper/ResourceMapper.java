@@ -6,7 +6,6 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import com.cas.sim.tis.entity.Resource;
-import com.cas.sim.tis.mapper.data.ReserchResult;
 import com.cas.sim.tis.vo.ResourceInfo;
 
 @Mapper
@@ -40,17 +39,17 @@ public interface ResourceMapper extends IMapper<Resource> {
 			@Param("keyword") String keyword, //
 			@Param("creator") Integer creator);
 
-	List<ReserchResult> countResourceByTypes(//
+	List<String> countResourceByTypes(//
 			@Param("types") List<Integer> typeList, //
 			@Param("keyword") String keyword, //
 			@Param("creator") Integer creator);
 
-	List<ReserchResult> countBrowseResourceByTypes(//
+	List<String> countBrowseResourceByTypes(//
 			@Param("types") List<Integer> typeList, //
 			@Param("keyword") String keyword, //
 			@Param("creator") Integer creator);
 
-	List<ReserchResult> countCollectionResourceByTypes(//
+	List<String> countCollectionResourceByTypes(//
 			@Param("types") List<Integer> typeList, //
 			@Param("keyword") String keyword, //
 			@Param("creator") Integer creator);
