@@ -20,7 +20,7 @@ import io.airlift.drift.transport.netty.client.DriftNettyMethodInvokerFactory;
 @Configuration
 public class SwiftConfig {
 
-	@Value(value = "${server.swift.port}")
+	@Value(value = "${server.thrift.port}")
 	private Integer port;
 
 	@Value(value = "${server.base.address}")
