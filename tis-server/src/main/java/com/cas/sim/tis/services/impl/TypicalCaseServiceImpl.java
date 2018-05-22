@@ -33,7 +33,7 @@ public class TypicalCaseServiceImpl implements TypicalCaseService {
 
 	@Override
 	public ResponseEntity saveTypicalCase(RequestEntity entity) {
-		TypicalCase typicalCase = JSON.parseObject(entity.data, TypicalCase.class);
+		TypicalCase typicalCase = entity.getObject("typicalCase", TypicalCase.class);
 		mapper.insert(typicalCase);
 		return ResponseEntity.success(typicalCase);
 	}
