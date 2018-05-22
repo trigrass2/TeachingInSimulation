@@ -79,7 +79,7 @@ public class LoginController implements Initializable {
 
 		String address = AppPropertiesUtil.getStringValue("server.base.address");
 		int port = AppPropertiesUtil.getIntValue("server.base.port", 0);
-
+		setStatusMsgKey("server.connect.waiting");
 		boolean success = SocketUtil.INSTENCE.connect(address, port);
 		if (success) {
 			setStatusMsgKey("server.connect.success");

@@ -15,7 +15,7 @@ import com.alibaba.fastjson.util.TypeUtils;
 public class AppPropertiesUtil {
 	private static final Logger LOGGER = LoggerFactory.getLogger(AppPropertiesUtil.class);
 	private static final File file = new File("application.properties");
-	private static final Properties PROPERTIES = new Properties();
+	private static final Properties PROPERTIES = new OrderedProperties();
 
 	static {
 		try {
