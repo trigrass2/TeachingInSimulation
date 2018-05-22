@@ -29,6 +29,7 @@ import com.teamdev.jxbrowser.chromium.javafx.BrowserView;
 
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
+import javafx.concurrent.Task;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -240,14 +241,22 @@ public class ResourceViewer extends VBox implements IContent {
 	 * 创建视频查看器
 	 */
 	private void createVLCViewer() {
-		String url = HTTPUtils.getFullPath(ResourceConsts.FTP_RES_PATH + resource.getPath());
-		if (url == null) {
-			return;
-		}
 
 		VLCPlayer player = new VLCPlayer();
-		player.loadVideo(url);
 		viewer.getChildren().add(player);
+		Task<Void> task = new Task<Void>() {
+
+			@Override
+			protected Void call() throws Exception {
+				String url = HTTPUtils.getFullPath(ResourceConsts.FTP_RES_PATH + resource.getPath());
+				if (url == null) {
+					return null;
+				}
+				player.loadVideo(url);
+				return null;
+			}
+		};
+		new Thread(task).start();
 //		player.loadVideo("http://192.168.1.19:8082/Test/Mux140928003405.avi");
 //		player.loadVideo("http://192.168.1.19:8082/resources/4dae3b67-1d55-4125-a577-4086585464c1.mp4");
 	}
