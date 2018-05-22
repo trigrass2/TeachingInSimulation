@@ -52,7 +52,7 @@ public class AppPropertiesUtil {
 
 	public static void set(String key, Object value) {
 		if (value == null) {
-			PROPERTIES.setProperty(key, null);
+			PROPERTIES.setProperty(key, "");
 		} else {
 			PROPERTIES.setProperty(key, String.valueOf(value));
 		}
