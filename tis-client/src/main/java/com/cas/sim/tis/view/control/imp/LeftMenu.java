@@ -75,7 +75,9 @@ public abstract class LeftMenu extends VBox implements ILeftContent, Initializab
 		SVGGlyph glyph = new SVGGlyph(svg, Color.WHITE, 22);
 		ToggleButton button = new ToggleButton(name, glyph);
 		button.selectedProperty().addListener((b, o, n) -> {
-			event.accept(null);
+			if(n) {
+				event.accept(null);
+			}
 		});
 		button.getStyleClass().add("left-menu");
 		menu.getChildren().add(button);
