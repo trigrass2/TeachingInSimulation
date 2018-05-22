@@ -19,37 +19,44 @@ public class ResourceMenu extends LeftMenu {
 		if (RoleConst.ADMIN == role) {
 			addMenuItem(MsgUtil.getMessage("resource.menu.sys"), "iconfont.svg.resource", e -> {
 				PageController controller = SpringUtil.getBean(PageController.class);
-				controller.loadContent(new ResourceList(ResourceMenuType.ADMIN_SYS, 1), PageLevel.Level1);
+				ResourceList content = new ResourceList(ResourceMenuType.ADMIN_SYS, 1);
+				controller.loadContent(content, PageLevel.Level1);
 			});
 		} else if (RoleConst.TEACHER == role) {
 			addMenuItem(MsgUtil.getMessage("resource.menu.sys"), "iconfont.svg.resource", e -> {
 				PageController controller = SpringUtil.getBean(PageController.class);
-				controller.loadContent(new ResourceList(ResourceMenuType.TEACHER_SYS, 1), PageLevel.Level1);
+				ResourceList content = new ResourceList(ResourceMenuType.TEACHER_SYS, 1);
+				controller.loadContent(content, PageLevel.Level1);
 			});
 			addMenuItem(MsgUtil.getMessage("resource.menu.mine"), "iconfont.svg.resource", e -> {
 				PageController controller = SpringUtil.getBean(PageController.class);
-				controller.loadContent(new ResourceList(ResourceMenuType.TEACHER_MINE, userId), PageLevel.Level1);
+				ResourceList content = new ResourceList(ResourceMenuType.TEACHER_MINE, userId);
+				controller.loadContent(content, PageLevel.Level1);
 			});
 		} else if (RoleConst.STUDENT == role) {
 			addMenuItem(MsgUtil.getMessage("resource.menu.mine"), "iconfont.svg.resource", e -> {
 				PageController controller = SpringUtil.getBean(PageController.class);
-				controller.loadContent(new ResourceList(ResourceMenuType.STUDENT_SYS, 1), PageLevel.Level1);
+				ResourceList content = new ResourceList(ResourceMenuType.STUDENT_SYS, 1);		
+				controller.loadContent(content, PageLevel.Level1);
 			});
 			addMenuItem(MsgUtil.getMessage("resource.menu.teacher"), "iconfont.svg.resource", e -> {
 				User user = Session.get(Session.KEY_OBJECT);
 				// 获得教师编号
 				Integer tearcherId = user.getTeacherId();
 				PageController controller = SpringUtil.getBean(PageController.class);
-				controller.loadContent(new ResourceList(ResourceMenuType.STUDENT_TECH, tearcherId), PageLevel.Level1);
+				ResourceList content = new ResourceList(ResourceMenuType.STUDENT_TECH, tearcherId);
+				controller.loadContent(content, PageLevel.Level1);
 			});
 		}
 		addMenuItem(MsgUtil.getMessage("resource.menu.browse"), "iconfont.svg.history", e -> {
 			PageController controller = SpringUtil.getBean(PageController.class);
-			controller.loadContent(new ResourceList(ResourceMenuType.BROWSE, userId), PageLevel.Level1);
+			ResourceList content = new ResourceList(ResourceMenuType.BROWSE, userId);
+			controller.loadContent(content, PageLevel.Level1);
 		});
 		addMenuItem(MsgUtil.getMessage("resource.menu.collection"), "iconfont.svg.favourite", e -> {
 			PageController controller = SpringUtil.getBean(PageController.class);
-			controller.loadContent(new ResourceList(ResourceMenuType.COLLECTION, userId), PageLevel.Level1);
+			ResourceList content = new ResourceList(ResourceMenuType.COLLECTION, userId);
+			controller.loadContent(content, PageLevel.Level1);
 		});
 	}
 }
