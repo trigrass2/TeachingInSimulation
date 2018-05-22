@@ -29,6 +29,11 @@ public class LoginMessageHandler implements ClientHandler<LoginMessage> {
 //			2、记录当前登录用户
 			AppPropertiesUtil.set("login.account", m.getUserCode());
 			AppPropertiesUtil.store();
+
+			Platform.runLater(() -> {
+				loginController.setStatusMsgKey("login.success");
+			});
+
 //			3、启动客户端程序
 			SpringApplication.run(Application.class, new String[] {});
 //			4、关闭登录界面
