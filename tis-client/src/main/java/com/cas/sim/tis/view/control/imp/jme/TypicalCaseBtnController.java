@@ -87,9 +87,8 @@ public class TypicalCaseBtnController implements IDistory {
 
 	@FXML
 	private void toggleTransparent() {
-		boolean selected = transparent.isSelected();
 		if (state != null && state.getCircuitState() != null) {
-			state.getCircuitState().setElecCompTransparent(selected);
+			state.getCircuitState().setElecCompTransparent(transparent.isSelected());
 		}
 	}
 

@@ -23,10 +23,10 @@ import javafx.stage.StageStyle;
 public class LoginApp extends javafx.application.Application {
 	private double xOffset;
 	private double yOffset;
-	
+
 	public static void main(String[] args) {
 		loadConfiguration();
-		
+
 		initSVG();
 
 		jul2slf4j();
@@ -86,13 +86,13 @@ public class LoginApp extends javafx.application.Application {
 		Logger.getLogger("").setLevel(Level.FINEST);
 		SLF4JBridgeHandler.install();
 	}
-	
+
 	private static void loadConfiguration() {
 // 		初始化awt工具包使JavaFx中可以使用GraphicsEnvironment功能获得屏幕可支持分辨率
-        java.awt.Toolkit.getDefaultToolkit();
-		
+		java.awt.Toolkit.getDefaultToolkit();
+
 //		设置语言下拉框的默认值
-        String userLang =  AppPropertiesUtil.getStringValue("setting.language", Locale.CHINA.toString());
+		String userLang = AppPropertiesUtil.getStringValue("setting.language", Locale.CHINA.toString());
 		String[] arr = userLang.split("_");
 		Locale userLocale = new Locale(arr[0], arr[1]);
 		Locale.setDefault(userLocale);

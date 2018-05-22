@@ -63,7 +63,7 @@ public class TypicalCaseMenu implements ILeftContent {
 		btn.setAlignment(Pos.CENTER);
 		btn.getStyleClass().add("img-btn");
 		btn.setTextFill(Color.WHITE);
-		btn.setFont(new Font(14));
+		btn.setFont(new Font(12));
 		return btn;
 	}
 
