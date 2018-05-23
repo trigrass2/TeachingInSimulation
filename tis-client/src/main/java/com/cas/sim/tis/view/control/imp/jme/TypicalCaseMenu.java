@@ -25,6 +25,7 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import javafx.scene.text.TextAlignment;
 
 public class TypicalCaseMenu implements ILeftContent {
 
@@ -37,13 +38,13 @@ public class TypicalCaseMenu implements ILeftContent {
 	@Override
 	public Region getLeftContent() {
 		VBox vb = new VBox(10);
-		Button create = createMenu(MsgUtil.getMessage("menu.button.new"), new SVGGlyph("iconfont.svg.new", Color.WHITE, 32));
+		Button create = createMenu(MsgUtil.getMessage("menu.button.new"), new SVGGlyph("iconfont.svg.new", Color.WHITE, 24));
 		create.setOnMouseClicked(e -> newCase());
 
-		Button open = createMenu(MsgUtil.getMessage("menu.button.open"), new SVGGlyph("iconfont.svg.open", Color.WHITE, 32));
+		Button open = createMenu(MsgUtil.getMessage("menu.button.open"), new SVGGlyph("iconfont.svg.open", Color.WHITE, 24));
 		open.setOnMouseClicked(e -> showCaseDialog());
 
-		Button save = createMenu(MsgUtil.getMessage("menu.button.save"), new SVGGlyph("iconfont.svg.save", Color.WHITE, 32));
+		Button save = createMenu(MsgUtil.getMessage("menu.button.save"), new SVGGlyph("iconfont.svg.save", Color.WHITE, 24));
 		save.setOnMouseClicked(e -> saveCase());
 
 		HBox menu = new HBox(22, create, open, save);
@@ -59,10 +60,9 @@ public class TypicalCaseMenu implements ILeftContent {
 	private Button createMenu(String text, Node graphic) {
 		Button btn = new Button(text, graphic);
 		btn.setContentDisplay(ContentDisplay.TOP);
-		btn.setPrefSize(45, 45);
-		btn.setAlignment(Pos.CENTER);
 		btn.getStyleClass().add("img-btn");
 		btn.setTextFill(Color.WHITE);
+		btn.setTextAlignment(TextAlignment.JUSTIFY);
 		btn.setFont(new Font(12));
 		return btn;
 	}

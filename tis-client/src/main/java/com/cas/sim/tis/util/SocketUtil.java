@@ -1,10 +1,9 @@
 package com.cas.sim.tis.util;
 
 import java.io.IOException;
+import java.util.function.Consumer;
 
 import org.jetbrains.annotations.NotNull;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.cas.sim.tis.consts.SystemInfo;
 import com.cas.sim.tis.message.listener.ClientMessageListener;
@@ -16,18 +15,18 @@ import com.jme3.network.message.DisconnectMessage;
 
 import javafx.application.Platform;
 import javafx.scene.control.Alert.AlertType;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public enum SocketUtil {
 	INSTENCE;
-	public static final Logger LOG = LoggerFactory.getLogger(SocketUtil.class);
 	private Client client;
 
-	public boolean connect(@NotNull String address, int port) {
+	public void connect(@NotNull String address, int port, Consumer<Boolean> result) {
 		try {
 			client = Network.connectToServer(SystemInfo.APP_NAME, SystemInfo.APP_VERSION, address, port, -1);
 		} catch (IOException e) {
-			LOG.warn("连接失败{}:{}", address, port);
-			return false;
+			result.accept(false);
 		}
 		client.addMessageListener(ClientMessageListener.INSTENCE);
 		client.addClientStateListener(new ClientStateListener() {
@@ -53,9 +52,8 @@ public enum SocketUtil {
 					});
 				}
 			}
-
 		});
-		return true;
+		result.accept(true);
 	}
 
 	public void start() {
@@ -73,7 +71,7 @@ public enum SocketUtil {
 			return;
 		}
 		if (!client.isStarted()) {
-			LOG.info("客户端尚未启动");
+			log.info("客户端尚未启动");
 			return;
 		}
 		while (!client.isConnected()) {
@@ -84,6 +82,6 @@ public enum SocketUtil {
 			}
 		}
 		client.send(msg);
-		LOG.info("发送成功{}", msg);
+		log.info("发送成功{}", msg);
 	}
 }

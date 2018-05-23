@@ -7,8 +7,6 @@ package com.cas.sim.tis.view.controller;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
 
 import com.cas.sim.tis.consts.LoginResult;
@@ -24,6 +22,7 @@ import com.cas.sim.tis.util.SocketUtil;
 import com.cas.sim.tis.view.control.imp.LoginDecoration;
 import com.jme3.network.message.SerializerRegistrationsMessage;
 
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.ButtonType;
@@ -31,13 +30,13 @@ import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Region;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Login Controller.
  */
+@Slf4j
 public class LoginController implements Initializable {
-	private final static Logger LOG = LoggerFactory.getLogger(LoginController.class);
-
 	protected double xOffset;
 	protected double yOffset;
 
@@ -66,7 +65,7 @@ public class LoginController implements Initializable {
 
 	@FXML
 	public void processLogin() {
-		status.setText("");
+		setStatusMsgKey("server.connect.waiting");
 //		0、验证登录信息的完整性
 		if (StringUtils.isEmpty(userId.getText())) {
 			setStatusMsgKey("login.account.notnull");
@@ -76,16 +75,27 @@ public class LoginController implements Initializable {
 			setStatusMsgKey("login.password.notnull");
 			return;
 		}
+//		我这里把登录按钮禁用掉，你登录失败后记得再启动
+		loginBtn.setDisable(true);
 
+//		这里应当启动一个线程去登录，以免影响页面的渲染
+//		将登录结果的处理一并告诉那个线程
 		String address = AppPropertiesUtil.getStringValue("server.base.address");
 		int port = AppPropertiesUtil.getIntValue("server.base.port", 0);
-		setStatusMsgKey("server.connect.waiting");
-		boolean success = SocketUtil.INSTENCE.connect(address, port);
-		if (success) {
-			setStatusMsgKey("server.connect.success");
-			LOG.info("连接服务器{}:{}", address, port);
+//		ip和端口都给你了， 你去找连服务器吧。
+		new Thread(() -> {
+			log.info("连接服务器{}:{}", address, port);
+			SocketUtil.INSTENCE.connect(address, port, //
+					result -> Platform.runLater(() -> connectServerResult(result)));
+		}).start();
+	}
 
-			loginBtn.setDisable(true);
+//	连接服务器结果的处理
+	private void connectServerResult(boolean result) {
+//		连接成功
+		if (result) {
+			setStatusMsgKey("server.connect.success");
+
 //			注册消息及消息处理类
 			LoginMessageHandler loginMessageHandler = new LoginMessageHandler();
 			ClientMessageListener.INSTENCE.registerMessageHandler(LoginMessage.class, loginMessageHandler);
@@ -101,14 +111,15 @@ public class LoginController implements Initializable {
 			msg.setUserCode(userId.getText());
 			msg.setUserPwd(password.getText());
 			SocketUtil.INSTENCE.send(msg);
-			LOG.info("发送登录请求。。。");
+			log.info("发送登录请求。。。");
 		} else {
+//			连接失败
 			loginBtn.setDisable(false);
 			setStatusMsgKey("server.connect.failure");
-			LOG.info("服务器连接失败！");
 		}
 	}
 
+//	登录失败
 	public void failure(LoginMessage m) {
 		String messageKey = m.getResult().getMsgKey();
 		if (LoginResult.DUPLICATE == m.getResult()) {
@@ -130,6 +141,7 @@ public class LoginController implements Initializable {
 
 	public void setStatusMsgKey(String messageKey) {
 		status.setText(resources.getString(messageKey));
+		log.debug(status.getText());
 	}
 
 	public void setSettingView(Region settingView) {
