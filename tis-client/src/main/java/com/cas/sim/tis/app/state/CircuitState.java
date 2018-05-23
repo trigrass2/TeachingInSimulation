@@ -441,13 +441,22 @@ public class CircuitState extends BaseState {
 			// 倒数第三个点是last2在电路板子上的投影点，y的值可以从取startPoint起点的y
 			Vector3f last3 = last2.clone().setY(startPoint.getY());
 			// 三个点全部找齐，下面把midLine1和midLine2的重新设置
-			midLine1.getStart().set(midLine1.getStart());
-			midLine1.getEnd().set(last3);
-			midLine1.updatePoints(midLine1.getStart(), last3);
-			
-			midLine2.getStart().set(last3);
-			midLine2.getEnd().set(last2);
+//			midLine1.getStart().set(JmeUtil.getLineStart(midLine1));
+//			midLine1.getEnd().set(last3);
+			midLine1.updatePoints(last3, midLine1.getStart());
+
+//			midLine2.getStart().set(last3);
+//			midLine2.getEnd().set(last2);
 			midLine2.updatePoints(last3, last2);
+
+//			Geometry ball = JmeUtil.getSphere(assetManager, 6, width * 2, ColorRGBA.Red);
+//			ball.setLocalTranslation(last3);
+//			rootNode.attachChild(ball);
+//
+//			Geometry ball2 = JmeUtil.getSphere(assetManager, 6, width * 2, ColorRGBA.Green);
+//			ball2.setLocalTranslation(JmeUtil.getLineStart(midLine1));
+//			rootNode.attachChild(ball2);
+
 			// 另外，还需要一根线
 			tmpWireNode.attachChild(JmeUtil.createLineGeo(assetManager, new Line(last2, dest), color));
 		}
