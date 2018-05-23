@@ -13,7 +13,6 @@ import com.cas.sim.tis.consts.Session;
 import com.cas.sim.tis.entity.User;
 import com.cas.sim.tis.message.LoginMessage;
 import com.cas.sim.tis.services.UserService;
-import com.cas.sim.tis.services.exception.ServiceException;
 import com.cas.sim.tis.thrift.RequestEntity;
 import com.cas.sim.tis.thrift.RequestEntityBuilder;
 import com.cas.sim.tis.thrift.ResponseEntity;
@@ -40,14 +39,19 @@ public class LoginMessageHandler implements ServerHandler<LoginMessage> {
 //		验证用户信息
 //		准备一个消息用作服务器的响应消息
 		LoginMessage respMsg = (LoginMessage) m;
+		RequestEntity entity = new RequestEntityBuilder()//
+				.set("usercode", code)//
+				.set("password", passwd)//
+				.build();
+		ResponseEntity resp = userService.login(entity);
+		if (resp.code == ResponseEntity.FAILURE) {
+//			登录失败：原因是登录信息错误
+			respMsg.setResult(LoginResult.FAILURE);
+			source.send(respMsg);
+			return;
+		}
 		try {
-			RequestEntity entity = new RequestEntityBuilder()//
-					.set("usercode", code)//
-					.set("password", passwd)//
-					.build();
-			ResponseEntity resp = userService.login(entity);
-			final User user = JSON.parseObject(resp.data, User.class);
-
+			User user = JSON.parseObject(resp.data, User.class);
 			List<HostedConnection> clients = serverConfig.getClients();
 //			进一步验证
 			if (clients.size() >= serverConfig.getMaxLogin()) {
@@ -59,24 +63,24 @@ public class LoginMessageHandler implements ServerHandler<LoginMessage> {
 			}
 //			检查用户是否已经登录了
 			HostedConnection existConn = clients.stream().filter(c -> user.getId().equals(c.getAttribute(Session.KEY_LOGIN_ID.name()))).findAny().orElse(null);
-			if(existConn != null) {
+			if (existConn != null) {
 				DisconnectMessage disconnect = new DisconnectMessage();
 				disconnect.setReason(DisconnectMessage.KICK);
 				disconnect.setType(DisconnectMessage.KICK);
 				existConn.send(disconnect);
 			}
 //			if (existConn == null) {
-				source.setAttribute(Session.KEY_LOGIN_ID.name(), user.getId());
-				source.setAttribute(Session.KEY_LOGIN_CLASSID.name(), user.getClassId());
-				source.setAttribute(Session.KEY_LOGIN_ACCOUNT.name(), user.getCode());
-				clients.add(source);
-				LOG.info("客户端登录成功，当前客户端数量{}", clients.size());
+			source.setAttribute(Session.KEY_LOGIN_ID.name(), user.getId());
+			source.setAttribute(Session.KEY_LOGIN_CLASSID.name(), user.getClassId());
+			source.setAttribute(Session.KEY_LOGIN_ACCOUNT.name(), user.getCode());
+			clients.add(source);
+			LOG.info("客户端登录成功，当前客户端数量{}", clients.size());
 //				用户成功连接
-				respMsg.setResult(LoginResult.SUCCESS);
-				respMsg.setUserId(user.getId());
-				respMsg.setUserType(user.getRole());
-				respMsg.setUser(resp.data);
-				source.send(respMsg);
+			respMsg.setResult(LoginResult.SUCCESS);
+			respMsg.setUserId(user.getId());
+			respMsg.setUserType(user.getRole());
+			respMsg.setUser(resp.data);
+			source.send(respMsg);
 //			} else if (m.isForce()) {
 //
 //				source.setAttribute(Session.KEY_LOGIN_ID.name(), user.getId());
@@ -94,11 +98,11 @@ public class LoginMessageHandler implements ServerHandler<LoginMessage> {
 //				respMsg.setResult(LoginResult.DUPLICATE);
 //				source.send(respMsg);
 //			}
-		} catch (ServiceException e) {
-//			登录失败：原因是登录信息错误
-			respMsg.setResult(LoginResult.FAILURE);
-			source.send(respMsg);
-			throw e;
+//		} catch (ServiceException e) {
+////			登录失败：原因是登录信息错误
+//			respMsg.setResult(LoginResult.FAILURE);
+//			source.send(respMsg);
+//			throw e;
 		} catch (Exception e) {
 //			登录失败：服务器出现异常
 			respMsg.setResult(LoginResult.SERVER_EXCE);
