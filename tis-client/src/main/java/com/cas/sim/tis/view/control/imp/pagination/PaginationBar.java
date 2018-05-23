@@ -4,6 +4,7 @@ import java.util.function.Consumer;
 
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.value.ChangeListener;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -21,36 +22,11 @@ public class PaginationBar extends HBox {
 	/**
 	 * 当前页
 	 */
-	private IntegerProperty pageIndex = new SimpleIntegerProperty(0) {
-		public void set(int newValue) {
-			next.setDisable(false);
-			prev.setDisable(false);
-			if (newValue >= getPageCount() - 1) {
-				next.setDisable(true);
-				newValue = getPageCount() - 1;
-			}
-			if (newValue <= 0) {
-				prev.setDisable(true);
-				newValue = 0;
-			}
-			super.set(newValue);
-			refrash();
-		};
-	};
+	private IntegerProperty pageIndex = new SimpleIntegerProperty(-1);
 	/**
 	 * 总页数
 	 */
-	private IntegerProperty pageCount = new SimpleIntegerProperty(10) {
-		public void set(int newValue) {
-			int oldValue = get();
-			if (newValue == oldValue) {
-				return;
-			} else {
-				super.set(newValue);
-				setPageIndex(0);
-			}
-		};
-	};
+	private IntegerProperty pageCount = new SimpleIntegerProperty(10);
 
 	// 返回当前页
 	private Consumer<Integer> content;
@@ -98,6 +74,28 @@ public class PaginationBar extends HBox {
 
 		refrash();
 		pageBtn.getToggles().get(0).setSelected(true);
+
+//		页码监听
+		pageIndex.addListener((ChangeListener<Number>) (s, o, n) -> {
+			if (o == n) {
+				return;
+			}
+			next.setDisable(false);
+			prev.setDisable(false);
+			if (n.intValue() >= getPageCount() - 1) {
+				next.setDisable(true);
+				n = getPageCount() - 1;
+			}
+			if (n.intValue() <= 0) {
+				prev.setDisable(true);
+				n = 0;
+			}
+			refrash();
+		});
+
+		pageCount.addListener((s, o, n) -> {
+			setPageIndex(0);
+		});
 	}
 
 	/**
@@ -107,7 +105,7 @@ public class PaginationBar extends HBox {
 		if (content != null) {
 			content.accept(getPageIndex());
 		}
-		
+
 		pages.getChildren().clear();
 		pageBtn.getToggles().clear();
 

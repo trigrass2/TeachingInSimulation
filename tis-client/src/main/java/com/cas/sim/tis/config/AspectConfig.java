@@ -27,7 +27,7 @@ public class AspectConfig {
 				pjp.getSignature().getDeclaringTypeName(), //
 				pjp.getSignature().getName(), //
 				getArgs(pjp.getArgs()));
-		log.debug(msg);
+		log.info(msg);
 		Object entity = null;
 		try {
 			entity = pjp.proceed();

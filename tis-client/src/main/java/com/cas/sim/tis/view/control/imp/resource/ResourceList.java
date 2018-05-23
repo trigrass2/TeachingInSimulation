@@ -12,8 +12,6 @@ import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
 
 import com.alibaba.fastjson.JSONArray;
@@ -69,6 +67,7 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.util.StringConverter;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * 资源列表界面
@@ -77,9 +76,8 @@ import javafx.util.StringConverter;
  * @创建日期 2018年1月17日
  * @修改人 Caowj
  */
+@Slf4j
 public class ResourceList extends HBox implements IContent {
-	private static final Logger LOG = LoggerFactory.getLogger(ResourceList.class);
-
 	public enum ResourceMenuType {
 		ADMIN_SYS("resource.title.system", "resource.upload.date", true), //
 		TEACHER_SYS("resource.title.system", "resource.upload.date", false), //
@@ -208,10 +206,10 @@ public class ResourceList extends HBox implements IContent {
 		loader.setResources(ResourceBundle.getBundle("i18n/messages"));
 		try {
 			loader.load();
-			LOG.debug("加载FXML界面{}完成", fxmlUrl);
+			log.debug("加载FXML界面{}完成", fxmlUrl);
 		} catch (IOException e) {
 			e.printStackTrace();
-			LOG.error("加载FXML界面{}失败，错误信息：{}", fxmlUrl, e.getMessage());
+			log.error("加载FXML界面{}失败，错误信息：{}", fxmlUrl, e.getMessage());
 		}
 	}
 
@@ -497,7 +495,7 @@ public class ResourceList extends HBox implements IContent {
 						int type = ResourceType.parseType(ext);
 						resource.setType(type);
 					} catch (Exception e) {
-						LOG.warn("解析文件后缀名出现错误", e);
+						log.warn("解析文件后缀名出现错误", e);
 						throw e;
 					}
 				}
