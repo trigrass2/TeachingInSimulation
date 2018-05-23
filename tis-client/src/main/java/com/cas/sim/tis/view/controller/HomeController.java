@@ -9,6 +9,7 @@ import com.cas.sim.tis.Application;
 import com.cas.sim.tis.consts.MenuEnum;
 import com.cas.sim.tis.consts.RoleConst;
 import com.cas.sim.tis.consts.Session;
+import com.cas.sim.tis.entity.User;
 import com.cas.sim.tis.util.MsgUtil;
 import com.cas.sim.tis.util.SpringUtil;
 import com.cas.sim.tis.view.PageView;
@@ -26,6 +27,7 @@ import de.felixroske.jfxsupport.FXMLController;
 import de.felixroske.jfxsupport.GUIState;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 
@@ -36,6 +38,8 @@ public class HomeController implements Initializable {
 	@FXML
 	private Pane handle;
 	@FXML
+	private Label info;
+	@FXML
 	private Decoration decoration;
 
 	private List<HomeMenu> homeMenus = new ArrayList<HomeMenu>();
@@ -45,7 +49,11 @@ public class HomeController implements Initializable {
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		// 判断当前登录人角色，加载对应菜单
-		int role = Session.get(Session.KEY_LOGIN_ROLE);
+		User user = Session.get(Session.KEY_OBJECT);
+		int role = user.getRole();
+
+		info.setText(user.getName() + "\r\n" + user.getCode());
+
 		if (RoleConst.ADMIN == role) {
 //			管理员的菜单
 			buildMenu(MenuEnum.Information, //
@@ -121,7 +129,7 @@ public class HomeController implements Initializable {
 
 		controller.loadLeftMenu(new TypicalCaseMenu(content));
 		controller.loadContent(content, PageLevel.Level1);
-		
+
 		SpringUtil.getBean(PageController.class).showLoading();
 	}
 

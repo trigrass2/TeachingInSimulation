@@ -36,4 +36,9 @@ public class User implements Serializable {
 	@DateTimeFormat(pattern = "yyyy-MM-dd hh:mm:ss")
 	private Date updateDate;
 	private Boolean del = false;
+	
+	@Override
+	public String toString() {
+		return name;
+	}
 }

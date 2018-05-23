@@ -71,9 +71,15 @@ public class ClassServiceImpl implements ClassService {
 	}
 
 	@Override
+	public void addClass(RequestEntity entity) {
+		Class clazz = entity.getObject("clazz", Class.class);
+		mapper.insert(clazz);
+	}
+
+	@Override
 	@Transactional
 	public void modifyClass(RequestEntity entity) {
-		Class clazz = entity.getObject("clazz",Class.class);
+		Class clazz = entity.getObject("clazz", Class.class);
 		mapper.updateByPrimaryKeySelective(clazz);
 		userMapper.updateTeacherIdByClassId(clazz.getId(), clazz.getTeacherId());
 	}

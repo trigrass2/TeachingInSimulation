@@ -1,5 +1,6 @@
 package com.cas.sim.tis.action;
 
+import java.util.Arrays;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -74,6 +75,14 @@ public class UserAction extends BaseAction {
 				.build();
 		ResponseEntity resp = service.findStudents(req);
 		return JSON.parseObject(resp.data, new TypeReference<PageInfo<User>>() {});
+	}
+
+	/**
+	 * 新增用户信息
+	 * @param users 用户集合
+	 */
+	public void addUser(User user) {
+		addUsers(Arrays.asList(new User[] { user }));
 	}
 
 	/**

@@ -23,6 +23,7 @@ import com.cas.sim.tis.util.AppPropertiesUtil;
 import com.cas.sim.tis.util.MsgUtil;
 import com.cas.sim.tis.util.SpringUtil;
 import com.cas.sim.tis.view.control.imp.dialog.DialogPane;
+import com.cas.sim.tis.view.control.imp.dialog.Tip.TipType;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -235,7 +236,7 @@ public class SettingDialog extends DialogPane<Boolean> {
 			AlertUtil.showAlert(AlertType.WARNING, MsgUtil.getMessage("alert.warning.cant.null", MsgUtil.getMessage("setting.password.again")));
 			return;
 		}
-		if (!newPwd.equals(oldPwd)) {
+		if (newPwd.equals(oldPwd)) {
 			AlertUtil.showAlert(AlertType.WARNING, MsgUtil.getMessage("alert.warning.password.cant.same"));
 			return;
 		}
@@ -250,8 +251,7 @@ public class SettingDialog extends DialogPane<Boolean> {
 		}
 		user.setPassword(newPwd);
 		SpringUtil.getBean(UserAction.class).modifyUser(user);
-		dialog.close();
-		AlertUtil.showAlert(AlertType.INFORMATION, MsgUtil.getMessage("alert.information.data.update.success"));
+		AlertUtil.showTip(TipType.INFO, MsgUtil.getMessage("alert.information.data.update.success"));
 	}
 
 	@FXML
@@ -264,6 +264,6 @@ public class SettingDialog extends DialogPane<Boolean> {
 		AppPropertiesUtil.set("setting.fullscreen.mode", full.isSelected()?1:0);
 		AppPropertiesUtil.store();
 		dialog.close();
-		AlertUtil.showAlert(AlertType.INFORMATION, MsgUtil.getMessage("alert.information.setting.after.reset"));
+		AlertUtil.showTip(TipType.INFO, MsgUtil.getMessage("alert.information.setting.after.reset"));
 	}
 }

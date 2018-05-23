@@ -9,11 +9,9 @@ import java.util.ResourceBundle;
 
 import javax.swing.filechooser.FileSystemView;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.alibaba.fastjson.JSONArray;
 import com.cas.sim.tis.action.ClassAction;
+import com.cas.sim.tis.consts.Session;
 import com.cas.sim.tis.consts.TemplateConsts;
 import com.cas.sim.tis.entity.Class;
 import com.cas.sim.tis.util.AlertUtil;
@@ -23,6 +21,7 @@ import com.cas.sim.tis.util.SpringUtil;
 import com.cas.sim.tis.view.control.IContent;
 import com.cas.sim.tis.view.control.imp.Title;
 import com.cas.sim.tis.view.control.imp.dialog.Dialog;
+import com.cas.sim.tis.view.control.imp.dialog.Tip.TipType;
 import com.cas.sim.tis.view.control.imp.pagination.PaginationBar;
 import com.cas.sim.tis.view.control.imp.table.BtnCell;
 import com.cas.sim.tis.view.control.imp.table.Column;
@@ -45,9 +44,10 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.stage.FileChooser;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class ClassList extends HBox implements IContent {
-	private static final Logger LOG = LoggerFactory.getLogger(ClassList.class);
 
 	@FXML
 	private Title title;
@@ -76,10 +76,10 @@ public class ClassList extends HBox implements IContent {
 		loader.setResources(ResourceBundle.getBundle("i18n/messages"));
 		try {
 			loader.load();
-			LOG.debug("加载FXML界面{}完成", fxmlUrl);
+			log.debug("加载FXML界面{}完成", fxmlUrl);
 		} catch (IOException e) {
 			e.printStackTrace();
-			LOG.error("加载FXML界面{}失败，错误信息：{}", fxmlUrl, e.getMessage());
+			log.error("加载FXML界面{}失败，错误信息：{}", fxmlUrl, e.getMessage());
 		}
 	}
 
@@ -176,7 +176,7 @@ public class ClassList extends HBox implements IContent {
 		if (source == null) {
 			return;
 		}
-		List<ClassInfo> infos = new ArrayList<>(); 
+		List<ClassInfo> infos = new ArrayList<>();
 		Object[][] result = ExcelUtil.readExcelSheet(source.getAbsolutePath(), "Sheet1", 2);
 		for (int i = 2; i < result.length; i++) {
 			Object codeObj = result[i][0];
@@ -214,8 +214,33 @@ public class ClassList extends HBox implements IContent {
 			pagination.reload();
 		} catch (Exception e) {
 			e.printStackTrace();
-			AlertUtil.showAlert(AlertType.ERROR, e.getMessage());
+			AlertUtil.showTip(TipType.ERROR, e.getMessage());
 		}
+	}
+
+	@FXML
+	private void add() {
+		Class clazz = new Class();
+		clazz.setCreator(Session.get(Session.KEY_LOGIN_ID));
+
+		Dialog<Class> dialog = new Dialog<>();
+		dialog.setDialogPane(new ClassModifyDialog(clazz));
+		dialog.setTitle(MsgUtil.getMessage("class.dialog.modify"));
+		dialog.setPrefSize(635, 320);
+		dialog.showAndWait().ifPresent(obj -> {
+			if (obj == null) {
+				return;
+			}
+			try {
+				SpringUtil.getBean(ClassAction.class).addClass(obj);
+				AlertUtil.showTip(TipType.INFO, MsgUtil.getMessage("alert.information.data.update.success"));
+				pagination.reload();
+			} catch (Exception e) {
+				e.printStackTrace();
+				AlertUtil.showTip(TipType.ERROR, e.getMessage());
+				log.error("修改Class对象失败，Class编号{}：{}", obj.getId(), e.getMessage());
+			}
+		});
 	}
 
 	@FXML
@@ -245,12 +270,12 @@ public class ClassList extends HBox implements IContent {
 			}
 			try {
 				SpringUtil.getBean(ClassAction.class).modifyClass(obj);
-				AlertUtil.showAlert(AlertType.INFORMATION, MsgUtil.getMessage("alert.information.data.update.success"));
+				AlertUtil.showTip(TipType.INFO, MsgUtil.getMessage("alert.information.data.update.success"));
 				pagination.reload();
 			} catch (Exception e) {
 				e.printStackTrace();
-				AlertUtil.showAlert(AlertType.ERROR, e.getMessage());
-				LOG.error("修改Class对象失败，Class编号{}：{}", obj.getId(), e.getMessage());
+				AlertUtil.showTip(TipType.ERROR, e.getMessage());
+				log.error("修改Class对象失败，Class编号{}：{}", obj.getId(), e.getMessage());
 			}
 		});
 	}

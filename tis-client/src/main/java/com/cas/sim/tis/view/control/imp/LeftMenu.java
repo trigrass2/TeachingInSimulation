@@ -72,7 +72,7 @@ public abstract class LeftMenu extends VBox implements ILeftContent, Initializab
 	protected abstract void initMenu();
 
 	protected void addMenuItem(String name, String svg, Consumer<Void> event) {
-		SVGGlyph glyph = new SVGGlyph(svg, Color.WHITE, 22);
+		SVGGlyph glyph = new SVGGlyph(svg, Color.WHITE, 16);
 		ToggleButton button = new ToggleButton(name, glyph);
 		button.selectedProperty().addListener((b, o, n) -> {
 			if(n) {

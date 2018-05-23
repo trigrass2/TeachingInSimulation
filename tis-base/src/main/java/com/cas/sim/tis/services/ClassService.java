@@ -33,6 +33,9 @@ public interface ClassService {
 	@ThriftMethod
 	ResponseEntity findClassesByTeacherId(RequestEntity entity);
 
+	@ThriftMethod
+	void addClass(RequestEntity entity);
+
 	/**
 	 * 批量保存班级信息
 	 * @param entity （infos 班级导入信息对象；creator 创建人）

@@ -66,6 +66,14 @@ public class ClassAction extends BaseAction {
 		return JSON.parseArray(resp.data, Class.class);
 	}
 
+	public void addClass(Class clazz) {
+		clazz.setUpdater(Session.get(Session.KEY_LOGIN_ID));
+		RequestEntity req = new RequestEntityBuilder()//
+				.set("clazz", clazz)//
+				.build();
+		service.addClass(req);
+	}
+
 	/**
 	 * 批量导入班级信息
 	 * @param infos 班级信息集合

@@ -26,6 +26,7 @@ import com.cas.sim.tis.util.SpringUtil;
 import com.cas.sim.tis.view.control.IContent;
 import com.cas.sim.tis.view.control.imp.Title;
 import com.cas.sim.tis.view.control.imp.dialog.Dialog;
+import com.cas.sim.tis.view.control.imp.dialog.Tip.TipType;
 import com.cas.sim.tis.view.control.imp.pagination.PaginationBar;
 import com.cas.sim.tis.view.control.imp.table.BtnCell;
 import com.cas.sim.tis.view.control.imp.table.Column;
@@ -208,12 +209,45 @@ public class StudentList extends HBox implements IContent {
 		}
 		try {
 			SpringUtil.getBean(UserAction.class).addUsers(users);
-			AlertUtil.showAlert(AlertType.INFORMATION, MsgUtil.getMessage("excel.import.success"));
+			AlertUtil.showTip(TipType.INFO, MsgUtil.getMessage("excel.import.success"));
 			pagination.reload();
 		} catch (Exception e) {
 			e.printStackTrace();
-			AlertUtil.showAlert(AlertType.ERROR, e.getMessage());
+			AlertUtil.showTip(TipType.ERROR, e.getMessage());
 		}
+	}
+
+	/**
+	 * 新增学生
+	 */
+	@FXML
+	private void add() {
+//		TODO 新增一个学生账号
+		Dialog<User> dialog = new Dialog<>();
+		User  student =new User();
+//		基本信息
+		student.setRole(RoleConst.STUDENT);
+		student.setClassId(classId);
+		student.setCreator(Session.get(Session.KEY_LOGIN_ID));
+		student.setDel(false);
+
+		dialog.setDialogPane(new StudentModifyDialog(student));
+		dialog.setTitle(MsgUtil.getMessage("student.dialog.modify"));
+		dialog.setPrefSize(635, 320);
+		dialog.showAndWait().ifPresent(user -> {
+			if (user == null) {
+				return;
+			}
+			try {
+				SpringUtil.getBean(UserAction.class).addUser(user);
+				AlertUtil.showTip(TipType.INFO, MsgUtil.getMessage("alert.information.data.update.success"));
+				pagination.reload();
+			} catch (Exception e) {
+				e.printStackTrace();
+				AlertUtil.showTip(TipType.ERROR, e.getMessage());
+				LOG.error("修改User对象失败，User编号{}：{}", user.getId(), e.getMessage());
+			}
+		});
 	}
 
 	@FXML
@@ -227,7 +261,7 @@ public class StudentList extends HBox implements IContent {
 			return;
 		}
 		FileUtil.copyFile(TemplateConsts.STUDENT_TEMPLATE, target.getAbsolutePath(), true);
-		AlertUtil.showAlert(AlertType.INFORMATION, MsgUtil.getMessage("excel.export.success"));
+		AlertUtil.showTip(TipType.INFO, MsgUtil.getMessage("excel.export.success"));
 	}
 
 	private void modify(int id) {
@@ -243,11 +277,11 @@ public class StudentList extends HBox implements IContent {
 			}
 			try {
 				SpringUtil.getBean(UserAction.class).modifyUser(user);
-				AlertUtil.showAlert(AlertType.INFORMATION, MsgUtil.getMessage("alert.information.data.update.success"));
+				AlertUtil.showTip(TipType.INFO, MsgUtil.getMessage("alert.information.data.update.success"));
 				pagination.reload();
 			} catch (Exception e) {
 				e.printStackTrace();
-				AlertUtil.showAlert(AlertType.ERROR, e.getMessage());
+				AlertUtil.showTip(TipType.ERROR, e.getMessage());
 				LOG.error("修改User对象失败，User编号{}：{}", user.getId(), e.getMessage());
 			}
 		});

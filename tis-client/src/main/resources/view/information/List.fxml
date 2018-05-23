@@ -53,6 +53,7 @@
 				<!-- FIXME -->
 				<HBox fx:id="options" VBox.vgrow="ALWAYS" alignment="TOP_CENTER" spacing="10">
 					<children>
+						<Button text="%button.add" styleClass="blue-btn" onAction="#add" fx:id="addBtn" prefHeight="40.0" prefWidth="108.0" />
 						<Button text="%button.template" styleClass="blue-btn" onAction="#template" fx:id="templateBtn" prefHeight="40.0" prefWidth="108.0" />
 						<Button text="%button.import" styleClass="blue-btn" onAction="#importExcel" fx:id="importBtn" prefHeight="40.0" prefWidth="108.0" />
 					</children>

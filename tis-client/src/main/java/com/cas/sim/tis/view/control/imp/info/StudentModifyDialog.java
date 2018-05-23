@@ -1,5 +1,7 @@
 package com.cas.sim.tis.view.control.imp.info;
 
+import javax.annotation.Nonnull;
+
 import org.springframework.util.StringUtils;
 
 import com.cas.sim.tis.entity.User;
@@ -19,7 +21,7 @@ import javafx.scene.layout.RowConstraints;
 import javafx.scene.layout.VBox;
 
 public class StudentModifyDialog extends DialogPane<User> {
-	public StudentModifyDialog(User student) {
+	public StudentModifyDialog(@Nonnull User student) {
 
 		super();
 

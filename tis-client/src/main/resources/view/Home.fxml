@@ -49,12 +49,7 @@
 						</HBox>
 						<HBox alignment="CENTER_RIGHT" spacing="10">
 							<children>
-								<Label text="%main.menu.setting" textFill="WHITE">
-									<styleClass>
-										<String fx:value="label" />
-										<String fx:value="font18" />
-									</styleClass>
-								</Label>
+								<Label fx:id="info" textFill="WHITE" styleClass="font18" />
 								<Button mnemonicParsing="false" styleClass="img-btn" onAction="#setting">
 									<graphic>
 										<ImageView fitHeight="75.0" fitWidth="75.0" pickOnBounds="true" preserveRatio="true">
