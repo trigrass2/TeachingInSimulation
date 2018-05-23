@@ -21,7 +21,7 @@ public class LoginMessage extends AbstractMessage {
 	private int userType;
 	private String userCode;
 	private String userPwd;
-	private boolean focus;// 强制登录
+	private boolean force;// 强制登录
 
 	private LoginResult result;
 	

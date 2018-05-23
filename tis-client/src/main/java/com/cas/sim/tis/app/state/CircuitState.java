@@ -2,10 +2,8 @@ package com.cas.sim.tis.app.state;
 
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
@@ -443,14 +441,19 @@ public class CircuitState extends BaseState {
 			// 倒数第三个点是last2在电路板子上的投影点，y的值可以从取startPoint起点的y
 			Vector3f last3 = last2.clone().setY(startPoint.getY());
 			// 三个点全部找齐，下面把midLine1和midLine2的重新设置
+			midLine1.getStart().set(midLine1.getStart());
+			midLine1.getEnd().set(last3);
 			midLine1.updatePoints(midLine1.getStart(), last3);
+			
+			midLine2.getStart().set(last3);
+			midLine2.getEnd().set(last2);
 			midLine2.updatePoints(last3, last2);
 			// 另外，还需要一根线
 			tmpWireNode.attachChild(JmeUtil.createLineGeo(assetManager, new Line(last2, dest), color));
 		}
 
 		wire.bind(t);
-		List<Vector3f> pointList = getPointList();
+		List<Vector3f> pointList = getPointList(tmpWireNode);
 		wire.getProxy().getPointList().addAll(pointList);
 
 		Geometry realWire = JmeUtil.createCylinderLine(assetManager, pointList, width, color);
@@ -483,32 +486,24 @@ public class CircuitState extends BaseState {
 
 	// 获取当前导线的点坐标集合
 	@Nonnull
-	private List<Vector3f> getPointList() {
+	private List<Vector3f> getPointList(Node wireNode) {
 		List<Vector3f> result = new ArrayList<>();
 
-		List<Spatial> children = tmpWireNode.getChildren();
-		Set<Vector3f> set = new HashSet<>();
-		for (int i = 0; i < children.size() - 1; i++) {
-			Spatial spatial = (Spatial) children.get(i);
-			Geometry geo = (Geometry) spatial;
+		List<Spatial> children = wireNode.getChildren();
+		for (int i = 0; i < children.size(); i++) {
+			Geometry geo = (Geometry) children.get(i);
 			Line mesh = (Line) geo.getMesh();
 			Vector3f point = JmeUtil.getLineStart(mesh);
-			if (!set.contains(point)) {
+			if (!result.contains(point)) {
 				result.add(point);
 			}
 		}
-//		最后一段线
-		Spatial spatial = children.get(children.size() - 1);
-		Geometry geo = (Geometry) spatial;
+//		最后一个点
+		Geometry geo = (Geometry) children.get(children.size() - 1);
 		Line mesh = (Line) geo.getMesh();
 
-		Vector3f point = JmeUtil.getLineStart(mesh);
-		if (!set.contains(point)) {
-			result.add(point);
-		}
-
-		point = JmeUtil.getLineEnd(mesh);
-		if (!set.contains(point)) {
+		Vector3f point = JmeUtil.getLineEnd(mesh);
+		if (!result.contains(point)) {
 			result.add(point);
 		}
 
@@ -897,9 +892,9 @@ public class CircuitState extends BaseState {
 				Spatial shellNode = elecCompMdl.getChild(s);
 				if (shellNode != null) {
 //					JmeUtil.transparent(shellNode, .7f);
-					if(transparent) {
+					if (transparent) {
 						shellNode.setCullHint(CullHint.Always);
-					}else {
+					} else {
 						shellNode.setCullHint(CullHint.Dynamic);
 					}
 //					MouseEventState.setMouseVisible(shellNode, false);
