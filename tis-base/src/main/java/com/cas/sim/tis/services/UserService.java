@@ -16,8 +16,7 @@ public interface UserService {
 	 * @return
 	 * @throws ServiceException
 	 */
-	@ThriftMethod
-	ResponseEntity login(RequestEntity entity);
+	ResponseEntity login(RequestEntity entity) throws ServiceException;
 
 	/**
 	 * 查询所有教师信息

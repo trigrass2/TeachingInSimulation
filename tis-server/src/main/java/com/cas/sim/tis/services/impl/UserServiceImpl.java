@@ -27,19 +27,16 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public ResponseEntity login(RequestEntity entity) throws ServiceException {
-
 		Condition condition = new Condition(User.class);
 		condition.createCriteria()//
 				.andEqualTo("code", entity.getString("usercode"))//
 				.andEqualTo("password", entity.getString("password"))//
 				.andEqualTo("del", 0);
 		User user = null;
-		try {
-			user = mapper.selectOneByExample(condition);
-		} catch (Exception e) {
+		user = mapper.selectOneByExample(condition);
+		if (user == null) {
 			throw new ServiceException("用户名或密码错误！");
 		}
-
 		return ResponseEntity.success(user);
 	}
 
