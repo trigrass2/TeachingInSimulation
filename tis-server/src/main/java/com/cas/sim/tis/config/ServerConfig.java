@@ -1,6 +1,5 @@
 package com.cas.sim.tis.config;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.util.ArrayList;
@@ -8,16 +7,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.Resource;
-
-import org.apache.ftpserver.ConnectionConfigFactory;
-import org.apache.ftpserver.FtpServer;
-import org.apache.ftpserver.FtpServerFactory;
-import org.apache.ftpserver.ftplet.UserManager;
-import org.apache.ftpserver.listener.ListenerFactory;
-import org.apache.ftpserver.usermanager.PropertiesUserManagerFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -33,12 +22,13 @@ import com.jme3.network.Network;
 import com.jme3.network.Server;
 import com.jme3.network.serializing.Serializer;
 
+import lombok.extern.slf4j.Slf4j;
+
 @Configuration
+@Slf4j
 public class ServerConfig {
-	private final static Logger LOG = LoggerFactory.getLogger(ServerConfig.class);
 
 	private Server server;
-	private FtpServer ftpServer;
 
 	private List<HostedConnection> clients = new ArrayList<>();
 
@@ -48,52 +38,17 @@ public class ServerConfig {
 	private Integer maxLogin;
 	@Value(value = "${server.base.port}")
 	private Integer port;
-	@Value(value = "${server.ftp.port}")
-	private Integer ftpPort;
-
-	@Resource
-	private UserManager userManager;
-
-	@Bean
-	public UserManager initUserManager() {
-//		设置用户控制中心
-		PropertiesUserManagerFactory propertiesUserManagerFactory = new PropertiesUserManagerFactory();
-		propertiesUserManagerFactory.setFile(new File("users.properties"));
-		return propertiesUserManagerFactory.createUserManager();
-	}
-
-	@Bean
-	public FtpServer createFtpServer() {
-//		Apache Ftp Server 默认的编码是"UTF-8"
-		FtpServerFactory serverFactory = new FtpServerFactory();
-//		FTP服务连接配置
-		ConnectionConfigFactory connectionConfigFactory = new ConnectionConfigFactory();
-//     	允许匿名连接
-		connectionConfigFactory.setAnonymousLoginEnabled(true);
-		serverFactory.setConnectionConfig(connectionConfigFactory.createConnectionConfig());
-//		
-		serverFactory.setUserManager(userManager);
-
-//      配置FTP端口
-		ListenerFactory listenerFactory = new ListenerFactory();
-		listenerFactory.setPort(ftpPort); // 默认21， 可以按需配置
-
-		serverFactory.addListener("default", listenerFactory.createListener());
-
-		this.ftpServer = serverFactory.createServer();
-		return this.ftpServer;
-	}
 
 	@Bean
 	public Server createDataServer() throws IOException {
 		server = Network.createServer(SystemInfo.APP_NAME, SystemInfo.APP_VERSION, port, -1);
-		LOG.info("主服务器地址：{}", InetAddress.getLocalHost());
-		LOG.info("主服务器监听在{}端口上", port);
+		log.info("主服务器地址：{}", InetAddress.getLocalHost());
+		log.info("主服务器监听在{}端口上", port);
 
 		server.addConnectionListener(new ConnectionListener() {
 			@Override
 			public void connectionAdded(Server server, HostedConnection conn) {
-				LOG.info("用户{}已连接", conn.getAddress());
+				log.info("用户{}已连接", conn.getAddress());
 			}
 
 			@Override
@@ -101,7 +56,7 @@ public class ServerConfig {
 				boolean success = clients.remove(conn);
 				if (success) {
 					String account = conn.getAttribute(Session.KEY_LOGIN_ACCOUNT.name());
-					LOG.info("用户{}已断开连接, 当前客户端数量{}", account, clients.size());
+					log.info("用户{}已断开连接, 当前客户端数量{}", account, clients.size());
 				}
 			}
 		});
@@ -109,17 +64,17 @@ public class ServerConfig {
 		server.addMessageListener(new MessageListener<HostedConnection>() {
 			@Override
 			public void messageReceived(HostedConnection client, Message m) {
-				LOG.info("收到客户端{}的消息{}", client.getAddress(), m.getClass().getName());
+				log.info("收到客户端{}的消息{}", client.getAddress(), m.getClass().getName());
 				ServerHandler<Message> handler = messageHandlerClass.get(m.getClass());
 				if (handler != null) {
 					try {
 						handler.execute(client, m);
-						LOG.debug("消息处理成功");
+						log.debug("消息处理成功");
 					} catch (Exception e) {
-						LOG.warn("消息处理失败", e);
+						log.warn("消息处理失败", e);
 					}
 				} else {
-					LOG.error("无法处理消息{}，缺少相应的处理类，Eg:public class {} implements ServerHandler\\{\\}", m.getClass(), m.getClass().getSimpleName());
+					log.error("无法处理消息{}，缺少相应的处理类，Eg:public class {} implements ServerHandler\\{\\}", m.getClass(), m.getClass().getSimpleName());
 				}
 			}
 		});
@@ -136,9 +91,6 @@ public class ServerConfig {
 	public void close() {
 		if (server != null) {
 			server.close();
-		}
-		if (ftpServer != null) {
-			ftpServer.stop();
 		}
 	}
 

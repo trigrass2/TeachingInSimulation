@@ -15,7 +15,7 @@ import com.alibaba.fastjson.util.TypeUtils;
 public class AppPropertiesUtil {
 	private static final Logger LOGGER = LoggerFactory.getLogger(AppPropertiesUtil.class);
 	private static final File file = new File("application.properties");
-	private static final Properties PROPERTIES = new Properties();
+	private static final Properties PROPERTIES = new OrderedProperties();
 
 	static {
 		try {
@@ -52,7 +52,7 @@ public class AppPropertiesUtil {
 
 	public static void set(String key, Object value) {
 		if (value == null) {
-			PROPERTIES.setProperty(key, null);
+			PROPERTIES.setProperty(key, "");
 		} else {
 			PROPERTIES.setProperty(key, String.valueOf(value));
 		}

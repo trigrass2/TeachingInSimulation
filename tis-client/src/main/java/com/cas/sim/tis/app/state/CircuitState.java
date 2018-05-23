@@ -74,6 +74,7 @@ import com.jme3.scene.shape.Line;
 
 import javafx.application.Platform;
 import lombok.extern.slf4j.Slf4j;
+
 @Slf4j
 public class CircuitState extends BaseState {
 //	导线工连接头接出的最小长度
@@ -888,23 +889,25 @@ public class CircuitState extends BaseState {
 	}
 
 	private void toggelTransparent(boolean transparent) {
-		if (transparent) {
-			compList.forEach(def -> {
-				String shell = def.getParam(ElecCompDef.PARAM_KEY_SHELL);
-				Node elecCompMdl = def.getSpatial();
-				StringUtil.split(shell, ',').forEach(s -> {
-//					找出元器件外壳模型
-					Spatial shellNode = elecCompMdl.getChild(s);
-					if (shellNode != null) {
-						JmeUtil.transparent(shellNode, .7f);
-					} else {
-						log.error("模型{}中没有名为{}的节点", elecCompMdl, s);
+		compList.forEach(def -> {
+			String shell = def.getParam(ElecCompDef.PARAM_KEY_SHELL);
+			Node elecCompMdl = def.getSpatial();
+			StringUtil.split(shell, ',').forEach(s -> {
+//				找出元器件外壳模型
+				Spatial shellNode = elecCompMdl.getChild(s);
+				if (shellNode != null) {
+//					JmeUtil.transparent(shellNode, .7f);
+					if(transparent) {
+						shellNode.setCullHint(CullHint.Always);
+					}else {
+						shellNode.setCullHint(CullHint.Dynamic);
 					}
-				});
+//					MouseEventState.setMouseVisible(shellNode, false);
+				} else {
+					log.error("模型{}中没有名为{}的节点", elecCompMdl, s);
+				}
 			});
-		} else {
-			compList.forEach(def -> JmeUtil.untransparent(def.getSpatial()));
-		}
+		});
 	}
 
 	public Node getRootCompNode() {

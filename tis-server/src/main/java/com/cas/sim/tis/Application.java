@@ -2,7 +2,6 @@ package com.cas.sim.tis;
 
 import javax.annotation.Resource;
 
-import org.apache.ftpserver.FtpServer;
 import org.slf4j.LoggerFactory;
 import org.slf4j.bridge.SLF4JBridgeHandler;
 import org.springframework.boot.CommandLineRunner;
@@ -28,15 +27,11 @@ public class Application implements CommandLineRunner {
 
 	@Resource
 	private ServerConfig serverConfig;
-
-	@Resource
-	private FtpServer ftpServer;
-
 	@Resource
 	private Server coreServer;
 	@Resource
 	private DriftServer driftServer;
-	
+
 	public static void jul2slf4j() {
 		java.util.logging.LogManager.getLogManager().reset();
 		SLF4JBridgeHandler.removeHandlersForRootLogger();
@@ -65,7 +60,7 @@ public class Application implements CommandLineRunner {
 //				if (Consts.AUTHORITY_FILE_AVAILABLE == result) {
 ////					创建服务器
 //					try {
-						SpringApplication.run(Application.class);
+		SpringApplication.run(Application.class);
 //					} catch (Exception e) {
 //						LoggerFactory.getLogger(Application.class).error("服务器启动失败", e);
 //						e.printStackTrace();
@@ -108,10 +103,7 @@ public class Application implements CommandLineRunner {
 
 //		启动
 		coreServer.start();
-		LoggerFactory.getLogger(Application.class).info("主服务器已启动");
-		ftpServer.start();
-		LoggerFactory.getLogger(Application.class).info("文件服务器已启动");
 		driftServer.start();
-		LoggerFactory.getLogger(Application.class).info("Drift服务器已启动");
+		LoggerFactory.getLogger(Application.class).info("服务器已启动");
 	}
 }

@@ -4,7 +4,6 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
 
-import com.alibaba.fastjson.JSON;
 import com.cas.sim.tis.entity.Preparation;
 import com.cas.sim.tis.mapper.PreparationMapper;
 import com.cas.sim.tis.services.PreparationService;
@@ -32,7 +31,7 @@ public class PreparationServiceImpl implements PreparationService {
 
 	@Override
 	public ResponseEntity addPreparation(RequestEntity entity) {
-		Preparation preparation = JSON.parseObject(entity.data, Preparation.class);
+		Preparation preparation = entity.getObject("preparation", Preparation.class);
 		mapper.insert(preparation);
 		return ResponseEntity.success(preparation);
 	}

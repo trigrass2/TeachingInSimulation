@@ -21,6 +21,7 @@ import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
+import com.jme3.scene.Spatial.CullHint;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -63,6 +64,7 @@ public class MouseEventState extends BaseState {
 
 	public static void setMouseVisible(Spatial spatial, boolean visible) {
 		if (spatial != null) {
+			log.debug("设置模型对鼠标是否可见?: {}", visible);
 			spatial.setUserData(MouseEventState.TO_MOUSE_VISIBLE, visible);
 		}
 
@@ -279,17 +281,17 @@ public class MouseEventState extends BaseState {
 		this.e = new MouseEvent(picked, contactPoint, contactNormal);
 	}
 
-	protected boolean valiedate(Geometry geometry) {
+	public static boolean valiedate(Spatial spatial) {
 //		模型被剔除，视为不可选中
-//		if (geometry.getCullHint() == CullHint.Always) {
-//			return false;
-//		}
+		if (spatial.getCullHint() == CullHint.Always) {
+			return false;
+		}
 ////		模型虽然显示，但已经加入黑名单中，视为不可选中。
 //		if (this.ignorModelList.contains(geometry)) {
 //			return false;
 //		}
 //		漏网之鱼，对鼠标不可见，但是不在黑名单中的，也视为不可选中。
-		Boolean toMouseVisible = geometry.getUserData(TO_MOUSE_VISIBLE);
+		Boolean toMouseVisible = spatial.getUserData(TO_MOUSE_VISIBLE);
 //		有这个属性，并且值是false，表示对鼠标不可见
 		if (toMouseVisible != null && !toMouseVisible.booleanValue()) {
 //			模型对鼠标不可见

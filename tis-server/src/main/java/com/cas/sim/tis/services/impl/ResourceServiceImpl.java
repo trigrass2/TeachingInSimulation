@@ -138,7 +138,7 @@ public class ResourceServiceImpl implements ResourceService {
 		}
 		List<Integer> resourceTypes = JSON.parseArray(entity.getString("resourceTypes"), Integer.class);
 		List<Resource> result = mapper.findResourcesByCollection(resourceTypes, entity.getString("keyword"), entity.getInt("creator"));
-		if (entity.pageNum == -1) {
+		if (entity.pageNum != -1) {
 			PageInfo<Resource> page = new PageInfo<Resource>(result);
 //			查到的总记录数
 //			解释一下：这个page.getTotal()，是所有符合条件的记录数。
@@ -338,6 +338,7 @@ public class ResourceServiceImpl implements ResourceService {
 			Collection collection = new Collection();
 			collection.setResourceId(entity.getInt("id"));
 			collection.setCreator(entity.getInt("creator"));
+			collection.setDel(0);
 //			FIXME
 			collectionMapper.insert(collection);
 			transactionManager.commit(status);

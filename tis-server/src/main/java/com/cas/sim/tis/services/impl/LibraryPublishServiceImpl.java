@@ -68,7 +68,7 @@ public class LibraryPublishServiceImpl implements LibraryPublishService {
 
 	@Override
 	public ResponseEntity publishLibraryToClass(RequestEntity entity) {
-		LibraryPublish publish = JSON.parseObject(entity.data, LibraryPublish.class);
+		LibraryPublish publish = entity.getObject("publish", LibraryPublish.class);
 		// 记录考核发布记录
 		mapper.insert(publish);
 
@@ -91,7 +91,7 @@ public class LibraryPublishServiceImpl implements LibraryPublishService {
 
 	@Override
 	public ResponseEntity practiceLibraryByStudent(RequestEntity entity) {
-		LibraryPublish publish = JSON.parseObject(entity.data, LibraryPublish.class);
+		LibraryPublish publish = entity.getObject("publish", LibraryPublish.class);
 		// 记录考核发布记录
 		mapper.insert(publish);
 		return ResponseEntity.success(publish.getId());

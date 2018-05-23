@@ -2,8 +2,11 @@ package com.cas.sim.tis.app.control;
 
 import java.util.function.Consumer;
 
+import javax.annotation.Nonnull;
+
 import org.jetbrains.annotations.NotNull;
 
+import com.cas.sim.tis.app.event.MouseEventState;
 import com.cas.util.Util;
 import com.jme3.collision.CollisionResult;
 import com.jme3.collision.CollisionResults;
@@ -46,12 +49,24 @@ public class ShowNameOnHoverControl extends AbstractControl {
 		spatial.collideWith(ray, results);
 
 		if (results.size() > 0) {
-			CollisionResult closest = results.getClosestCollision();
-			Geometry geo = closest.getGeometry();
+			Geometry geo = null;
+			for (CollisionResult collision : results) {
+				Geometry tmp = collision.getGeometry();
+
+				if (!MouseEventState.valiedate(tmp)) {
+					continue;
+				}
+				geo = tmp;
+				break;
+			}
+			if (geo == null) {
+				consumer.accept(null);
+				return;
+			}
 //			geo 或者是其parent节点，但不是spatial的模型，userdata中必有entity属性
 			Object entity = findEntity(geo);
-			@NotNull
-			String name = (@NotNull String) Util.getFieldValue(entity, "name");
+			@Nonnull
+			String name = (String) Util.getFieldValue(entity, "name");
 
 			consumer.accept(name);
 		} else {

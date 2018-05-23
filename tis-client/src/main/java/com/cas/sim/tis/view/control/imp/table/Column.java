@@ -1,7 +1,5 @@
 package com.cas.sim.tis.view.control.imp.table;
 
-import com.sun.javafx.scene.control.skin.Utils;
-
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.ObjectProperty;
@@ -173,7 +171,7 @@ public class Column<T> {
 	};
 
 	public void impl_setWidth(double width) {
-		setWidth(Utils.boundedSize(width, getMinWidth(), getMaxWidth()));
+		setWidth(Math.min(Math.max(width, getMinWidth()), Math.max(getMinWidth(),getMaxWidth())));
 	}
 
 	private ObjectProperty<Pos> alignment;

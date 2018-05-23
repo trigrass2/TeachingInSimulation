@@ -24,7 +24,7 @@
 					</VBox.margin>
 				</VBox>
 				<VBox spacing="15.0">
-					<Label fx:id="errorMessage" textFill="WHITE" />
+					<Label fx:id="status" textFill="WHITE" />
 					<Button fx:id="loginBtn" mnemonicParsing="false" minHeight="40.0" prefWidth="265.0" styleClass="login-btn" defaultButton="true" text="%login.action" onAction="#processLogin" />
 					<VBox.margin>
 						<Insets left="50.0" right="50.0" />

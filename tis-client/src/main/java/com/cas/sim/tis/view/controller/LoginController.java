@@ -56,7 +56,7 @@ public class LoginController implements Initializable {
 	@FXML
 	private PasswordField password;
 	@FXML
-	private Label errorMessage;
+	private Label status;
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
@@ -66,23 +66,25 @@ public class LoginController implements Initializable {
 
 	@FXML
 	public void processLogin() {
-		errorMessage.setText("");
+		status.setText("");
 //		0、验证登录信息的完整性
 		if (StringUtils.isEmpty(userId.getText())) {
-			setErrorMsg(resources.getString("login.account.notnull"));
+			setStatusMsgKey("login.account.notnull");
 			return;
 		}
 		if (StringUtils.isEmpty(password.getText())) {
-			setErrorMsg(resources.getString("login.password.notnull"));
+			setStatusMsgKey("login.password.notnull");
 			return;
 		}
 
 		String address = AppPropertiesUtil.getStringValue("server.base.address");
 		int port = AppPropertiesUtil.getIntValue("server.base.port", 0);
-
+		setStatusMsgKey("server.connect.waiting");
 		boolean success = SocketUtil.INSTENCE.connect(address, port);
 		if (success) {
+			setStatusMsgKey("server.connect.success");
 			LOG.info("连接服务器{}:{}", address, port);
+
 			loginBtn.setDisable(true);
 //			注册消息及消息处理类
 			LoginMessageHandler loginMessageHandler = new LoginMessageHandler();
@@ -102,7 +104,7 @@ public class LoginController implements Initializable {
 			LOG.info("发送登录请求。。。");
 		} else {
 			loginBtn.setDisable(false);
-			setErrorMsg(resources.getString("server.connect.failure"));
+			setStatusMsgKey("server.connect.failure");
 			LOG.info("服务器连接失败！");
 		}
 	}
@@ -121,13 +123,13 @@ public class LoginController implements Initializable {
 				}
 			});
 		} else {
-			setErrorMsg(resources.getString(messageKey));
+			setStatusMsgKey(messageKey);
 		}
 		loginBtn.setDisable(false);
 	}
 
-	public void setErrorMsg(String msg) {
-		errorMessage.setText(msg);
+	public void setStatusMsgKey(String messageKey) {
+		status.setText(resources.getString(messageKey));
 	}
 
 	public void setSettingView(Region settingView) {
