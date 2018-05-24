@@ -315,9 +315,11 @@ public class CircuitState extends BaseState {
 //			设置接线状态为开始
 			state = State.Starting;
 		} else if (state == State.Mid) {
-//			
+			if (t.getWires().contains(wire)) {
+				Platform.runLater(() -> AlertUtil.showTip(TipType.WARN, MsgUtil.getMessage("alert.warning.terminal.self")));
+				return;
+			}
 			connectEnding(t);
-
 			state = State.Ending;
 		} else if (state == State.Ending) {
 //			do nothing
@@ -354,9 +356,12 @@ public class CircuitState extends BaseState {
 		}
 
 //		前三段导线
-		startLine1 = new Line(dest, dest);//
-		startLine2 = new Line(dest, dest);
-		startLine3 = new Line(dest, dest);
+//		
+		Vector3f second = dest.add(dir.mult(minLen));
+
+		startLine1 = new Line(dest, second);//
+		startLine2 = new Line(second, second);
+		startLine3 = new Line(second, second);
 
 		tmpWireNode.attachChild(JmeUtil.createLineGeo(assetManager, startLine1, color));
 		tmpWireNode.attachChild(JmeUtil.createLineGeo(assetManager, startLine2, color));
