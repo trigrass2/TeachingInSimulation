@@ -221,6 +221,7 @@ public class FTPUtils {
 				log.info("本地文件【{}】已上传至服务器目录【{}】中，并且命名为【{}】", file.getPath(), remotePath, storedName);
 			} else {
 				log.error("文件【{}】上传失败", file.getPath());
+				throw new IOException("上传失败");
 			}
 		}
 		return this;

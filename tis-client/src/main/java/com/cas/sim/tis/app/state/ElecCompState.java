@@ -5,13 +5,18 @@ import java.util.List;
 
 import javax.annotation.Nonnull;
 
+import com.cas.circuit.CfgConst;
+import com.cas.circuit.vo.ControlIO;
 import com.cas.circuit.vo.ElecCompDef;
 import com.cas.sim.tis.action.ElecCompAction;
 import com.cas.sim.tis.anno.JmeThread;
 import com.cas.sim.tis.app.control.ShowNameOnHoverControl;
+import com.cas.sim.tis.app.event.MouseEventListener;
+import com.cas.sim.tis.app.listener.ControlIOClickListener;
+import com.cas.sim.tis.app.listener.ControlIOPressListener;
+import com.cas.sim.tis.app.listener.ControlIOWheelListener;
 import com.cas.sim.tis.entity.ElecComp;
 import com.cas.sim.tis.util.AnimUtil;
-import com.cas.sim.tis.util.JmeUtil;
 import com.cas.sim.tis.util.SpringUtil;
 import com.cas.sim.tis.view.control.imp.jme.Recongnize3D;
 import com.cas.sim.tis.view.controller.PageController;
@@ -23,13 +28,14 @@ import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
+import com.jme3.scene.Spatial.CullHint;
 
 import javafx.application.Platform;
 import lombok.extern.slf4j.Slf4j;
+
 /**
  * 元器件认知模块
  * @author Administrator
- *
  */
 @Slf4j
 public class ElecCompState extends BaseState {
@@ -43,10 +49,17 @@ public class ElecCompState extends BaseState {
 	private float scale = 1;
 	private Recongnize3D ui;
 	private PointLight pointLight;
-	private MyCameraState chaserState;
+	private SceneCameraState cameraState;
+	private MouseEventListener controlIOWheelListener, //
+			controlIOPressListener, //
+			controlIOClickListener;
 
 	@Override
 	protected void initializeLocal() {
+		controlIOWheelListener = new ControlIOWheelListener();
+		controlIOPressListener = new ControlIOPressListener();
+		controlIOClickListener = new ControlIOClickListener();
+
 //		认知模块的根节点
 		root = new Node(ROOT_NAME);
 		root.addControl(new ShowNameOnHoverControl((name) -> {
@@ -58,7 +71,7 @@ public class ElecCompState extends BaseState {
 
 		setupLight();
 
-		stateManager.attach(chaserState = new MyCameraState());
+		stateManager.attach(cameraState = new SceneCameraState());
 
 ////		PBR indirect lighting
 //		final EnvironmentCamera envCam = new EnvironmentCamera(256, new Vector3f(0, 3f, 0));
@@ -97,7 +110,7 @@ public class ElecCompState extends BaseState {
 //		PBR能在系统中被照亮
 //		MikktspaceTangentGenerator.generate(model);
 //		将模型放大100倍
-		model.scale(100);
+		model.scale(3);
 		root.attachChild(model);
 //		
 //		获取相应元器件
@@ -108,28 +121,34 @@ public class ElecCompState extends BaseState {
 
 //		FIXME 这里应更为精准地设置为元器件模型。
 		elecCompDef.bindModel(root);
-		
+//		添加一些交互
+		bindElecCompEvent(elecCompDef);
+
 		model.setUserData("entity", elecCompDef);
-
-////		添加事件
-//		Map<Spatial, String> nameMap = collectName(elecCompDef);
-//
-//		nameMap.entrySet().forEach(e -> addListener(e.getKey(), new MouseEventAdapter() {
-//			@Override
-//			public void mouseClicked(MouseEvent evt) {
-//				if (!pickEnable) {
-//					return;
-//				}
-////				FilterUtil.showOutlineEffect(evt.getSpatial());
-//				System.out.println("ElecCompState.setElecComp(...).new MouseEventAdapter() {...}.mouseClicked()");
-//
-//			}
-//		}));
-
 		explode0();
 	}
 
+	private void bindElecCompEvent(ElecCompDef def) {
+		def.getMagnetismList().forEach(m -> {
+			for (ControlIO c : m.getControlIOList()) {
+				if (c.getType().indexOf(CfgConst.SWITCH_CTRL_INPUT) == -1) {
+					continue;
+				}
+				if (ControlIO.INTERACT_ROTATE.equals(c.getInteract())) {
+					addListener(c.getSpatial(), controlIOWheelListener);
+				} else if (ControlIO.INTERACT_PRESS.equals(c.getInteract())) {
+					addListener(c.getSpatial(), controlIOPressListener);
+				} else {
+					addListener(c.getSpatial(), controlIOClickListener);
+				}
+			}
+		});
+	}
+
 	private void cleanRoot() {
+//		清除所有模型的事件监听
+		super.cleanEvents();
+
 		shells.clear();
 		log.debug("移除{}中所有模型", root.getName());
 		root.detachAllChildren();
@@ -199,11 +218,18 @@ public class ElecCompState extends BaseState {
 
 	@JmeThread
 	private void transparentShell0() {
-		if (transparent) {
-			shells.forEach(shell -> JmeUtil.transparent(shell, .7f));
-		} else {
-			shells.forEach(shell -> JmeUtil.untransparent(shell));
-		}
+		shells.forEach(shell -> {
+			if (transparent) {
+				shell.setCullHint(CullHint.Always);
+			} else {
+				shell.setCullHint(CullHint.Dynamic);
+			}
+		});
+//		if (transparent) {
+//			shells.forEach(shell -> JmeUtil.transparent(shell, .7f));
+//		} else {
+//			shells.forEach(shell -> JmeUtil.untransparent(shell));
+//		}
 	}
 
 	public void autoRotate(Boolean n) {
@@ -211,8 +237,7 @@ public class ElecCompState extends BaseState {
 	}
 
 	public void reset() {
-		if (chaserState.isInitialized()) {
-			chaserState.getChaser().setLookAtOffset(Vector3f.ZERO);
+		if (cameraState.isInitialized()) {
 		}
 		scale = 1;
 	}

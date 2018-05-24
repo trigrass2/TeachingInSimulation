@@ -120,12 +120,22 @@ public abstract class BaseState extends AbstractAppState {
 
 	@Override
 	public void cleanup() {
+		cleanInputs();
+
+		cleanEvents();
+
+		super.cleanup();
+	}
+
+	protected void cleanInputs() {
 		log.info("清除{}中添加的事件映射及监听", getClass());
 		inputMappings.entrySet().stream().forEach(e -> e.getValue().forEach(t -> inputManager.deleteTrigger(e.getKey(), t)));// 删除
 		inputMappings.clear();
 		inputListeners.stream().forEach(inputManager::removeListener);
 		inputListeners.clear();
+	}
 
+	protected void cleanEvents() {
 		if (mouseEventState == null) {
 			log.warn("没有MouseEventState");
 		} else {
@@ -133,8 +143,6 @@ public abstract class BaseState extends AbstractAppState {
 			candidates.forEach(c -> mouseEventState.removeCandidate(c));
 			candidates.clear();
 		}
-
-		super.cleanup();
 	}
 
 	protected <T> T loadAsset(AssetKey<T> key) {

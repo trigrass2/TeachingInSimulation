@@ -159,11 +159,11 @@ public class CircuitState extends BaseState {
 
 	@Override
 	protected void initializeLocal() {
-		wireListener = new WireListener(this);
+		wireListener = new WireListener();
 		terminalLitener = new TerminalListener(this);
-		controlIOWheelListener = new ControlIOWheelListener(this);
-		controlIOPressListener = new ControlIOPressListener(this);
-		controlIOClickListener = new ControlIOClickListener(this);
+		controlIOWheelListener = new ControlIOWheelListener();
+		controlIOPressListener = new ControlIOPressListener();
+		controlIOClickListener = new ControlIOClickListener();
 		elecCompBaseClickListener = new ElecCompBaseClickListener(caseState);
 
 //		默认尺寸

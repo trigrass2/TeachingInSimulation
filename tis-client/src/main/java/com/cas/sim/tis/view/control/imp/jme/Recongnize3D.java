@@ -23,6 +23,7 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
+import javafx.scene.paint.Color;
 
 public class Recongnize3D implements IContent {
 
@@ -63,6 +64,7 @@ public class Recongnize3D implements IContent {
 		nameLabel = new Label();
 //		TODO 调样式
 		nameLabel.setId("RecognizeNameLabel");
+		nameLabel.setTextFill(Color.WHITE);
 
 		pane = new AnchorPane(nameLabel);
 		pane.setPickOnBounds(false);

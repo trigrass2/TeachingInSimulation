@@ -4,6 +4,7 @@ import java.util.Arrays;
 
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
+import org.aspectj.lang.annotation.AfterThrowing;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
@@ -21,25 +22,19 @@ public class AspectConfig {
 	public void actionPointcut() {
 	}
 
+	@AfterThrowing(throwing = "ex", pointcut = "actionPointcut()")
+	public void afterThrowing(Throwable ex) {
+		log.error("调用Action中的方法出现了异常", ex);
+	}
+
 	@Around("actionPointcut()")
-	public Object onAround(ProceedingJoinPoint pjp) {
+	public Object onAround(ProceedingJoinPoint pjp) throws Throwable {
 		String msg = String.format("执行 %s.%s(%s)", //
 				pjp.getSignature().getDeclaringTypeName(), //
 				pjp.getSignature().getName(), //
 				getArgs(pjp.getArgs()));
 		log.info(msg);
-		Object entity = null;
-		try {
-			entity = pjp.proceed();
-		} catch (Throwable e) {
-			msg = String.format("执行 %s.%s(%s)出现异常%s", //
-					pjp.getSignature().getDeclaringTypeName(), //
-					pjp.getSignature().getName(), //
-					getArgs(pjp.getArgs()), //
-					e.getMessage());
-			log.error(msg, e);
-		}
-		return entity;
+		return pjp.proceed();
 	}
 
 	private String getArgs(Object[] objects) {
