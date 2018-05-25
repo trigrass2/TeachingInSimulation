@@ -191,10 +191,10 @@ public class TypicalCaseState extends BaseState {
 		if (contactPoint == null) {
 			return;
 		}
-		elecComp.getSpatial().setLocalTranslation(new Vector3f(
-				new BigDecimal(contactPoint.x).setScale(2, BigDecimal.ROUND_HALF_UP).floatValue(),
-				contactPoint.y,
-				new BigDecimal(contactPoint.z).setScale(2, BigDecimal.ROUND_HALF_UP).floatValue()
+		elecComp.getSpatial().setLocalTranslation(new Vector3f(//
+				JmeUtil.round(contactPoint.x, 3, 4), //
+				contactPoint.y, //
+				JmeUtil.round(contactPoint.z, 3, 4)//
 		));
 	}
 

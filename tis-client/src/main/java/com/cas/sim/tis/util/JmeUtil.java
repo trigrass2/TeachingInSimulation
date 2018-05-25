@@ -1,5 +1,6 @@
 package com.cas.sim.tis.util;
 
+import java.math.BigDecimal;
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
 import java.util.List;
@@ -43,6 +44,22 @@ public final class JmeUtil {
 	public static final Vector3f UNIT_XY = new Vector3f(1, 1, 0);
 	public static final Vector3f UNIT_XZ = new Vector3f(1, 0, 1);
 	public static final Vector3f UNIT_YZ = new Vector3f(0, 1, 1);
+
+//	将一个数取舍位一个单位数的整数倍
+	public static float round(float num, int bit, int unit) {
+//		0.01534562343
+		BigDecimal bigNum = new BigDecimal(num);
+//		整数位
+//		0015.34562343
+//		0015
+		int i = bigNum.movePointRight(bit).intValue();
+//		
+		int mod = i % unit;
+		if (mod != 0) {
+			i = (i / unit + 1) * unit;
+		}
+		return new BigDecimal(i).movePointLeft(bit).floatValue();
+	}
 
 	/**
 	 * @param value eg.(-0.017576016, 0.011718482, -0.99977684)
@@ -342,7 +359,7 @@ public final class JmeUtil {
 		WireBox box = (WireBox) boxGeo.getMesh();
 		BoundingBox bound = ((BoundingBox) ref.getWorldBound());
 		boxGeo.setLocalTranslation(bound.getCenter());
-		box.updatePositions(bound.getXExtent() , bound.getYExtent(), bound.getZExtent());
+		box.updatePositions(bound.getXExtent(), bound.getYExtent(), bound.getZExtent());
 	}
 
 	public static Geometry getWiringBox(AssetManager assetManager, Spatial spatial) {
@@ -356,7 +373,7 @@ public final class JmeUtil {
 		mat.getAdditionalRenderState().setBlendMode(BlendMode.Alpha);
 		mat.getAdditionalRenderState().setDepthWrite(true);
 		mat.getAdditionalRenderState().setWireframe(true);
-		
+
 		WireBox mesh = new WireBox(ext.x, ext.y, ext.z);
 		Geometry ballMod = new Geometry("WiringBox", mesh);
 		ballMod.setMaterial(mat);
