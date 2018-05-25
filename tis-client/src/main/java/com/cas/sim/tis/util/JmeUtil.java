@@ -55,9 +55,14 @@ public final class JmeUtil {
 		int i = bigNum.movePointRight(bit).intValue();
 //		
 		int mod = i % unit;
-		if (mod != 0) {
+		int half = unit / 2;
+
+		if (mod > half) {
 			i = (i / unit + 1) * unit;
+		} else if (mod < half) {
+			i = (i / unit - 1) * unit;
 		}
+
 		return new BigDecimal(i).movePointLeft(bit).floatValue();
 	}
 

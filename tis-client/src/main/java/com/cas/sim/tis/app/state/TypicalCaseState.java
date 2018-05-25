@@ -192,9 +192,9 @@ public class TypicalCaseState extends BaseState {
 			return;
 		}
 		elecComp.getSpatial().setLocalTranslation(new Vector3f(//
-				JmeUtil.round(contactPoint.x, 3, 4), //
+				JmeUtil.round(contactPoint.x, 3, 5), //
 				contactPoint.y, //
-				JmeUtil.round(contactPoint.z, 3, 4)//
+				JmeUtil.round(contactPoint.z, 3, 5)//
 		));
 	}
 
