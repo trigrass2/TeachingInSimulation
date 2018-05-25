@@ -9,11 +9,16 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 
+import com.cas.circuit.consts.IOType;
+
+import lombok.Getter;
+import lombok.Setter;
+
 @XmlAccessorType(XmlAccessType.NONE)
+@Getter
 public class Magnetism {// extends BaseVO<MagnetismPO> {
 	@XmlAttribute
 	private String id;
-
 	@XmlElement(name = "VoltageIO")
 	private List<VoltageIO> voltageIOList = new ArrayList<>();
 	@XmlElement(name = "ControlIO")
@@ -25,12 +30,14 @@ public class Magnetism {// extends BaseVO<MagnetismPO> {
 
 //	--------------------------------------------------------------------
 
+	@Setter
 	private boolean effect;
 
 	private List<VoltageIO> inputVoltageIOs = new ArrayList<VoltageIO>();
 	private List<VoltageIO> outputVoltageIOs = new ArrayList<VoltageIO>();
 	private List<ControlIO> outputControlIOs = new ArrayList<ControlIO>();
 
+	@Getter
 	private ElecCompDef elecCompDef;
 
 	public Magnetism() {
@@ -40,7 +47,23 @@ public class Magnetism {// extends BaseVO<MagnetismPO> {
 	public void beforeUnmarshal(Unmarshaller u, Object parent) {
 		this.elecCompDef = (ElecCompDef) parent;
 	}
-//	public void afterUnmarshal(Unmarshaller u, Object parent) {
+
+	public void afterUnmarshal(Unmarshaller u, Object parent) {
+		voltageIOList.forEach(v -> {
+			if (v.getType() != IOType.OUTPUT) {
+				inputVoltageIOs.add(v);
+			}
+			if (v.getType() != IOType.INPUT) {
+				outputVoltageIOs.add(v);
+			}
+		});
+		
+		controlIOList.forEach(c->{
+			if(c.getType() != IOType.INPUT) {
+				outputControlIOs.add(c);
+			}
+		});
+
 //		voltageIOList.forEach(io -> {
 //			Terminal term1 = getTerminal(io.getTerm1Id());
 //			Terminal term2 = getTerminal(io.getTerm2Id());
@@ -49,45 +72,5 @@ public class Magnetism {// extends BaseVO<MagnetismPO> {
 //			term2.getVoltIOs().add(io);
 //			io.setTerm2(term2);
 //		});
-//	}
-
-	public ElecCompDef getElecCompDef() {
-		return elecCompDef;
-	}
-
-	public boolean isEffect() {
-		return effect;
-	}
-
-	public List<VoltageIO> getVoltageIOList() {
-		return voltageIOList;
-	}
-
-	public List<ControlIO> getControlIOList() {
-		return controlIOList;
-	}
-
-	public List<LightIO> getLightIOList() {
-		return lightIOList;
-	}
-
-	public List<SensorIO> getSensorIOList() {
-		return sensorIOList;
-	}
-
-	public List<VoltageIO> getInputVoltageIOs() {
-		return inputVoltageIOs;
-	}
-
-	public List<VoltageIO> getOutputVoltageIOs() {
-		return outputVoltageIOs;
-	}
-
-	public List<ControlIO> getOutputControlIOs() {
-		return outputControlIOs;
-	}
-
-	public void setEffect(boolean effect) {
-		this.effect = effect;
 	}
 }

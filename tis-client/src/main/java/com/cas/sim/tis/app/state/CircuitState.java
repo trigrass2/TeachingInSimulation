@@ -11,7 +11,6 @@ import javax.annotation.Nonnull;
 import org.jetbrains.annotations.Nullable;
 
 import com.cas.circuit.CfgConst;
-import com.cas.circuit.Voltage;
 import com.cas.circuit.util.R;
 import com.cas.circuit.vo.Archive;
 import com.cas.circuit.vo.Base;
@@ -273,7 +272,7 @@ public class CircuitState extends BaseState {
 		moved = true;
 
 //		collision = JmeUtil.getCollisionFromCursor(root, cam, inputManager.getCursorPosition());
-		collision = JmeUtil.getCollisionFromCursor(wirePlane, cam, inputManager.getCursorPosition());
+		collision = JmeUtil.getCollisionFromCursor(root, cam, inputManager.getCursorPosition());
 		if (collision == null) {
 			return;
 		}
@@ -585,15 +584,20 @@ public class CircuitState extends BaseState {
 		readWires(archive.getWireList());
 
 		Map<String, ElecCompDef> compMap = compList.stream().collect(Collectors.toMap(x -> x.getProxy().getUuid(), x -> x));
-//		FIXME 找到电源（这里讲QF1元器件看做电源）
-		ElecCompDef power = compMap.get("cbdc09e1-54ef-43eb-8fd6-77960334614c");
+//		FIXME 找到电源（这里将QF1元器件看做电源）
+		ElecCompDef power = compMap.get("91f51e14-eaed-4c45-a56e-3fecb18ed56a");
 		if (power != null) {
-			Terminal r0 = power.getTerminal("1");
-			Terminal s0 = power.getTerminal("3");
+			Terminal r0 = power.getTerminal("2");
+			Terminal s0 = power.getTerminal("4");
+			Terminal t0 = power.getTerminal("6");
 
-//			List<R> powerAC = R.create3Phase("AlphaPawer", r0, s0, t0, new Terminal(), 380);
-			R r = R.create("AlphaPower", Voltage.IS_DC, r0, s0, 24);
-			r.shareVoltage();
+			Terminal pe = new Terminal();
+			pe.setElecComp(power);
+			
+			List<R> powerAC = R.create3Phase("AlphaPawer", r0, s0, t0, pe, 380);
+			for (R r : powerAC) {
+				r.shareVoltage();
+			}
 		}
 	}
 

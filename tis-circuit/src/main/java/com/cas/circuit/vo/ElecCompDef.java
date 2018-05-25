@@ -192,6 +192,9 @@ public class ElecCompDef implements Savable {// extends BaseVO<ElecCompDefPO> {
 		if (magnetismList.size() == 0) {
 			return;
 		}
+		if("km".equals(getProxy().getTagName())) {
+			System.out.println("---");
+		}
 		String env_prefix = "";// ref.getCompState().getEquipmentState().getEquipment().getNumber() + ref.getTagName() + ref.hashCode();
 		for (Magnetism magnetism : magnetismList) {
 			float bili = 0;

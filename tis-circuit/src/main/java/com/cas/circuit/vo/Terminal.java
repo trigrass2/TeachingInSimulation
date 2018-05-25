@@ -27,8 +27,14 @@ import com.cas.circuit.xml.adapter.VoltageAdapter;
 import com.jme3.export.JmeExporter;
 import com.jme3.export.JmeImporter;
 import com.jme3.export.Savable;
+import com.jme3.material.MatParam;
+import com.jme3.material.Material;
+import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
+import com.jme3.scene.Geometry;
+import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
+import com.jme3.scene.Spatial.CullHint;
 
 @XmlAccessorType(XmlAccessType.NONE)
 public class Terminal implements Savable {
@@ -265,13 +271,9 @@ public class Terminal implements Savable {
 				voltage.removeTerminal(this);
 			}
 
-//			if (elecComp != null) {
-//				System.err.println("---清理 env={" + env + "}" + (elecComp.getRef().getTagName() + "上的 id=" + getId()) + ",后剩余电压: env=" + residualVolt + ">");
-//			} else {
-//				if (parent != null && parent instanceof Jack) {
-//					System.out.println("---清理 env={" + env + "}" + (parent + "上的 id=" + getId()) + ",后剩余电压: env=" + residualVolt + ">");
-//				}
-//			}
+			if (elecCompDef != null) {
+				System.err.println("---清理 env={" + env + "}" + (elecCompDef.getProxy().getTagName() + "上的 id=" + getId()) + ",后剩余电压: env=" + residualVolt + ">");
+			}
 			calculateVoltage();
 		}
 	}
@@ -295,13 +297,18 @@ public class Terminal implements Savable {
 		for (Voltage volt : residualVolt.values()) {
 			hasVolt = hasVolt || volt.getValue() > 0;
 		}
+		if (hasVolt) {
+			System.out.println(getName() + "-> 有电");
+		} else {
+			System.out.println(getName() + "-> 没电");
+		}
 		if (spatial != null) {
 			if (hasVolt) {
-//				FilterUtil.setSpatialElectrical(model, true);
-				System.out.println(getName() + "-> 有电");
+//				color(spatial, ColorRGBA.Red, true);
+				spatial.setCullHint(CullHint.Dynamic);
 			} else {
-//				FilterUtil.setSpatialElectrical(model, false);
-				System.out.println(getName() + "-> 没电");
+				spatial.setCullHint(CullHint.Always);
+//				uncolor(spatial);
 			}
 		}
 		for (Wire wire : wires) {
@@ -309,6 +316,55 @@ public class Terminal implements Savable {
 		}
 
 		elecCompDef.getLogic().onReceived(this);
+	}
+
+	/**
+	 * 改变材质颜色
+	 * @param sp
+	 * @param color
+	 */
+	public static void color(Spatial sp, ColorRGBA color, boolean saveMat) {
+		if (sp == null) {
+			return;
+		}
+		if (sp instanceof Geometry) {
+			Material mat = ((Geometry) sp).getMaterial();
+			if (saveMat) {
+				sp.setUserData("Color", mat);
+			}
+
+			Material colorMat = mat.clone();
+			MatParam diffuseParam = colorMat.getParam("Diffuse");
+			if (diffuseParam != null) {
+				colorMat.setColor("Diffuse", color);
+				sp.setMaterial(colorMat);
+			}
+		} else if (sp instanceof Node) {
+			for (Spatial child : ((Node) sp).getChildren()) {
+				color(child, color, saveMat);
+			}
+		}
+	}
+
+	/**
+	 * 恢复材质本来颜色
+	 * @param sp
+	 */
+	public static void uncolor(Spatial sp) {
+		if (sp == null) {
+			return;
+		}
+		if (sp instanceof Geometry) {
+			Material mat = sp.getUserData("Color");
+			if (mat != null) {
+				sp.setUserData("Color", null);
+				sp.setMaterial(mat);
+			}
+		} else if (sp instanceof Node) {
+			for (Spatial child : ((Node) sp).getChildren()) {
+				uncolor(child);
+			}
+		}
 	}
 
 	/**
@@ -378,14 +434,10 @@ public class Terminal implements Savable {
 
 	@Override
 	public void write(JmeExporter ex) throws IOException {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void read(JmeImporter im) throws IOException {
-		// TODO Auto-generated method stub
-
 	}
 
 }
