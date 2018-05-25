@@ -236,7 +236,7 @@ public class SceneCameraState extends BaseState implements ActionListener, Analo
 	}
 
 	/**
-	 * 沿轴移动相机
+	 * 旋转相机
 	 * @param axis
 	 * @param amount
 	 */
@@ -259,7 +259,7 @@ public class SceneCameraState extends BaseState implements ActionListener, Analo
 	}
 
 	/**
-	 * 摇动镜头
+	 * 移动镜头
 	 * @param left
 	 * @param up
 	 */
@@ -268,7 +268,7 @@ public class SceneCameraState extends BaseState implements ActionListener, Analo
 		vector.scaleAdd(up, cam.getUp(), vector);
 		vector.multLocal(cam.getLocation().distance(focus));
 		cam.setLocation(cam.getLocation().add(vector));
-		focus.addLocal(vector);
+//		focus.addLocal(vector);
 	}
 
 	/**
@@ -390,5 +390,9 @@ public class SceneCameraState extends BaseState implements ActionListener, Analo
 
 	public void setZoomEnable(boolean zoomable) {
 		this.zoomable = zoomable;
+	}
+	
+	public Mode getMode() {
+		return mode;
 	}
 }

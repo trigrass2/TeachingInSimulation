@@ -1,5 +1,7 @@
 package com.cas.sim.tis.app.state;
 
+import java.math.BigDecimal;
+
 import org.jetbrains.annotations.Nullable;
 
 import com.cas.circuit.vo.Archive;
@@ -11,6 +13,8 @@ import com.cas.sim.tis.app.event.MouseEvent;
 import com.cas.sim.tis.app.event.MouseEventAdapter;
 import com.cas.sim.tis.app.event.MouseEventState;
 import com.cas.sim.tis.app.listener.TypicalCaseListener;
+import com.cas.sim.tis.app.state.SceneCameraState.Mode;
+import com.cas.sim.tis.app.state.SceneCameraState.View;
 import com.cas.sim.tis.entity.ElecComp;
 import com.cas.sim.tis.entity.TypicalCase;
 import com.cas.sim.tis.util.AlertUtil;
@@ -22,6 +26,9 @@ import com.cas.sim.tis.view.control.imp.jme.TypicalCase3D;
 import com.cas.sim.tis.view.controller.PageController;
 import com.jme3.asset.ModelKey;
 import com.jme3.collision.CollisionResults;
+import com.jme3.input.KeyInput;
+import com.jme3.input.controls.ActionListener;
+import com.jme3.input.controls.KeyTrigger;
 import com.jme3.light.PointLight;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
@@ -74,6 +81,17 @@ public class TypicalCaseState extends BaseState {
 //		cam.setRotation(new Quaternion());
 		// 绑定事件
 		bindEvents();
+
+		addMapping("toggleView", new KeyTrigger(KeyInput.KEY_CAPITAL));
+		addListener((ActionListener) (name, pressed, value) -> {
+			if ("toggleView".equals(name) && pressed) {
+				if (cameraState.getMode() == Mode.Ortho) {
+					switchTo3D();
+				} else {
+					switchTo2D();
+				}
+			}
+		}, "toggleView");
 
 		// 默认新建案例
 		setupCase(new TypicalCase());
@@ -173,7 +191,11 @@ public class TypicalCaseState extends BaseState {
 		if (contactPoint == null) {
 			return;
 		}
-		elecComp.getSpatial().setLocalTranslation(contactPoint);
+		elecComp.getSpatial().setLocalTranslation(new Vector3f(
+				new BigDecimal(contactPoint.x).setScale(2, BigDecimal.ROUND_HALF_UP).floatValue(),
+				contactPoint.y,
+				new BigDecimal(contactPoint.z).setScale(2, BigDecimal.ROUND_HALF_UP).floatValue()
+		));
 	}
 
 	public void mouseWheel(boolean positive) {
@@ -326,6 +348,15 @@ public class TypicalCaseState extends BaseState {
 
 	public SceneCameraState getCameraState() {
 		return cameraState;
+	}
+
+	public void switchTo2D() {
+		cameraState.toggleOrthoPerspMode(Mode.Ortho);
+		cameraState.switchToView(View.Top);
+	}
+
+	public void switchTo3D() {
+		cameraState.toggleOrthoPerspMode(Mode.Persp);
 	}
 
 	public void setUI(TypicalCase3D ui) {

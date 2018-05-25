@@ -107,7 +107,7 @@ public class TypicalCaseSelectDialog extends DialogPane<Integer> {
 		if (editable) {
 			// 删除按钮
 			delete = new Column<String>();
-			delete.setCellFactory(BtnCell.forTableColumn(MsgUtil.getMessage("button.delete"), "blue-btn", rid -> {
+			delete.setCellFactory(BtnCell.forTableColumn(MsgUtil.getMessage("button.delete"), "red-btn", rid -> {
 				AlertUtil.showConfirm(MsgUtil.getMessage("alert.confirmation.data.delete"), response -> {
 					if (response == ButtonType.NO) {
 						return;

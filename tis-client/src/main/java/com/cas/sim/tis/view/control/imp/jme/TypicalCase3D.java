@@ -15,8 +15,6 @@ import com.cas.circuit.vo.Wire;
 import com.cas.sim.tis.anno.FxThread;
 import com.cas.sim.tis.app.JmeApplication;
 import com.cas.sim.tis.app.state.CircuitState;
-import com.cas.sim.tis.app.state.SceneCameraState.Mode;
-import com.cas.sim.tis.app.state.SceneCameraState.View;
 import com.cas.sim.tis.app.state.TypicalCaseState;
 import com.cas.sim.tis.entity.ElecComp;
 import com.cas.sim.tis.entity.TypicalCase;
@@ -110,7 +108,6 @@ public class TypicalCase3D implements IContent {
 		createWirePopupMenu();
 
 		createCompPopupMenu();
-
 	}
 
 	private void createCompPopupMenu() {
@@ -255,13 +252,12 @@ public class TypicalCase3D implements IContent {
 
 	public void switchTo2D() {
 		TypicalCaseState appState = jmeApp.getStateManager().getState(TypicalCaseState.class);
-		appState.getCameraState().toggleOrthoPerspMode(Mode.Ortho);
-		appState.getCameraState().switchToView(View.Top);
+		appState.switchTo2D();
 	}
 
 	public void switchTo3D() {
 		TypicalCaseState appState = jmeApp.getStateManager().getState(TypicalCaseState.class);
-		appState.getCameraState().toggleOrthoPerspMode(Mode.Persp);
+		appState.switchTo3D();
 	}
 
 	@FxThread

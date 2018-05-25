@@ -22,6 +22,7 @@ import com.cas.sim.tis.view.control.imp.jme.Recongnize3D;
 import com.cas.sim.tis.view.controller.PageController;
 import com.cas.util.StringUtil;
 import com.jme3.asset.ModelKey;
+import com.jme3.bounding.BoundingBox;
 import com.jme3.light.PointLight;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector2f;
@@ -111,6 +112,9 @@ public class ElecCompState extends BaseState {
 //		MikktspaceTangentGenerator.generate(model);
 //		将模型放大100倍
 		model.scale(3);
+		
+		BoundingBox bound = (BoundingBox) model.getWorldBound();
+		model.setLocalTranslation(bound.getCenter().negate());
 		root.attachChild(model);
 //		
 //		获取相应元器件
