@@ -57,9 +57,9 @@ public final class JmeUtil {
 		int mod = i % unit;
 		int half = unit / 2;
 
-		if (mod > half) {
+		if (mod > half && mod > 0) {
 			i = (i / unit + 1) * unit;
-		} else if (mod < -half) {
+		} else if (mod < half && mod < 0) {
 			i = (i / unit - 1) * unit;
 		}
 
