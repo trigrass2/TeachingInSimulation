@@ -32,7 +32,7 @@ public class PreparationServiceImpl implements PreparationService {
 	@Override
 	public ResponseEntity addPreparation(RequestEntity entity) {
 		Preparation preparation = entity.getObject("preparation", Preparation.class);
-		mapper.insert(preparation);
+		mapper.insertUseGeneratedKeys(preparation);
 		return ResponseEntity.success(preparation);
 	}
 

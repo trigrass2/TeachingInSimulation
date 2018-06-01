@@ -52,7 +52,7 @@ public class LibraryRecordServiceImpl implements LibraryRecordService {
 
 		try {
 			LibraryRecord record = entity.getObject("record", LibraryRecord.class);
-			mapper.insert(record);
+			mapper.insertUseGeneratedKeys(record);
 
 			int recordId = record.getId();
 

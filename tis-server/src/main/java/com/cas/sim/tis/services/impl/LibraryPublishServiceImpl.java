@@ -70,7 +70,7 @@ public class LibraryPublishServiceImpl implements LibraryPublishService {
 	public ResponseEntity publishLibraryToClass(RequestEntity entity) {
 		LibraryPublish publish = entity.getObject("publish", LibraryPublish.class);
 		// 记录考核发布记录
-		mapper.insert(publish);
+		mapper.insertUseGeneratedKeys(publish);
 
 		// 广播开始考核
 		ExamMessage message = new ExamMessage();
@@ -93,7 +93,7 @@ public class LibraryPublishServiceImpl implements LibraryPublishService {
 	public ResponseEntity practiceLibraryByStudent(RequestEntity entity) {
 		LibraryPublish publish = entity.getObject("publish", LibraryPublish.class);
 		// 记录考核发布记录
-		mapper.insert(publish);
+		mapper.insertUseGeneratedKeys(publish);
 		return ResponseEntity.success(publish.getId());
 	}
 

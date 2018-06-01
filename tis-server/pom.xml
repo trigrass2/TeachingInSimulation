@@ -59,6 +59,14 @@
 			<groupId>org.jodconverter</groupId>
 			<artifactId>jodconverter-spring-boot-starter</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi-ooxml</artifactId>
+		</dependency>
 
 		<dependency>
 			<groupId>io.airlift.drift</groupId>

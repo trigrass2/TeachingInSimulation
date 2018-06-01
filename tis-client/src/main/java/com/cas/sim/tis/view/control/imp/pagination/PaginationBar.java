@@ -77,18 +77,15 @@ public class PaginationBar extends HBox {
 
 //		页码监听
 		pageIndex.addListener((ChangeListener<Number>) (s, o, n) -> {
-			if (o == n) {
-				return;
-			}
 			next.setDisable(false);
 			prev.setDisable(false);
 			if (n.intValue() >= getPageCount() - 1) {
 				next.setDisable(true);
-				n = getPageCount() - 1;
+//				n = getPageCount() - 1;
 			}
 			if (n.intValue() <= 0) {
 				prev.setDisable(true);
-				n = 0;
+//				n = 0;
 			}
 			refrash();
 		});
@@ -166,13 +163,10 @@ public class PaginationBar extends HBox {
 	}
 
 	private int getPageIndex() {
-		return pageIndex == null ? 0 : pageIndex.get();
+		return pageIndex.get();
 	}
 
 	private IntegerProperty pageIndexProperty() {
-		if (pageIndex == null) {
-			pageIndex = new SimpleIntegerProperty(this, "pageIndex", 0);
-		}
 		return pageIndex;
 	}
 
@@ -192,6 +186,9 @@ public class PaginationBar extends HBox {
 	}
 
 	public void reload() {
+		if(getPageIndex() == 0) {
+			refrash();
+		}
 		setPageIndex(0);
 	}
 
