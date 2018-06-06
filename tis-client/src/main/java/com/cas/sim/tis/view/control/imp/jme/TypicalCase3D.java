@@ -194,6 +194,15 @@ public class TypicalCase3D implements IContent {
 
 		btnController.distroy();
 	}
+	
+	/**
+	 * 判断当前接线板上是否存在元器件、导线
+	 * @return
+	 */
+	public boolean isClean() {
+		TypicalCaseState appState = jmeApp.getStateManager().getState(TypicalCaseState.class);
+		return appState.isClean();
+	}
 
 	public void setupCase(TypicalCase typicalCase) {
 //		找到典型案例的状态机
@@ -270,5 +279,4 @@ public class TypicalCase3D implements IContent {
 ////		private boolean inverseYCoord;
 		nameLabel.setLayoutY(canvas.getHeight() - y + 20);
 	}
-
 }

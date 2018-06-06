@@ -1,7 +1,5 @@
 package com.cas.sim.tis.app.state;
 
-import java.math.BigDecimal;
-
 import org.jetbrains.annotations.Nullable;
 
 import com.cas.circuit.vo.Archive;
@@ -114,6 +112,11 @@ public class TypicalCaseState extends BaseState {
 		super.cleanup();
 	}
 
+
+	public boolean isClean() {
+		return circuitState.isClean();
+	}
+	
 //	打开一个案例
 	public void setupCase(TypicalCase typicalCase) {
 		this.typicalCase = typicalCase;

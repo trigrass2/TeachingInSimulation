@@ -593,7 +593,7 @@ public class CircuitState extends BaseState {
 
 			Terminal pe = new Terminal();
 			pe.setElecComp(power);
-			
+
 			List<R> powerAC = R.create3Phase("AlphaPawer", r0, s0, t0, pe, 380);
 			for (R r : powerAC) {
 				r.shareVoltage();
@@ -729,6 +729,10 @@ public class CircuitState extends BaseState {
 			elecCompBox.removeFromParent();
 		}
 		super.cleanup();
+	}
+
+	public boolean isClean() {
+		return compList.size() == 0 && wireList.size() == 0;
 	}
 
 	@JmeThread
