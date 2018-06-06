@@ -26,7 +26,6 @@ import com.jme3.bounding.BoundingBox;
 import com.jme3.light.PointLight;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector2f;
-import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.Spatial.CullHint;
@@ -45,6 +44,7 @@ public class ElecCompState extends BaseState {
 	private Node root;
 	private boolean transparent;
 	private boolean explode;
+	private boolean reset;
 	private List<Spatial> shells = new ArrayList<>();
 	private boolean autoRotate;
 	private float scale = 1;
@@ -112,7 +112,7 @@ public class ElecCompState extends BaseState {
 //		MikktspaceTangentGenerator.generate(model);
 //		将模型放大100倍
 		model.scale(3);
-		
+
 		BoundingBox bound = (BoundingBox) model.getWorldBound();
 		model.setLocalTranslation(bound.getCenter().negate());
 		root.attachChild(model);
@@ -194,6 +194,13 @@ public class ElecCompState extends BaseState {
 		if (autoRotate) {
 			root.rotate(0, tpf / 2, 0);
 		}
+		if (reset) {
+			// 初始化相机
+			cameraState.reset();
+			root.rotate(0, 0, 0);
+			scale = 1;
+			reset = false;
+		}
 		pointLight.setPosition(cam.getLocation());
 		root.setLocalScale(scale);
 		super.update(tpf);
@@ -243,7 +250,7 @@ public class ElecCompState extends BaseState {
 	public void reset() {
 		if (cameraState.isInitialized()) {
 		}
-		scale = 1;
+		reset = true;
 	}
 
 	public void zoomIn() {
