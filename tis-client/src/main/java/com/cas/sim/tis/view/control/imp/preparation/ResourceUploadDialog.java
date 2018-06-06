@@ -203,7 +203,7 @@ public class ResourceUploadDialog extends DialogPane<List<Integer>> {
 						((Button) event.getSource()).setDisable(false);
 						setCloseable(true);
 					} else {
-						AlertUtil.showAlert(AlertType.INFORMATION, MsgUtil.getMessage("ftp.upload.success"));
+						AlertUtil.showAlert(dialog.getOwner(), AlertType.INFORMATION, MsgUtil.getMessage("ftp.upload.success"));
 						setResult(ids);
 					}
 				});

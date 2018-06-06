@@ -23,8 +23,12 @@ public class AlertUtil {
 	private static TipDialog dialog;
 
 	public static void showAlert(AlertType type, String reason) {
+		showAlert(GUIState.getStage(), type, reason);
+	}
+	
+	public static void showAlert(Window win, AlertType type, String reason) {
 		Alert alert = new Alert(type, reason);
-		alert.initOwner(GUIState.getStage());
+		alert.initOwner(win);
 		alert.setHeaderText(null);
 		alert.showAndWait();
 	}

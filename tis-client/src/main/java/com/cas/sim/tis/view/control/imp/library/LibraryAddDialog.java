@@ -104,6 +104,7 @@ public class LibraryAddDialog extends DialogPane<Library> {
 			}
 			Library library = new Library();
 			library.setName(name);
+			library.setNum(0);
 			library.setTime(Integer.valueOf(time));
 			library.setType(type.getType());
 
