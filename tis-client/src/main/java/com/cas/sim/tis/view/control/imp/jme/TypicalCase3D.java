@@ -159,6 +159,9 @@ public class TypicalCase3D implements IContent {
 		steamIdDialog.setHeaderText(null);
 		steamIdDialog.setContentText(MsgUtil.getMessage("typical.case.prompt.input.wire.num"));
 		steamIdDialog.getEditor().textProperty().addListener((b, o, n) -> {
+			if(n == null) {
+				return;
+			}
 			Pattern pat = Pattern.compile(REGEX_CHINESE);
 			Matcher mat = pat.matcher(n);
 			if (mat.find()) {
@@ -193,6 +196,15 @@ public class TypicalCase3D implements IContent {
 		jmeApp.stop(true);
 
 		btnController.distroy();
+	}
+	
+	/**
+	 * 判断当前接线板上是否存在元器件、导线
+	 * @return
+	 */
+	public boolean isClean() {
+		TypicalCaseState appState = jmeApp.getStateManager().getState(TypicalCaseState.class);
+		return appState.isClean();
 	}
 
 	public void setupCase(TypicalCase typicalCase) {

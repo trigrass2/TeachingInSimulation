@@ -593,7 +593,7 @@ public class CircuitState extends BaseState {
 
 			Terminal pe = new Terminal();
 			pe.setElecComp(power);
-			
+
 			List<R> powerAC = R.create3Phase("AlphaPawer", r0, s0, t0, pe, 380);
 			for (R r : powerAC) {
 				r.shareVoltage();
@@ -655,16 +655,6 @@ public class CircuitState extends BaseState {
 			wire.bind(term2);
 //			
 			Geometry wireMdl = JmeUtil.createCylinderLine(assetManager, proxy.getPointList(), proxy.getWidth(), proxy.getColor());
-
-//			加入tagName
-			BitmapText tag = new BitmapText(tagFont);
-			tag.setLocalScale(0.75f);
-			tag.setName(String.format("%s-%s", wire.getProxy().getComp1Uuid(), wire.getProxy().getComp2Uuid()));
-			tag.setText(proxy.getNumber());
-			WireNumberControl control = new WireNumberControl(cam, guiNode, tag, wire.getProxy().getPointList());
-//			默认状态下不启动
-			wireMdl.addControl(control);
-			proxy.setTagNode(tag);
 			attachToCircuit(wireMdl, wire);
 		});
 	}
@@ -729,6 +719,10 @@ public class CircuitState extends BaseState {
 			elecCompBox.removeFromParent();
 		}
 		super.cleanup();
+	}
+
+	public boolean isClean() {
+		return compList.size() == 0 && wireList.size() == 0;
 	}
 
 	@JmeThread
@@ -848,6 +842,19 @@ public class CircuitState extends BaseState {
 //		1、将导线加入场景
 // 		其实：wireNode.getChildren()是SafeArrayList类型，自带同步功能。不会出现java.util.ConcurrentModificationException
 		rootWireNode.attachChild(wireMdl);
+
+//		加入tagName
+		BitmapText tag = new BitmapText(tagFont);
+		tag.setLocalScale(0.75f);
+		tag.setName(String.format("%s-%s", wire.getProxy().getComp1Uuid(), wire.getProxy().getComp2Uuid()));
+
+		WireProxy proxy = wire.getProxy();
+		tag.setText(proxy.getNumber());
+		WireNumberControl control = new WireNumberControl(cam, guiNode, tag, wire.getProxy().getPointList());
+//		默认状态下不启动
+		wireMdl.addControl(control);
+		proxy.setTagNode(tag);
+
 // 		2、将模型与逻辑对象绑定
 		wire.setSpatial(wireMdl);
 //		3、绑定监听事件
