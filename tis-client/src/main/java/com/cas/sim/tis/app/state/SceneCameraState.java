@@ -395,4 +395,8 @@ public class SceneCameraState extends BaseState implements ActionListener, Analo
 	public Mode getMode() {
 		return mode;
 	}
+
+	public void reset() {
+		toggleOrthoPerspMode(Mode.Persp);
+	}
 }

@@ -18,6 +18,7 @@ import javafx.application.Platform;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.layout.HBox;
@@ -86,8 +87,18 @@ public class TypicalCaseMenu implements ILeftContent {
 
 	private void newCase() {
 		SpringUtil.getBean(PageController.class).showLoading();
-		TypicalCase typicalCase = new TypicalCase();
-		typicalCase3D.setupCase(typicalCase);
+		// 0、判断当前是否有接线存在
+		if (typicalCase3D.isClean()) {
+			TypicalCase typicalCase = new TypicalCase();
+			typicalCase3D.setupCase(typicalCase);
+		} else {
+			AlertUtil.showConfirm(MsgUtil.getMessage("typical.case.not.be.clean"), resp -> {
+				if (resp == ButtonType.YES) {
+					TypicalCase typicalCase = new TypicalCase();
+					typicalCase3D.setupCase(typicalCase);
+				}
+			});
+		}
 	}
 
 	private void saveCase() {

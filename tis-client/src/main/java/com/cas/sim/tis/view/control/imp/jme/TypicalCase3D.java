@@ -282,5 +282,4 @@ public class TypicalCase3D implements IContent {
 ////		private boolean inverseYCoord;
 		nameLabel.setLayoutY(canvas.getHeight() - y + 20);
 	}
-
 }
