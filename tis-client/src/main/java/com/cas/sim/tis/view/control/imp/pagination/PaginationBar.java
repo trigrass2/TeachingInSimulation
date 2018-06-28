@@ -186,6 +186,7 @@ public class PaginationBar extends HBox {
 	}
 
 	public void reload() {
+//		确保第0页刷新内容
 		if(getPageIndex() == 0) {
 			refrash();
 		}

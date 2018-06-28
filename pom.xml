@@ -24,13 +24,15 @@
 		<!-- 引擎与javafx集成版本号 -->
 		<jme3-jfx.version>1.7.5-Final</jme3-jfx.version>
 		<!-- SpringBoot版本 -->
-		<springboot.version>2.0.0.M6</springboot.version>
+		<springboot.version>2.0.2.RELEASE</springboot.version>
 		<!-- Spring版本 -->
 		<spring.version>5.0.1.RELEASE</spring.version>
 		<!-- SpringBoot集成JavaFX插件版本 -->
 		<springboot-javafx.version>2.1.5</springboot-javafx.version>
 		<!-- Spring分页插件版本 -->
 		<spring-pagehelper.version>1.2.3</spring-pagehelper.version>
+
+		<thymeleaf.version>3.0.9.RELEASE</thymeleaf.version>
 
 		<pagehelper.version>5.1.2</pagehelper.version>
 		<!-- 数据库连接驱动版本 -->
@@ -225,6 +227,12 @@
 				<groupId>com.cas</groupId>
 				<artifactId>authority-client</artifactId>
 				<version>1.0.1</version>
+				<exclusions>
+					<exclusion>
+						<groupId>org.glassfish.jersey.media</groupId>
+						<artifactId>jersey-media-json-jackson</artifactId>
+					</exclusion>
+				</exclusions>
 			</dependency>
 			<!-- 系统日志 -->
 			<dependency>
@@ -328,6 +336,27 @@
 						<artifactId>spring-boot-starter-logging</artifactId>
 					</exclusion>
 				</exclusions>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-starter-web</artifactId>
+				<version>${springboot.version}</version>
+				<exclusions>
+					<exclusion>
+						<groupId>org.springframework.boot</groupId>
+						<artifactId>spring-boot-starter-json</artifactId>
+					</exclusion>
+				</exclusions>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-starter-thymeleaf</artifactId>
+				<version>2.0.2.RELEASE</version>
+			</dependency>
+			<dependency>
+				<groupId>com.github.mxab.thymeleaf.extras</groupId>
+				<artifactId>thymeleaf-extras-data-attribute</artifactId>
+				<version>2.0.1</version>
 			</dependency>
 			<dependency>
 				<groupId>org.springframework.boot</groupId>
@@ -531,6 +560,8 @@
 					<version>3.2</version>
 					<configuration>
 						<encoding>UTF-8</encoding><!-- 指定编码格式，否则在DOS下运行mvn compile命令时会出现莫名的错误，因为系统默认使用GBK编码 -->
+						<testCompilerArgument>
+						</testCompilerArgument>
 					</configuration>
 				</plugin>
 				<!-- 发布源码插件 -->

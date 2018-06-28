@@ -8,8 +8,9 @@ mapper:
   mappers: com.cas.sim.tis.mapper.IMapper
 
 pagehelper:
-  dialect: com.github.pagehelper.dialect.helper.MySqlDialect
+  dialect: mysql
 server:
+  port: 8086
   base: 
     max-login: 3                                      # 服务器允许同时在线的人数
     port: 9000                                        # 服务器默认端口号
@@ -19,6 +20,13 @@ server:
   ftp:
     port: 21                                          # FTP服务器默认端口
 spring: 
+  thymeleaf:
+    mode: HTML
+    encoding: UTF-8
+    servlet:
+      content-type: text/html
+    cache: false
+    prefix: classpath:/templetes/
   datasource:
     type: com.alibaba.druid.pool.DruidDataSource      # 配置当前要使用的数据源的操作类型
     driver-class-name: com.mysql.jdbc.Driver          # 配置MySQL的驱动程序类

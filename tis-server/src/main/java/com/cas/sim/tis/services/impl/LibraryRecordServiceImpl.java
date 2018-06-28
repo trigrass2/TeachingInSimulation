@@ -56,7 +56,7 @@ public class LibraryRecordServiceImpl implements LibraryRecordService {
 
 			int recordId = record.getId();
 
-			List<LibraryAnswer> answers = entity.getList("entity", LibraryAnswer.class);
+			List<LibraryAnswer> answers = entity.getList("answers", LibraryAnswer.class);
 
 			for (LibraryAnswer answer : answers) {
 				answer.setRecordId(recordId);
