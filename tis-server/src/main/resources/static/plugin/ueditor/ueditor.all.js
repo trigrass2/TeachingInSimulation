@@ -5921,7 +5921,7 @@ var fillCharReg = new RegExp(domUtils.fillChar, 'g');
                     '.view{padding:0;word-wrap:break-word;cursor:text;height:90%;background-color: transparent;}\n' +
                     // 设置默认字体和字号
                     // font-family不能呢随便改，在safari下fillchar会有解析问题
-                    'body{margin:8px;font-family:Microsoft YaHei;font-size:12px;color:#fff}' +
+                    'body{margin:8px;font-family:Microsoft YaHei;font-size:12px;color:#fff;text-shadow: black 0.1em 0.1em 0.2em;}' +
                     // 设置段落间距
                     'p{margin:5px 0;}</style>' +
                     ( options.iframeCssUrl ? '<link rel=\'stylesheet\' type=\'text/css\' href=\'' + utils.unhtml(options.iframeCssUrl) + '\'/>' : '' ) +

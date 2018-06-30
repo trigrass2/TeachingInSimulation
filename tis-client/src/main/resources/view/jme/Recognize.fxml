@@ -39,8 +39,8 @@
 				</graphic>
 			</Label>
 		</HBox>
+		<padding>
+			<Insets left="10" bottom="10" />
+		</padding>
 	</HBox>
-	<padding>
-		<Insets left="10" bottom="10" />
-	</padding>
 </VBox>

@@ -18,21 +18,47 @@
 	var comp = [[${comp}]];
 	var role = [[${role}]];
 </script>
+<style type="text/css">
+.view {
+	padding: 0;
+	word-wrap: break-word;
+	cursor: text;
+	height: 90%;
+	background-color: transparent;
+}
+
+body {
+	margin: 8px;
+	font-family: Microsoft YaHei;
+	font-size: 12px;
+	color: #fff;
+	text-shadow: black 0.1em 0.1em 0.2em;
+}
+
+p {
+	margin: 5px 0;
+}
+</style>
 </head>
 <body>
-	<div class="layui-container layui-col-space20" style="width: 100%">
-		<div class="layui-row layui-col-space10">
-			<div style="text-align: right;" th:if="${role!=1}">
+	<div class="layui-container" style="width: 100%">
+		<div class="layui-row">
+			<div style="text-align: right; padding: 10px 0px;" th:if="${role!=1}">
 				<button data-method="edit" data-type="auto" class="layui-btn layui-btn-normal">编辑</button>
 				<!-- 				<button data-method="close" data-type="auto" class="layui-btn layui-btn-primary">关闭</button> -->
 			</div>
 		</div>
-		<div id="content"></div>
+		<div id="content" class="view"></div>
 	</div>
 	<script type="text/javascript">
 		
 	layui.use(['layer'],function(){
-		$("#content").html(comp.html);
+		layer.load(1);
+		if(comp.html) {
+			$("#content").html(comp.html);
+		} else {
+			$("#content").html("<div style='text-align:center;height:100%;'><h2>暂无介绍内容</h2></div>");
+		}
 		// 触发事件
 		var active = {
 // 			close : function(othis) {
@@ -47,6 +73,7 @@
 			var othis = $(this), method = othis.data('method');
 			active[method] ? active[method].call(this, othis) : '';
 		});
+		layer.closeAll();
 	});
 	
 	function edit(){

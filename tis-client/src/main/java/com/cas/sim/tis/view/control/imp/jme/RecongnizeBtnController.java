@@ -119,6 +119,7 @@ public class RecongnizeBtnController implements Initializable {
 
 	public void setElecComp(ElecComp elecComp) {
 		this.elecComp = elecComp;
+		clean();
 	}
 
 	public void preview(String html) {
@@ -129,5 +130,12 @@ public class RecongnizeBtnController implements Initializable {
 		browser.loadURL("about:blank");
 		area.setMouseTransparent(true);
 		area.getParent().setStyle("-fx-background-color:null");
+	}
+	
+	private void clean() {
+		intro.setSelected(false);
+		explode.setSelected(false);
+		transparent.setSelected(false);
+		autoRoate.setSelected(false);
 	}
 }
