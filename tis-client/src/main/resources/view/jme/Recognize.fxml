@@ -4,19 +4,19 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.control.CheckBox?>
-<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.geometry.Insets?>
 <?import com.sun.javafx.event.BasicEventDispatcher?>
 <?import com.cas.sim.tis.svg.SVGGlyph?>
 
-<VBox pickOnBounds="false" xmlns:fx="http://javafx.com/fxml/1"  fx:controller="com.cas.sim.tis.view.control.imp.jme.RecongnizeBtnController">
+<VBox pickOnBounds="false" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.cas.sim.tis.view.control.imp.jme.RecongnizeBtnController">
 	<VBox fx:id="area" VBox.vgrow="ALWAYS" mouseTransparent="true" style="background: white" />
 
 	<HBox spacing="20">
 		<HBox spacing="10">
-			<CheckBox  fx:id="intro" text="%rec.ckb.intro" styleClass="recognize-btn" />
+			<CheckBox fx:id="intro" text="%rec.ckb.intro" styleClass="recognize-btn" />
 			<CheckBox fx:id="explode" text="%rec.ckb.explode" styleClass="recognize-btn" />
 			<CheckBox fx:id="transparent" text="%rec.ckb.transparent" styleClass="recognize-btn" />
 			<CheckBox fx:id="showName" text="%rec.ckb.showName" styleClass="recognize-btn" />
@@ -25,7 +25,7 @@
 		<HBox spacing="10">
 			<Label fx:id="reset" text="%rec.lbl.reset" styleClass="recognize-btn">
 				<graphic>
-					<SVGGlyph  name="iconfont.svg.reset" size="20" fill="WHITE" />
+					<SVGGlyph name="iconfont.svg.reset" size="20" fill="WHITE" />
 				</graphic>
 			</Label>
 			<Label fx:id="zoomIn" text="%rec.lbl.zoom.in" styleClass="recognize-btn"><!-- 放大 -->
