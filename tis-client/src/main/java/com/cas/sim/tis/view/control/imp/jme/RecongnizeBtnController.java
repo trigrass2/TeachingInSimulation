@@ -87,6 +87,7 @@ public class RecongnizeBtnController implements Initializable {
 				String path = String.format("http://%s:%d/recongnize/preview/%d/%d", address, port, elecComp.getId(), role);
 				area.setMouseTransparent(false);
 				browser.loadURL(path);
+				area.getParent().setStyle("-fx-background-color:rgba(255, 255, 255, 0.2)");
 			} else {
 				closeBrowser();
 			}
@@ -127,5 +128,6 @@ public class RecongnizeBtnController implements Initializable {
 	public void closeBrowser() {
 		browser.loadURL("about:blank");
 		area.setMouseTransparent(true);
+		area.getParent().setStyle("-fx-background-color:null");
 	}
 }
