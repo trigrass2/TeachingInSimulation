@@ -39,6 +39,7 @@ public class ElecComp implements Serializable {
 	private String mdlPath;
 	private String cfgPath;
 	private String animPath;
+	private String html;
 	@Transient
 	private Spatial spatial;
 }

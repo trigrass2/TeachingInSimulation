@@ -33,6 +33,7 @@ public class Recongnize3D implements IContent {
 	private Region btns;
 	private Canvas canvas;
 	private Label nameLabel;
+	private RecongnizeBtnController btnController;
 
 	public Recongnize3D() {
 //		创建一个Canvas层，用于显示JME
@@ -75,7 +76,7 @@ public class Recongnize3D implements IContent {
 		loader.setResources(ResourceBundle.getBundle("i18n/messages"));
 		try {
 			btns = loader.load(Recongnize3D.class.getResourceAsStream("/view/jme/Recognize.fxml"));
-			RecongnizeBtnController btnController = loader.getController();
+			btnController = loader.getController();
 			btnController.setState(compState);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -105,6 +106,7 @@ public class Recongnize3D implements IContent {
 //			修改元器件模型
 			appState.setElecComp(eComp);
 		});
+		btnController.setElecComp(eComp);
 	}
 
 	@FxThread
