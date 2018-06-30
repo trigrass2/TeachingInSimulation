@@ -5918,9 +5918,11 @@ var fillCharReg = new RegExp(domUtils.fillChar, 'g');
                     '<html xmlns=\'http://www.w3.org/1999/xhtml\' class=\'view\' ><head>' +
                     '<style type=\'text/css\'>' +
                     // 设置四周的留边
+                    // XXX ueditor背景透明
                     '.view{padding:0;word-wrap:break-word;cursor:text;height:90%;background-color: transparent;}\n' +
                     // 设置默认字体和字号
                     // font-family不能呢随便改，在safari下fillchar会有解析问题
+                    // XXX 修改默认字体、样式和颜色
                     'body{margin:8px;font-family:Microsoft YaHei;font-size:12px;color:#fff;text-shadow: black 0.1em 0.1em 0.2em;}' +
                     // 设置段落间距
                     'p{margin:5px 0;}</style>' +
@@ -22400,7 +22402,10 @@ UE.plugin.register('autosave', function (){
             },
 
             'contentchange': function () {
-
+            	// XXX 用于取消自动保存
+                if (!me.getOpt('enableAutoSave')) {
+                    return;
+                }
                 if ( !saveKey ) {
                     return;
                 }
