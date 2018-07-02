@@ -45,6 +45,8 @@ public class NetworkController implements Initializable {
 	@FXML
 	private TextField basePort;
 	@FXML
+	private TextField webPort;
+	@FXML
 	private TextField ftpIP;
 	@FXML
 	private TextField ftpPort;
@@ -66,6 +68,7 @@ public class NetworkController implements Initializable {
 		// 读取服务器信息配置
 		baseIP.setText(AppPropertiesUtil.getStringValue("server.base.address", "127.0.0.1"));
 		basePort.setText(AppPropertiesUtil.getStringValue("server.base.port", "9000"));
+		webPort.setText(AppPropertiesUtil.getStringValue("server.web.port", "8086"));
 		ftpIP.setText(AppPropertiesUtil.getStringValue("server.ftp.address", "127.0.0.1"));
 		ftpPort.setText(AppPropertiesUtil.getStringValue("server.ftp.port", "21"));
 		httpdIP.setText(AppPropertiesUtil.getStringValue("server.httpd.address", "127.0.0.1"));
@@ -77,6 +80,7 @@ public class NetworkController implements Initializable {
 		// 记录服务器信息
 		AppPropertiesUtil.set("server.base.address", baseIP.getText());
 		AppPropertiesUtil.set("server.base.port", basePort.getText());
+		AppPropertiesUtil.set("server.web.port", webPort.getText());
 		AppPropertiesUtil.set("server.ftp.address", ftpIP.getText());
 		AppPropertiesUtil.set("server.ftp.port", ftpPort.getText());
 		AppPropertiesUtil.set("server.httpd.address", httpdIP.getText());

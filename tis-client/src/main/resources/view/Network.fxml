@@ -28,6 +28,7 @@
 						<RowConstraints minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES" />
 						<RowConstraints minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES" />
 						<RowConstraints minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES" />
+						<RowConstraints minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES" />
 					</rowConstraints>
 					<children>
 						<TextField fx:id="baseIP" prefHeight="40.0" promptText="%login.server.ip" styleClass="login-field">
@@ -40,22 +41,27 @@
 								<Tooltip text="%login.server.port" />
 							</tooltip>
 						</TextField>
-						<TextField fx:id="ftpIP" prefHeight="40.0" promptText="%login.ftp.ip" styleClass="login-field" GridPane.rowIndex="1">
+						<TextField fx:id="webPort" prefHeight="40.0" promptText="%login.web.port" styleClass="login-field" GridPane.columnIndex="1" GridPane.rowIndex="1">
+							<tooltip>
+								<Tooltip text="%login.web.port" />
+							</tooltip>
+						</TextField>
+						<TextField fx:id="ftpIP" prefHeight="40.0" promptText="%login.ftp.ip" styleClass="login-field" GridPane.rowIndex="2">
 							<tooltip>
 								<Tooltip text="%login.ftp.ip" />
 							</tooltip>
 						</TextField>
-						<TextField fx:id="ftpPort" prefHeight="40.0" promptText="%login.ftp.port" styleClass="login-field" GridPane.columnIndex="1" GridPane.rowIndex="1">
+						<TextField fx:id="ftpPort" prefHeight="40.0" promptText="%login.ftp.port" styleClass="login-field" GridPane.columnIndex="1" GridPane.rowIndex="2">
 							<tooltip>
 								<Tooltip text="%login.ftp.port" />
 							</tooltip>
 						</TextField>
-						<TextField fx:id="httpdIP" prefHeight="40.0" promptText="%login.httpd.ip" styleClass="login-field" GridPane.rowIndex="2">
+						<TextField fx:id="httpdIP" prefHeight="40.0" promptText="%login.httpd.ip" styleClass="login-field" GridPane.rowIndex="3">
 							<tooltip>
 								<Tooltip text="%login.httpd.ip" />
 							</tooltip>
 						</TextField>
-						<TextField fx:id="httpdPort" prefHeight="40.0" promptText="%login.httpd.port" styleClass="login-field" GridPane.columnIndex="1" GridPane.rowIndex="2">
+						<TextField fx:id="httpdPort" prefHeight="40.0" promptText="%login.httpd.port" styleClass="login-field" GridPane.columnIndex="1" GridPane.rowIndex="3">
 							<tooltip>
 								<Tooltip text="%login.httpd.port" />
 							</tooltip>
