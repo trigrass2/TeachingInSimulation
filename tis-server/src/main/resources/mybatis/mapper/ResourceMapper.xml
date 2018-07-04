@@ -80,7 +80,7 @@
 		<if test="keyword != null and keyword != ''">
 			and r.keyword like '%${keyword}%'
 		</if>
-		<if test="types.size()>0 and types != null">
+		<if test="types != null and types.size()>0">
 			and r.type in
 			<foreach item="type" collection="types" open="(" separator="," close=")">
 				#{type}
