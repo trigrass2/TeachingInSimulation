@@ -11,8 +11,8 @@ import com.cas.sim.tis.vo.LibraryRecordInfo;
 @Mapper
 public interface LibraryRecordMapper extends IMapper<LibraryRecord> {
 
-	List<LibraryRecordInfo> findRecordByPublishId(@Param("pid") int pid);
+	List<LibraryRecordInfo> findRecordByPublishId(@Param("pid") int pid, @Param("type") int type);
 
-	float getRecordScoresSumByPublishId(@Param("pid") int pid);
+	float getRecordScoresSumByPublishId(@Param("pid") int pid, @Param("type") int type);
 
 }

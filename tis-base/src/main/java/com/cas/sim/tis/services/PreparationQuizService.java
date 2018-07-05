@@ -14,8 +14,15 @@ public interface PreparationQuizService {
 	 * @return List PreparationInfo集合
 	 */
 	@ThriftMethod
-	ResponseEntity findQuizsByPreparationId(RequestEntity entity);
-
+	ResponseEntity findQuestionQuizsByPreparationId(RequestEntity entity);
+	/**
+	 * 通过备课编号获得备课故障维修和自由接线集合
+	 * @param pid 备课编号
+	 * @return List PreparationInfo集合
+	 */
+	@ThriftMethod
+	ResponseEntity findOtherQuizsByPreparationId(RequestEntity req);
+	
 	/**
 	 * 根据备课编号统计备课自由接线案例的数量
 	 * @param entity （pid 备课编号）

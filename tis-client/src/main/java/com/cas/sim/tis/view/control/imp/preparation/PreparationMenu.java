@@ -8,11 +8,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.cas.sim.tis.action.CatalogAction;
+import com.cas.sim.tis.consts.Session;
 import com.cas.sim.tis.entity.Catalog;
+import com.cas.sim.tis.message.ExamMessage;
 import com.cas.sim.tis.util.MsgUtil;
 import com.cas.sim.tis.util.SpringUtil;
+import com.cas.sim.tis.view.control.IDistory;
 import com.cas.sim.tis.view.control.ILeftContent;
+import com.cas.sim.tis.view.control.IPublish;
 import com.cas.sim.tis.view.control.imp.dialog.Dialog;
+import com.cas.sim.tis.view.control.imp.question.ExamingMenuItem;
 import com.cas.sim.tis.view.controller.PageController;
 import com.cas.sim.tis.view.controller.PageController.PageLevel;
 
@@ -31,7 +36,7 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 
-public class PreparationMenu extends VBox implements ILeftContent {
+public class PreparationMenu extends VBox implements ILeftContent, IPublish, IDistory {
 
 	private static final Logger LOG = LoggerFactory.getLogger(PreparationMenu.class);
 
@@ -39,8 +44,12 @@ public class PreparationMenu extends VBox implements ILeftContent {
 	private Label subject;
 	@FXML
 	private Accordion projects;
+	@FXML
+	private VBox menu;
 
 	private ToggleGroup group = new ToggleGroup();
+
+	private ExamingMenuItem item;
 
 	public PreparationMenu(Catalog subject) {
 		loadFXML();
@@ -78,7 +87,7 @@ public class PreparationMenu extends VBox implements ILeftContent {
 		this.subject.setText(subject.getName());
 		this.projects.getPanes().clear();
 		this.group.getToggles().clear();
-		
+
 		List<Catalog> projects = SpringUtil.getBean(CatalogAction.class).findCatalogsByParentId(subject.getId());
 		for (Catalog project : projects) {
 			TitledPane pane = new TitledPane();
@@ -90,6 +99,10 @@ public class PreparationMenu extends VBox implements ILeftContent {
 			});
 			pane.setGraphic(createGraphicTitle(project));
 			this.projects.getPanes().add(pane);
+		}
+		Integer publishId = Session.get(Session.KEY_PREPARATION_PUBLISH_ID);
+		if (publishId != null) {
+			publish(publishId);
 		}
 	}
 
@@ -151,8 +164,26 @@ public class PreparationMenu extends VBox implements ILeftContent {
 	}
 
 	@Override
+	public void publish(int id) {
+		if (!menu.getChildren().contains(item)) {
+			item = new ExamingMenuItem(ExamMessage.EXAM_TYPE_PREPARATION);
+			menu.getChildren().add(item);
+			menu.layout();
+		}
+		if (item != null) {
+			item.load(id);
+		}
+	}
+
+	@Override
+	public void distroy() {
+		if (item != null) {
+			item.distroy();
+		}
+	}
+
+	@Override
 	public Region getLeftContent() {
 		return this;
 	}
-
 }

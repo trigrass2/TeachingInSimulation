@@ -95,6 +95,39 @@
 						</padding>
 					</VBox>
 				</VBox>
+				<VBox fx:id="ask">
+					<Title title="%preparation.title.goals" />
+					<ScrollPane fitToWidth="true" hbarPolicy="NEVER" VBox.vgrow="ALWAYS">
+						<content>
+							<VBox>
+								<VBox fx:id="k" spacing="10.0">
+									<children>
+										<Label text="知识目标（K）" />
+									</children>
+									<padding>
+										<Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+									</padding>
+								</VBox>
+								<VBox fx:id="s" spacing="10.0">
+									<children>
+										<Label text="技能目标（S）" />
+									</children>
+									<padding>
+										<Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+									</padding>
+								</VBox>
+								<VBox fx:id="a" spacing="10.0">
+									<children>
+										<Label text="职业素质目标（A）" />
+									</children>
+									<padding>
+										<Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+									</padding>
+								</VBox>
+							</VBox>
+						</content>
+					</ScrollPane>
+				</VBox>
 				<Title title="%question.title.analysis" />
 				<VBox>
 					<children>

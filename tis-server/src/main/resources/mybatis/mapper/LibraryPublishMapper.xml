@@ -106,7 +106,7 @@
 		from
 		library_publish p,library l,library_record r
 		where
-		p.lid=l.id and p.id=r.pid and p.type=#{ptype} and r.creator=#{creator}
+		p.lid=l.id and p.id=r.pid and p.type=#{ptype} and r.creator=#{creator} and r.type=0
 		order by p.create_date desc
 	</select>
 	<select id="findSubmitStateById" resultMap="SubmitStateMap">

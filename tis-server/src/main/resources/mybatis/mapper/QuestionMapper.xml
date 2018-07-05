@@ -17,7 +17,7 @@
 		<result column="UPDATE_DATE" jdbcType="TIMESTAMP" property="updateDate" />
 		<result column="DEL" jdbcType="INTEGER" property="del" />
 	</resultMap>
-	<select id="findQuestionsByPublish" resultMap="BaseResultMap">
+	<select id="findQuestionsByLibraryPublish" resultMap="BaseResultMap">
 		SELECT 
 		    *
 		FROM
@@ -35,6 +35,41 @@
 		    WHERE
 		        r.id = a.LRID AND r.pid = #{pid}
 		            AND a.CORRECTED IN (1 , 2)
+		            and r.type=0
+		    GROUP BY a.qid) b ON a.id = b.qid
+		ORDER BY 
+		<choose>
+			<when test="mostWrong">
+				b.num DESC
+			</when>
+			<otherwise>
+				a.id asc
+			</otherwise>
+		</choose>
+	</select>
+	<select id="findQuestionsByPreparationPublish" resultMap="BaseResultMap">
+		SELECT 
+		    *
+		FROM
+		    (SELECT 
+		        q.*
+		    FROM
+		        question q
+		    WHERE
+		        q.id in
+		    	<foreach item="questionId" collection="questionIds" open="(" separator="," close=")">
+				#{questionId}
+				</foreach>
+		    ) a
+		        LEFT JOIN
+		    (SELECT 
+		        COUNT(*) AS num, a.qid
+		    FROM
+		        library_record r, library_answer a
+		    WHERE
+		        r.id = a.LRID AND r.pid = #{pid}
+		            AND a.CORRECTED IN (1 , 2)
+		            and r.type=1
 		    GROUP BY a.qid) b ON a.id = b.qid
 		ORDER BY 
 		<choose>

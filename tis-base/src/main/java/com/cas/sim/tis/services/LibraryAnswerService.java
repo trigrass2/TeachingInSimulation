@@ -10,7 +10,7 @@ import io.airlift.drift.annotations.ThriftService;
 public interface LibraryAnswerService {
 	/**
 	 * 根据条件查询试题答题结果
-	 * @param entity （pid 试题库发布编号；onlyWrong 是否只查错题）
+	 * @param entity （pid 试题库发布编号；recordType 考核记录类型；onlyWrong 是否只查错题）
 	 * @return 答题结果集合
 	 */
 	@ThriftMethod
@@ -19,7 +19,7 @@ public interface LibraryAnswerService {
 	/**
 	 * 考核统计
 	 * @param pid 试题库发布编号
-	 * @param entity （qid 试题编号）
+	 * @param entity （pid 试题库发布编号；recordType 考核记录类型；qid 试题编号）
 	 * @return 返回统计结果Map集合<br>
 	 *         key:AnswerState<br>
 	 *         value:人数

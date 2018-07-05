@@ -12,6 +12,7 @@ import com.cas.sim.tis.thrift.ResponseEntity;
 
 import tk.mybatis.mapper.entity.Condition;
 import tk.mybatis.mapper.entity.Example.Criteria;
+
 @Service
 public class GoalCoverageServiceImpl implements GoalCoverageService {
 
@@ -20,9 +21,9 @@ public class GoalCoverageServiceImpl implements GoalCoverageService {
 
 	@Override
 	public ResponseEntity findGoalIdsByRid(RequestEntity entity) {
-		int rid = entity.getInt("rid");
+		String rid = entity.getString("rid");
 		int type = entity.getInt("type");
-		
+
 		Condition condition = new Condition(GoalCoverage.class);
 		condition.selectProperties("goalId");
 		Criteria criteria = condition.createCriteria();
@@ -34,10 +35,10 @@ public class GoalCoverageServiceImpl implements GoalCoverageService {
 	@Override
 	public void deleteRelationship(RequestEntity entity) {
 		int gid = entity.getInt("gid");
-		int rid = entity.getInt("rid");
+		String rid = entity.getString("rid");
 		int type = entity.getInt("type");
 		int creator = entity.getInt("creator");
-		
+
 		Condition condition = new Condition(GoalCoverage.class);
 		Criteria criteria = condition.createCriteria();
 		criteria.andEqualTo("goalId", gid);

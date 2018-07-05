@@ -26,7 +26,7 @@ public class GoalCoverageAction extends BaseAction {
 	 * @param type 关联类型
 	 * @return 目标ASK编号集合(id)
 	 */
-	public List<GoalCoverage> findGoalIdsByRid(Integer rid, int type) {
+	public List<GoalCoverage> findGoalIdsByRid(String rid, int type) {
 		RequestEntity req = new RequestEntityBuilder()//
 				.set("rid", rid)//
 				.set("type", type)//
@@ -39,7 +39,7 @@ public class GoalCoverageAction extends BaseAction {
 	 * 保存目标ASK覆盖关系
 	 * @param coverage 目标ASK覆盖关系对象
 	 */
-	public void insertRelationship(Integer gid, Integer rid, int type) {
+	public void insertRelationship(Integer gid, String rid, int type) {
 		GoalCoverage coverage = new GoalCoverage();
 		coverage.setGoalId(gid);
 		coverage.setRelationId(rid);
@@ -58,7 +58,7 @@ public class GoalCoverageAction extends BaseAction {
 	 * @param type 关联类型
 	 * @param creator 关系创建人
 	 */
-	public void deleteRelationship(Integer gid, Integer rid, int type) {
+	public void deleteRelationship(Integer gid, String rid, int type) {
 		RequestEntity req = new RequestEntityBuilder()//
 				.set("gid", gid)//
 				.set("rid", rid)//
@@ -82,5 +82,4 @@ public class GoalCoverageAction extends BaseAction {
 		ResponseEntity resp = service.checkObjectiveCoverage(req);
 		return JSON.parseObject(resp.data, Boolean.class);
 	}
-
 }

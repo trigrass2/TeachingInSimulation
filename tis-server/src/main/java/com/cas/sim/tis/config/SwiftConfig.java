@@ -23,6 +23,8 @@ import com.cas.sim.tis.services.LibraryAnswerService;
 import com.cas.sim.tis.services.LibraryPublishService;
 import com.cas.sim.tis.services.LibraryRecordService;
 import com.cas.sim.tis.services.LibraryService;
+import com.cas.sim.tis.services.PreparationLibraryService;
+import com.cas.sim.tis.services.PreparationPublishService;
 import com.cas.sim.tis.services.PreparationQuizService;
 import com.cas.sim.tis.services.PreparationResourceService;
 import com.cas.sim.tis.services.PreparationService;
@@ -80,6 +82,10 @@ public class SwiftConfig {
 	@Resource
 	private PreparationQuizService preparationQuizService;
 	@Resource
+	private PreparationLibraryService preparationLibraryService;
+	@Resource
+	private PreparationPublishService preparationPublishService;
+	@Resource
 	private GoalService goalService;
 	@Resource
 	private GoalCoverageService goalCoverageService;
@@ -115,6 +121,8 @@ public class SwiftConfig {
 		services.add(new DriftService(preparationService));
 		services.add(new DriftService(preparationResourceService));
 		services.add(new DriftService(preparationQuizService));
+		services.add(new DriftService(preparationLibraryService));
+		services.add(new DriftService(preparationPublishService));
 		services.add(new DriftService(goalService));
 		services.add(new DriftService(goalCoverageService));
 		services.add(new DriftService(goalRelationshipService));

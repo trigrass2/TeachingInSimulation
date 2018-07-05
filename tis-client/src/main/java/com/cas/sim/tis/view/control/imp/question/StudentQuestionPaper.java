@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 
 import com.cas.sim.tis.action.LibraryAnswerAction;
 import com.cas.sim.tis.action.LibraryPublishAction;
+import com.cas.sim.tis.consts.LibraryRecordType;
 import com.cas.sim.tis.consts.PublishType;
 import com.cas.sim.tis.entity.LibraryAnswer;
 import com.cas.sim.tis.entity.LibraryPublish;
@@ -38,7 +39,7 @@ import javafx.scene.text.Text;
 public class StudentQuestionPaper extends HBox implements IContent {
 
 	private static final Logger LOG = LoggerFactory.getLogger(StudentQuestionPaper.class);
-	
+
 	@FXML
 	private Title title;
 	@FXML
@@ -100,8 +101,8 @@ public class StudentQuestionPaper extends HBox implements IContent {
 
 	private void loadQuestions() {
 		this.paper.getChildren().clear();
-		boolean onlyWrong = filter.getSelectedToggle()!=null;
-		List<LibraryAnswer> answers = SpringUtil.getBean(LibraryAnswerAction.class).findAnswersByPublish(pid, onlyWrong);
+		boolean onlyWrong = filter.getSelectedToggle() != null;
+		List<LibraryAnswer> answers = SpringUtil.getBean(LibraryAnswerAction.class).findAnswersByPublish(pid, LibraryRecordType.LIBRARY.getType(), onlyWrong);
 		for (int i = 0; i < answers.size(); i++) {
 			int index = i + 1;
 			LibraryAnswer answer = answers.get(i);

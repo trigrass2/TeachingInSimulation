@@ -21,15 +21,23 @@ public class ExamMessage extends AbstractMessage {
 	/**
 	 * 服务器发起考核
 	 */
-	public static final int EXAM_START = 1;
+	public static final int MESSAGE_TYPE_START = 1;
 	/**
 	 * 服务器结束考核
 	 */
-	public static final int EXAM_OVER = 2;
+	public static final int MESSAGE_TYPE_OVER = 2;
 	/**
 	 * 学生提交考核
 	 */
-	public static final int EXAM_SUBMIT = 3;
+	public static final int MESSAGE_TYPE_SUBMIT = 3;
+	/**
+	 * 试题发布
+	 */
+	public static final int EXAM_TYPE_LIBRARY = 1;
+	/**
+	 * 备课试题组发布
+	 */
+	public static final int EXAM_TYPE_PREPARATION = 2;
 	/**
 	 * 题库编号
 	 */
@@ -41,7 +49,8 @@ public class ExamMessage extends AbstractMessage {
 	/**
 	 * 信息类型
 	 */
-	private int type;
+	private int messageType;
+	private int examType;
 	/**
 	 * 学生答题结果<br>
 	 * Map<试题编号,学生答案><br>

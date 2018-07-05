@@ -9,12 +9,18 @@ import java.util.ResourceBundle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.cas.sim.tis.action.GoalAction;
 import com.cas.sim.tis.action.LibraryAnswerAction;
 import com.cas.sim.tis.action.LibraryPublishAction;
+import com.cas.sim.tis.action.PreparationPublishAction;
 import com.cas.sim.tis.action.QuestionAction;
 import com.cas.sim.tis.consts.AnswerState;
+import com.cas.sim.tis.consts.GoalType;
+import com.cas.sim.tis.consts.LibraryRecordType;
 import com.cas.sim.tis.consts.QuestionType;
+import com.cas.sim.tis.entity.Goal;
 import com.cas.sim.tis.entity.LibraryPublish;
+import com.cas.sim.tis.entity.PreparationPublish;
 import com.cas.sim.tis.entity.Question;
 import com.cas.sim.tis.util.MsgUtil;
 import com.cas.sim.tis.util.SpringUtil;
@@ -29,6 +35,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.chart.PieChart;
 import javafx.scene.chart.PieChart.Data;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Toggle;
 import javafx.scene.control.ToggleGroup;
@@ -55,6 +62,14 @@ public class TeacherQuestionPaper extends HBox implements IContent {
 	@FXML
 	private VBox paper;
 	@FXML
+	private VBox ask;
+	@FXML
+	private VBox a;
+	@FXML
+	private VBox s;
+	@FXML
+	private VBox k;
+	@FXML
 	private PieChart chart;
 	@FXML
 	private Label tip;
@@ -65,14 +80,26 @@ public class TeacherQuestionPaper extends HBox implements IContent {
 	@FXML
 	private ToggleGroup order;
 
-	private int pid;
+	private int publishId;
+	private Integer preparationLibraryId;
+	private boolean showASK;
+	private LibraryRecordType type;
 	private PreviewQuestionItem currentItem;
 
+
+	public TeacherQuestionPaper(Integer publishId) {
+		this(publishId, null, LibraryRecordType.LIBRARY);
+	}
+	
 	/**
-	 * @param pid 考核、练习发起编号
+	 * @param publishId 考核、练习发起编号
+	 * @param showASK 是否显示试题对应ASK，在备课试题测试中用到
 	 */
-	public TeacherQuestionPaper(int pid) {
-		this.pid = pid;
+	public TeacherQuestionPaper(Integer publishId,Integer preparationLibraryId, LibraryRecordType type) {
+		this.publishId = publishId;
+		this.preparationLibraryId = preparationLibraryId;
+		this.type = type;
+		this.showASK = LibraryRecordType.PREPARATION == type;
 		loadFXML();
 		initialize();
 	}
@@ -100,8 +127,13 @@ public class TeacherQuestionPaper extends HBox implements IContent {
 	 * 界面初始化
 	 */
 	private void initialize() {
-		LibraryPublish publish = SpringUtil.getBean(LibraryPublishAction.class).findPublishById(pid);
-		this.libName.setText(publish.getLibrary().getName());
+		if (LibraryRecordType.LIBRARY == type) {
+			LibraryPublish publish = SpringUtil.getBean(LibraryPublishAction.class).findPublishById(publishId);
+			this.libName.setText(publish.getLibrary().getName());
+		}else {
+			PreparationPublish publish = SpringUtil.getBean(PreparationPublishAction.class).findPublishById(publishId);
+			this.libName.setText(publish.getLibrary().getName());
+		}
 
 		chart.setOnMouseMoved(e -> {
 			tip.setTranslateX(e.getX());
@@ -116,6 +148,7 @@ public class TeacherQuestionPaper extends HBox implements IContent {
 			loadQuestions();
 		});
 		order.selectToggle(order.getToggles().get(0));
+		ask.setVisible(showASK);
 	}
 
 	private void loadQuestions() {
@@ -126,7 +159,7 @@ public class TeacherQuestionPaper extends HBox implements IContent {
 		if (toggle != null) {
 			mostWrong = Boolean.valueOf((String) order.getSelectedToggle().getUserData());
 		}
-		List<Question> questions = SpringUtil.getBean(QuestionAction.class).findQuestionsByPublishId(pid, mostWrong);
+		List<Question> questions = SpringUtil.getBean(QuestionAction.class).findQuestionsByPublishId(publishId, type.getType(), mostWrong);
 		for (int i = 0; i < questions.size(); i++) {
 			int index = i + 1;
 			Question question = questions.get(i);
@@ -150,13 +183,17 @@ public class TeacherQuestionPaper extends HBox implements IContent {
 			currentItem.getStyleClass().remove("question-selected");
 		}
 		analysis.setText(question.getAnalysis());
-		loadChart(question.getId());
+		int qid = question.getId();
+		loadChart(qid);
+		if (showASK) {
+			loadASK(qid);
+		}
 		currentItem = item;
 		currentItem.getStyleClass().add("question-selected");
 	}
 
 	private void loadChart(int qid) {
-		Map<AnswerState, Integer> statistics = SpringUtil.getBean(LibraryAnswerAction.class).statisticsByQuestionId(pid, qid);
+		Map<AnswerState, Integer> statistics = SpringUtil.getBean(LibraryAnswerAction.class).statisticsByQuestionId(publishId, type.getType(), qid);
 
 		Integer undo = statistics.get(AnswerState.ANSWER_STATE_UNDO);
 		Integer wrong = statistics.get(AnswerState.ANSWER_STATE_WRONG);
@@ -185,6 +222,27 @@ public class TeacherQuestionPaper extends HBox implements IContent {
 			rate.setText(MsgUtil.getMessage("answer.rate", 0));
 		} else {
 			rate.setText(MsgUtil.getMessage("answer.rate", MathUtil.round(2, right * 100f / total)));
+		}
+	}
+
+	private void loadASK(int qid) {
+		a.getChildren().clear();
+		s.getChildren().clear();
+		k.getChildren().clear();
+		List<Goal> goals = SpringUtil.getBean(GoalAction.class).findGoalByPreparationLibraryIdAndQuestionIds(preparationLibraryId, "[" + qid + "]");
+		for (Goal goal : goals) {
+			CheckBox checkBox = new CheckBox(goal.getName());
+			checkBox.getStyleClass().add("ask-check-box");
+			checkBox.setSelected(true);
+			checkBox.setDisable(true);
+			int type = goal.getType();
+			if (GoalType.ATTITUDE.getType() == type) {
+				a.getChildren().add(checkBox);
+			} else if (GoalType.SKILL.getType() == type) {
+				s.getChildren().add(checkBox);
+			} else if (GoalType.KNOWLEDGE.getType() == type) {
+				k.getChildren().add(checkBox);
+			}
 		}
 	}
 

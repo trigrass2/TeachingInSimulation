@@ -19,6 +19,8 @@ import com.cas.sim.tis.services.LibraryAnswerService;
 import com.cas.sim.tis.services.LibraryPublishService;
 import com.cas.sim.tis.services.LibraryRecordService;
 import com.cas.sim.tis.services.LibraryService;
+import com.cas.sim.tis.services.PreparationLibraryService;
+import com.cas.sim.tis.services.PreparationPublishService;
 import com.cas.sim.tis.services.PreparationQuizService;
 import com.cas.sim.tis.services.PreparationResourceService;
 import com.cas.sim.tis.services.PreparationService;
@@ -141,6 +143,18 @@ public class ServiceConfig {
 	@Bean
 	public PreparationQuizService preparationQuizService() {
 		DriftClient<PreparationQuizService> service = clientFactory.createDriftClient(PreparationQuizService.class);
+		return service.get();
+	}
+	
+	@Bean
+	public PreparationLibraryService preparationLibraryService() {
+		DriftClient<PreparationLibraryService> service = clientFactory.createDriftClient(PreparationLibraryService.class);
+		return service.get();
+	}
+	
+	@Bean
+	public PreparationPublishService preparationPublishService() {
+		DriftClient<PreparationPublishService> service = clientFactory.createDriftClient(PreparationPublishService.class);
 		return service.get();
 	}
 

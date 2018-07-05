@@ -13,6 +13,7 @@ import java.util.function.Function;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.StringUtils;
 
 import com.alibaba.fastjson.JSONArray;
 import com.cas.sim.tis.action.BrokenCaseAction;
@@ -20,6 +21,7 @@ import com.cas.sim.tis.action.ElecCompAction;
 import com.cas.sim.tis.action.GoalAction;
 import com.cas.sim.tis.action.GoalCoverageAction;
 import com.cas.sim.tis.action.PreparationAction;
+import com.cas.sim.tis.action.PreparationLibraryAction;
 import com.cas.sim.tis.action.PreparationQuizAction;
 import com.cas.sim.tis.action.PreparationResourceAction;
 import com.cas.sim.tis.action.ResourceAction;
@@ -38,6 +40,7 @@ import com.cas.sim.tis.entity.ElecComp;
 import com.cas.sim.tis.entity.Goal;
 import com.cas.sim.tis.entity.GoalCoverage;
 import com.cas.sim.tis.entity.Preparation;
+import com.cas.sim.tis.entity.PreparationLibrary;
 import com.cas.sim.tis.entity.PreparationQuiz;
 import com.cas.sim.tis.entity.PreparationResource;
 import com.cas.sim.tis.entity.Resource;
@@ -69,6 +72,7 @@ import javafx.scene.Node;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.TextInputDialog;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
@@ -88,6 +92,8 @@ public class PreparationDetail extends HBox implements IContent {
 	@FXML
 	private Table quizs;
 	@FXML
+	private VBox libraries;
+	@FXML
 	private VBox a;
 	@FXML
 	private VBox s;
@@ -99,6 +105,11 @@ public class PreparationDetail extends HBox implements IContent {
 
 	private Map<Integer, CheckBox> askChecks = new HashMap<Integer, CheckBox>();
 	private Map<Integer, CheckBox> oChecks = new HashMap<Integer, CheckBox>();
+
+	private List<PreparationLibraryItem> libraryItems = new ArrayList<>();
+
+	// 当前ASK目标属于（1-任务，2-试题组编号_试题编号）
+	private GoalCoverage coverage = new GoalCoverage();
 
 	public PreparationDetail(Catalog task) {
 		this.task = task;
@@ -132,7 +143,7 @@ public class PreparationDetail extends HBox implements IContent {
 		loadPreparation();
 
 		refreshASK();
-		loadASK(task.getId(), GoalRelationshipType.TASK.getType());
+		loadASK(task.getId().toString(), GoalRelationshipType.TASK.getType());
 
 //		loadPoints();
 		loadResources();
@@ -200,6 +211,17 @@ public class PreparationDetail extends HBox implements IContent {
 			delete.setMaxWidth(58);
 			resces.getColumns().add(delete);
 		}
+		resces.selectedRowProperty().addListener((b, o, n) -> {
+			if (n == null) {
+				loadASK(task.getId().toString(), GoalRelationshipType.TASK.getType());
+			} else {
+				// 清空其他选中项
+				for (PreparationLibraryItem libraryItem : libraryItems) {
+					libraryItem.selectPreparationQuestionItem(null);
+				}
+				quizs.clearSelectedRow();
+			}
+		});
 	}
 
 	private void createQuizTable() {
@@ -238,7 +260,7 @@ public class PreparationDetail extends HBox implements IContent {
 		view.setCellFactory(BtnCell.forTableColumn(MsgUtil.getMessage("button.view"), Priority.ALWAYS, "blue-btn", rid -> {
 			PreparationQuiz preparationQuiz = SpringUtil.getBean(PreparationQuizAction.class).findQuizById((Integer) rid);
 			int type = preparationQuiz.getType();
-			if (PreparationQuizType.LIBRARY.getType() == type) {
+			if (PreparationQuizType.QUESTION.getType() == type) {
 				openLibrary(preparationQuiz.getRelationId());
 			} else if (PreparationQuizType.BROKEN_CASE.getType() == type) {
 				openBrokenCase(preparationQuiz.getRelationId());
@@ -265,15 +287,20 @@ public class PreparationDetail extends HBox implements IContent {
 		}
 		quizs.selectedRowProperty().addListener((b, o, n) -> {
 			if (n == null) {
-				loadASK(task.getId(), GoalRelationshipType.TASK.getType());
+				loadASK(task.getId().toString(), GoalRelationshipType.TASK.getType());
 			} else {
-				Integer rid = n.getItems().getIntValue("id");
-				loadASK(rid, GoalRelationshipType.QUIZ.getType());
+				// 清空其他选中项
+				for (PreparationLibraryItem libraryItem : libraryItems) {
+					libraryItem.selectPreparationQuestionItem(null);
+				}
+				resces.clearSelectedRow();
 			}
 		});
 	}
 
-	private void loadASK(Integer rid, int type) {
+	private void loadASK(String rid, int type) {
+		coverage.setRelationId(rid);
+		coverage.setType(type);
 		List<GoalCoverage> coverages = SpringUtil.getBean(GoalCoverageAction.class).findGoalIdsByRid(rid, type);
 		for (CheckBox box : askChecks.values()) {
 			box.setSelected(false);
@@ -324,11 +351,32 @@ public class PreparationDetail extends HBox implements IContent {
 		this.resces.build();
 	}
 
-	private void loadQuizs() {
+	public void loadQuizs() {
 		if (preparation == null) {
 			return;
 		}
-		List<PreparationInfo> quizs = SpringUtil.getBean(PreparationQuizAction.class).findQuizsByPreparationId(preparation.getId());
+		libraries.getChildren().clear();
+		List<PreparationLibrary> libraries = SpringUtil.getBean(PreparationLibraryAction.class).findPreparationLibraryByPreparationId(preparation.getId());
+		for (PreparationLibrary library : libraries) {
+			PreparationLibraryItem item = new PreparationLibraryItem(library, this);
+			item.selectedPreparationQuestionItemProperty().addListener((b, o, n) -> {
+				if (n == null) {
+					return;
+				}
+				// 清空其他选中项
+				for (PreparationLibraryItem libraryItem : libraryItems) {
+					if (item != libraryItem) {
+						libraryItem.selectPreparationQuestionItem(null);
+					}
+				}
+				resces.clearSelectedRow();
+				String rid = String.format("%d_%d", library.getId(), n.getQuestionId());
+				loadASK(rid, GoalRelationshipType.QUIZ.getType());
+			});
+			this.libraries.getChildren().add(item);
+			this.libraryItems.add(item);
+		}
+		List<PreparationQuiz> quizs = SpringUtil.getBean(PreparationQuizAction.class).findOtherQuizsByPreparationId(preparation.getId());
 		JSONArray array = new JSONArray();
 		array.addAll(quizs);
 		this.quizs.setItems(array);
@@ -367,10 +415,12 @@ public class PreparationDetail extends HBox implements IContent {
 				checkBox.getStyleClass().add("ask-check-box");
 				checkBox.setOnAction(e -> {
 					// 根据选择增删目标关系
+					String rid = coverage.getRelationId();
+					Integer ctype = coverage.getType();
 					if (checkBox.isSelected()) {
-						SpringUtil.getBean(GoalCoverageAction.class).insertRelationship(id, task.getId(), GoalRelationshipType.TASK.getType());
+						SpringUtil.getBean(GoalCoverageAction.class).insertRelationship(id, rid, ctype);
 					} else {
-						SpringUtil.getBean(GoalCoverageAction.class).deleteRelationship(id, task.getId(), GoalRelationshipType.TASK.getType());
+						SpringUtil.getBean(GoalCoverageAction.class).deleteRelationship(id, rid, ctype);
 					}
 					// 获得当前选择的ASK满足的O
 					for (Entry<Integer, CheckBox> entry : oChecks.entrySet()) {
@@ -449,15 +499,25 @@ public class PreparationDetail extends HBox implements IContent {
 
 	@FXML
 	private void quiz() {
-		Dialog<Integer> dialog = new Dialog<>();
-		dialog.setDialogPane(new LibrarySelectDialog());
-		dialog.setTitle(MsgUtil.getMessage("preparation.question.library"));
-		dialog.setPrefSize(640, 500);
-		dialog.showAndWait().ifPresent(id -> {
-			if (id == null) {
+//		Dialog<List<Integer>> dialog = new Dialog<>();
+//		dialog.setDialogPane(new LibrarySelectDialog());
+//		dialog.setTitle(MsgUtil.getMessage("preparation.question.library"));
+//		dialog.setPrefSize(1000, 600);
+//		dialog.showAndWait().ifPresent(questionIds -> {
+//			if (questionIds == null) {
+//				return;
+//			}
+//			addQuiz(questionIds, PreparationQuizType.QUESTION.getType());
+//		});
+		TextInputDialog steamIdDialog = new TextInputDialog();
+		steamIdDialog.setTitle(MsgUtil.getMessage("preparation.question.library"));
+		steamIdDialog.setHeaderText(null);
+		steamIdDialog.setContentText(MsgUtil.getMessage("preparation.prompt.input.question.library"));
+		steamIdDialog.showAndWait().ifPresent(libraryName -> {
+			if (StringUtils.isEmpty(libraryName)) {
 				return;
 			}
-			addQuiz(id, PreparationQuizType.LIBRARY.getType());
+			addPreparationLibrary(libraryName);
 		});
 	}
 
@@ -473,7 +533,7 @@ public class PreparationDetail extends HBox implements IContent {
 			if (id == null) {
 				return;
 			}
-			addQuiz(id, PreparationQuizType.BROKEN_CASE.getType());
+			addQuiz(Arrays.asList(new Integer[] { id }), PreparationQuizType.BROKEN_CASE.getType());
 		});
 	}
 
@@ -511,13 +571,30 @@ public class PreparationDetail extends HBox implements IContent {
 		}
 	}
 
-	private void addQuiz(Integer id, int type) {
-		PreparationQuiz quiz = new PreparationQuiz();
-		quiz.setRelationId(id);
-		quiz.setPreparationId(preparation.getId());
-		quiz.setType(type);
+	private void addQuiz(List<Integer> ids, int type) {
+		List<PreparationQuiz> preparationQuizs = new ArrayList<PreparationQuiz>();
+		for (Integer id : ids) {
+			PreparationQuiz quiz = new PreparationQuiz();
+			quiz.setRelationId(id);
+			quiz.setPreparationId(preparation.getId());
+			quiz.setType(type);
+			preparationQuizs.add(quiz);
+		}
 		try {
-			SpringUtil.getBean(PreparationQuizAction.class).addQuiz(quiz);
+			SpringUtil.getBean(PreparationQuizAction.class).addQuiz(preparationQuizs);
+			loadQuizs();
+			AlertUtil.showAlert(AlertType.INFORMATION, MsgUtil.getMessage("alert.information.data.add.success"));
+		} catch (Exception e) {
+			e.printStackTrace();
+			AlertUtil.showAlert(AlertType.ERROR, e.getMessage());
+		}
+	}
+
+	private void addPreparationLibrary(String libraryName) {
+		PreparationLibrary library = new PreparationLibrary();
+		library.setName(libraryName);
+		try {
+			SpringUtil.getBean(PreparationLibraryAction.class).addPreparationLibrary(preparation.getId(), library);
 			loadQuizs();
 			AlertUtil.showAlert(AlertType.INFORMATION, MsgUtil.getMessage("alert.information.data.add.success"));
 		} catch (Exception e) {

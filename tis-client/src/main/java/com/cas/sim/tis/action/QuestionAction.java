@@ -1,10 +1,12 @@
 package com.cas.sim.tis.action;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Resource;
 
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import com.alibaba.fastjson.JSON;
 import com.cas.sim.tis.entity.Question;
@@ -63,12 +65,14 @@ public class QuestionAction extends BaseAction {
 	/**
 	 * 根据发布编号查询试题集合
 	 * @param pid 发布编号
+	 * @param type 
 	 * @param mostWrong 是否按错误最多排序
 	 * @return 试题集合
 	 */
-	public List<Question> findQuestionsByPublishId(int pid, boolean mostWrong) {
+	public List<Question> findQuestionsByPublishId(int pid, int type, boolean mostWrong) {
 		RequestEntity req = new RequestEntityBuilder()//
 				.set("pid", pid)//
+				.set("type", type)//
 				.set("mostWrong", mostWrong)//
 				.build();
 		ResponseEntity resp = service.findQuestionsByPublishId(req);
@@ -99,5 +103,21 @@ public class QuestionAction extends BaseAction {
 				.build();
 		ResponseEntity resp = service.countQuestionByLibraryId(req);
 		return Integer.parseInt(resp.data) > 0;
+	}
+
+	/**
+	 * 根据试题编号集合查询试题集合
+	 * @param questionIds 试题编号集合
+	 * @return List 试题集合
+	 */
+	public List<Question> findQuestionsByQuestionIds(String questionIds) {
+		if (StringUtils.isEmpty(questionIds)) {
+			return new ArrayList<Question>();
+		}
+		RequestEntity req = new RequestEntityBuilder()//
+				.set("questionIds", questionIds)//
+				.build();
+		ResponseEntity resp = service.findQuestionsByQuestionIds(req);
+		return JSON.parseArray(resp.data, Question.class);
 	}
 }

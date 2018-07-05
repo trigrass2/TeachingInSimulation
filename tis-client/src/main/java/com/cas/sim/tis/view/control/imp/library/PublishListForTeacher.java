@@ -45,7 +45,7 @@ import javafx.util.StringConverter;
  * @修改人 Caowj
  */
 public class PublishListForTeacher extends HBox implements IContent {
-	
+
 	private static final Logger LOG = LoggerFactory.getLogger(PublishListForTeacher.class);
 
 	@FXML

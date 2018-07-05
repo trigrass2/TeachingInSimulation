@@ -10,6 +10,7 @@ import org.springframework.util.StringUtils;
 import com.cas.sim.tis.Application;
 import com.cas.sim.tis.action.LibraryRecordAction;
 import com.cas.sim.tis.consts.AnswerState;
+import com.cas.sim.tis.consts.LibraryRecordType;
 import com.cas.sim.tis.consts.QuestionType;
 import com.cas.sim.tis.consts.Session;
 import com.cas.sim.tis.entity.Library;
@@ -352,6 +353,7 @@ public class ExamController {
 		record.setScore(score);
 		record.setPublishId(pid);
 		record.setCreator(Session.get(Session.KEY_LOGIN_ID));
+		record.setType(LibraryRecordType.LIBRARY.getType());
 
 		List<LibraryAnswer> libraryAnswers = new ArrayList<>(this.answers.values());
 

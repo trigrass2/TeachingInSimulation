@@ -3,7 +3,7 @@
 <mapper namespace="com.cas.sim.tis.mapper.GoalCoverageMapper">
 	<resultMap id="BaseResultMap" type="com.cas.sim.tis.entity.GoalCoverage">
 		<id column="ID" jdbcType="INTEGER" property="id" />
-		<result column="RID" jdbcType="INTEGER" property="relationId" />
+		<result column="RID" jdbcType="VARCHAR" property="relationId" />
 		<result column="GID" jdbcType="INTEGER" property="goalId" />
 		<result column="TYPE" jdbcType="INTEGER" property="type" />
 		<result column="CREATOR" jdbcType="INTEGER" property="creator" />

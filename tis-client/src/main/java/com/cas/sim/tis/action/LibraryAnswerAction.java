@@ -27,9 +27,10 @@ public class LibraryAnswerAction extends BaseAction {
 	 * @param onlyWrong 是否只查错题
 	 * @return 答题结果集合
 	 */
-	public List<LibraryAnswer> findAnswersByPublish(int pid, boolean onlyWrong) {
+	public List<LibraryAnswer> findAnswersByPublish(int pid, int recordType, boolean onlyWrong) {
 		RequestEntity req = new RequestEntityBuilder()//
 				.set("pid", pid)//
+				.set("recordType", recordType)//
 				.set("onlyWrong", onlyWrong)//
 				.build();
 		ResponseEntity resp = service.findAnswersByPublish(req);
@@ -39,14 +40,16 @@ public class LibraryAnswerAction extends BaseAction {
 	/**
 	 * 考核统计
 	 * @param pid 试题库发布编号
+	 * @param recordType 发布类型
 	 * @param qid 试题编号
 	 * @return 返回统计结果Map集合<br>
 	 *         key:AnswerState<br>
 	 *         value:人数
 	 */
-	public Map<AnswerState, Integer> statisticsByQuestionId(int pid, int qid) {
+	public Map<AnswerState, Integer> statisticsByQuestionId(int pid, int recordType, int qid) {
 		RequestEntity req = new RequestEntityBuilder()//
 				.set("pid", pid)//
+				.set("recordType", recordType)//
 				.set("qid", qid)//
 				.build();
 		ResponseEntity resp = service.statisticsByQuestionId(req);

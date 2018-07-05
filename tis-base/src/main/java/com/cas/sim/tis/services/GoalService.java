@@ -17,4 +17,12 @@ public interface GoalService {
 	@ThriftMethod
 	ResponseEntity findGoalsByRid(RequestEntity entity);
 
+	/**
+	 * 通过ASK覆盖关联编号与ASK覆盖关联类型获得ASK目标集合
+	 * @param entity （relationIds ASK覆盖关联编号；type ASK覆盖关联类型）
+	 * @return ASK目标集合
+	 */
+	@ThriftMethod
+	ResponseEntity findGoalsByCoverageRelationIdsAndType(RequestEntity req);
+
 }

@@ -22,7 +22,7 @@ public class GoalCoverage implements Serializable {
 	@Id
 	private Integer id;
 	@Column(name = "RID")
-	private Integer relationId;
+	private String relationId;
 	@Column(name = "GID")
 	private Integer goalId;
 	private Integer type;

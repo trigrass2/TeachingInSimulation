@@ -91,6 +91,7 @@
 														<VBox>
 															<children>
 																<Table fx:id="quizs" serial="true" rowHeight="45" rowsSpacing="2" spacing="10" headerable="false" separatorable="false" normalStyleClass="table-row" hoverStyleClass="table-row-hover" selectedStyleClass="table-row-selected" />
+																<VBox fx:id="libraries" spacing="10"></VBox>
 															</children>
 														</VBox>
 													</content>
@@ -108,13 +109,13 @@
 				</ScrollPane>
 			</children>
 		</VBox>
-		<VBox maxWidth="435.0" style="-fx-background-color: #fbfbfb;" HBox.hgrow="ALWAYS">
+		<VBox maxWidth="435.0" style="-fx-background-color: #fbfbfb;">
 			<padding>
 				<Insets bottom="20.0" top="20.0" />
 			</padding>
 			<children>
 				<Title title="%preparation.title.goals" />
-				<ScrollPane maxWidth="435.0" fitToWidth="true" VBox.vgrow="ALWAYS" hbarPolicy="NEVER" style="fx-background-color:red">
+				<ScrollPane maxWidth="435.0" fitToWidth="true" VBox.vgrow="ALWAYS" hbarPolicy="NEVER">
 					<content>
 						<VBox>
 							<VBox fx:id="k" spacing="10.0">

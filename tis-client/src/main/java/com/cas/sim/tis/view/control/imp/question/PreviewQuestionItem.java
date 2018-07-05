@@ -7,6 +7,7 @@ import com.cas.sim.tis.entity.Question;
 import com.cas.sim.tis.util.MsgUtil;
 import com.cas.util.StringUtil;
 
+import javafx.geometry.Insets;
 import javafx.scene.control.Label;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.Priority;
@@ -22,6 +23,8 @@ public class PreviewQuestionItem extends VBox {
 		this.index = index;
 		this.showReference = showReference;
 		this.getStyleClass().add("question");
+		this.setSpacing(20);
+		this.setPadding(new Insets(20));
 		loadQuestion(type, question);
 	}
 

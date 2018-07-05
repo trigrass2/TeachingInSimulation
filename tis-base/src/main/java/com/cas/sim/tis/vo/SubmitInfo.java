@@ -21,4 +21,5 @@ public class SubmitInfo implements Serializable {
 	private String code;
 	private String name;
 	private Boolean submited;
+	private Integer score;
 }

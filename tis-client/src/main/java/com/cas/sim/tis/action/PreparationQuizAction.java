@@ -13,7 +13,7 @@ import com.cas.sim.tis.services.PreparationQuizService;
 import com.cas.sim.tis.thrift.RequestEntity;
 import com.cas.sim.tis.thrift.RequestEntityBuilder;
 import com.cas.sim.tis.thrift.ResponseEntity;
-import com.cas.sim.tis.vo.PreparationInfo;
+import com.cas.sim.tis.vo.PreparationQuizInfo;
 
 @Component
 public class PreparationQuizAction extends BaseAction {
@@ -25,12 +25,24 @@ public class PreparationQuizAction extends BaseAction {
 	 * @param pid 备课编号
 	 * @return List PreparationInfo集合
 	 */
-	public List<PreparationInfo> findQuizsByPreparationId(Integer pid) {
+	public List<PreparationQuizInfo> findQuestionQuizsByPreparationId(Integer pid) {
 		RequestEntity req = new RequestEntityBuilder()//
 				.set("pid", pid)//
 				.build();
-		ResponseEntity resp = service.findQuizsByPreparationId(req);
-		return JSON.parseArray(resp.data, PreparationInfo.class);
+		ResponseEntity resp = service.findQuestionQuizsByPreparationId(req);
+		return JSON.parseArray(resp.data, PreparationQuizInfo.class);
+	}
+	/**
+	 * 通过备课编号获得备课故障维修和自由接线集合
+	 * @param pid 备课编号
+	 * @return List PreparationInfo集合
+	 */
+	public List<PreparationQuiz> findOtherQuizsByPreparationId(Integer pid) {
+		RequestEntity req = new RequestEntityBuilder()//
+				.set("pid", pid)//
+				.build();
+		ResponseEntity resp = service.findOtherQuizsByPreparationId(req);
+		return JSON.parseArray(resp.data, PreparationQuiz.class);
 	}
 
 	/**
@@ -50,11 +62,13 @@ public class PreparationQuizAction extends BaseAction {
 	 * 保存备课试题对象
 	 * @param quiz 备课试题对象
 	 */
-	public void addQuiz(PreparationQuiz quiz) {
-		quiz.setCreator(Session.get(Session.KEY_LOGIN_ID));
+	public void addQuiz(List<PreparationQuiz> quizs) {
+		for (PreparationQuiz quiz : quizs) {
+			quiz.setCreator(Session.get(Session.KEY_LOGIN_ID));
+		}
 
 		RequestEntity req = new RequestEntityBuilder()//
-				.set("quiz", quiz)//
+				.set("quizs", quizs)//
 				.build();
 		service.savePreparationQuiz(req);
 	}
@@ -72,5 +86,4 @@ public class PreparationQuizAction extends BaseAction {
 		ResponseEntity resp = service.countFreeQuizByPreparationId(req);
 		return JSON.parseObject(resp.data, Integer.class) > 0;
 	}
-
 }

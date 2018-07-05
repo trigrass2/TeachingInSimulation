@@ -22,7 +22,7 @@ public class LibraryAnswerServiceImpl implements LibraryAnswerService {
 
 	@Override
 	public ResponseEntity findAnswersByPublish(RequestEntity entity) {
-		List<LibraryAnswer> result = mapper.findAnswersByPublish(entity.getInt("pid"), entity.getBoolean("onlyWrong"));
+		List<LibraryAnswer> result = mapper.findAnswersByPublish(entity.getInt("pid"), entity.getInt("recordType"), entity.getBoolean("onlyWrong"));
 		return ResponseEntity.success(result);
 	}
 
@@ -32,7 +32,7 @@ public class LibraryAnswerServiceImpl implements LibraryAnswerService {
 
 		Map<AnswerState, Integer> statistics = new HashMap<>();
 		for (AnswerState state : AnswerState.values()) {
-			int num = answerMapper.statisticsByQuestionId(entity.getInt("pid"), entity.getInt("qid"), state.getType());
+			int num = answerMapper.statisticsByQuestionId(entity.getInt("pid"), entity.getInt("recordType"), entity.getInt("qid"), state.getType());
 			statistics.put(state, num);
 		}
 		return ResponseEntity.success(statistics);

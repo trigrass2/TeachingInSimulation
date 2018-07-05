@@ -16,4 +16,15 @@
 		from goal g, goal_relationship r
 		where r.rid=${rid} and r.gid=g.id and r.type=${type}
 	</select>
+	<select id="findGoalsByCoverageRelationIdsAndType" resultMap="BaseResultMap">
+		select distinct g.id,g.name,g.type
+		from goal g, goal_coverage c
+		where c.gid=g.id and c.type=${type}
+		<if test="relationIds != null and relationIds.size()>0">
+			and c.rid in
+			<foreach item="relationId" collection="relationIds" open="(" separator="," close=")">
+				#{relationId}
+			</foreach>
+		</if>
+	</select>
 </mapper>

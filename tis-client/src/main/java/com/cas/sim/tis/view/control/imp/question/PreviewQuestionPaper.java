@@ -276,7 +276,7 @@ public class PreviewQuestionPaper extends HBox implements IContent {
 	@FXML
 	private void publish() {
 		// 判断当前是否有考核正在进行
-		if (Session.get(Session.KEY_LIBRARY_PUBLISH_ID) != null) {
+		if (Session.get(Session.KEY_LIBRARY_PUBLISH_ID) != null || Session.get(Session.KEY_PREPARATION_PUBLISH_ID) != null) {
 			AlertUtil.showAlert(AlertType.WARNING, MsgUtil.getMessage("alert.warning.examing"));
 			return;
 		}

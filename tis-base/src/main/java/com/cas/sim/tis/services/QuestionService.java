@@ -32,6 +32,14 @@ public interface QuestionService {
 	 */
 	@ThriftMethod
 	ResponseEntity findQuestionsByPublishId(RequestEntity entity);
+	
+	/**
+	 * 根据试题编号集合查询试题集合
+	 * @param entity （questionIds 试题编号集合）
+	 * @return List 试题集合
+	 */
+	@ThriftMethod
+	ResponseEntity findQuestionsByQuestionIds(RequestEntity req);
 
 	/**
 	 * 批量新增试题

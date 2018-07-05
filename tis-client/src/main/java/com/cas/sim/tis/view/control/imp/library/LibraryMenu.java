@@ -3,6 +3,7 @@ package com.cas.sim.tis.view.control.imp.library;
 import com.cas.sim.tis.consts.PublishType;
 import com.cas.sim.tis.consts.RoleConst;
 import com.cas.sim.tis.consts.Session;
+import com.cas.sim.tis.message.ExamMessage;
 import com.cas.sim.tis.util.MsgUtil;
 import com.cas.sim.tis.util.SpringUtil;
 import com.cas.sim.tis.view.control.IDistory;
@@ -77,7 +78,7 @@ public class LibraryMenu extends LeftMenu implements IPublish, IDistory {
 	@Override
 	public void publish(int id) {
 		if (!menu.getChildren().contains(item)) {
-			item = new ExamingMenuItem();
+			item = new ExamingMenuItem(ExamMessage.EXAM_TYPE_LIBRARY);
 			menu.getChildren().add(item);
 			menu.layout();
 		}

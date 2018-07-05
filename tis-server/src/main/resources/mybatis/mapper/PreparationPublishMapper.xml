@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cas.sim.tis.mapper.PreparationPublishMapper">
+	<resultMap id="BaseResultMap" type="com.cas.sim.tis.entity.PreparationPublish">
+		<id column="ID" jdbcType="INTEGER" property="id" />
+		<result column="PQID" jdbcType="INTEGER" property="preparationQuizId" />
+		<result column="CID" jdbcType="INTEGER" property="classId" />
+		<result column="PUBLISHER" jdbcType="INTEGER" property="publisher" />
+		<result column="PUBLISH_DATE" jdbcType="TIMESTAMP" property="publishDate" />
+	</resultMap>
+	<resultMap id="BaseResultExtMap" type="com.cas.sim.tis.entity.PreparationPublish" extends="BaseResultMap">
+		<id column="ID" jdbcType="INTEGER" property="id" />
+		<result column="PQID" jdbcType="INTEGER" property="preparationQuizId" />
+		<result column="CID" jdbcType="INTEGER" property="classId" />
+		<result column="PUBLISHER" jdbcType="INTEGER" property="publisher" />
+		<result column="PUBLISH_DATE" jdbcType="TIMESTAMP" property="publishDate" />
+		<association property="library" javaType="com.cas.sim.tis.entity.PreparationLibrary">
+			<id column="LID" jdbcType="INTEGER" property="id" />
+			<result column="LNAME" jdbcType="VARCHAR" property="name" />
+			<result column="QIDS" jdbcType="INTEGER" property="questionIds" />
+		</association>
+		<association property="clazz" javaType="com.cas.sim.tis.entity.Class">
+			<id column="CID" jdbcType="INTEGER" property="id" />
+			<result column="CNAME" jdbcType="VARCHAR" property="name" />
+		</association>
+	</resultMap>
+	<resultMap id="SubmitStateMap" type="com.cas.sim.tis.vo.SubmitInfo">
+		<result column="CODE" jdbcType="VARCHAR" property="code" />
+		<result column="NAME" jdbcType="VARCHAR" property="name" />
+		<result column="SUBMITED" jdbcType="INTEGER" property="submited" />
+	</resultMap>
+	<select id="findPublishById" resultMap="BaseResultExtMap">
+		SELECT
+		a.*, c.id AS cid, c.name AS cname
+		FROM
+		(SELECT
+		p.id,
+		p.cid,
+		p.rid,
+		l.id AS lid,
+		l.name AS lname,
+		l.qids AS qids
+		FROM
+		preparation_publish p, preparation_library l
+		WHERE
+		p.rid = l.id
+		AND p.id = #{id}) a
+		LEFT JOIN
+		class c ON a.cid = c.id
+	</select>
+	<select id="findSubmitStateById" resultMap="SubmitStateMap">
+		SELECT
+		a.code, a.name, COUNT(r.id) as submited, r.score
+		FROM
+		(SELECT
+		p.id AS pid, u.id AS uid, u.code, u.name
+		FROM
+		preparation_publish p, user u
+		WHERE
+		p.cid = u.cid AND p.id = #{id}) a
+		LEFT JOIN
+		library_record r ON a.pid = r.pid and r.creator=a.uid and r.type=1
+		GROUP BY a.code , a.name;
+	</select>
+</mapper>

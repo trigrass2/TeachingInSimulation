@@ -1,17 +1,23 @@
 package com.cas.sim.tis.view.control.imp.preparation;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.alibaba.fastjson.JSONArray;
 import com.cas.sim.tis.action.LibraryAction;
+import com.cas.sim.tis.action.QuestionAction;
 import com.cas.sim.tis.consts.LibraryType;
+import com.cas.sim.tis.consts.QuestionType;
 import com.cas.sim.tis.entity.Library;
+import com.cas.sim.tis.entity.Question;
 import com.cas.sim.tis.util.MsgUtil;
 import com.cas.sim.tis.util.SpringUtil;
 import com.cas.sim.tis.view.control.imp.SearchBox;
+import com.cas.sim.tis.view.control.imp.Title;
 import com.cas.sim.tis.view.control.imp.dialog.DialogPane;
+import com.cas.sim.tis.view.control.imp.question.PreviewQuestionItem;
+import com.cas.sim.tis.view.control.imp.table.BtnCell;
 import com.cas.sim.tis.view.control.imp.table.Column;
-import com.cas.sim.tis.view.control.imp.table.Row;
 import com.cas.sim.tis.view.control.imp.table.Table;
 
 import javafx.geometry.Insets;
@@ -26,17 +32,30 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 
-public class LibrarySelectDialog extends DialogPane<Integer> {
+public class LibrarySelectDialog extends DialogPane<List<Integer>> {
 
 	private ToggleGroup group = new ToggleGroup();
 	private SearchBox search;
 	private Table table;
 
+	private VBox libraryPane;
+	private VBox questionPane;
+	private Title title;
+	private VBox quetionList;
+
+	private List<Integer> questionIds = new ArrayList<>();
+
 	public LibrarySelectDialog() {
-		VBox box = new VBox(10);
-		VBox.setVgrow(box, Priority.ALWAYS);
-		box.setAlignment(Pos.TOP_CENTER);
-		box.setPadding(new Insets(20));
+		createLibraryPane();
+		createQuestionPane();
+		getChildren().add(libraryPane);
+	}
+
+	private void createLibraryPane() {
+		libraryPane = new VBox(10);
+		VBox.setVgrow(libraryPane, Priority.ALWAYS);
+		libraryPane.setAlignment(Pos.TOP_CENTER);
+		libraryPane.setPadding(new Insets(20));
 
 		HBox toggleBox = new HBox(10);
 		for (LibraryType libraryType : LibraryType.values()) {
@@ -81,9 +100,54 @@ public class LibrarySelectDialog extends DialogPane<Integer> {
 		name.setKey("name");
 		name.setText(MsgUtil.getMessage("library.name"));
 		name.setPrefWidth(250);
-		table.getColumns().addAll(primary, name);
+		// 查看按钮
+		Column<String> view = new Column<String>();
+		view.setCellFactory(BtnCell.forTableColumn(MsgUtil.getMessage("button.view"), Priority.ALWAYS, "blue-btn", id -> {
+			getChildren().remove(libraryPane);
+			getChildren().add(questionPane);
+			loadQuestions((Integer) id);
+		}));
+		view.setAlignment(Pos.CENTER_RIGHT);
+		table.getColumns().addAll(primary, name, view);
 
 		ScrollPane scroll = new ScrollPane(table);
+		scroll.setHbarPolicy(ScrollBarPolicy.NEVER);
+		scroll.setFitToWidth(true);
+		VBox.setVgrow(scroll, Priority.ALWAYS);
+
+		libraryPane.getChildren().addAll(toggleBox, scroll);
+
+		group.selectToggle(group.getToggles().get(0));
+	}
+
+	private void createQuestionPane() {
+		questionPane = new VBox(10);
+		VBox.setVgrow(questionPane, Priority.ALWAYS);
+		questionPane.setAlignment(Pos.TOP_CENTER);
+		questionPane.setPadding(new Insets(20, 20, 20, 0));
+
+		HBox box = new HBox(10);
+		title = new Title();
+
+		HBox btn = new HBox();
+		btn.setAlignment(Pos.CENTER_RIGHT);
+		HBox.setHgrow(btn, Priority.ALWAYS);
+		
+		Button button = new Button(MsgUtil.getMessage("button.back"));
+		button.getStyleClass().add("blue-btn");
+		button.setOnAction(e -> {
+			getChildren().add(libraryPane);
+			getChildren().remove(questionPane);
+			questionIds.clear();
+		});
+		btn.getChildren().add(button);
+		
+		box.getChildren().addAll(title, btn);
+
+		quetionList = new VBox(10);
+		quetionList.setPadding(new Insets(10));
+
+		ScrollPane scroll = new ScrollPane(quetionList);
 		scroll.setHbarPolicy(ScrollBarPolicy.NEVER);
 		scroll.setFitToWidth(true);
 		VBox.setVgrow(scroll, Priority.ALWAYS);
@@ -96,19 +160,55 @@ public class LibrarySelectDialog extends DialogPane<Integer> {
 		ok.setMinSize(390, 40);
 		ok.setPrefSize(390, 40);
 		ok.setOnAction(e -> {
-			Row selected = table.getSelectedRow();
-			if (selected == null) {
-				error.setText(MsgUtil.getMessage("alert.warning.must.select", MsgUtil.getMessage("library.name")));
+			if (questionIds.size() == 0) {
+				error.setText(MsgUtil.getMessage("alert.warning.must.select", MsgUtil.getMessage("question.stem")));
 				return;
 			}
-			dialog.setResult(selected.getItems().getInteger("id"));
+			dialog.setResult(questionIds);
 		});
 
-		box.getChildren().addAll(toggleBox, scroll, error, ok);
-		getChildren().add(box);
+		questionPane.getChildren().addAll(box, scroll, error, ok);
+	}
 
-		group.selectToggle(group.getToggles().get(0));
+	private void loadQuestions(Integer rid) {
+		Library lib = SpringUtil.getBean(LibraryAction.class).findLibraryById(rid);
+		title.setTitle(lib.getName());
 
+		this.quetionList.getChildren().clear();
+
+		List<Question> choices = loadQuestionsByType(rid, QuestionType.CHOICE);
+		List<Question> judgments = loadQuestionsByType(rid, QuestionType.JUDGMENT);
+		List<Question> blanks = loadQuestionsByType(rid, QuestionType.BLANK);
+		List<Question> subjectives = loadQuestionsByType(rid, QuestionType.SUBJECTIVE);
+		List<Question> questions = new ArrayList<>();
+		questions.addAll(choices);
+		questions.addAll(judgments);
+		questions.addAll(blanks);
+		questions.addAll(subjectives);
+		for (int i = 0; i < questions.size(); i++) {
+			int index = i + 1;
+			Question question = questions.get(i);
+			PreviewQuestionItem item = new PreviewQuestionItem(index, QuestionType.getQuestionType(question.getType()), question, true);
+			item.setOnMouseClicked(e -> {
+				Integer id = question.getId();
+				if (questionIds.contains(id)) {
+					questionIds.remove(id);
+					item.getStyleClass().remove("question-selected");
+				} else {
+					questionIds.add(id);
+					item.getStyleClass().add("question-selected");
+				}
+			});
+			quetionList.getChildren().add(item);
+		}
+	}
+
+	private List<Question> loadQuestionsByType(Integer rid, QuestionType type) {
+		List<Question> questions = SpringUtil.getBean(QuestionAction.class).findQuestionsByLibraryAndQuestionType(rid, type.getType());
+		if (questions.size() == 0) {
+			return new ArrayList<>();
+		}
+		return questions;
 	}
 
 	private void reload() {

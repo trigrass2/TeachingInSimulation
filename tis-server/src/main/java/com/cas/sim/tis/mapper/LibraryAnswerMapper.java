@@ -16,7 +16,7 @@ public interface LibraryAnswerMapper extends IMapper<LibraryAnswer> {
 	 * @param onlyWrong 是否只查错题
 	 * @return 答题结果集合
 	 */
-	List<LibraryAnswer> findAnswersByPublish(@Param("pid") int pid, @Param("onlyWrong") boolean onlyWrong);
+	List<LibraryAnswer> findAnswersByPublish(@Param("pid") int pid, @Param("recordType") int recordType, @Param("onlyWrong") boolean onlyWrong);
 
 	/**
 	 * 考核统计指定考核pid中指定试题qid的对应答题状态type的人数
@@ -26,6 +26,6 @@ public interface LibraryAnswerMapper extends IMapper<LibraryAnswer> {
 	 * @return 返回统计人数
 	 */
 	@MapKey("state")
-	int statisticsByQuestionId(@Param("pid") int pid, @Param("qid") int qid, @Param("type") int type);
+	int statisticsByQuestionId(@Param("pid") int pid, @Param("recordType") int recordType, @Param("qid") int qid, @Param("type") int type);
 
 }

@@ -21,7 +21,7 @@
 		from 
 			library_record r,user u
 		where 
-			r.creator=u.id and r.pid=#{pid}
+			r.creator=u.id and r.pid=#{pid} and r.type=#{type}
 		order by u.code asc
 	</select>
 	<select id="getRecordScoresSumByPublishId" resultType="java.lang.Float">
@@ -30,6 +30,6 @@
 		FROM
 		    library_record r
 		WHERE
-		    r.pid = #{pid}
+		    r.pid = #{pid} and r.type=#{type}
 	</select>
 </mapper>

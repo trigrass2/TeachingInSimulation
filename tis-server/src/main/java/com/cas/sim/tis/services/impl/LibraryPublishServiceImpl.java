@@ -7,7 +7,6 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
 
-import com.alibaba.fastjson.JSON;
 import com.cas.sim.tis.config.ServerConfig;
 import com.cas.sim.tis.consts.Session;
 import com.cas.sim.tis.entity.LibraryPublish;
@@ -75,7 +74,8 @@ public class LibraryPublishServiceImpl implements LibraryPublishService {
 		// 广播开始考核
 		ExamMessage message = new ExamMessage();
 		message.setPid(publish.getId());
-		message.setType(ExamMessage.EXAM_START);
+		message.setMessageType(ExamMessage.MESSAGE_TYPE_START);
+		message.setExamType(ExamMessage.EXAM_TYPE_LIBRARY);
 
 		// 筛选当前登陆人员
 		List<HostedConnection> collection = new ArrayList<>();

@@ -25,6 +25,10 @@ public enum Session {
 	 * 当前正在进行的考核发布记录编号
 	 */
 	KEY_LIBRARY_PUBLISH_ID,
+	/**
+	 * 当前正在进行的备课试题测试编号
+	 */
+	KEY_PREPARATION_PUBLISH_ID,
 
 	KEY_OBJECT;
 

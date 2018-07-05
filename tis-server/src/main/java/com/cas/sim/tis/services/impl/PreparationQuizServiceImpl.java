@@ -13,6 +13,7 @@ import com.cas.sim.tis.services.PreparationQuizService;
 import com.cas.sim.tis.thrift.RequestEntity;
 import com.cas.sim.tis.thrift.ResponseEntity;
 import com.cas.sim.tis.vo.PreparationInfo;
+import com.cas.sim.tis.vo.PreparationQuizInfo;
 
 import tk.mybatis.mapper.entity.Condition;
 
@@ -22,11 +23,17 @@ public class PreparationQuizServiceImpl implements PreparationQuizService {
 	private PreparationQuizMapper mapper;
 
 	@Override
-	public ResponseEntity findQuizsByPreparationId(RequestEntity entity) {
-		List<PreparationInfo> tests = mapper.findQuizsByPreparationId(entity.getInt("pid"));
+	public ResponseEntity findQuestionQuizsByPreparationId(RequestEntity entity) {
+		List<PreparationQuizInfo> tests = mapper.findQuestionQuizsByPreparationId(entity.getInt("pid"));
 		return ResponseEntity.success(tests);
 	}
 
+	@Override
+	public ResponseEntity findOtherQuizsByPreparationId(RequestEntity entity) {
+		List<PreparationInfo> tests = mapper.findOtherQuizsByPreparationId(entity.getInt("pid"));
+		return ResponseEntity.success(tests);
+	}
+	
 	@Override
 	public ResponseEntity countFreeQuizByPreparationId(RequestEntity entity) {
 		Condition condition = new Condition(PreparationQuiz.class);
@@ -46,8 +53,7 @@ public class PreparationQuizServiceImpl implements PreparationQuizService {
 
 	@Override
 	public void savePreparationQuiz(RequestEntity req) {
-		PreparationQuiz quiz = req.getObject("quiz", PreparationQuiz.class);
-		mapper.insertSelective(quiz);
+		List<PreparationQuiz> quizs = req.getList("quizs", PreparationQuiz.class);
+		mapper.insertList(quizs);
 	}
-
 }

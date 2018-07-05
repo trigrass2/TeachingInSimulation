@@ -31,6 +31,7 @@ public class LibraryRecord implements Serializable {
 	private Integer publishId;
 	private Float score;
 	private Integer cost;
+	private Integer type;
 	private Integer creator;
 	@DateTimeFormat(pattern = "yyyy-MM-dd hh:mm:ss")
 	private Date createDate;

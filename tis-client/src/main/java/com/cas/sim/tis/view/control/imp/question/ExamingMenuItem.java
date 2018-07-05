@@ -1,8 +1,10 @@
 package com.cas.sim.tis.view.control.imp.question;
 
 import com.cas.sim.tis.action.LibraryPublishAction;
+import com.cas.sim.tis.action.PreparationPublishAction;
 import com.cas.sim.tis.consts.Session;
 import com.cas.sim.tis.entity.LibraryPublish;
+import com.cas.sim.tis.entity.PreparationPublish;
 import com.cas.sim.tis.message.ExamMessage;
 import com.cas.sim.tis.svg.SVGGlyph;
 import com.cas.sim.tis.util.MsgUtil;
@@ -10,6 +12,7 @@ import com.cas.sim.tis.util.SocketUtil;
 import com.cas.sim.tis.util.SpringUtil;
 import com.cas.sim.tis.view.control.IDistory;
 import com.cas.sim.tis.view.control.imp.dialog.Dialog;
+import com.cas.sim.tis.view.control.imp.preparation.PublishLibraryFeedback;
 
 import javafx.animation.RotateTransition;
 import javafx.geometry.Pos;
@@ -23,11 +26,14 @@ import javafx.util.Duration;
 
 public class ExamingMenuItem extends HBox implements IDistory {
 
-	private LibraryPublish publish;
+	private LibraryPublish libraryPublish;
 	private RotateTransition rotateTransition;
 	private Button examing;
+	private int examType;
+	private PreparationPublish preparationPublish;
 
-	public ExamingMenuItem() {
+	public ExamingMenuItem(int examType) {
+		this.examType = examType;
 		// 预置考试进行中提示
 		SVGGlyph glyph = new SVGGlyph("iconfont.svg.clock", Color.WHITE, 22);
 //		此时的rotateTransition必然是null值
@@ -56,12 +62,15 @@ public class ExamingMenuItem extends HBox implements IDistory {
 		});
 		rotateTransition.playFromStart();
 
-
 		examing = new Button();
 		examing.setGraphic(glyph);
 		examing.getStyleClass().add("left-menu-orange");
 		examing.setOnAction(e -> {
-			showDialog();
+			if (ExamMessage.EXAM_TYPE_LIBRARY == examType) {
+				showLibraryDialog();
+			} else if (ExamMessage.EXAM_TYPE_PREPARATION == examType) {
+				showPreparationLibrary();
+			}
 		});
 
 		VBox.setVgrow(examing, Priority.ALWAYS);
@@ -71,30 +80,68 @@ public class ExamingMenuItem extends HBox implements IDistory {
 	}
 
 	public void load(int id) {
-		this.publish = SpringUtil.getBean(LibraryPublishAction.class).findPublishById(id);
-		String name = publish.getLibrary().getName();
+		String name = null;
+		if (ExamMessage.EXAM_TYPE_LIBRARY == examType) {
+			this.libraryPublish = SpringUtil.getBean(LibraryPublishAction.class).findPublishById(id);
+			name = libraryPublish.getLibrary().getName();
+		} else if (ExamMessage.EXAM_TYPE_PREPARATION == examType) {
+			this.preparationPublish = SpringUtil.getBean(PreparationPublishAction.class).findPublishById(id);
+			name = preparationPublish.getLibrary().getName();
+		}
 		examing.setText(name);
 		examing.setTooltip(new Tooltip(name));
 		setVisible(true);
 	}
-	
-	private void showDialog() {
+
+	private void showLibraryDialog() {
 		Dialog<Boolean> dialog = new Dialog<>();
-		dialog.setDialogPane(new ExamingDialog(publish));
+		dialog.setDialogPane(new ExamingDialog(libraryPublish));
 		dialog.setTitle(MsgUtil.getMessage("class.dialog.modify"));
 		dialog.setPrefSize(640, 380);
 		dialog.showAndWait().ifPresent(finish -> {
 			if (finish) {
 				ExamMessage message = new ExamMessage();
-				message.setPid(publish.getId());
-				message.setType(ExamMessage.EXAM_OVER);
-				
+				message.setPid(libraryPublish.getId());
+				message.setMessageType(ExamMessage.MESSAGE_TYPE_OVER);
+				message.setExamType(examType);
+
 				SocketUtil.INSTENCE.send(message);
 				ExamingMenuItem.this.setVisible(false);
 				rotateTransition.stop();
 				Session.set(Session.KEY_LIBRARY_PUBLISH_ID, null);
 			}
 		});
+	}
+
+	private void showPreparationLibrary() {
+		Dialog<Boolean> dialog = new Dialog<>();
+		dialog.setDialogPane(new PreparationExamingDialog(preparationPublish));
+		dialog.setTitle(MsgUtil.getMessage("class.dialog.modify"));
+		dialog.setPrefSize(640, 380);
+		dialog.showAndWait().ifPresent(finish -> {
+			if (finish) {
+				ExamMessage message = new ExamMessage();
+				message.setPid(preparationPublish.getId());
+				message.setMessageType(ExamMessage.MESSAGE_TYPE_OVER);
+				message.setExamType(examType);
+
+				SocketUtil.INSTENCE.send(message);
+				ExamingMenuItem.this.setVisible(false);
+				rotateTransition.stop();
+				Session.set(Session.KEY_PREPARATION_PUBLISH_ID, null);
+
+				showLibraryTestDialog(preparationPublish.getId(), preparationPublish.getLibrary().getId());
+			}
+		});
+	}
+
+	private void showLibraryTestDialog(Integer pid, Integer preparationLibraryId) {
+		PublishLibraryFeedback pane = new PublishLibraryFeedback(pid, preparationLibraryId);
+		Dialog<Void> dialog = new Dialog<>();
+		dialog.setDialogPane(pane);
+		dialog.setTitle(MsgUtil.getMessage("class.dialog.modify"));
+		dialog.setPrefSize(1136, 693);
+		dialog.showAndWait();
 	}
 
 	@Override

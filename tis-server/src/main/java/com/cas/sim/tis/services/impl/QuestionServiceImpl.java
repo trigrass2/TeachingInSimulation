@@ -1,5 +1,6 @@
 package com.cas.sim.tis.services.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -10,9 +11,14 @@ import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 
+import com.alibaba.druid.util.StringUtils;
+import com.alibaba.fastjson.JSON;
+import com.cas.sim.tis.consts.LibraryRecordType;
 import com.cas.sim.tis.entity.Library;
+import com.cas.sim.tis.entity.PreparationPublish;
 import com.cas.sim.tis.entity.Question;
 import com.cas.sim.tis.mapper.LibraryMapper;
+import com.cas.sim.tis.mapper.PreparationPublishMapper;
 import com.cas.sim.tis.mapper.QuestionMapper;
 import com.cas.sim.tis.services.QuestionService;
 import com.cas.sim.tis.thrift.RequestEntity;
@@ -33,6 +39,8 @@ public class QuestionServiceImpl implements QuestionService {
 
 	@Resource
 	private LibraryMapper libraryMapper;
+	@Resource
+	private PreparationPublishMapper preparationPublishMapper;
 
 	@Override
 	public ResponseEntity findQuestionsByLibrary(RequestEntity entity) {
@@ -67,7 +75,32 @@ public class QuestionServiceImpl implements QuestionService {
 
 	@Override
 	public ResponseEntity findQuestionsByPublishId(RequestEntity entity) {
-		List<Question> result = mapper.findQuestionsByPublish(entity.getInt("pid"), entity.getBoolean("mostWrong"));
+		int pid = entity.getInt("pid");
+		int type = entity.getInt("type");
+		boolean mostWrong = entity.getBoolean("mostWrong");
+		if (LibraryRecordType.LIBRARY.getType() == type) {
+			return ResponseEntity.success(mapper.findQuestionsByLibraryPublish(pid, mostWrong));
+		} else if (LibraryRecordType.PREPARATION.getType() == type) {
+			PreparationPublish publish = preparationPublishMapper.findPublishById(pid);
+			String questionIdsStr = publish.getLibrary().getQuestionIds();
+			if (StringUtils.isEmpty(questionIdsStr)) {
+				return ResponseEntity.success(new ArrayList<>());
+			}
+			List<Integer> questionIds = JSON.parseArray(publish.getLibrary().getQuestionIds(), Integer.class);
+			if (questionIds.isEmpty()) {
+				return ResponseEntity.success(new ArrayList<>());
+			}
+			return ResponseEntity.success(mapper.findQuestionsByPreparationPublish(pid, mostWrong, questionIds));
+		}
+		return ResponseEntity.success(new ArrayList<>());
+	}
+
+	@Override
+	public ResponseEntity findQuestionsByQuestionIds(RequestEntity entity) {
+		Condition condition = new Condition(Question.class);
+		condition.createCriteria()//
+				.andIn("id", entity.getList("questionIds", Integer.class));
+		List<Question> result = mapper.selectByCondition(condition);
 		return ResponseEntity.success(result);
 	}
 
