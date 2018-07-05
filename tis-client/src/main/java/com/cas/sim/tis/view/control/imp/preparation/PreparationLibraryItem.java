@@ -3,6 +3,7 @@ package com.cas.sim.tis.view.control.imp.preparation;
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
+import java.util.ResourceBundle;
 
 import com.alibaba.fastjson.JSON;
 import com.cas.sim.tis.action.ClassAction;
@@ -17,21 +18,18 @@ import com.cas.sim.tis.entity.Question;
 import com.cas.sim.tis.util.AlertUtil;
 import com.cas.sim.tis.util.MsgUtil;
 import com.cas.sim.tis.util.SpringUtil;
-import com.cas.sim.tis.view.control.IContent;
 import com.cas.sim.tis.view.control.ILeftContent;
 import com.cas.sim.tis.view.control.IPublish;
 import com.cas.sim.tis.view.control.imp.Title;
 import com.cas.sim.tis.view.control.imp.classes.ClassSelectDialog;
 import com.cas.sim.tis.view.control.imp.dialog.Dialog;
 import com.cas.sim.tis.view.controller.PageController;
-import com.cas.sim.tis.view.controller.PageController.PageLevel;
 
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.Node;
 import javafx.scene.control.ButtonType;
 import javafx.scene.layout.VBox;
 import lombok.extern.slf4j.Slf4j;
@@ -81,6 +79,7 @@ public class PreparationLibraryItem extends VBox {
 		loader.setLocation(fxmlUrl);
 		loader.setController(this);
 		loader.setRoot(this);
+		loader.setResources(ResourceBundle.getBundle("i18n/messages"));
 		try {
 			loader.load();
 			log.debug("加载FXML界面{}完成", fxmlUrl);
