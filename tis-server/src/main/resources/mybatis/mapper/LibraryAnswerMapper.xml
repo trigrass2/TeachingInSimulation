@@ -50,7 +50,12 @@
 	</select>
 	<select id="statisticsByQuestionId" resultType="int">
 		SELECT
-		COUNT(*) AS num
+		COUNT(*) 
+		<!-- 包括未参加考试的人员记为未答题 -->
+		<if test="type==0">
+		+ (SELECT COUNT(*) FROM user u WHERE u.cid=p.cid AND u.id NOT IN (SELECT creator FROM library_record WHERE pid=#{pid}))
+		</if>
+		AS num
 		FROM
 		<if test="recordType==0">
 			library_publish p,
