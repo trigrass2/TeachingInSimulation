@@ -11,6 +11,7 @@ import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -19,6 +20,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.control.Tooltip;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.PixelFormat;
 import javafx.scene.image.PixelWriter;
@@ -100,6 +102,9 @@ public class VLCPlayer extends VBox implements IDistory {
 
 	private WritableImage writableImage;
 
+	private SVGGlyph play = new SVGGlyph("iconfont.svg.play", Color.web("#19b0c6"), 32);
+	private SVGGlyph pause = new SVGGlyph("iconfont.svg.pause", Color.web("#19b0c6"), 32);
+
 	static {
 		NativeLibrary.addSearchPath(RuntimeUtil.getLibVlcLibraryName(), "VLC");
 	}
@@ -126,8 +131,6 @@ public class VLCPlayer extends VBox implements IDistory {
 		double duration = 1000.0 / FPS;
 		timeline.getKeyFrames().add(new KeyFrame(Duration.millis(duration), nextFrameHandler));
 
-		SVGGlyph play = new SVGGlyph("iconfont.svg.play", Color.web("#19b0c6"), 32);
-		SVGGlyph pause = new SVGGlyph("iconfont.svg.pause", Color.web("#19b0c6"), 32);
 		playPauseButton = new Button();
 		playPauseButton.setGraphic(play);
 		playPauseButton.getStyleClass().add("img-btn");
@@ -279,8 +282,24 @@ public class VLCPlayer extends VBox implements IDistory {
 	 *
 	 */
 	public void playTimer() {
-		timeline.play();
-		mediaPlayerComponent.getMediaPlayer().play();
+		// 初始化时，开始加载
+		if (canvas.getImage() == null) {
+			canvas.setImage(new Image("static/images/vlc/loading.gif"));
+		}
+		playPauseButton.setGraphic(pause);
+		Task<Void> task = new Task<Void>() {
+
+			@Override
+			protected Void call() throws Exception {
+				timeline.play();
+				// 视频刚开始加载的时候，视频启动可能会无反应
+				while (!mediaPlayerComponent.getMediaPlayer().isPlayable()) {
+					mediaPlayerComponent.getMediaPlayer().play();
+				}
+				return null;
+			}
+		};
+		new Thread(task).start();
 	}
 
 	/**
