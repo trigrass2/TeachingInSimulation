@@ -237,12 +237,13 @@ public class VLCPlayer extends VBox implements IDistory {
 				protected Void call() throws Exception {
 					mediaPlayerComponent.getMediaPlayer().pause();
 					mediaPlayerComponent.getMediaPlayer().setTime(0);
+					Platform.runLater(() -> {
+						playSlider.setValue(0);
+					});
 					return null;
 				}
 			};
 			new Thread(task).start();
-			playSlider.setValue(0);
-			playPauseButton.setGraphic(pause);
 		}
 	}
 
