@@ -10,7 +10,6 @@ import com.sun.jna.NativeLibrary;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
-import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -18,9 +17,9 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.Slider;
 import javafx.scene.control.Tooltip;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.PixelFormat;
 import javafx.scene.image.PixelWriter;
@@ -77,9 +76,6 @@ public class VLCPlayer extends VBox implements IDistory {
 	private EventHandler<ActionEvent> nextFrameHandler = new EventHandler<ActionEvent>() {
 		@Override
 		public void handle(ActionEvent t) {
-			if (playSkip) {
-				return;
-			}
 			renderFrame();
 		}
 	};
@@ -98,12 +94,12 @@ public class VLCPlayer extends VBox implements IDistory {
 	private Slider volumeSlider;
 	private Tooltip volumeSliderTip;
 
-	private boolean playSkip;
-
 	private WritableImage writableImage;
 
 	private SVGGlyph play = new SVGGlyph("iconfont.svg.play", Color.web("#19b0c6"), 32);
 	private SVGGlyph pause = new SVGGlyph("iconfont.svg.pause", Color.web("#19b0c6"), 32);
+
+	private HBox loading;
 
 	static {
 		NativeLibrary.addSearchPath(RuntimeUtil.getLibVlcLibraryName(), "VLC");
@@ -120,7 +116,17 @@ public class VLCPlayer extends VBox implements IDistory {
 		canvas = new ImageView();
 		pixelFormat = PixelFormat.getByteBgraInstance();
 
-		StackPane pane = new StackPane(canvas);
+		ProgressIndicator progressIndicator = new ProgressIndicator();
+		progressIndicator.setPrefSize(100, 100);
+//		ImageView progressIndicator = new ImageView("static/images/vlc/loading.gif");
+
+		loading = new HBox();
+		loading.setStyle("-fx-background-color:transparent");
+		loading.setAlignment(Pos.CENTER);
+		loading.getChildren().add(progressIndicator);
+		loading.setVisible(false);
+
+		StackPane pane = new StackPane(canvas, loading);
 		pane.setMinSize(0, 0);
 		VBox.setVgrow(pane, Priority.ALWAYS);
 
@@ -149,24 +155,23 @@ public class VLCPlayer extends VBox implements IDistory {
 			pauseTimer();
 		});
 		playSlider.setOnMouseDragReleased(e -> {
-			mediaPlayerComponent.getMediaPlayer().setPosition((float) (playSlider.getValue() / 100f));
-			playTimer();
+			jump();
 		});
 		playSlider.setOnMousePressed(e -> {
 			pauseTimer();
 		});
 		playSlider.setOnMouseReleased(e -> {
-			mediaPlayerComponent.getMediaPlayer().setPosition((float) (playSlider.getValue() / 100f));
-			playTimer();
+			jump();
 		});
 		playSlider.valueProperty().addListener((b, o, n) -> {
 			if (n.floatValue() >= 100) {
 				stop();
+			} else {
+				long time = mediaPlayerComponent.getMediaPlayer().getTime();
+				String curr = formatTime(time);
+				playSliderTip.setText(curr);
+				this.time.setText(curr);
 			}
-			long time = mediaPlayerComponent.getMediaPlayer().getTime();
-			String curr = formatTime(time);
-			playSliderTip.setText(curr);
-			this.time.setText(curr);
 		});
 		HBox.setHgrow(playSlider, Priority.ALWAYS);
 
@@ -224,14 +229,21 @@ public class VLCPlayer extends VBox implements IDistory {
 	}
 
 	public final void stop() {
-		pauseTimer();
+		synchronized (mediaPlayerComponent) {
+			timeline.pause();
+			Task<Void> task = new Task<Void>() {
 
-		mediaPlayerComponent.getMediaPlayer().setTime(0);
-
-		ObservableList<String> styleClass = playPauseButton.getStyleClass();
-		styleClass.remove("pause");
-		styleClass.add("play");
-		playSlider.setValue(0);
+				@Override
+				protected Void call() throws Exception {
+					mediaPlayerComponent.getMediaPlayer().pause();
+					mediaPlayerComponent.getMediaPlayer().setTime(0);
+					return null;
+				}
+			};
+			new Thread(task).start();
+			playSlider.setValue(0);
+			playPauseButton.setGraphic(pause);
+		}
 	}
 
 	/**
@@ -283,40 +295,83 @@ public class VLCPlayer extends VBox implements IDistory {
 	 */
 	public void playTimer() {
 		// 初始化时，开始加载
-		if (canvas.getImage() == null) {
-			canvas.setImage(new Image("static/images/vlc/loading.gif"));
-		}
+		loading.setVisible(true);
 		playPauseButton.setGraphic(pause);
-		Task<Void> task = new Task<Void>() {
+		synchronized (mediaPlayerComponent) {
+			timeline.play();
+			Task<Void> task = new Task<Void>() {
 
-			@Override
-			protected Void call() throws Exception {
-				timeline.play();
-				// 视频刚开始加载的时候，视频启动可能会无反应
-				while (!mediaPlayerComponent.getMediaPlayer().isPlayable()) {
-					mediaPlayerComponent.getMediaPlayer().play();
+				@Override
+				protected Void call() throws Exception {
+					// 视频刚开始加载的时候，视频启动可能会无反应
+					while (!mediaPlayerComponent.getMediaPlayer().isPlaying()) {
+						mediaPlayerComponent.getMediaPlayer().play();
+					}
+					Platform.runLater(() -> {
+						loading.setVisible(false);
+						playPauseButton.setGraphic(pause);
+					});
+					return null;
 				}
-				return null;
-			}
-		};
-		new Thread(task).start();
+			};
+			new Thread(task).start();
+		}
 	}
 
 	/**
 	 *
 	 */
 	public void pauseTimer() {
-		timeline.pause();
-		mediaPlayerComponent.getMediaPlayer().pause();
+		synchronized (mediaPlayerComponent) {
+			timeline.pause();
+			Task<Void> task = new Task<Void>() {
+
+				@Override
+				protected Void call() throws Exception {
+					mediaPlayerComponent.getMediaPlayer().pause();
+					return null;
+				}
+			};
+			new Thread(task).start();
+		}
 	}
 
 	/**
 	 *
 	 */
 	public void stopTimer() {
-		timeline.stop();
-		mediaPlayerComponent.getMediaPlayer().stop();
-		mediaPlayerComponent.getMediaPlayer().release();
+		synchronized (mediaPlayerComponent) {
+			timeline.stop();
+			Task<Void> task = new Task<Void>() {
+
+				@Override
+				protected Void call() throws Exception {
+					mediaPlayerComponent.getMediaPlayer().stop();
+					mediaPlayerComponent.getMediaPlayer().release();
+					return null;
+				}
+			};
+			new Thread(task).start();
+		}
+	}
+
+	private void jump() {
+		synchronized (mediaPlayerComponent) {
+			// 初始化时，开始加载
+			loading.setVisible(true);
+			Task<Void> task = new Task<Void>() {
+
+				@Override
+				protected Void call() throws Exception {
+					mediaPlayerComponent.getMediaPlayer().setPosition((float) (playSlider.getValue() / 100f));
+					Platform.runLater(() -> {
+						playTimer();
+					});
+					return null;
+				}
+			};
+			new Thread(task).start();
+		}
 	}
 
 	public static String formatTime(long value) {
