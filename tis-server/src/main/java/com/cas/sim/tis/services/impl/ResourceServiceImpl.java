@@ -90,7 +90,7 @@ public class ResourceServiceImpl implements ResourceService {
 		if (StringUtils.isNotBlank(keyword)) {
 			List<String> words = StringUtil.split(keyword, ' ');
 			for (String word : words) {
-				criteria.orLike("keyword", String.format("%%%s%%", word));
+				criteria.andLike("keyword", String.format("%%%s%%", word));
 			}
 		}
 
