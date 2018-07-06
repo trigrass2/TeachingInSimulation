@@ -202,7 +202,7 @@ public class ResourceAction extends BaseAction {
 				.set("id", id)//
 				.set("creator", Session.get(Session.KEY_LOGIN_ID))//
 				.build();
-		service.findResourceById(req);
+		service.browsed(req);
 	}
 
 	/**
