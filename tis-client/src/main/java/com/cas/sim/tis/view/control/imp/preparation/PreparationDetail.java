@@ -361,6 +361,7 @@ public class PreparationDetail extends HBox implements IContent {
 			PreparationLibraryItem item = new PreparationLibraryItem(library, this);
 			item.selectedPreparationQuestionItemProperty().addListener((b, o, n) -> {
 				if (n == null) {
+					loadASK(task.getId().toString(), GoalRelationshipType.TASK.getType());
 					return;
 				}
 				// 清空其他选中项
