@@ -32,6 +32,7 @@ public class PreparationQuizAction extends BaseAction {
 		ResponseEntity resp = service.findQuestionQuizsByPreparationId(req);
 		return JSON.parseArray(resp.data, PreparationQuizInfo.class);
 	}
+
 	/**
 	 * 通过备课编号获得备课故障维修和自由接线集合
 	 * @param pid 备课编号
@@ -62,13 +63,11 @@ public class PreparationQuizAction extends BaseAction {
 	 * 保存备课试题对象
 	 * @param quiz 备课试题对象
 	 */
-	public void addQuiz(List<PreparationQuiz> quizs) {
-		for (PreparationQuiz quiz : quizs) {
-			quiz.setCreator(Session.get(Session.KEY_LOGIN_ID));
-		}
+	public void addQuiz(PreparationQuiz quiz) {
+		quiz.setCreator(Session.get(Session.KEY_LOGIN_ID));
 
 		RequestEntity req = new RequestEntityBuilder()//
-				.set("quizs", quizs)//
+				.set("quiz", quiz)//
 				.build();
 		service.savePreparationQuiz(req);
 	}

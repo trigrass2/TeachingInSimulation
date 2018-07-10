@@ -534,7 +534,7 @@ public class PreparationDetail extends HBox implements IContent {
 			if (id == null) {
 				return;
 			}
-			addQuiz(Arrays.asList(new Integer[] { id }), PreparationQuizType.BROKEN_CASE.getType());
+			addQuiz(id, PreparationQuizType.BROKEN_CASE.getType());
 		});
 	}
 
@@ -572,17 +572,13 @@ public class PreparationDetail extends HBox implements IContent {
 		}
 	}
 
-	private void addQuiz(List<Integer> ids, int type) {
-		List<PreparationQuiz> preparationQuizs = new ArrayList<PreparationQuiz>();
-		for (Integer id : ids) {
-			PreparationQuiz quiz = new PreparationQuiz();
-			quiz.setRelationId(id);
-			quiz.setPreparationId(preparation.getId());
-			quiz.setType(type);
-			preparationQuizs.add(quiz);
-		}
+	private void addQuiz(Integer id, int type) {
+		PreparationQuiz quiz = new PreparationQuiz();
+		quiz.setRelationId(id);
+		quiz.setPreparationId(preparation.getId());
+		quiz.setType(type);
 		try {
-			SpringUtil.getBean(PreparationQuizAction.class).addQuiz(preparationQuizs);
+			SpringUtil.getBean(PreparationQuizAction.class).addQuiz(quiz);
 			loadQuizs();
 			AlertUtil.showAlert(AlertType.INFORMATION, MsgUtil.getMessage("alert.information.data.add.success"));
 		} catch (Exception e) {

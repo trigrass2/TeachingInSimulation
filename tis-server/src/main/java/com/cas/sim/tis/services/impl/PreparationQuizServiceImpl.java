@@ -53,7 +53,7 @@ public class PreparationQuizServiceImpl implements PreparationQuizService {
 
 	@Override
 	public void savePreparationQuiz(RequestEntity req) {
-		List<PreparationQuiz> quizs = req.getList("quizs", PreparationQuiz.class);
-		mapper.insertList(quizs);
+		PreparationQuiz quiz = req.getObject("quiz", PreparationQuiz.class);
+		mapper.insertSelective(quiz);
 	}
 }
