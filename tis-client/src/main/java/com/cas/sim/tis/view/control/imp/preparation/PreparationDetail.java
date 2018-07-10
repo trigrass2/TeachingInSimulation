@@ -276,8 +276,8 @@ public class PreparationDetail extends HBox implements IContent {
 			delete.setCellFactory(BtnCell.forTableColumn(MsgUtil.getMessage("button.delete"), "blue-btn", rid -> {
 				AlertUtil.showConfirm(MsgUtil.getMessage("alert.confirmation.data.delete"), response -> {
 					if (response == ButtonType.YES) {
-						SpringUtil.getBean(PreparationResourceAction.class).deteleByLogic((Integer) rid);
-						loadResources();
+						SpringUtil.getBean(PreparationQuizAction.class).deteleQuizByLogic((Integer) rid);
+						loadQuizs();
 					}
 				});
 			}));
@@ -377,7 +377,7 @@ public class PreparationDetail extends HBox implements IContent {
 			this.libraries.getChildren().add(item);
 			this.libraryItems.add(item);
 		}
-		List<PreparationQuiz> quizs = SpringUtil.getBean(PreparationQuizAction.class).findOtherQuizsByPreparationId(preparation.getId());
+		List<PreparationInfo> quizs = SpringUtil.getBean(PreparationQuizAction.class).findOtherQuizsByPreparationId(preparation.getId());
 		JSONArray array = new JSONArray();
 		array.addAll(quizs);
 		this.quizs.setItems(array);

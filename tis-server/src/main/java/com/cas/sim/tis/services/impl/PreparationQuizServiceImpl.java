@@ -56,4 +56,10 @@ public class PreparationQuizServiceImpl implements PreparationQuizService {
 		PreparationQuiz quiz = req.getObject("quiz", PreparationQuiz.class);
 		mapper.insertSelective(quiz);
 	}
+
+	@Override
+	public void updatePreparationQuiz(RequestEntity req) {
+		PreparationQuiz quiz = req.getObject("quiz", PreparationQuiz.class);
+		mapper.updateByPrimaryKeySelective(quiz);
+	}
 }

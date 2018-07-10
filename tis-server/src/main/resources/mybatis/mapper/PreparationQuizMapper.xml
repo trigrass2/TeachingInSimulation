@@ -33,7 +33,7 @@
 		select q1.id,q.id as qid,q.title,q.options,q.reference,q.analysis,q.point,q.type from (select * from preparation_quiz where pid=#{pid} and del=0 and type=1) q1 left join question q on q1.rid=q.id
 	</select>
 	<select id="findOtherQuizsByPreparationId" resultMap="ResultInfoMap">
-		select q2.id,8 as icon,b.name from (select * from preparation_quiz where pid=#{pid} and del=0 and type=2) q2 left join broken_case b on q2.rid=b.id
+		select q2.id,8 as icon,b.name as name from (select * from preparation_quiz where pid=#{pid} and del=0 and type=2) q2 left join broken_case b on q2.rid=b.id
 		union
 		select q3.id,8 as icon,'自由接线'as name from (select * from preparation_quiz where pid=#{pid} and del=0 and type=3) q3;
 	</select>

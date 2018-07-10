@@ -15,6 +15,7 @@ public interface PreparationQuizService {
 	 */
 	@ThriftMethod
 	ResponseEntity findQuestionQuizsByPreparationId(RequestEntity entity);
+
 	/**
 	 * 通过备课编号获得备课故障维修和自由接线集合
 	 * @param pid 备课编号
@@ -22,7 +23,7 @@ public interface PreparationQuizService {
 	 */
 	@ThriftMethod
 	ResponseEntity findOtherQuizsByPreparationId(RequestEntity req);
-	
+
 	/**
 	 * 根据备课编号统计备课自由接线案例的数量
 	 * @param entity （pid 备课编号）
@@ -45,5 +46,12 @@ public interface PreparationQuizService {
 	 */
 	@ThriftMethod
 	void savePreparationQuiz(RequestEntity req);
+
+	/**
+	 * 修改备课试题对象
+	 * @param req （quiz 备课试题对象）
+	 */
+	@ThriftMethod
+	void updatePreparationQuiz(RequestEntity req);
 
 }

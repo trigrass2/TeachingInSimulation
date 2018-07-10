@@ -13,6 +13,7 @@ import com.cas.sim.tis.services.PreparationQuizService;
 import com.cas.sim.tis.thrift.RequestEntity;
 import com.cas.sim.tis.thrift.RequestEntityBuilder;
 import com.cas.sim.tis.thrift.ResponseEntity;
+import com.cas.sim.tis.vo.PreparationInfo;
 import com.cas.sim.tis.vo.PreparationQuizInfo;
 
 @Component
@@ -38,12 +39,12 @@ public class PreparationQuizAction extends BaseAction {
 	 * @param pid 备课编号
 	 * @return List PreparationInfo集合
 	 */
-	public List<PreparationQuiz> findOtherQuizsByPreparationId(Integer pid) {
+	public List<PreparationInfo> findOtherQuizsByPreparationId(Integer pid) {
 		RequestEntity req = new RequestEntityBuilder()//
 				.set("pid", pid)//
 				.build();
 		ResponseEntity resp = service.findOtherQuizsByPreparationId(req);
-		return JSON.parseArray(resp.data, PreparationQuiz.class);
+		return JSON.parseArray(resp.data, PreparationInfo.class);
 	}
 
 	/**
@@ -84,5 +85,17 @@ public class PreparationQuizAction extends BaseAction {
 
 		ResponseEntity resp = service.countFreeQuizByPreparationId(req);
 		return JSON.parseObject(resp.data, Integer.class) > 0;
+	}
+
+	public void deteleQuizByLogic(Integer id) {
+		PreparationQuiz quiz = new PreparationQuiz();
+		quiz.setId(id);
+		quiz.setDel(true);
+		quiz.setUpdater(Session.get(Session.KEY_LOGIN_ID));
+		
+		RequestEntity req = new RequestEntityBuilder()//
+				.set("quiz", quiz)//
+				.build();
+		service.updatePreparationQuiz(req);
 	}
 }
