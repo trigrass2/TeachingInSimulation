@@ -306,6 +306,11 @@ public class VLCPlayer extends VBox implements IDistory {
 				protected Void call() throws Exception {
 					// 视频刚开始加载的时候，视频启动可能会无反应
 					while (!mediaPlayerComponent.getMediaPlayer().isPlaying()) {
+						try {
+							Thread.sleep(5);
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
 						mediaPlayerComponent.getMediaPlayer().play();
 					}
 					Platform.runLater(() -> {
