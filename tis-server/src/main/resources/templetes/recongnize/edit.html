@@ -45,7 +45,7 @@
 	color: rgba(0, 164, 255, 1);
 }
 
-#edui1_wordcount, #edui1_elementpath{
+#edui1_wordcount, #edui1_elementpath {
 	color: #4d4d4d;
 	border-top: 0px;
 }
@@ -76,6 +76,7 @@
 			ue.addListener("ready", function() {
 				// editor准备好之后才可以加载数据
 				ue.setContent(comp.html);
+				ue.setHeight($(window).height()-180);
 			});
 			
 			// 触发事件
@@ -94,6 +95,10 @@
 			$('.layui-btn').on('click', function() {
 				var othis = $(this), method = othis.data('method');
 				active[method] ? active[method].call(this, othis) : '';
+			});
+			
+			$(window).resize(function() { 
+				ue.setHeight($(window).height()-180);
 			});
 		});
 
