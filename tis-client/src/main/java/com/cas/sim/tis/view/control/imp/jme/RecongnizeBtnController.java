@@ -87,7 +87,7 @@ public class RecongnizeBtnController implements Initializable {
 				String path = String.format("http://%s:%d/recongnize/preview/%d/%d", address, port, elecComp.getId(), role);
 				area.setMouseTransparent(false);
 				browser.loadURL(path);
-				area.getParent().setStyle("-fx-background-color:rgba(255, 255, 255, 0.2)");
+				area.getParent().setStyle("-fx-background-color:rgba(0, 0, 0, 0.2)");
 			} else {
 				closeBrowser();
 			}
