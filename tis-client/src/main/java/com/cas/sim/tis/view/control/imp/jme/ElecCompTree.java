@@ -10,13 +10,15 @@ import com.cas.sim.tis.entity.ElecComp;
 import com.cas.sim.tis.util.SpringUtil;
 
 import javafx.scene.control.Accordion;
-import javafx.scene.control.Label;
 import javafx.scene.control.TitledPane;
+import javafx.scene.control.ToggleButton;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.VBox;
 
 public class ElecCompTree extends Accordion {
-	public ElecCompTree(Consumer<ElecComp> c) {
+	
+	public ElecCompTree(Consumer<ElecComp> c, ToggleGroup group) {
 //		查询元器件列表
 		ElecCompAction elecCompAction = SpringUtil.getBean(ElecCompAction.class);
 
@@ -32,7 +34,7 @@ public class ElecCompTree extends Accordion {
 			content.setSpacing(10);
 			
 			map.get(type.getType()).forEach(elecComp -> {
-				Label lbl = new Label(elecComp.getName() + "(" + elecComp.getModel() + ")");
+				ToggleButton lbl = new ToggleButton(elecComp.getName() + "(" + elecComp.getModel() + ")");
 //				lbl.setPrefSize(190, 30);
 				lbl.setTooltip(new Tooltip(lbl.getText()));
 //				lbl.setTextFill(Color.WHITE);
@@ -48,6 +50,7 @@ public class ElecCompTree extends Accordion {
 					c.accept(elecComp);
 				});
 				content.getChildren().add(lbl);
+				group.getToggles().add(lbl);
 			});
 			t1.setContent(content);
 			

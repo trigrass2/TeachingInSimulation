@@ -21,6 +21,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.TextInputDialog;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
@@ -30,10 +31,17 @@ import javafx.scene.text.TextAlignment;
 
 public class TypicalCaseMenu implements ILeftContent {
 
+	private ToggleGroup group = new ToggleGroup();
+
 	private TypicalCase3D typicalCase3D;
 
 	public TypicalCaseMenu(TypicalCase3D typicalCase3D) {
 		this.typicalCase3D = typicalCase3D;
+		this.group.selectedToggleProperty().addListener((b, o, n) -> {
+			if (n == null) {
+				this.group.selectToggle(o);
+			}
+		});
 	}
 
 	@Override
@@ -53,7 +61,7 @@ public class TypicalCaseMenu implements ILeftContent {
 //		菜单
 		vb.getChildren().add(menu);
 
-		vb.getChildren().add(new ElecCompTree(elecComp -> typicalCase3D.selectedElecComp(elecComp)));
+		vb.getChildren().add(new ElecCompTree(elecComp -> typicalCase3D.selectedElecComp(elecComp), group));
 
 		return vb;
 	}
