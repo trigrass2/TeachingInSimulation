@@ -5,6 +5,8 @@ import java.util.Optional;
 import com.sun.javafx.tk.Toolkit;
 
 import de.felixroske.jfxsupport.GUIState;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ObjectProperty;
@@ -23,6 +25,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.stage.Window;
+import javafx.util.Duration;
 
 @SuppressWarnings("restriction")
 public class Dialog<R> {
@@ -49,6 +52,10 @@ public class Dialog<R> {
 	private double prefX = Double.NaN;
 	private double prefY = Double.NaN;
 
+	private float scale = 0;
+
+	private Timeline timeline;
+
 	/**************************************************************************
 	 * Constructors
 	 **************************************************************************/
@@ -71,6 +78,24 @@ public class Dialog<R> {
 					keyEvent.consume();
 				}
 			}
+		});
+
+		timeline = new Timeline(new KeyFrame(Duration.millis(10), e -> {
+			scale += 0.1f;
+			Parent parant = stage.getScene().getRoot();
+			parant.setVisible(true);
+			parant.setScaleX(scale);
+			parant.setScaleY(scale);
+			if(scale>=1) {
+				timeline.stop();
+			}
+		}));
+		timeline.setCycleCount(Timeline.INDEFINITE);
+
+		stage.setOnShowing(windowEvent -> {
+			Parent parant = stage.getScene().getRoot();
+			parant.setVisible(false);
+			timeline.playFromStart();
 		});
 	}
 
@@ -117,7 +142,7 @@ public class Dialog<R> {
 		} else {
 			scene.setRoot(dialogPane);
 		}
-
+		scene.setFill(null);
 		dialogPane.autosize();
 		stage.sizeToScene();
 	}
@@ -128,7 +153,13 @@ public class Dialog<R> {
 		if (Double.isNaN(dialogPane.getWidth()) && Double.isNaN(dialogPane.getHeight())) {
 			sizeToScene();
 		}
-
+		
+		scale = 0;
+		Parent parant = stage.getScene().getRoot();
+		parant.setScaleX(scale);
+		parant.setScaleY(scale);
+		parant.setVisible(false);
+		
 		scene.setRoot(dialogPane);
 		stage.centerOnScreen();
 		stage.show();
