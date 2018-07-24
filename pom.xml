@@ -1,4 +1,6 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.cas.sim</groupId>
 	<artifactId>TeachingInSimulation</artifactId>
@@ -7,7 +9,6 @@
 	<modules>
 		<module>tis-base</module>
 		<module>tis-server</module>
-		<module>tis-circuit</module>
 		<module>tis-client</module>
 	</modules>
 	<name>仿真教学项目</name>
@@ -226,13 +227,7 @@
 			<dependency>
 				<groupId>com.cas</groupId>
 				<artifactId>authority-client</artifactId>
-				<version>1.0.1</version>
-				<exclusions>
-					<exclusion>
-						<groupId>org.glassfish.jersey.media</groupId>
-						<artifactId>jersey-media-json-jackson</artifactId>
-					</exclusion>
-				</exclusions>
+				<version>1.0.2</version>
 			</dependency>
 			<!-- 系统日志 -->
 			<dependency>
@@ -286,6 +281,11 @@
 			<dependency>
 				<groupId>org.jmonkeyengine</groupId>
 				<artifactId>jme3-networking</artifactId>
+				<version>${engine.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.jmonkeyengine</groupId>
+				<artifactId>jme3-plugins</artifactId>
 				<version>${engine.version}</version>
 			</dependency>
 

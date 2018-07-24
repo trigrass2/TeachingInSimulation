@@ -2,17 +2,13 @@ package com.cas.sim.tis;
 
 import java.text.MessageFormat;
 import java.util.ResourceBundle;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.log4j.Logger;
 import org.springframework.boot.SpringApplication;
 import org.springframework.util.StringUtils;
 
-import com.cas.authority.Consts;
-import com.cas.authority.action.RegisterAction;
 import com.cas.authority.model.AuthorityEntity;
 import com.cas.authority.validate.ValidateThread;
 import com.cas.sim.tis.config.ServerConfig;
@@ -20,7 +16,6 @@ import com.cas.sim.tis.consts.SystemInfo;
 import com.cas.sim.tis.util.SpringUtil;
 
 import javafx.application.Platform;
-import javafx.concurrent.Task;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -38,10 +33,12 @@ import javafx.stage.Stage;
 
 public class BootstrapWithAuthority extends javafx.application.Application {
 	public static final ResourceBundle RESOURCES = ResourceBundle.getBundle("i18n/messages");
-	private Stage primaryStage;
 
 	public static void main(String[] args) {
-		BootstrapWithAuthority.launch(args);
+		ValidateThread thread = new ValidateThread(SystemInfo.APP_ID);
+		thread.validate((result) -> {
+			BootstrapWithAuthority.launch(args);
+		});
 	}
 
 	@Override
@@ -52,64 +49,6 @@ public class BootstrapWithAuthority extends javafx.application.Application {
 			Platform.exit();
 			System.exit(0);
 		});
-		this.primaryStage = primaryStage;
-		validate(null);
-	}
-
-	public void validate(String[] args) {
-		ValidateThread thread = new ValidateThread(SystemInfo.APP_ID);
-
-		ExecutorService pool = Executors.newSingleThreadExecutor();
-		Future<Integer> task = pool.submit(thread);
-		try {
-			Integer result = task.get();
-			if (result != Consts.AUTHORITY_FILE_AVAILABLE) {
-				failure(result);
-			} else {
-				success(args, thread);
-			}
-		} catch (Exception e) {
-			System.err.println(e.getMessage());
-		}
-	}
-
-	protected void failure(Integer code) {
-		System.err.println("无效的证书文件。 错误代码:" + code);
-		switch (code) {
-		case Consts.AUTHORITY_FILE_COPY: {
-			Alert alert = new Alert(AlertType.ERROR, MessageFormat.format(RESOURCES.getString("authority.startup.failed"), code, RESOURCES.getString("authority.file.copy")));
-			alert.setHeaderText(null);
-			alert.showAndWait();
-			break;
-		}
-		case Consts.AUTHORITY_FILE_EXPIRED: {
-			Alert alert = new Alert(AlertType.ERROR, MessageFormat.format(RESOURCES.getString("authority.startup.failed"), code, RESOURCES.getString("authority.file.expired")));
-			alert.setHeaderText(null);
-			alert.showAndWait();
-			break;
-		}
-		case Consts.AUTHORITY_FILE_MODIFIED: {
-			Alert alert = new Alert(AlertType.ERROR, MessageFormat.format(RESOURCES.getString("authority.startup.failed"), code, RESOURCES.getString("authority.file.modified")));
-			alert.setHeaderText(null);
-			alert.showAndWait();
-			break;
-		}
-		case Consts.AUTHORITY_FILE_UNPITCH: {
-			Alert alert = new Alert(AlertType.ERROR, MessageFormat.format(RESOURCES.getString("authority.startup.failed"), code, RESOURCES.getString("authority.file.unpitch")));
-			alert.setHeaderText(null);
-			alert.showAndWait();
-			break;
-		}
-		case Consts.AUTHORITY_FILE_NOT_FOUNT: {
-			Alert alert = new Alert(AlertType.INFORMATION, MessageFormat.format(RESOURCES.getString("authority.startup.init"), SystemInfo.APP_NAME));
-			alert.setHeaderText(null);
-			alert.showAndWait();
-			break;
-		}
-		default:
-			break;
-		}
-		primaryStage.show();
 	}
 
 	protected void success(String[] args, ValidateThread validate) {
@@ -205,62 +144,6 @@ public class BootstrapWithAuthority extends javafx.application.Application {
 			error.setText(RESOURCES.getString("authority.regist.connecting"));
 			regist.setDisable(true);
 			cancel.setDisable(true);
-
-			// 避免连接服务器线程阻塞FX的UI线程
-			Task<Void> task = new Task<Void>() {
-				@Override
-				protected Void call() throws Exception {
-					try {
-						new RegisterAction() {
-							protected String getProductID() {
-								return SystemInfo.APP_ID;
-							};
-
-							@Override
-							protected String getRegistCode() {
-								return registCode.getText();
-							}
-
-							protected String getUserName() {
-								return userName.getText();
-							}
-
-							protected void onRegistResult(boolean success) {
-								Platform.runLater(() -> {
-									if (success) {
-										Alert alert = new Alert(AlertType.INFORMATION, RESOURCES.getString("authority.regist.success"));
-										alert.initOwner(primaryStage);
-										alert.setHeaderText(null);
-										alert.showAndWait();
-										System.exit(0);
-									} else {
-										Alert alert = new Alert(AlertType.ERROR, RESOURCES.getString("authority.regsit.failed"));
-										alert.initOwner(primaryStage);
-										alert.setHeaderText(null);
-										alert.showAndWait();
-										regist.setDisable(false);
-										cancel.setDisable(false);
-										error.setText(null);
-									}
-								});
-							}
-						}.execute();
-					} catch (Exception e1) {
-						e1.printStackTrace();
-						Platform.runLater(() -> {
-							Alert alert = new Alert(AlertType.ERROR, RESOURCES.getString("authority.regist.disconnect"));
-							alert.initOwner(primaryStage);
-							alert.setHeaderText(null);
-							alert.showAndWait();
-							regist.setDisable(false);
-							cancel.setDisable(false);
-							error.setText(null);
-						});
-					}
-					return null;
-				}
-			};
-			new Thread(task).start();
 		});
 
 		HBox btns = new HBox(40);
