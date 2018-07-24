@@ -39,6 +39,15 @@ public class ElecCompServiceImpl implements ElecCompService {
 	}
 
 	@Override
+	public ResponseEntity findElecCompsByRecongnize() {
+		Condition condition = new Condition(ElecComp.class);
+		Criteria criteria = condition.createCriteria();
+		criteria.andEqualTo("recongnize", true);
+		List<ElecComp> compList = mapper.selectByCondition(condition);
+		return ResponseEntity.success(compList);
+	}
+
+	@Override
 	public ResponseEntity findElecCompById(RequestEntity req) {
 		int id = req.getInt("id");
 		return ResponseEntity.success(mapper.selectByPrimaryKey(id));

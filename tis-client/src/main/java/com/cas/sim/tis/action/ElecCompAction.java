@@ -35,6 +35,16 @@ public class ElecCompAction extends BaseAction {
 	}
 
 	/**
+	 * 获得在认知中显示的元器件信息
+	 * @return 元器件对象
+	 */
+	@Nullable
+	public List<ElecComp> getElecCompsByRecongnize() {
+		ResponseEntity resp = service.findElecCompsByRecongnize();
+		return JSON.parseArray(resp.data, ElecComp.class);
+	}
+
+	/**
 	 * 获取所有元器件按元器件类型分类的Map集合<br>
 	 * @return key:元器件型号<br>
 	 *         value:元器件对象 List<ElecComp>
@@ -57,7 +67,7 @@ public class ElecCompAction extends BaseAction {
 		ResponseEntity resp = service.findElecCompByModel(req);
 		return JSON.parseObject(resp.data, ElecComp.class);
 	}
-
+	
 	/**
 	 * 根据元器件配置文件地址获得配置信息
 	 * @param cfgPath 配置文件地址

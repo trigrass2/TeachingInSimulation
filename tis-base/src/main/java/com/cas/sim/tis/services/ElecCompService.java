@@ -20,6 +20,13 @@ public interface ElecCompService {
 	ResponseEntity findElecCompGroupByType();
 
 	/**
+	 * 获得在认知中显示的元器件信息
+	 * @return 元器件对象
+	 */
+	@ThriftMethod
+	ResponseEntity findElecCompsByRecongnize();
+
+	/**
 	 * 根据元器件编号获得的元器件对象
 	 * @param entity （id 元器件编号）
 	 * @return 元器件对象
