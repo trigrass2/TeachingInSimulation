@@ -42,7 +42,7 @@ public class ResourceSelectedDialog extends DialogPane<Integer> {
 	private List<Integer> types = new ArrayList<>();
 
 	public ResourceSelectedDialog() {
-		VBox box = new VBox(15);
+		VBox box = new VBox(0);
 		VBox.setVgrow(box, Priority.ALWAYS);
 		box.setAlignment(Pos.TOP_CENTER);
 		box.setPadding(new Insets(20));
@@ -141,7 +141,11 @@ public class ResourceSelectedDialog extends DialogPane<Integer> {
 		scroll.setFitToWidth(true);
 		VBox.setVgrow(scroll, Priority.ALWAYS);
 
+		VBox v = new VBox(15);
+		v.getChildren().addAll(toggleBox, filterBox, scroll);
+
 		Label error = new Label();
+		error.setMaxHeight(0);
 		error.getStyleClass().add("red");
 
 		Button ok = new Button(MsgUtil.getMessage("button.ok"));
@@ -152,12 +156,14 @@ public class ResourceSelectedDialog extends DialogPane<Integer> {
 			Row selected = table.getSelectedRow();
 			if (selected == null) {
 				error.setText(MsgUtil.getMessage("alert.warning.must.select", MsgUtil.getMessage("preparation.library.resource")));
+				error.setMaxHeight(30);
 				return;
 			}
 			dialog.setResult(selected.getItems().getInteger("id"));
 		});
 
-		box.getChildren().addAll(toggleBox, filterBox, scroll, error, ok);
+		VBox.setVgrow(v, Priority.ALWAYS);
+		box.getChildren().addAll(v, error, ok);
 		getChildren().add(box);
 
 		group.selectToggle(sys);

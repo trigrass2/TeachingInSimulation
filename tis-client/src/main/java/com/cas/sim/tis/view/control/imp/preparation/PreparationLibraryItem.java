@@ -124,6 +124,10 @@ public class PreparationLibraryItem extends VBox {
 			AlertUtil.showAlert(AlertType.WARNING, MsgUtil.getMessage("alert.warning.examing"));
 			return;
 		}
+		if (questions.getChildren().size() == 0) {
+			AlertUtil.showAlert(AlertType.WARNING, MsgUtil.getMessage("alert.warning.no.preparation.questions"));
+			return;
+		}
 		// 创建考核记录
 		List<Class> classes = SpringUtil.getBean(ClassAction.class).findClassesByTeacherId(Session.get(Session.KEY_LOGIN_ID));
 

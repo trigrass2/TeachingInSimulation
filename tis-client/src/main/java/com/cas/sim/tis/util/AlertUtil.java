@@ -39,6 +39,7 @@ public class AlertUtil {
 
 	public static void showConfirm(Window win, String confirm, Consumer<ButtonType> consumer) {
 		Alert alert = new Alert(AlertType.CONFIRMATION, confirm, ButtonType.YES, ButtonType.NO);
+		alert.setTitle(MsgUtil.getMessage("alert.tip"));
 		alert.initOwner(win);
 		alert.setHeaderText(null);
 		alert.showAndWait().ifPresent(consumer);

@@ -845,7 +845,7 @@
  	-fx-border-color:#E5E5E5;
  }
  .dialog>.header{
- 	-fx-padding: 15.0px;
+ 	-fx-padding: 5.0 0.0 5.0 20.0;
     -fx-border-color:#0090FF,#E5E5E5;
     -fx-border-width: 3.0 0.0 0.0 0.0,0.0 0.0 1.0 0.0;
  }
