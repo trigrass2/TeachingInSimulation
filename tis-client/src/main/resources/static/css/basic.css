@@ -819,18 +819,18 @@
  ******************************************************************************/
  .library{
  	-fx-border-color: #f6a23f;
- 	-fx-border-width: 2.0;
+ 	-fx-border-width: 1.0;
  	-fx-spacing: 20.0;
  }
  .question{
  	-fx-border-color: #c1c1c1;
  	-fx-border-style: dashed;
- 	-fx-border-width: 2.0;
+ 	-fx-border-width: 1.0;
  }
- .question:hover{
+/*.question:hover{
  	-fx-border-color: #f6a23faa;
  	-fx-border-style: solid;
- }
+ } */ 
  .question-selected{
  	-fx-border-color: #f6a23f;
  	-fx-border-style: solid;

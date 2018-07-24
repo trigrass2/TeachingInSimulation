@@ -35,7 +35,7 @@ public class ElecCompSelectDialog extends DialogPane<Integer> {
 		accordion.getStyleClass().add("white-accordion");
 		for (ElecCompType type : ElecCompType.values()) {
 			VBox content = new VBox();
-			content.setStyle("-fx-padding:0px");
+			content.setStyle("-fx-padding:0 0 0 20");
 			for (ElecComp elecComp : elecCompMap.get(type.getType())) {
 				ToggleButton button = new ToggleButton(elecComp.getName());
 				button.getStyleClass().add("white-titled-content-btn");

@@ -57,7 +57,7 @@
 		</VBox>
 		<VBox prefWidth="435.0" style="-fx-background-color: #fbfbfb;">
 			<children>
-				<Title title="%resource.title.stats" />
+				<Title title="%question.stats" />
 				<VBox alignment="TOP_CENTER">
 					<children>
 						<StackPane prefHeight="200.0">

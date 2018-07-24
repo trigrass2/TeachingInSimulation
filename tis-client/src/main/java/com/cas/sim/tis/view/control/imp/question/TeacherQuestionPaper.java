@@ -229,6 +229,9 @@ public class TeacherQuestionPaper extends HBox implements IContent {
 		a.getChildren().clear();
 		s.getChildren().clear();
 		k.getChildren().clear();
+		a.getChildren().add(new Label("职业素质目标（A）"));
+		s.getChildren().add(new Label("技能目标（S）"));
+		k.getChildren().add(new Label("知识目标（K）"));
 		List<Goal> goals = SpringUtil.getBean(GoalAction.class).findGoalByPreparationLibraryIdAndQuestionIds(preparationLibraryId, "[" + qid + "]");
 		for (Goal goal : goals) {
 			CheckBox checkBox = new CheckBox(goal.getName());

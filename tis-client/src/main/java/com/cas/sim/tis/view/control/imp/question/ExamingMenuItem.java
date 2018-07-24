@@ -139,7 +139,7 @@ public class ExamingMenuItem extends HBox implements IDistory {
 		PublishLibraryFeedback pane = new PublishLibraryFeedback(pid, preparationLibraryId);
 		Dialog<Void> dialog = new Dialog<>();
 		dialog.setDialogPane(pane);
-		dialog.setTitle(MsgUtil.getMessage("class.dialog.modify"));
+		dialog.setTitle(MsgUtil.getMessage("preparation.question.library.result"));
 		dialog.setPrefSize(1136, 693);
 		dialog.showAndWait();
 	}
