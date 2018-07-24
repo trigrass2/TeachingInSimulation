@@ -25,7 +25,7 @@ public class TestJxBrowserPdf extends Application {
 		Browser browser = new Browser(BrowserType.LIGHTWEIGHT);
 		BrowserView view = new BrowserView(browser);
 		primaryStage.setScene(new Scene(view));
-		browser.loadURL("http://192.168.1.19:8082/Test/Fanuc0i参数说明书.pdf");
+		browser.loadURL("http://112.35.87.233/Test/Fanuc0i参数说明书.pdf");
 		// browser.executeJavaScript("var child=document.getElementById(\\\"download\\\");child.parentNode.removeChild(child);");
 //		browser.executeJavaScript("alert(document.getElementById('download'))");
 		browser.setDownloadHandler(new DownloadHandler() {

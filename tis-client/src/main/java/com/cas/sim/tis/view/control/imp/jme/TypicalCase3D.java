@@ -10,8 +10,8 @@ import java.util.regex.Pattern;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.cas.circuit.vo.ElecCompDef;
-import com.cas.circuit.vo.Wire;
+import com.cas.circuit.component.ElecCompDef;
+import com.cas.circuit.component.Wire;
 import com.cas.sim.tis.anno.FxThread;
 import com.cas.sim.tis.app.JmeApplication;
 import com.cas.sim.tis.app.state.CircuitState;

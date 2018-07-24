@@ -29,8 +29,8 @@ public class AspectConfig {
 
 	@Around("actionPointcut()")
 	public Object onAround(ProceedingJoinPoint pjp) throws Throwable {
-		String msg = String.format("执行 %s.%s(%s)", //
-				pjp.getSignature().getDeclaringTypeName(), //
+		String msg = String.format("%s.%s(%s)", //
+				pjp.getSignature().getDeclaringType(), //
 				pjp.getSignature().getName(), //
 				getArgs(pjp.getArgs()));
 		log.info(msg);

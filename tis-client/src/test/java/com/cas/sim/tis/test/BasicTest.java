@@ -1,19 +1,22 @@
 package com.cas.sim.tis.test;
 
-import static org.junit.Assert.*;
-
+import java.io.File;
+import java.math.BigDecimal;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.cas.circuit.vo.ElecCompDef;
+import com.cas.circuit.component.ElecCompDef;
+import com.cas.circuit.util.JaxbUtil;
 import com.cas.sim.tis.app.event.MouseEventState;
 import com.cas.sim.tis.consts.ResourceType;
-import com.cas.sim.tis.xml.util.JaxbUtil;
+import com.cas.sim.tis.util.HTTPUtils;
 import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
@@ -32,10 +35,10 @@ public class BasicTest {
 
 	@Test
 	public void testParseCfgLocal() throws Exception {
-		URL url = new URL("http://192.168.1.19:8082/configurations/Accontactor/CJX2-1210.xml");
-//		URL url = new URL("file:///C:/Users/Administrator/Documents/New%20folder/Accontactor/CJX2-1210.xml");
-		ElecCompDef eleccomp = JaxbUtil.converyToJavaBean(url, ElecCompDef.class);
-		System.out.println(eleccomp);
+		ElecCompDef comp = null;
+		URL url = new URL("http://172.16.30.2:8082/configurations/Relay/JZX-22F(D)-2Z(AC).xml");
+		comp = JaxbUtil.converyToJavaBean(url, ElecCompDef.class);
+		System.out.println(comp);
 	}
 
 	@Test
@@ -66,26 +69,54 @@ public class BasicTest {
 
 		System.out.println((flag & 0x01) == 0);
 	}
-	
+
 	@Test
 	public void testSort() throws Exception {
 		System.out.println(System.currentTimeMillis());
 		for (int i = 0; i < 100000; i++) {
-			
+
 		}
 		System.out.println(System.currentTimeMillis());
 	}
-	
+
 	@Test
 	public void testNotNull() throws Exception {
 		MouseEventState state = new MouseEventState();
 		state.addCandidate(null, null);
 	}
-	
+
 	@Test
 	public void testQua() throws Exception {
 		Vector3f axisStore = new Vector3f();
-		new Quaternion(0.0010627164f, 0.90029067f, -0.43528637f, 0.0021979825f).toAngleAxis(axisStore );
+		new Quaternion(0.0010627164f, 0.90029067f, -0.43528637f, 0.0021979825f).toAngleAxis(axisStore);
 		System.out.println(axisStore.mult(FastMath.RAD_TO_DEG));
+	}
+
+	@Test
+	public void testTime() throws Exception {
+//		"2018-04-17T12:00:00"
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss");
+		Date date = sdf.parse("2018-04-17T12:00:00");
+		System.out.println(date);
+	}
+
+	@Test
+	public void testFloat() throws Exception {
+		System.out.println(round(0.15324f, 3, 4));
+	}
+
+	float round(float num, int bit, int unit) {
+//		0.01534562343
+		BigDecimal bigNum = new BigDecimal(num);
+//		整数位
+//		0015.34562343
+//		0015
+		int i = bigNum.movePointRight(bit).intValue();
+//		
+		int mod = i % unit;
+		if (mod != 0) {
+			i = (i / unit + 1) * unit;
+		}
+		return new BigDecimal(i).movePointLeft(bit).floatValue();
 	}
 }

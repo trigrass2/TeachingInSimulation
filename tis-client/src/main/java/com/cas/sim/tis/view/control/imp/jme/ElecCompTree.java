@@ -4,8 +4,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
-import com.cas.circuit.consts.ElecCompType;
 import com.cas.sim.tis.action.ElecCompAction;
+import com.cas.sim.tis.consts.ElecCompType;
 import com.cas.sim.tis.entity.ElecComp;
 import com.cas.sim.tis.util.SpringUtil;
 

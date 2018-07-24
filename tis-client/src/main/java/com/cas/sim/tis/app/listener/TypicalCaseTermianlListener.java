@@ -1,6 +1,6 @@
 package com.cas.sim.tis.app.listener;
 
-import com.cas.circuit.vo.Terminal;
+import com.cas.circuit.component.Terminal;
 import com.cas.sim.tis.app.event.MouseEvent;
 import com.cas.sim.tis.app.event.MouseEventAdapter;
 

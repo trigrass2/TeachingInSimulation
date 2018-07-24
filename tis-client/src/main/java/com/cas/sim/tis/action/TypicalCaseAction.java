@@ -12,6 +12,7 @@ import org.apache.commons.beanutils.BeanUtils;
 import org.springframework.stereotype.Component;
 
 import com.alibaba.fastjson.JSON;
+import com.cas.circuit.util.JaxbUtil;
 import com.cas.circuit.vo.Archive;
 import com.cas.sim.tis.consts.Session;
 import com.cas.sim.tis.entity.TypicalCase;
@@ -21,7 +22,6 @@ import com.cas.sim.tis.thrift.RequestEntity;
 import com.cas.sim.tis.thrift.RequestEntityBuilder;
 import com.cas.sim.tis.thrift.ResponseEntity;
 import com.cas.sim.tis.util.FTPUtils;
-import com.cas.sim.tis.xml.util.JaxbUtil;
 
 @Component
 public class TypicalCaseAction extends BaseAction {

@@ -9,12 +9,12 @@ import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.cas.circuit.vo.ElecCompDef;
+import com.cas.circuit.component.ElecCompDef;
+import com.cas.circuit.util.JaxbUtil;
 import com.cas.sim.tis.Application;
 import com.cas.sim.tis.action.ElecCompAction;
 import com.cas.sim.tis.entity.ElecComp;
 import com.cas.sim.tis.util.HTTPUtils;
-import com.cas.sim.tis.xml.util.JaxbUtil;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest(classes = Application.class)

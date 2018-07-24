@@ -10,14 +10,14 @@ import org.springframework.stereotype.Component;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
-import com.cas.circuit.vo.ElecCompDef;
+import com.cas.circuit.component.ElecCompDef;
+import com.cas.circuit.util.JaxbUtil;
 import com.cas.sim.tis.entity.ElecComp;
 import com.cas.sim.tis.services.ElecCompService;
 import com.cas.sim.tis.thrift.RequestEntity;
 import com.cas.sim.tis.thrift.RequestEntityBuilder;
 import com.cas.sim.tis.thrift.ResponseEntity;
 import com.cas.sim.tis.util.HTTPUtils;
-import com.cas.sim.tis.xml.util.JaxbUtil;
 
 @Component
 public class ElecCompAction extends BaseAction {

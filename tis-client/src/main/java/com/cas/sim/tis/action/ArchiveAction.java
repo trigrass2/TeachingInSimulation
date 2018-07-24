@@ -4,9 +4,9 @@ import javax.annotation.Nullable;
 
 import org.springframework.stereotype.Component;
 
+import com.cas.circuit.util.JaxbUtil;
 import com.cas.circuit.vo.Archive;
 import com.cas.sim.tis.util.HTTPUtils;
-import com.cas.sim.tis.xml.util.JaxbUtil;
 
 @Component
 public class ArchiveAction {

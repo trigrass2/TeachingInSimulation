@@ -5,9 +5,8 @@ import java.util.List;
 
 import javax.annotation.Nonnull;
 
-import com.cas.circuit.CfgConst;
-import com.cas.circuit.vo.ControlIO;
-import com.cas.circuit.vo.ElecCompDef;
+import com.cas.circuit.component.ControlIO;
+import com.cas.circuit.component.ElecCompDef;
 import com.cas.sim.tis.action.ElecCompAction;
 import com.cas.sim.tis.anno.JmeThread;
 import com.cas.sim.tis.app.control.ShowNameOnHoverControl;
@@ -133,20 +132,18 @@ public class ElecCompState extends BaseState {
 	}
 
 	private void bindElecCompEvent(ElecCompDef def) {
-		def.getMagnetismList().forEach(m -> {
-			for (ControlIO c : m.getControlIOList()) {
-				if (c.getType().indexOf(CfgConst.SWITCH_CTRL_INPUT) == -1) {
-					continue;
-				}
-				if (ControlIO.INTERACT_ROTATE.equals(c.getInteract())) {
-					addListener(c.getSpatial(), controlIOWheelListener);
-				} else if (ControlIO.INTERACT_PRESS.equals(c.getInteract())) {
-					addListener(c.getSpatial(), controlIOPressListener);
-				} else {
-					addListener(c.getSpatial(), controlIOClickListener);
-				}
+		for (ControlIO c : def.getControlIOList()) {
+//			if (c.getType().indexOf(CfgConst.SWITCH_CTRL_INPUT) == -1) {
+//				continue;
+//			}
+			if (ControlIO.INTERACT_ROTATE.equals(c.getInteract())) {
+				addListener(c.getSpatial(), controlIOWheelListener);
+			} else if (ControlIO.INTERACT_PRESS.equals(c.getInteract())) {
+				addListener(c.getSpatial(), controlIOPressListener);
+			} else {
+				addListener(c.getSpatial(), controlIOClickListener);
 			}
-		});
+		}
 	}
 
 	private void cleanRoot() {

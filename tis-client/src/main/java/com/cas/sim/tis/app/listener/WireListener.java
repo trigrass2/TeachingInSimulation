@@ -1,6 +1,6 @@
 package com.cas.sim.tis.app.listener;
 
-import com.cas.circuit.vo.Wire;
+import com.cas.circuit.component.Wire;
 import com.cas.sim.tis.app.control.HintControl;
 import com.cas.sim.tis.app.event.MouseEvent;
 import com.cas.sim.tis.app.event.MouseEventAdapter;

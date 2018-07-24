@@ -2,6 +2,7 @@ package com.cas.sim.tis.app.state;
 
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -10,18 +11,23 @@ import javax.annotation.Nonnull;
 
 import org.jetbrains.annotations.Nullable;
 
-import com.cas.circuit.CfgConst;
-import com.cas.circuit.util.R;
+import com.cas.circuit.CirSim;
+import com.cas.circuit.component.Base;
+import com.cas.circuit.component.ControlIO;
+import com.cas.circuit.component.ElecCompDef;
+import com.cas.circuit.component.ElecCompProxy;
+import com.cas.circuit.component.RelyOn;
+import com.cas.circuit.component.Terminal;
+import com.cas.circuit.component.Wire;
+import com.cas.circuit.component.WireProxy;
+import com.cas.circuit.element.CircuitElm;
+import com.cas.circuit.element.LEDElm;
+import com.cas.circuit.element.RelayElm;
+import com.cas.circuit.element.ResistorElm;
+import com.cas.circuit.element.SwitchElm;
+import com.cas.circuit.element.VoltageElm;
+import com.cas.circuit.util.JaxbUtil;
 import com.cas.circuit.vo.Archive;
-import com.cas.circuit.vo.Base;
-import com.cas.circuit.vo.ControlIO;
-import com.cas.circuit.vo.ElecCompDef;
-import com.cas.circuit.vo.Jack;
-import com.cas.circuit.vo.RelyOn;
-import com.cas.circuit.vo.Terminal;
-import com.cas.circuit.vo.Wire;
-import com.cas.circuit.vo.archive.ElecCompProxy;
-import com.cas.circuit.vo.archive.WireProxy;
 import com.cas.sim.tis.action.ElecCompAction;
 import com.cas.sim.tis.action.TypicalCaseAction;
 import com.cas.sim.tis.anno.JmeThread;
@@ -45,7 +51,6 @@ import com.cas.sim.tis.util.JmeUtil;
 import com.cas.sim.tis.util.MsgUtil;
 import com.cas.sim.tis.util.SpringUtil;
 import com.cas.sim.tis.view.control.imp.dialog.Tip.TipType;
-import com.cas.sim.tis.xml.util.JaxbUtil;
 import com.cas.util.StringUtil;
 import com.jme3.asset.ModelKey;
 import com.jme3.collision.CollisionResult;
@@ -127,6 +132,7 @@ public class CircuitState extends BaseState {
 
 	private boolean moved;
 
+	private CirSim cirSim;
 	// Key:BASE UUID,Value: TOP UUID
 //	private Map<String, String> combineMap = new HashMap<String, String>();
 
@@ -201,6 +207,103 @@ public class CircuitState extends BaseState {
 		bindCircuitBoardEvents();
 
 		log.info("CircuitState完成初始化");
+
+		cirSim = new CirSim();
+		CircuitElm.initClass(cirSim);
+
+//		prepareCircuit(cirSim);
+//		cirSim.needAnalyze();
+//		Executors.newScheduledThreadPool(2).scheduleAtFixedRate(() -> {
+////			sw(sim);
+//			SwitchElm e = (SwitchElm) cirSim.getCircuitElm(1);
+//			e.doSwitch();
+//			cirSim.needAnalyze();
+//			System.out.println("s.toggle()");
+//		}, 3, 3, TimeUnit.SECONDS);
+	}
+
+	private void prepareCircuit(CirSim sim) {
+		VoltageElm ac = new VoltageElm(1);
+		Terminal ac_0 = new Terminal("ac_0");
+		Terminal ac_1 = new Terminal("ac_1");
+		ac.setPostPoint(0, ac_0);
+		ac.setPostPoint(1, ac_1);
+
+		SwitchElm sw = new SwitchElm();
+		Terminal sw_0 = new Terminal("Switch_0");
+		Terminal sw_1 = new Terminal("Switch_1");
+		sw.setPostPoint(0, sw_0);
+		sw.setPostPoint(1, sw_1);
+
+		RelayElm relay = new RelayElm();
+		Terminal coil_0 = new Terminal("coil_0");
+		Terminal coil_1 = new Terminal("coil_1");
+		Terminal com1 = new Terminal("com1");
+		Terminal nc1 = new Terminal("nc1");
+		Terminal no1 = new Terminal("no1");
+		List<List<Terminal>> terms = new ArrayList<>();
+		List<Terminal> post1 = new ArrayList<>();
+		post1.add(com1);
+		post1.add(nc1);
+		post1.add(no1);
+		terms.add(post1);
+
+		relay.setPosts(coil_0, coil_1, terms);
+
+		VoltageElm dc = new VoltageElm(0);
+		dc.setMaxVoltage(5);
+		Terminal dc_0 = new Terminal("volt0");
+		Terminal dc_1 = new Terminal("volt1");
+		dc.setPostPoint(0, dc_0);
+		dc.setPostPoint(1, dc_1);
+
+		ResistorElm resis = new ResistorElm(5);
+		Terminal resis_0 = new Terminal("resis_0");
+		Terminal resis_1 = new Terminal("resis_1");
+		resis.setPostPoint(0, resis_0);
+		resis.setPostPoint(1, resis_1);
+
+		LEDElm led = new LEDElm();
+		Terminal led_0 = new Terminal("led0");
+		Terminal led_1 = new Terminal("led1");
+		led.setPostPoint(0, led_0);
+		led.setPostPoint(1, led_1);
+
+//		直流部分
+		Wire wire = new Wire();
+		wire.bind(dc_1);
+		wire.bind(resis_0);
+
+		wire = new Wire();
+		wire.bind(resis_1);
+		wire.bind(led_0);
+		wire = new Wire();
+		wire.bind(led_1);
+		wire.bind(no1);
+
+		wire = new Wire();
+		wire.bind(dc_0);
+		wire.bind(com1);
+
+//		
+		wire = new Wire();
+		wire.bind(ac_0);
+		wire.bind(sw_0);
+
+		wire = new Wire();
+		wire.bind(sw_1);
+		wire.bind(coil_0);
+
+		wire = new Wire();
+		wire.bind(coil_1);
+		wire.bind(ac_1);
+
+		sim.addCircuitElm(ac);
+		sim.addCircuitElm(sw);
+		sim.addCircuitElm(relay);
+		sim.addCircuitElm(dc);
+		sim.addCircuitElm(resis);
+		sim.addCircuitElm(led);
 	}
 
 	private void bindCircuitBoardEvents() {
@@ -216,6 +319,17 @@ public class CircuitState extends BaseState {
 		addMapping("CANCEL_ON_CONNECTING", new MouseButtonTrigger(MouseInput.BUTTON_RIGHT));
 		addMapping("DELETE_SELECTED_WIRE", new KeyTrigger(KeyInput.KEY_DELETE));
 		addListener((ActionListener) (name, isPressed, tpf) -> onAction0(name, isPressed, tpf), "CLICKED_ON_BOARD", "CANCEL_ON_CONNECTING", "DELETE_SELECTED_WIRE");
+	}
+
+	@Override
+	public void update(float tpf) {
+		super.update(tpf);
+		cirSim.updateCircuit(tpf / 50);
+
+//		CircuitElm e = cirSim.getCircuitElm(2);
+//		String[] info = new String[8];
+//		e.getInfo(info);
+//		System.out.println(Arrays.toString(info));
 	}
 
 	/*
@@ -528,7 +642,7 @@ public class CircuitState extends BaseState {
 
 	private void bindElecCompEvent(ElecCompDef def) {
 		// 1、连接头监听事件
-		def.getTerminalList().forEach(t -> addListener(t.getSpatial(), terminalLitener));
+		def.getTerminalMap().values().forEach(t -> addListener(t.getSpatial(), terminalLitener));
 //		// 2、插孔监听事件
 //		def.getJackList().forEach(j -> addListener(j.getSpatial(), new MouseEventAdapter() {
 //			@Override
@@ -537,20 +651,20 @@ public class CircuitState extends BaseState {
 //			}
 //		}));
 		// 3、按钮监听事件
-		def.getMagnetismList().forEach(m -> {
-			for (ControlIO c : m.getControlIOList()) {
-				if (c.getType().indexOf(CfgConst.SWITCH_CTRL_INPUT) == -1) {
-					continue;
-				}
-				if (ControlIO.INTERACT_ROTATE.equals(c.getInteract())) {
-					addListener(c.getSpatial(), controlIOWheelListener);
-				} else if (ControlIO.INTERACT_PRESS.equals(c.getInteract())) {
-					addListener(c.getSpatial(), controlIOPressListener);
-				} else {
-					addListener(c.getSpatial(), controlIOClickListener);
-				}
+//		def.getMagnetismList().forEach(m -> {
+		for (ControlIO c : def.getControlIOList()) {
+//				if (c.getType().indexOf(CfgConst.SWITCH_CTRL_INPUT) == -1) {
+//					continue;
+//				}
+			if (ControlIO.INTERACT_ROTATE.equals(c.getInteract())) {
+				addListener(c.getSpatial(), controlIOWheelListener);
+			} else if (ControlIO.INTERACT_PRESS.equals(c.getInteract())) {
+				addListener(c.getSpatial(), controlIOPressListener);
+			} else {
+				addListener(c.getSpatial(), controlIOClickListener);
 			}
-		});
+		}
+//		});
 //		4、元器件本身的监听事件
 		addListener(def.getSpatial(), elecCompRightClickListener);
 //		5、若当前为底座添加监听事件
@@ -559,16 +673,16 @@ public class CircuitState extends BaseState {
 		}
 	}
 
-	private void unbindElecCompEvent(ElecCompDef elecCompDef) {
-		elecCompDef.getTerminalList().forEach(t -> mouseEventState.removeCandidate(t.getSpatial()));
+	private void unbindElecCompEvent(ElecCompDef def) {
+		def.getTerminalMap().values().forEach(t -> mouseEventState.removeCandidate(t.getSpatial()));
 
-		elecCompDef.getJackList().forEach(j -> mouseEventState.removeCandidate(j.getSpatial()));
+//		elecCompDef.getJackList().forEach(j -> mouseEventState.removeCandidate(j.getSpatial()));
 
-		elecCompDef.getMagnetismList().forEach(m -> {
-			m.getControlIOList().forEach(c -> mouseEventState.removeCandidate(c.getSpatial()));
-		});
+//		elecCompDef.getMagnetismList().forEach(m -> {
+		def.getControlIOList().forEach(c -> mouseEventState.removeCandidate(c.getSpatial()));
+//		});
 
-		mouseEventState.removeCandidate(elecCompDef.getSpatial());
+		mouseEventState.removeCandidate(def.getSpatial());
 	}
 
 	private void unbindWireEvent(Wire wire) {
@@ -583,22 +697,6 @@ public class CircuitState extends BaseState {
 		readEleccomps(archive.getCompList());
 		readWires(archive.getWireList());
 
-		Map<String, ElecCompDef> compMap = compList.stream().collect(Collectors.toMap(x -> x.getProxy().getUuid(), x -> x));
-//		FIXME 找到电源（这里将QF1元器件看做电源）
-		ElecCompDef power = compMap.get("91f51e14-eaed-4c45-a56e-3fecb18ed56a");
-		if (power != null) {
-			Terminal r0 = power.getTerminal("2");
-			Terminal s0 = power.getTerminal("4");
-			Terminal t0 = power.getTerminal("6");
-
-			Terminal pe = new Terminal();
-			pe.setElecComp(power);
-
-			List<R> powerAC = R.create3Phase("AlphaPawer", r0, s0, t0, pe, 380);
-			for (R r : powerAC) {
-				r.shareVoltage();
-			}
-		}
 	}
 
 	private void readEleccomps(@Nonnull List<ElecCompProxy> compProxyList) {
@@ -747,23 +845,27 @@ public class CircuitState extends BaseState {
 
 //		3、添加接线事件
 		bindElecCompEvent(elecCompDef);
-//		4、最后将元器件加入列表中
+//		4、将元器件加入列表中
 		compList.add(elecCompDef);
+//		5、添加到电路逻辑中
+		Collection<CircuitElm> elms = elecCompDef.getCircuitElmMap().values();
+		elms.forEach(e -> cirSim.addCircuitElm(e));
+		cirSim.needAnalyze();
 	}
 
 	@JmeThread
 	public boolean detachFromCircuit(ElecCompDef elecCompDef) {
 //		0、判断元器件连接头是否接线
-		for (Terminal terminal : elecCompDef.getTerminalList()) {
+		for (Terminal terminal : elecCompDef.getTerminalMap().values()) {
 			if (terminal.getWires().size() > 0) {
 				return false;
 			}
 		}
-		for (Jack jack : elecCompDef.getJackList()) {
-			if (jack.getCable() != null) {
-				return false;
-			}
-		}
+//		for (Jack jack : elecCompDef.getJackList()) {
+//			if (jack.getCable() != null) {
+//				return false;
+//			}
+//		}
 
 		Base base = elecCompDef.getBase();
 		if (base != null) {
@@ -797,23 +899,27 @@ public class CircuitState extends BaseState {
 				return;
 			}
 			for (String relyId : relyOn.getRelyIds()) {
-				Terminal terminal = elecCompDef.getTerminal(relyId);
-				terminal.getContacted().setContacted(null);
-				terminal.setContacted(null);
+				Terminal t1 = elecCompDef.getTerminal(relyId);
+				Terminal t2 = baseDef.getTerminal(relyId);
+				t1.getWires().clear();
+				t2.getWires().clear();
 			}
 			baseDef.getBase().setRelyOnPlug(null);
 			elecCompDef.getRelyOn().setBaseDef(null);
 		}
+
+		cirSim.needAnalyze();
 	}
 
 	public void attachToBase(Spatial holding, ElecCompDef relyOnDef, ElecCompDef baseDef) {
-//		FIXME 加入底座指定位置
 		RelyOn relyOn = relyOnDef.getRelyOn();
-		Node parent = baseDef.getSpatial();
-		holding.scale(0.04f);
-		holding.setLocalTranslation(relyOn.getLocalTranslation());
-		holding.setLocalRotation(relyOn.getLocalRotations());
-		parent.attachChild(holding);
+		Node baseMdl = baseDef.getSpatial();
+
+		Vector3f loc = baseMdl.getLocalTranslation().add(relyOn.getTranslation());
+		holding.setLocalTranslation(loc);
+//		holding.setLocalRotation(relyOn.getRotation());
+
+		rootCompNode.attachChild(holding);
 
 //		2、绑定模型对象
 		relyOnDef.bindModel((Node) holding);
@@ -825,8 +931,11 @@ public class CircuitState extends BaseState {
 		for (String relyId : relyOn.getRelyIds()) {
 			Terminal terminal1 = relyOnDef.getTerminal(relyId);
 			Terminal terminal2 = baseDef.getTerminal(relyId);
-			terminal1.setContacted(terminal2);
-			terminal2.setContacted(terminal1);
+
+			Wire wire = new Wire();
+			wire.setInternal();
+			wire.bind(terminal1);
+			wire.bind(terminal2);
 		}
 		baseDef.getBase().setRelyOnPlug(relyOnDef);
 		relyOn.setBaseDef(baseDef);
@@ -836,6 +945,11 @@ public class CircuitState extends BaseState {
 //		combineMap.put(baseUuid, elecCompDef.getProxy().getUuid());
 //		6、最后将元器件加入列表中
 		compList.add(relyOnDef);
+
+//		7、添加到电路逻辑中
+		Collection<CircuitElm> elms = relyOnDef.getCircuitElmMap().values();
+		elms.forEach(e -> cirSim.addCircuitElm(e));
+		cirSim.needAnalyze();
 	}
 
 	void attachToCircuit(Geometry wireMdl, Wire wire) {
@@ -861,6 +975,8 @@ public class CircuitState extends BaseState {
 		addListener(wireMdl, wireListener);
 //		4、将导线加入列表中
 		wireList.add(wire);
+
+		cirSim.needAnalyze();
 	}
 
 	public boolean detachFromCircuit(Wire wire) {
@@ -868,6 +984,7 @@ public class CircuitState extends BaseState {
 		detachWire(wire);
 		// 移除导线
 		wireList.remove(wire);
+
 		return true;
 	}
 
@@ -881,6 +998,8 @@ public class CircuitState extends BaseState {
 		unbindWireEvent(wire);
 //		4、解除连接头绑定
 		wire.unbind();
+
+		cirSim.needAnalyze();
 	}
 
 	public void setTagNameVisible(boolean tagVisible) {

@@ -1,8 +1,6 @@
 package com.cas.sim.tis.app.event;
 
-import com.jme3.export.Savable;
-
-public interface MouseEventListener extends Savable {
+public interface MouseEventListener {
 	/**
 	 * Invoked when a mouse button has been pressed on a Node.
 	 */

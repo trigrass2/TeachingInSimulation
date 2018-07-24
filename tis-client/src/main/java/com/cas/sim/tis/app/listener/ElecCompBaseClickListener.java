@@ -1,6 +1,6 @@
 package com.cas.sim.tis.app.listener;
 
-import com.cas.circuit.vo.ElecCompDef;
+import com.cas.circuit.component.ElecCompDef;
 import com.cas.sim.tis.app.event.MouseEvent;
 import com.cas.sim.tis.app.event.MouseEventAdapter;
 import com.cas.sim.tis.app.state.TypicalCaseState;

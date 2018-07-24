@@ -2,8 +2,9 @@ package com.cas.sim.tis.app.state;
 
 import org.jetbrains.annotations.Nullable;
 
+import com.cas.circuit.component.ElecCompDef;
+import com.cas.circuit.component.ElecCompProxy;
 import com.cas.circuit.vo.Archive;
-import com.cas.circuit.vo.ElecCompDef;
 import com.cas.sim.tis.action.ArchiveAction;
 import com.cas.sim.tis.action.ElecCompAction;
 import com.cas.sim.tis.anno.JmeThread;
@@ -112,11 +113,10 @@ public class TypicalCaseState extends BaseState {
 		super.cleanup();
 	}
 
-
 	public boolean isClean() {
 		return circuitState.isClean();
 	}
-	
+
 //	打开一个案例
 	public void setupCase(TypicalCase typicalCase) {
 		this.typicalCase = typicalCase;
@@ -267,6 +267,8 @@ public class TypicalCaseState extends BaseState {
 			} else {
 //				1、获取相应元器件
 				ElecCompDef elecCompDef = SpringUtil.getBean(ElecCompAction.class).parse(elecComp.getCfgPath());
+				elecCompDef.setProxy(new ElecCompProxy());
+
 				elecCompDef.getProxy().setId(elecComp.getId());
 //				2、将元器件模型与元器件对象一起加入电路板中
 				circuitState.attachToCircuit(elecComp.getSpatial(), elecCompDef);
@@ -306,6 +308,8 @@ public class TypicalCaseState extends BaseState {
 		}
 //		1、获取相应元器件
 		ElecCompDef elecCompDef = SpringUtil.getBean(ElecCompAction.class).parse(elecComp.getCfgPath());
+		elecCompDef.setProxy(new ElecCompProxy());
+
 		elecCompDef.getProxy().setId(elecComp.getId());
 		if (def.getBase().isUseable(elecCompDef)) {
 			return;

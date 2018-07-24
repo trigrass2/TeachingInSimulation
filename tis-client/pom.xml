@@ -1,4 +1,6 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>com.cas.sim</groupId>
@@ -15,9 +17,14 @@
 			<groupId>com.cas.sim</groupId>
 			<artifactId>tis-base</artifactId>
 		</dependency>
+		<!-- <dependency> -->
+		<!-- <groupId>com.cas.sim</groupId> -->
+		<!-- <artifactId>tis-circuit</artifactId> -->
+		<!-- </dependency> -->
 		<dependency>
-			<groupId>com.cas.sim</groupId>
-			<artifactId>tis-circuit</artifactId>
+			<groupId>com.cas.circuit</groupId>
+			<artifactId>engine</artifactId>
+			<version>1.0-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.jmonkeyengine</groupId>
@@ -35,6 +42,11 @@
 			<groupId>org.jmonkeyengine</groupId>
 			<artifactId>jme3-networking</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>org.jmonkeyengine</groupId>
+			<artifactId>jme3-plugins</artifactId>
+		</dependency>
+
 		<dependency>
 			<!-- <groupId>com.github.JavaSaBr</groupId> -->
 			<!-- <artifactId>JME3-JFX</artifactId> -->
