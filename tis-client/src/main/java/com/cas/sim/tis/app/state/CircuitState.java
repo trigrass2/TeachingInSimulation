@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -211,7 +210,7 @@ public class CircuitState extends BaseState {
 
 		cirSim = new CirSim(app);
 		CircuitElm.initClass(cirSim);
-		CIRCUIT_SERVICE.scheduleAtFixedRate(cirSim, 0, (long) 1e5, TimeUnit.NANOSECONDS);
+		CIRCUIT_SERVICE.scheduleAtFixedRate(cirSim, 0, (long) (1 / CirSim.TPF / 10), TimeUnit.NANOSECONDS);
 	}
 
 	private void bindCircuitBoardEvents() {
@@ -727,7 +726,6 @@ public class CircuitState extends BaseState {
 			elecCompBox.removeFromParent();
 		}
 
-		cirSim.exit();
 		CIRCUIT_SERVICE.shutdown();
 
 		super.cleanup();
@@ -821,40 +819,55 @@ public class CircuitState extends BaseState {
 			baseDef.getBase().setRelyOnPlug(null);
 			elecCompDef.getRelyOn().setBaseDef(null);
 		}
-		
+
 		elecCompDef.getCircuitExchangeList().forEach(ex -> cirSim.removeCircuitElm(ex.getCircuitElm()));
 		cirSim.needAnalyze();
 	}
 
 	public void attachToBase(Spatial holding, ElecCompDef relyOnDef, ElecCompDef baseDef) {
 		RelyOn relyOn = relyOnDef.getRelyOn();
-		Node baseMdl = baseDef.getSpatial();
+		relyOn.setBaseDef(baseDef);
 
+		Node baseMdl = baseDef.getSpatial();
 		Vector3f loc = baseMdl.getLocalTranslation().add(relyOn.getTranslation());
 		holding.setLocalTranslation(loc);
 //		holding.setLocalRotation(relyOn.getRotation());
-
 		rootCompNode.attachChild(holding);
-
 //		2、绑定模型对象
 		relyOnDef.bindModel((Node) holding);
 
 //		3、添加事件
 		bindElecCompEvent(relyOnDef);
 
-//		4、连接元器件与底座对应连接头
-		for (String relyId : relyOn.getRelyIds()) {
-			Terminal t1 = relyOnDef.getTerminal(relyId);
-			Terminal t2 = baseDef.getTerminal(relyId);
+//		4-1、连接元器件与底座对应连接头
+		if (relyOn.getType() == RelyOn.RELY_ON_TYPE_PLUG) {
+			for (String relyId : relyOn.getRelyIds()) {
+				Terminal t1 = relyOnDef.getTerminal(relyId);
+				Terminal t2 = baseDef.getTerminal(relyId);
 
-			Wire wire = new Wire();
-			wire.markInternal();
+				Wire wire = new Wire();
+				wire.markInternal();
 
-			wire.bind(t1);
-			wire.bind(t2);
+				wire.bind(t1);
+				wire.bind(t2);
+			}
+			baseDef.getBase().setRelyOnPlug(relyOnDef);
 		}
-		baseDef.getBase().setRelyOnPlug(relyOnDef);
-		relyOn.setBaseDef(baseDef);
+//		4-2、连接元器件与底座对应连杆
+		if (relyOn.getType() == RelyOn.RELY_ON_TYPE_RESIS) {
+			for (String relyId : relyOn.getRelyIds()) {
+				Terminal t1 = relyOnDef.getTerminal(relyId);
+				Terminal t2 = baseDef.getTerminal(relyId);
+
+				Wire wire = new Wire();
+				wire.markInternal();
+
+				wire.bind(t1);
+				wire.bind(t2);
+			}
+			baseDef.getBase().setRelyOnPlug(relyOnDef);
+		}
+
 //		5、绑定底座对象UUID
 		String baseUuid = baseDef.getProxy().getUuid();
 		relyOnDef.getProxy().setBaseUuid(baseUuid);
