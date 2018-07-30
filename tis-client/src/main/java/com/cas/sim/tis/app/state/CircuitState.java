@@ -327,7 +327,7 @@ public class CircuitState extends BaseState {
 	}
 
 	public void onTernialClick(Terminal t) {
-		if (t.getWires().size() >= 2) {
+		if (t.getWireSize() >= t.getLimit()) {
 			Platform.runLater(() -> AlertUtil.showTip(TipType.WARN, MsgUtil.getMessage("alert.warning.wire.max")));
 			return;
 		}
@@ -369,7 +369,7 @@ public class CircuitState extends BaseState {
 
 //		导线连接的位置，多跟导线的情况下错开
 		Vector3f dest = new Vector3f();
-		if (t.getWires().size() == 2) {
+		if (t.getWireSize() == t.getLimit()) {
 //			第二根线
 			dest.set(t.getSpatial().getWorldTranslation().add(midAxis.normalize().mult(0.002f)));
 		} else {
@@ -429,7 +429,8 @@ public class CircuitState extends BaseState {
 		Vector3f dest = new Vector3f();
 
 		Vector3f axis = roll90.mult(dir);
-		if (t.getWires().size() == 1) {
+//		FIXME 导线数量
+		if (t.getWireSize() == 1) {
 //			第二根线
 			dest.set(t.getSpatial().getWorldTranslation().add(axis.normalize().mult(0.002f)));
 		} else {
@@ -769,7 +770,7 @@ public class CircuitState extends BaseState {
 	public boolean detachFromCircuit(ElecCompDef elecCompDef) {
 //		0、判断元器件连接头是否接线
 		for (Terminal terminal : elecCompDef.getTerminalMap().values()) {
-			if (terminal.getWires().size() > 0) {
+			if (terminal.getWireSize() > 0) {
 				return false;
 			}
 		}
