@@ -26,17 +26,15 @@ public class ElecCompClickListener extends MouseEventAdapter {
 
 	private SceneCameraState camera;
 
-	public ElecCompClickListener(Geometry box, SceneCameraState camera) {
+	public ElecCompClickListener(CircuitState circuit, Geometry box, SceneCameraState camera) {
+		this.circuit = circuit;
 		this.box = box;
 		this.camera = camera;
 	}
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		if (selectedComp != null) {
-//			如果有一根导线A被选中了，先将导线A的选中效果取消
-			box.setCullHint(CullHint.Always);
-		}
+		clearWireSelected();
 
 		Spatial newWireNode = e.getSpatial();
 		camera.setCamFocus(newWireNode.getWorldTranslation(), true);
@@ -50,6 +48,7 @@ public class ElecCompClickListener extends MouseEventAdapter {
 		JmeUtil.updateWiringBox(box, newWireNode);
 
 		selectedComp = newWireNode;
+		circuit.clearWireSelect();
 	}
 
 	@Override
@@ -60,6 +59,22 @@ public class ElecCompClickListener extends MouseEventAdapter {
 			Platform.runLater(() -> {
 				((TypicalCase3D) content).showPopupMenu(def);
 			});
+		}
+	}
+
+	public void clearWireSelected() {
+		if (selectedComp != null) {
+//			如果有一根导线A被选中了，先将导线A的选中效果取消
+			box.setCullHint(CullHint.Always);
+			selectedComp = null;
+		}
+	}
+
+	public ElecCompDef getSeletedElecComp() {
+		if (selectedComp == null) {
+			return null;
+		} else {
+			return selectedComp.getUserData("entity");
 		}
 	}
 }

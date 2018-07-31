@@ -171,7 +171,7 @@ public class CircuitState extends BaseState {
 
 	@Override
 	protected void initializeLocal() {
-		wireListener = new WireListener();
+		wireListener = new WireListener(this);
 		terminalLitener = new TerminalListener(this);
 		controlIOWheelListener = new ControlIOWheelListener();
 		controlIOPressListener = new ControlIOPressListener();
@@ -185,7 +185,7 @@ public class CircuitState extends BaseState {
 //		对鼠标不可见
 		MouseEventState.setMouseVisible(elecCompBox, false);
 		root.attachChild(elecCompBox);
-		elecCompRightClickListener = new ElecCompClickListener(elecCompBox, caseState.getCameraState());
+		elecCompRightClickListener = new ElecCompClickListener(this, elecCompBox, caseState.getCameraState());
 
 //		存放元器件的根节点
 		rootCompNode = new Node(COMP_ROOT);
@@ -235,6 +235,10 @@ public class CircuitState extends BaseState {
 		addMapping("CANCEL_ON_CONNECTING", new MouseButtonTrigger(MouseInput.BUTTON_RIGHT));
 		addMapping("DELETE_SELECTED_WIRE", new KeyTrigger(KeyInput.KEY_DELETE));
 		addListener((ActionListener) (name, isPressed, tpf) -> onAction0(name, isPressed, tpf), "CLICKED_ON_BOARD", "CANCEL_ON_CONNECTING", "DELETE_SELECTED_WIRE");
+		
+		addMapping("DELETE", new KeyTrigger(KeyInput.KEY_DELETE));
+		addMapping("CANCEL", new KeyTrigger(KeyInput.KEY_ESCAPE));
+		addListener((ActionListener) (name, isPressed, tpf) -> onAction0(name, isPressed, tpf), "DELETE", "CANCEL");
 	}
 
 	@Override
@@ -288,8 +292,10 @@ public class CircuitState extends BaseState {
 			}
 			Wire wire = selectedWireToDelete.getUserData("entity");
 			detachFromCircuit(wire);
-		} else {
-//			do nothing
+		} else if ("DELETE".equals(name)) {
+			deleteSelected();
+		} else if ("CANCEL".equals(name)) {
+			cancel();
 		}
 	}
 
@@ -730,7 +736,7 @@ public class CircuitState extends BaseState {
 		if (elecCompBox != null) {
 			elecCompBox.removeFromParent();
 		}
-
+		
 		CIRCUIT_SERVICE.shutdown();
 
 		super.cleanup();
@@ -1004,4 +1010,37 @@ public class CircuitState extends BaseState {
 	public Node getRootCompNode() {
 		return rootCompNode;
 	}
+
+	public void clearElecCompSelect() {
+		((ElecCompClickListener) elecCompRightClickListener).clearWireSelected();
+	}
+
+	public void clearWireSelect() {
+		((WireListener) wireListener).clearWireSelected();
+	}
+
+	public void deleteSelected() {
+		Wire wire = ((WireListener) wireListener).getSeletedWire();
+		if (wire != null) {
+			detachFromCircuit(wire);
+		}
+		ElecCompDef elecCompDef = ((ElecCompClickListener) elecCompRightClickListener).getSeletedElecComp();
+		if (elecCompDef != null) {
+			detachFromCircuit(elecCompDef);
+		}
+	}
+
+	public void cancel() {
+		// 取消当前接线
+		if (state == State.Starting || state == State.Mid) {
+			connectClean();
+		}
+		// 取消当前选中的导线
+		clearWireSelect();
+		// 取消手中元器件
+		caseState.discard();
+		// 取消选中的元器件
+		clearElecCompSelect();
+	}
+
 }

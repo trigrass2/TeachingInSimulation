@@ -24,6 +24,7 @@ import com.jme3x.jfx.injfx.JmeToJFXIntegrator;
 import com.jme3x.jfx.injfx.input.JFXMouseInput;
 
 import de.felixroske.jfxsupport.GUIState;
+import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -159,7 +160,7 @@ public class TypicalCase3D implements IContent {
 		steamIdDialog.setHeaderText(null);
 		steamIdDialog.setContentText(MsgUtil.getMessage("typical.case.prompt.input.wire.num"));
 		steamIdDialog.getEditor().textProperty().addListener((b, o, n) -> {
-			if(n == null) {
+			if (n == null) {
 				return;
 			}
 			Pattern pat = Pattern.compile(REGEX_CHINESE);
@@ -197,7 +198,7 @@ public class TypicalCase3D implements IContent {
 
 		btnController.distroy();
 	}
-	
+
 	/**
 	 * 判断当前接线板上是否存在元器件、导线
 	 * @return
@@ -220,7 +221,13 @@ public class TypicalCase3D implements IContent {
 //		找到典型案例的状态机
 		TypicalCaseState appState = jmeApp.getStateManager().getState(TypicalCaseState.class);
 //		
-		jmeApp.enqueue(() -> appState.hold(elecComp));
+		jmeApp.enqueue(() -> {
+			appState.hold(elecComp);
+			// 需要再focuse一下，否则按键无法监听
+			Platform.runLater(() -> {
+				canvas.requestFocus();
+			});
+		});
 	}
 
 	/**

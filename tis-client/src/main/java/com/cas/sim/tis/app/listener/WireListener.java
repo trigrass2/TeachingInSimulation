@@ -4,6 +4,7 @@ import com.cas.circuit.component.Wire;
 import com.cas.sim.tis.app.control.HintControl;
 import com.cas.sim.tis.app.event.MouseEvent;
 import com.cas.sim.tis.app.event.MouseEventAdapter;
+import com.cas.sim.tis.app.state.CircuitState;
 import com.cas.sim.tis.util.SpringUtil;
 import com.cas.sim.tis.view.control.IContent;
 import com.cas.sim.tis.view.control.imp.jme.TypicalCase3D;
@@ -16,13 +17,16 @@ public class WireListener extends MouseEventAdapter {
 
 	private Spatial selectedWire;
 
+	private CircuitState circuitState;
+
+	public WireListener(CircuitState circuitState) {
+		this.circuitState = circuitState;
+	}
+
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		if (selectedWire != null) {
-//			如果有一根导线A被选中了，先将导线A的选中效果取消
-			HintControl control = selectedWire.getControl(HintControl.class);
-			control.setEnabled(false);
-		}
+		clearWireSelected();
+
 		Spatial newWireNode = e.getSpatial();
 //		如果两次选择的模型一样，则视为取消选中
 		if (selectedWire == newWireNode) {
@@ -38,6 +42,7 @@ public class WireListener extends MouseEventAdapter {
 
 		control.setEnabled(true);
 		selectedWire = newWireNode;
+		circuitState.clearElecCompSelect();
 	}
 
 	@Override
@@ -60,4 +65,20 @@ public class WireListener extends MouseEventAdapter {
 		this.selectedWire = selectedWire;
 	}
 
+	public void clearWireSelected() {
+		if (selectedWire != null) {
+//			如果有一根导线A被选中了，先将导线A的选中效果取消
+			HintControl control = selectedWire.getControl(HintControl.class);
+			control.setEnabled(false);
+			selectedWire = null;
+		}
+	}
+
+	public Wire getSeletedWire() {
+		if (selectedWire == null) {
+			return null;
+		} else {
+			return selectedWire.getUserData("entity");
+		}
+	}
 }
