@@ -3,7 +3,7 @@ package com.cas.sim.tis.view.control.imp.preparation;
 import java.util.List;
 import java.util.Map;
 
-import com.cas.circuit.consts.ElecCompType;
+import com.cas.sim.tis.consts.ElecCompType;
 import com.cas.sim.tis.entity.ElecComp;
 import com.cas.sim.tis.util.MsgUtil;
 import com.cas.sim.tis.view.control.imp.dialog.DialogPane;

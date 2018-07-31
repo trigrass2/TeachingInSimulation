@@ -5,14 +5,17 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 
 import org.jetbrains.annotations.Nullable;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.cas.circuit.CirSim;
 import com.cas.circuit.component.Base;
@@ -73,6 +76,7 @@ import com.jme3.scene.Spatial.CullHint;
 import com.jme3.scene.shape.Line;
 
 import javafx.application.Platform;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -135,6 +139,9 @@ public class CircuitState extends BaseState {
 	private CirSim cirSim;
 	// Key:BASE UUID,Value: TOP UUID
 //	private Map<String, String> combineMap = new HashMap<String, String>();
+
+	@Setter
+	private Consumer<Void> onInitialized;
 
 //	事件监听
 	private MouseEventListener wireListener, //
@@ -210,6 +217,8 @@ public class CircuitState extends BaseState {
 
 		cirSim = new CirSim(app);
 		CircuitElm.initClass(cirSim);
+		Optional.ofNullable(onInitialized).ifPresent(t -> t.accept(null));
+
 		CIRCUIT_SERVICE.scheduleAtFixedRate(cirSim, 0, (long) (1 / CirSim.TPF / 10), TimeUnit.NANOSECONDS);
 	}
 
@@ -600,13 +609,8 @@ public class CircuitState extends BaseState {
 	}
 
 	public void read(Archive archive) {
-		// 等待初始化完成
-		while (!initialized) {
-			log.debug("正在等待初始化完成。。。");
-		}
 		readEleccomps(archive.getCompList());
 		readWires(archive.getWireList());
-
 	}
 
 	private void readEleccomps(@Nonnull List<ElecCompProxy> compProxyList) {
@@ -811,13 +815,19 @@ public class CircuitState extends BaseState {
 				log.error("组合使用元器件不可能没有底座！");
 				return;
 			}
-			for (String relyId : relyOn.getRelyIds()) {
-				Terminal t1 = elecCompDef.getTerminal(relyId);
-				Terminal t2 = baseDef.getTerminal(relyId);
-				t1.getWires().clear();
-				t2.getWires().clear();
+			if (relyOn.getType() == RelyOn.RELY_ON_TYPE_PLUG) {
+				for (String relyId : relyOn.getRelyIds()) {
+					Terminal t1 = elecCompDef.getTerminal(relyId);
+					Terminal t2 = baseDef.getTerminal(relyId);
+					t1.getWires().clear();
+					t2.getWires().clear();
+				}
+				baseDef.getBase().setRelyOnPlug(null);
+			} else if (relyOn.getType() == RelyOn.RELY_ON_TYPE_RESIS) {
+				elecCompDef.getControlIOList().forEach(c -> c.setLinkage(null));
+				baseDef.getControlIOList().forEach(c -> c.setLinkage(null));
 			}
-			baseDef.getBase().setRelyOnPlug(null);
+
 			elecCompDef.getRelyOn().setBaseDef(null);
 		}
 
@@ -825,6 +835,7 @@ public class CircuitState extends BaseState {
 		cirSim.needAnalyze();
 	}
 
+	@Autowired
 	public void attachToBase(Spatial holding, ElecCompDef relyOnDef, ElecCompDef baseDef) {
 		RelyOn relyOn = relyOnDef.getRelyOn();
 		relyOn.setBaseDef(baseDef);
@@ -856,17 +867,28 @@ public class CircuitState extends BaseState {
 		}
 //		4-2、连接元器件与底座对应连杆
 		if (relyOn.getType() == RelyOn.RELY_ON_TYPE_RESIS) {
-			for (String relyId : relyOn.getRelyIds()) {
-				Terminal t1 = relyOnDef.getTerminal(relyId);
-				Terminal t2 = baseDef.getTerminal(relyId);
+			Map<String, ControlIO> relyMap = relyOnDef.getControlIOList().stream()//
+					.filter(c -> c.getLinkageId() != null)//
+					.collect(Collectors.toMap(ControlIO::getId, io -> io));
 
-				Wire wire = new Wire();
-				wire.markInternal();
+			Map<String, ControlIO> baseMap = baseDef.getControlIOList().stream()//
+					.collect(Collectors.toMap(ControlIO::getId, io -> io));
 
-				wire.bind(t1);
-				wire.bind(t2);
-			}
-			baseDef.getBase().setRelyOnPlug(relyOnDef);
+			relyOnDef.getControlIOList().stream()//
+					.filter(c -> c.getLinkageId() != null)//
+					.forEach(c -> {
+						String id = c.getLinkageId();
+
+						ControlIO control = null;
+						if (id.startsWith("Base.")) {
+							control = baseMap.get(id.substring("Base.".length()));
+						} else {
+							control = relyMap.get(id);
+						}
+
+						c.setLinkage(control);
+						control.setLinkage(c);
+					});//
 		}
 
 //		5、绑定底座对象UUID

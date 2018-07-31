@@ -1,5 +1,7 @@
 package com.cas.sim.tis.app.state;
 
+import java.util.Optional;
+
 import org.jetbrains.annotations.Nullable;
 
 import com.cas.circuit.component.ElecCompDef;
@@ -126,21 +128,15 @@ public class TypicalCaseState extends BaseState {
 		}
 		// 创建新的circuitState
 		circuitState = new CircuitState(this, typicalCase, root);
-		stateManager.attach(circuitState);
-
-		// 尝试解析出存档对象
-		Archive archive = SpringUtil.getBean(ArchiveAction.class).parse(typicalCase.getArchivePath());
-		app.enqueue(() -> {
-			try {
-				if (archive != null) {
-					circuitState.read(archive);
-				}
-			} finally {
-				// 结束加载界面
-				Platform.runLater(() -> SpringUtil.getBean(PageController.class).hideLoading());
-			}
+		circuitState.setOnInitialized((n) -> {
+			// 尝试解析出存档对象
+			@Nullable
+			Archive archive = SpringUtil.getBean(ArchiveAction.class).parse(typicalCase.getArchivePath());
+			Optional.ofNullable(archive).ifPresent(a -> circuitState.read(a));
+			// 结束加载界面
+			Platform.runLater(() -> SpringUtil.getBean(PageController.class).hideLoading());
 		});
-
+		stateManager.attach(circuitState);
 	}
 
 //	布置场景

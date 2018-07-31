@@ -66,7 +66,7 @@ public class ShowNameOnHoverControl extends AbstractControl {
 //			geo 或者是其parent节点，但不是spatial的模型，userdata中必有entity属性
 			Object entity = findEntity(geo);
 			@Nonnull
-			String name = (String) Util.getFieldValue(entity, "name");
+			String name = (String) Util.invokeGetMethod(entity, "name");
 
 			consumer.accept(name);
 		} else {
