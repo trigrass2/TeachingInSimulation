@@ -6,6 +6,7 @@ import org.jetbrains.annotations.Nullable;
 
 import com.cas.circuit.component.ElecCompDef;
 import com.cas.circuit.component.ElecCompProxy;
+import com.cas.circuit.component.RelyOn;
 import com.cas.circuit.vo.Archive;
 import com.cas.sim.tis.action.ArchiveAction;
 import com.cas.sim.tis.action.ElecCompAction;
@@ -53,7 +54,8 @@ public class TypicalCaseState extends BaseState {
 	private Node root;
 
 //	当前手中的元器件对象
-	private ElecComp elecComp;
+
+	ElecComp elecComp;
 
 	private PointLight pointLight;
 
@@ -332,6 +334,21 @@ public class TypicalCaseState extends BaseState {
 				log.error("初始化元器件{}时出现了一个错误:{}", elecComp.getModel(), e.getMessage());
 			}
 			e.printStackTrace();
+		}
+	}
+
+	public void relayOnBase(ElecCompDef base) {
+		if (TypicalCaseState.this.elecComp == null) {
+			return;
+		}
+		ElecCompDef relay = SpringUtil.getBean(ElecCompAction.class).parse(TypicalCaseState.this.elecComp.getCfgPath());
+		relay.setProxy(new ElecCompProxy());
+		relay.getProxy().setId(TypicalCaseState.this.elecComp.getId());
+		if (base.getBase().checkMatched(relay)) {
+			RelyOn relyOn = relay.getRelyOn();
+			Node baseMdl = base.getSpatial();
+			Vector3f loc = baseMdl.getLocalTranslation().add(relyOn.getTranslation());
+			TypicalCaseState.this.elecComp.getSpatial().setLocalTranslation(loc);
 		}
 	}
 

@@ -32,6 +32,7 @@ import com.cas.circuit.vo.Archive;
 import com.cas.sim.tis.action.ElecCompAction;
 import com.cas.sim.tis.action.TypicalCaseAction;
 import com.cas.sim.tis.anno.JmeThread;
+import com.cas.sim.tis.app.control.BaseOnRelayHoverControl;
 import com.cas.sim.tis.app.control.ShowNameOnHoverControl;
 import com.cas.sim.tis.app.control.TagNameControl;
 import com.cas.sim.tis.app.control.WireNumberControl;
@@ -235,7 +236,7 @@ public class CircuitState extends BaseState {
 		addMapping("CANCEL_ON_CONNECTING", new MouseButtonTrigger(MouseInput.BUTTON_RIGHT));
 		addMapping("DELETE_SELECTED_WIRE", new KeyTrigger(KeyInput.KEY_DELETE));
 		addListener((ActionListener) (name, isPressed, tpf) -> onAction0(name, isPressed, tpf), "CLICKED_ON_BOARD", "CANCEL_ON_CONNECTING", "DELETE_SELECTED_WIRE");
-		
+
 		addMapping("DELETE", new KeyTrigger(KeyInput.KEY_DELETE));
 		addMapping("CANCEL", new KeyTrigger(KeyInput.KEY_ESCAPE));
 		addListener((ActionListener) (name, isPressed, tpf) -> onAction0(name, isPressed, tpf), "DELETE", "CANCEL");
@@ -736,7 +737,7 @@ public class CircuitState extends BaseState {
 		if (elecCompBox != null) {
 			elecCompBox.removeFromParent();
 		}
-		
+
 		CIRCUIT_SERVICE.shutdown();
 
 		super.cleanup();
@@ -774,6 +775,17 @@ public class CircuitState extends BaseState {
 		Collection<CircuitElm> elms = elecCompDef.getCircuitElmMap().values();
 		elms.forEach(e -> cirSim.addCircuitElm(e));
 		cirSim.needAnalyze();
+//		6、如果当前元器件需要底座，添加监听事件
+		if (elecCompDef.getBase() != null) {
+			BaseOnRelayHoverControl onRelayHoverControl = new BaseOnRelayHoverControl(new Consumer<ElecCompDef>() {
+
+				@Override
+				public void accept(ElecCompDef base) {
+					caseState.relayOnBase(base);
+				}
+			}, inputManager, cam);
+			compModel.addControl(onRelayHoverControl);
+		}
 	}
 
 	@JmeThread
@@ -835,6 +847,15 @@ public class CircuitState extends BaseState {
 			}
 
 			elecCompDef.getRelyOn().setBaseDef(null);
+			// 给组合底座重新添加监听Control
+			BaseOnRelayHoverControl control = new BaseOnRelayHoverControl(new Consumer<ElecCompDef>() {
+
+				@Override
+				public void accept(ElecCompDef base) {
+					caseState.relayOnBase(base);
+				}
+			}, inputManager, cam);
+			baseDef.getSpatial().addControl(control);
 		}
 
 		elecCompDef.getCircuitExchangeList().forEach(ex -> cirSim.removeCircuitElm(ex.getCircuitElm()));
@@ -908,6 +929,9 @@ public class CircuitState extends BaseState {
 		Collection<CircuitElm> elms = relyOnDef.getCircuitElmMap().values();
 		elms.forEach(e -> cirSim.addCircuitElm(e));
 		cirSim.needAnalyze();
+
+//		8、移除底座监听Control
+		baseMdl.removeControl(BaseOnRelayHoverControl.class);
 	}
 
 	void attachToCircuit(Geometry wireMdl, Wire wire) {
