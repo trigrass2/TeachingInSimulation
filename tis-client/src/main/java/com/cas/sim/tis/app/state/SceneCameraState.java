@@ -83,7 +83,7 @@ public class SceneCameraState extends BaseState implements ActionListener, Analo
 		inputManager.addMapping("MouseButtonRight", new MouseButtonTrigger(MouseInput.BUTTON_RIGHT));
 //		inputManager.addMapping("ShiftModifier", new KeyTrigger(KeyInput.KEY_LMENU));
 		// 注册监听
-		inputManager.addListener(this, "MouseAxisX", "MouseAxisY", "MouseAxisX-", "MouseAxisY-", "MouseWheel", "MouseWheel-", /*"MouseButtonLeft",*/ "MouseButtonMiddle", "MouseButtonRight"/*, "ShiftModifier"*/);
+		inputManager.addListener(this, "MouseAxisX", "MouseAxisY", "MouseAxisX-", "MouseAxisY-", "MouseWheel", "MouseWheel-", /* "MouseButtonLeft", */ "MouseButtonMiddle", "MouseButtonRight"/* , "ShiftModifier" */);
 
 		camera = new WASDListener(cam);
 		camera.registerWithInput(inputManager);
@@ -216,6 +216,7 @@ public class SceneCameraState extends BaseState implements ActionListener, Analo
 //			System.out.println(target);
 //			cam.setLocation(target);
 			cam.getLocation().interpolateLocal(target, 0.25f);
+			cam.lookAt(focus, Vector3f.UNIT_Y);
 			cam.onFrameChange();
 //			moveCamera = false;
 		}
@@ -402,7 +403,7 @@ public class SceneCameraState extends BaseState implements ActionListener, Analo
 	public void setZoomEnable(boolean zoomable) {
 		this.zoomable = zoomable;
 	}
-	
+
 	public Mode getMode() {
 		return mode;
 	}
