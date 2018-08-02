@@ -56,6 +56,7 @@ public class TypicalCaseState extends BaseState {
 //	当前手中的元器件对象
 
 	ElecComp elecComp;
+	ElecCompDef elecCompDef;
 
 	private PointLight pointLight;
 
@@ -234,6 +235,10 @@ public class TypicalCaseState extends BaseState {
 			elecComp.setSpatial(spatial);
 //			记录当前的元器件对象
 			this.elecComp = elecComp;
+
+			this.elecCompDef = SpringUtil.getBean(ElecCompAction.class).parse(elecComp.getCfgPath());
+			this.elecCompDef.setProxy(new ElecCompProxy());
+			this.elecCompDef.getProxy().setId(elecComp.getId());
 		} catch (Exception e) {
 			cameraState.setZoomEnable(true);
 		}
@@ -264,10 +269,10 @@ public class TypicalCaseState extends BaseState {
 				elecComp.getSpatial().removeFromParent();
 			} else {
 //				1、获取相应元器件
-				ElecCompDef elecCompDef = SpringUtil.getBean(ElecCompAction.class).parse(elecComp.getCfgPath());
-				elecCompDef.setProxy(new ElecCompProxy());
-
-				elecCompDef.getProxy().setId(elecComp.getId());
+//				ElecCompDef elecCompDef = SpringUtil.getBean(ElecCompAction.class).parse(elecComp.getCfgPath());
+//				elecCompDef.setProxy(new ElecCompProxy());
+//
+//				elecCompDef.getProxy().setId(elecComp.getId());
 //				2、将元器件模型与元器件对象一起加入电路板中
 				circuitState.attachToCircuit(elecComp.getSpatial(), elecCompDef);
 			}
@@ -305,10 +310,10 @@ public class TypicalCaseState extends BaseState {
 			return;
 		}
 //		1、获取相应元器件
-		ElecCompDef elecCompDef = SpringUtil.getBean(ElecCompAction.class).parse(elecComp.getCfgPath());
-		elecCompDef.setProxy(new ElecCompProxy());
-
-		elecCompDef.getProxy().setId(elecComp.getId());
+//		ElecCompDef elecCompDef = SpringUtil.getBean(ElecCompAction.class).parse(elecComp.getCfgPath());
+//		elecCompDef.setProxy(new ElecCompProxy());
+//
+//		elecCompDef.getProxy().setId(elecComp.getId());
 		if (def.getBase().isUseable(elecCompDef)) {
 			return;
 		}
@@ -341,11 +346,8 @@ public class TypicalCaseState extends BaseState {
 		if (TypicalCaseState.this.elecComp == null) {
 			return;
 		}
-		ElecCompDef relay = SpringUtil.getBean(ElecCompAction.class).parse(TypicalCaseState.this.elecComp.getCfgPath());
-		relay.setProxy(new ElecCompProxy());
-		relay.getProxy().setId(TypicalCaseState.this.elecComp.getId());
-		if (base.getBase().checkMatched(relay)) {
-			RelyOn relyOn = relay.getRelyOn();
+		if (base.getBase().checkMatched(elecCompDef)) {
+			RelyOn relyOn = elecCompDef.getRelyOn();
 			Node baseMdl = base.getSpatial();
 			Vector3f loc = baseMdl.getLocalTranslation().add(relyOn.getTranslation());
 			TypicalCaseState.this.elecComp.getSpatial().setLocalTranslation(loc);
