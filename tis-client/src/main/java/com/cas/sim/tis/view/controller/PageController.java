@@ -34,6 +34,7 @@ public class PageController implements Initializable {
 			if (!newValue) {
 				if (endHideLoading != null) {
 					endHideLoading.accept(null);
+					endHideLoading = null;
 				}
 			}
 		};
@@ -246,7 +247,7 @@ public class PageController implements Initializable {
 		return loading.get();
 	}
 
-	public final void setLoading(boolean loading) {
+	private final void setLoading(boolean loading) {
 		this.loading.set(loading);
 	}
 
