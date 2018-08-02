@@ -135,8 +135,6 @@ public class CircuitState extends BaseState {
 	private Node guiNode;
 	private BitmapFont tagFont;
 
-	private boolean moved;
-
 	private CirSim cirSim;
 	// Key:BASE UUID,Value: TOP UUID
 //	private Map<String, String> combineMap = new HashMap<String, String>();
@@ -233,7 +231,7 @@ public class CircuitState extends BaseState {
 		addListener((AnalogListener) (name, value, tpf) -> onAnalog0(name, value, tpf), hoverMapping);
 
 		addMapping("CLICKED_ON_BOARD", new MouseButtonTrigger(MouseInput.BUTTON_LEFT));
-		addMapping("CANCEL_ON_CONNECTING", new MouseButtonTrigger(MouseInput.BUTTON_RIGHT));
+//		addMapping("CANCEL_ON_CONNECTING", new MouseButtonTrigger(MouseInput.BUTTON_RIGHT));
 		addMapping("DELETE_SELECTED_WIRE", new KeyTrigger(KeyInput.KEY_DELETE));
 		addListener((ActionListener) (name, isPressed, tpf) -> onAction0(name, isPressed, tpf), "CLICKED_ON_BOARD", "CANCEL_ON_CONNECTING", "DELETE_SELECTED_WIRE");
 
@@ -242,31 +240,18 @@ public class CircuitState extends BaseState {
 		addListener((ActionListener) (name, isPressed, tpf) -> onAction0(name, isPressed, tpf), "DELETE", "CANCEL");
 	}
 
-	@Override
-	public void update(float tpf) {
-		super.update(tpf);
-//		long start = System.currentTimeMillis();
-//		cirSim.updateCircuit(tpf / 2000);
-//		System.out.println(System.currentTimeMillis() - start);
-
-//		CircuitElm e = cirSim.getCircuitElm(2);
-//		String[] info = new String[8];
-//		e.getInfo(info);
-//		System.out.println(Arrays.toString(info));
-	}
-
 	/*
 	 * 鼠标在导线平面上点击
 	 */
 	private void onAction0(String name, boolean isPressed, float tpf) {
-		if (isPressed) {
+		if (!isPressed) {
 //			在鼠标按下 与 抬起的过程中，使用moved变量记录在这个过程中鼠标是否移动过。
 //			当鼠标按下后，设置moved标记为false，表示没有移动过
 //			如果analog0方法被执行，则会改变moved状态为true，表示鼠标移动过,则视为点击事件click无效。
-			moved = false;
+			return;
 		}
 
-		if ("CLICKED_ON_BOARD".equals(name) && !isPressed && !moved) {
+		if ("CLICKED_ON_BOARD".equals(name)) {
 //			走线
 			if (state == null) {
 				return;
@@ -280,12 +265,12 @@ public class CircuitState extends BaseState {
 			} else if (state == State.Ending) {
 //				do nothing
 			}
-		} else if ("CANCEL_ON_CONNECTING".equals(name) && isPressed) {
+		} else if ("CANCEL_ON_CONNECTING".equals(name)) {
 			if (state == State.Starting || state == State.Mid) {
 				connectClean();
 			}
 //			取消（接线）
-		} else if ("DELETE_SELECTED_WIRE".equals(name) && isPressed) {
+		} else if ("DELETE_SELECTED_WIRE".equals(name)) {
 			WireListener listener = (WireListener) wireListener;
 			Spatial selectedWireToDelete = listener.getSelectedWire();
 			if (selectedWireToDelete == null) {
@@ -307,8 +292,6 @@ public class CircuitState extends BaseState {
 		if (state == null) {
 			return;
 		}
-
-		moved = true;
 
 //		collision = JmeUtil.getCollisionFromCursor(root, cam, inputManager.getCursorPosition());
 		collision = JmeUtil.getCollisionFromCursor(root, cam, inputManager.getCursorPosition());
@@ -695,7 +678,7 @@ public class CircuitState extends BaseState {
 		compList.forEach(comp -> {
 			ElecCompProxy compProxy = comp.getProxy();
 			compProxy.setLocation(comp.getSpatial().getLocalTranslation());
-			System.out.println(comp.getSpatial().getLocalRotation());
+//			System.out.println(comp.getSpatial().getLocalRotation());
 			compProxy.setRotation(comp.getSpatial().getLocalRotation());
 			archive.getCompList().add(compProxy);
 		});

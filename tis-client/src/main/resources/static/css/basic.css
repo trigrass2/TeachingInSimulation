@@ -281,7 +281,7 @@
 	-fx-background-color: transparent;
 }
 .img-btn:hover{
-	-fx-effect:dropshadow(three-pass-box , #ffffbe, 5.0, 0.0 , 0.0, 0.0);
+	-fx-effect:dropshadow(three-pass-box , #553f38, 5.0, 0.0 , 2.0, 2.0);
 }
 .red-btn{
 	-fx-background-color:rgb(255.0,128.0,64.0);
@@ -727,6 +727,11 @@
 .ask-check-box:disabled{
 	-fx-opacity: 1.0;	
 }
+
+.ask-check-box:hover {
+	-fx-background-color: #E1E1E1;
+}
+
 .ask-check-box > .box {
 	-fx-background-color: transparent;
     -fx-padding: 0.25em; /* 3 -- padding from the outside edge to the mark */
@@ -843,6 +848,7 @@
  .dialog{
     -fx-background-color:#ffffff;
  	-fx-border-color:#E5E5E5;
+ 	-fx-effect: dropshadow(three-pass-box , #373634, 5.0, 0.0 , 0.0, 0.0);
  }
  .dialog>.header{
  	-fx-padding: 5.0 0.0 5.0 20.0;

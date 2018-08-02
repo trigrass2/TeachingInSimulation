@@ -180,14 +180,14 @@ public class PreparationLibraryItem extends VBox {
 			int index = i + 1;
 			Question question = questions.get(i);
 			PreparationQuestionItem item = new PreparationQuestionItem(index, QuestionType.getQuestionType(question.getType()), question, id -> {
-				AlertUtil.showConfirm(MsgUtil.getMessage("alert.confirmation.data.delete"), e -> {
-					if (e == ButtonType.YES) {
+//				AlertUtil.showConfirm(MsgUtil.getMessage("alert.confirmation.data.delete"), e -> {
+//					if (e == ButtonType.YES) {
 						List<Integer> ids = JSON.parseArray(library.getQuestionIds(), Integer.class);
 						ids.remove(id);
 						library.setQuestionIds(JSON.toJSONString(ids));
 						updateQuestions();
-					}
-				});
+//					}
+//				});
 			});
 			item.setOnMouseClicked(e -> {
 				selected.set(item);
