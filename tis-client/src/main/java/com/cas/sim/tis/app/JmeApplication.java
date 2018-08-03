@@ -51,7 +51,7 @@ public class JmeApplication extends JmeToJFXApplication {
 //		LOG.debug("注册资源路径:{}", assetPath); // http://192.168.x.x:port/***/assests/
 ////		注册资源路径
 //		assetManager.registerLocator(assetPath, UrlLocator.class);
-		assetManager.registerLocator("assets", FileLocator.class);
+		assetManager.registerLocator("E:\\JME_SDKPROJ_HOME\\ESimulation3D\\assets", FileLocator.class);
 		
 		cam.setFrustumPerspective(45, (float) cam.getWidth() / cam.getHeight(), 0.01f, 100f);
 		

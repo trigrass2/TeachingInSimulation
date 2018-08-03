@@ -60,6 +60,7 @@ public class TypicalCaseAction extends BaseAction {
 	 * @param archive 典型案例存档对象
 	 */
 	public void save(TypicalCase typicalCase, Archive archive) {
+		System.out.println(Thread.currentThread());
 //		1、 将存档对象转换为XML文件
 		String xmlContent = JaxbUtil.convertToXml(archive, "utf-8");
 		LOG.debug("用户的案例存档内容：{}", xmlContent);
@@ -114,7 +115,6 @@ public class TypicalCaseAction extends BaseAction {
 //			小细节， 将服务器返回的新的对象属性拷贝到原来的对象中
 			TypicalCase ret = JSON.parseObject(resp.data, TypicalCase.class);
 			try {
-				//	回写ID属性
 				BeanUtils.copyProperty(typicalCase, "id", ret.getId());
 			} catch (IllegalAccessException | InvocationTargetException e) {
 				e.printStackTrace();

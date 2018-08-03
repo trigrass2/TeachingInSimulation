@@ -7,6 +7,7 @@
 <?import com.cas.sim.tis.view.control.imp.Title?>
 <?import com.cas.sim.tis.svg.SVGGlyph?>
 <?import javafx.scene.control.Tooltip?>
+<?import javafx.scene.shape.Line?>
 
 
 <fx:root type="VBox" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8.0.141">

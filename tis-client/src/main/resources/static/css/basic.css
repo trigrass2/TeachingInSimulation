@@ -731,7 +731,6 @@
 .ask-check-box:hover {
 	-fx-background-color: #E1E1E1;
 }
-
 .ask-check-box > .box {
 	-fx-background-color: transparent;
     -fx-padding: 0.25em; /* 3 -- padding from the outside edge to the mark */
@@ -859,6 +858,7 @@
 	-fx-border-radius: 0.0px;
 	-fx-background-radius: 0.0px;
 }
+
 /*******************************************************************************
  *                                                                             *
  * 班级选择样式                                                          *

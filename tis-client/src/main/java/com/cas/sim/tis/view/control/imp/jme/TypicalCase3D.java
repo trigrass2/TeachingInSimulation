@@ -3,6 +3,7 @@ package com.cas.sim.tis.view.control.imp.jme;
 import java.awt.MouseInfo;
 import java.awt.Point;
 import java.io.IOException;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -58,6 +59,7 @@ public class TypicalCase3D implements IContent {
 	private ElecCompDef compDef;
 	private Label nameLabel;
 	private AnchorPane pane;
+	private MenuItem reset;
 
 	public TypicalCase3D() {
 //		创建一个Canvas层，用于显示JME
@@ -147,6 +149,11 @@ public class TypicalCase3D implements IContent {
 //			if (!enable) {
 //				AlertUtil.showAlert(AlertType.WARNING, MsgUtil.getMessage("alert.warning.wiring"));
 //			}
+		});
+
+		reset = new MenuItem(MsgUtil.getMessage("button.reset"));
+		reset.setOnAction(e -> {
+			compDef.reset();
 		});
 	}
 
@@ -246,6 +253,15 @@ public class TypicalCase3D implements IContent {
 	 */
 	public void showPopupMenu(ElecCompDef compDef) {
 		this.compDef = compDef;
+
+		String reset = compDef.getParam("reset", "0");
+		Optional.ofNullable(reset).ifPresent(t -> {
+			if ("1".equals(t)) {
+				menuComp.getItems().add(0, this.reset);
+			} else {
+				menuComp.getItems().remove(this.reset);
+			}
+		});
 
 		Point anchor = MouseInfo.getPointerInfo().getLocation();
 		menuComp.show(GUIState.getStage(), anchor.x, anchor.y);
