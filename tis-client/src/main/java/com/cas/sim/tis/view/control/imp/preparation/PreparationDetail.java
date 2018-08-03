@@ -54,6 +54,7 @@ import com.cas.sim.tis.view.control.IContent;
 import com.cas.sim.tis.view.control.imp.ResourceViewer;
 import com.cas.sim.tis.view.control.imp.Title;
 import com.cas.sim.tis.view.control.imp.dialog.Dialog;
+import com.cas.sim.tis.view.control.imp.dialog.Tip.TipType;
 import com.cas.sim.tis.view.control.imp.jme.Recongnize3D;
 import com.cas.sim.tis.view.control.imp.jme.TypicalCase3D;
 import com.cas.sim.tis.view.control.imp.question.PreviewQuestionPaper;
@@ -565,7 +566,8 @@ public class PreparationDetail extends HBox implements IContent {
 		try {
 			SpringUtil.getBean(PreparationResourceAction.class).addResources(resources);
 			loadResources();
-			AlertUtil.showAlert(AlertType.INFORMATION, MsgUtil.getMessage("alert.information.data.add.success"));
+			AlertUtil.showTip(TipType.INFO, MsgUtil.getMessage("alert.information.data.add.success"));
+//			AlertUtil.showAlert(AlertType.INFORMATION, MsgUtil.getMessage("alert.information.data.add.success"));
 		} catch (Exception e) {
 			e.printStackTrace();
 			AlertUtil.showAlert(AlertType.ERROR, e.getMessage());
@@ -580,7 +582,8 @@ public class PreparationDetail extends HBox implements IContent {
 		try {
 			SpringUtil.getBean(PreparationQuizAction.class).addQuiz(quiz);
 			loadQuizs();
-			AlertUtil.showAlert(AlertType.INFORMATION, MsgUtil.getMessage("alert.information.data.add.success"));
+			AlertUtil.showTip(TipType.INFO, MsgUtil.getMessage("alert.information.data.add.success"));
+//			AlertUtil.showAlert(AlertType.INFORMATION, MsgUtil.getMessage("alert.information.data.add.success"));
 		} catch (Exception e) {
 			e.printStackTrace();
 			AlertUtil.showAlert(AlertType.ERROR, e.getMessage());
@@ -593,7 +596,8 @@ public class PreparationDetail extends HBox implements IContent {
 		try {
 			SpringUtil.getBean(PreparationLibraryAction.class).addPreparationLibrary(preparation.getId(), library);
 			loadQuizs();
-			AlertUtil.showAlert(AlertType.INFORMATION, MsgUtil.getMessage("alert.information.data.add.success"));
+			AlertUtil.showTip(TipType.INFO, MsgUtil.getMessage("alert.information.data.add.success"));
+//			AlertUtil.showAlert(AlertType.INFORMATION, MsgUtil.getMessage("alert.information.data.add.success"));
 		} catch (Exception e) {
 			e.printStackTrace();
 			AlertUtil.showAlert(AlertType.ERROR, e.getMessage());
