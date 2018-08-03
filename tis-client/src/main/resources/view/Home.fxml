@@ -78,5 +78,15 @@
 				</children>
 			</HBox>
 		</StackPane>
+
+		<HBox style="-fx-padding:10px 0 10px 20px" spacing="10">
+			<ImageView fitWidth="26" fitHeight="26">
+				<Image url="@../static/images/basic/logocas.png" />
+			</ImageView>
+			<VBox>
+				<Label text="无锡凯数科技有限公司 版权所有" textFill="rgb(192,192,192)" />
+				<Label text="www.wxcas.com" textFill="rgb(192,192,192)" />
+			</VBox>
+		</HBox>
 	</children>
 </VBox>

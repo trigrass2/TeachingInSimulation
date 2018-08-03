@@ -46,8 +46,6 @@ public class MouseEventState extends BaseState {
 	protected static final String MOUSE_AXIS_UP = "MOUSE_AXIS_UP";
 	protected static final String MOUSE_AXIS_DOWN = "MOUSE_AXIS_DOWN";
 
-//	private static final String[] MapNames = { MOUSE_BUTTON, MOUSE_AXIS_LEFT, MOUSE_AXIS_RIGHT, MOUSE_AXIS_UP, MOUSE_AXIS_DOWN };
-
 	private List<Spatial> candidateList = new ArrayList<>();
 
 	private Map<Spatial, List<MouseEventListener>> eventMap = new HashMap<>();
@@ -58,7 +56,6 @@ public class MouseEventState extends BaseState {
 	protected float axis_distance = 0f;
 
 	protected boolean mouseButtonPressed; // 标记鼠标状态_鼠标是否按下
-//	private ArrayList<Spatial> ignorModelList = new ArrayList<Spatial>(); // 要忽略的模型
 
 	protected Spatial pressed;
 
@@ -92,14 +89,24 @@ public class MouseEventState extends BaseState {
 						notifyEventTrigged(e);
 					}
 				} else {
-					pickModel();
 //					鼠标松开
 					Spatial oldPressed = pressed;
+//					触发模型的松开事件
+					pickModel();
 					pressed = null;
 //					如果两次选择的不一样，则选择无效
+					if (picked != oldPressed) {
+						if (oldPressed != null) {
+							e.setAction(MouseAction.MOUSE_RELEASED);
+							e.setSpatial(oldPressed);
+							notifyEventTrigged(e);
+						}
+					}
+
 					if (picked == null || oldPressed != picked) {
 						return;
 					}
+
 					if (Math.abs(axis_distance) < CLICK_MAX_AXIS_DISTANCE) {
 						e.setAction(MouseAction.MOUSE_CLICK);
 						notifyEventTrigged(e);
@@ -118,14 +125,14 @@ public class MouseEventState extends BaseState {
 				if (isPressed) {
 					pickModel();
 					axis_distance = 0;
-//				记录当前鼠标按下时，所选中模型
+//					记录当前鼠标按下时，所选中模型
 					pressed = picked;
 				} else {
 					pickModel();
-//				鼠标松开
+//					鼠标松开
 					Spatial oldPressed = pressed;
 					pressed = null;
-//				如果两次选择的不一样，则选择无效
+//					如果两次选择的不一样，则选择无效
 					if (picked == null || oldPressed != picked) {
 						return;
 					}
@@ -187,9 +194,6 @@ public class MouseEventState extends BaseState {
 	}
 
 	public void addCandidate(@NotNull Spatial spatial, MouseEventListener listener) {
-//		if (spatial == null) {
-//			throw new NullPointerException();
-//		}
 		synchronized (candidateList) {
 //			获取节点的鼠鼠标监听
 			List<MouseEventListener> listeners = getListenerList(spatial);
@@ -366,33 +370,6 @@ public class MouseEventState extends BaseState {
 			return candidateList;
 		}
 	}
-
-//	public void setToMouseTransprent(Spatial... ignor) {
-//		if (ignor == null) {
-//			return;
-//		}
-//		for (Spatial spatial : ignor) {
-//			transparent(spatial);
-//		}
-//
-////		if (Util.isEmpty(ignor)) {
-////			return;
-////		}
-////		for (int i = 0; i < ignor.length; i++) {
-////			if (this.ignorModelList.contains(ignor[i])) {
-////				continue;
-////			}
-////			this.ignorModelList.add(ignor[i]);
-////		}
-//	}
-//
-//	private void transparent(Spatial spatial) {
-//		if (spatial instanceof Node) {
-//			((Node) spatial).getChildren().forEach(child -> transparent(child));
-//		} else {
-//			spatial.setUserData(TO_MOUSE_VISIBLE, false);
-//		}
-//	}
 
 	@NotNull
 	private List<MouseEventListener> getListenerList(Spatial key) {

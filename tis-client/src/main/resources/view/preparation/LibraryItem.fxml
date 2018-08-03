@@ -18,7 +18,7 @@
 					<HBox alignment="CENTER_RIGHT" HBox.hgrow="ALWAYS">
 						<Button styleClass="img-btn" mnemonicParsing="false" onAction="#add">
 							<graphic>
-								<SVGGlyph name="iconfont.svg.add" size="20" fill="#f6a23f" />
+								<SVGGlyph name="iconfont.svg.add" size="20" fill="#009688" />
 							</graphic>
 							<tooltip>
 								<Tooltip text="%button.add" />
@@ -35,7 +35,7 @@
 					</HBox>
 					<Button styleClass="img-btn" mnemonicParsing="false" onAction="#delete">
 						<graphic>
-							<SVGGlyph name="iconfont.svg.close" size="15" fill="#f6a23f" />
+							<SVGGlyph name="iconfont.svg.close" size="15" fill="#FF5722" />
 						</graphic>
 						<tooltip>
 							<Tooltip text="%button.delete" />
