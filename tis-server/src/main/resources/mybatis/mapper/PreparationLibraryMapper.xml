@@ -4,6 +4,7 @@
 	<resultMap id="BaseResultMap" type="com.cas.sim.tis.entity.PreparationLibrary">
 		<id column="ID" jdbcType="INTEGER" property="id" />
 		<result column="NAME" jdbcType="VARCHAR" property="name" />
+		<result column="PID" jdbcType="INTEGER" property="preparationId" />
 		<result column="QIDS" jdbcType="INTEGER" property="questionIds" />
 		<result column="CREATOR" jdbcType="INTEGER" property="creator" />
 		<result column="CREATE_DATE" jdbcType="TIMESTAMP" property="createDate" />
@@ -12,6 +13,6 @@
 		<result column="DEL" jdbcType="INTEGER" property="del" />
 	</resultMap>
 	<select id="findPreparationLibraryByPreparationId" resultMap="BaseResultMap">
-		select l.* from preparation_library l,preparation_quiz q where l.id=q.rid and l.del=0;
+		select l.* from preparation_library l,preparation_quiz q where l.id=q.rid and l.del=0 and l.pid=#{pid} and l.creator in (1, #{creator});
 	</select>
 </mapper>

@@ -28,6 +28,7 @@ public class PreparationLibraryAction {
 	public List<PreparationLibrary> findPreparationLibraryByPreparationId(Integer pid) {
 		RequestEntity req = new RequestEntityBuilder()//
 				.set("pid", pid)//
+				.set("creator", Session.get(Session.KEY_LOGIN_ID))
 				.build();
 		ResponseEntity resp = service.findPreparationLibraryByPreparationId(req);
 		return JSON.parseArray(resp.data, PreparationLibrary.class);

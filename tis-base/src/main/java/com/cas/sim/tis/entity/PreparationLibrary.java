@@ -28,6 +28,9 @@ public class PreparationLibrary implements Serializable {
 	private Integer id;
 	// 备课试题组名称
 	private String name;
+	// 备课编号
+	@Column(name = "PID")
+	private Integer preparationId;
 	// 组卷试题编号
 	@Column(name = "QIDS")
 	private String questionIds;

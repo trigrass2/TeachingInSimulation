@@ -8,9 +8,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-import com.cas.authority.validate.ValidateThread;
 import com.cas.sim.tis.config.ServerConfig;
-import com.cas.sim.tis.consts.SystemInfo;
 import com.cas.sim.tis.message.ExamMessage;
 import com.cas.sim.tis.message.LoginMessage;
 import com.cas.sim.tis.message.handler.ExamMessageHandler;

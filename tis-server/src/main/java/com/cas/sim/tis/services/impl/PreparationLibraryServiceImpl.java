@@ -28,7 +28,7 @@ public class PreparationLibraryServiceImpl implements PreparationLibraryService 
 	
 	@Override
 	public ResponseEntity findPreparationLibraryByPreparationId(RequestEntity entity) {
-		List<PreparationLibrary> result = mapper.findPreparationLibraryByPreparationId(entity.getInt("pid"));
+		List<PreparationLibrary> result = mapper.findPreparationLibraryByPreparationId(entity.getInt("pid"), entity.getInt("creator"));
 		return ResponseEntity.success(result);
 	}
 
