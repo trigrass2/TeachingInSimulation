@@ -7,6 +7,8 @@ import org.jetbrains.annotations.Nullable;
 import com.cas.circuit.component.ElecCompDef;
 import com.cas.circuit.component.ElecCompProxy;
 import com.cas.circuit.component.RelyOn;
+import com.cas.circuit.util.JmeUtil;
+import com.cas.circuit.util.Util;
 import com.cas.circuit.vo.Archive;
 import com.cas.sim.tis.action.ArchiveAction;
 import com.cas.sim.tis.action.ElecCompAction;
@@ -20,7 +22,6 @@ import com.cas.sim.tis.app.state.SceneCameraState.View;
 import com.cas.sim.tis.entity.ElecComp;
 import com.cas.sim.tis.entity.TypicalCase;
 import com.cas.sim.tis.util.AlertUtil;
-import com.cas.sim.tis.util.JmeUtil;
 import com.cas.sim.tis.util.MsgUtil;
 import com.cas.sim.tis.util.SpringUtil;
 import com.cas.sim.tis.view.control.imp.dialog.Tip.TipType;
@@ -194,9 +195,9 @@ public class TypicalCaseState extends BaseState {
 			return;
 		}
 		elecComp.getSpatial().setLocalTranslation(new Vector3f(//
-				JmeUtil.round(contactPoint.x, 3, 5), //
+				Util.round(contactPoint.x, 3, 5), //
 				contactPoint.y, //
-				JmeUtil.round(contactPoint.z, 3, 5)//
+				Util.round(contactPoint.z, 3, 5)//
 		));
 	}
 

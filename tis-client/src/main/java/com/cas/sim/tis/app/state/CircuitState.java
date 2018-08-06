@@ -3,6 +3,7 @@ package com.cas.sim.tis.app.state;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -18,6 +19,7 @@ import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.cas.circuit.CirSim;
+import com.cas.circuit.ICircuitEffect;
 import com.cas.circuit.component.Base;
 import com.cas.circuit.component.ControlIO;
 import com.cas.circuit.component.ElecCompDef;
@@ -26,8 +28,10 @@ import com.cas.circuit.component.RelyOn;
 import com.cas.circuit.component.Terminal;
 import com.cas.circuit.component.Wire;
 import com.cas.circuit.component.WireProxy;
+import com.cas.circuit.effect.ParticleEffect;
 import com.cas.circuit.element.CircuitElm;
 import com.cas.circuit.util.JaxbUtil;
+import com.cas.circuit.util.JmeUtil;
 import com.cas.circuit.vo.Archive;
 import com.cas.sim.tis.action.ElecCompAction;
 import com.cas.sim.tis.action.TypicalCaseAction;
@@ -49,7 +53,6 @@ import com.cas.sim.tis.entity.ElecComp;
 import com.cas.sim.tis.entity.TypicalCase;
 import com.cas.sim.tis.util.AlertUtil;
 import com.cas.sim.tis.util.HTTPUtils;
-import com.cas.sim.tis.util.JmeUtil;
 import com.cas.sim.tis.util.MsgUtil;
 import com.cas.sim.tis.util.SpringUtil;
 import com.cas.sim.tis.view.control.imp.dialog.Tip.TipType;
@@ -81,7 +84,7 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class CircuitState extends BaseState {
+public class CircuitState extends BaseState implements ICircuitEffect {
 //	导线工连接头接出的最小长度
 	private static final float minLen = 0.01f;
 
@@ -153,6 +156,8 @@ public class CircuitState extends BaseState {
 
 	private Geometry elecCompBox;
 
+	private Map<ElecCompDef, Spatial> brokenElecComp = new HashMap<>();
+
 	public CircuitState(TypicalCaseState caseState, TypicalCase typicalCase, Node root) {
 		this.typicalCase = typicalCase;
 		this.caseState = caseState;
@@ -211,10 +216,9 @@ public class CircuitState extends BaseState {
 		tagFont = assetManager.loadFont("font/Font4TagName.fnt");
 
 		bindCircuitBoardEvents();
-
 		log.info("CircuitState完成初始化");
 
-		cirSim = new CirSim(app);
+		cirSim = new CirSim(app, this);
 		CircuitElm.initClass(cirSim);
 		Optional.ofNullable(onInitialized).ifPresent(t -> t.accept(null));
 
@@ -440,10 +444,10 @@ public class CircuitState extends BaseState {
 		// ##最终是在终点dest和startPoint之间创建导线##
 		Vector3f startPoint = JmeUtil.getLineStart(midLine1);
 
-		// 判断最后一段线与dir的向量积，从而知道是哪一种连接方式
 		Vector3f t1 = JmeUtil.getLineStart(midLine2);
 		Vector3f t2 = JmeUtil.getLineEnd(midLine2);
 
+		// 判断最后一段线与dir的向量积，从而知道是哪一种连接方式
 		if (t2.subtract(t1).normalize().dot(dir) == 0) {
 			// 表明是垂直的方向连接到终点的，这种情况稍微复杂一些
 			// 倒数第二个点是终点在dir方向上的点，距离终点的长度是minLen
@@ -467,22 +471,10 @@ public class CircuitState extends BaseState {
 			Vector3f last2 = dest.add(startPoint.subtract(dest).project(dir));
 			// 倒数第三个点是last2在电路板子上的投影点，y的值可以从取startPoint起点的y
 			Vector3f last3 = last2.clone().setY(startPoint.getY());
-			// 三个点全部找齐，下面把midLine1和midLine2的重新设置
-//			midLine1.getStart().set(JmeUtil.getLineStart(midLine1));
-//			midLine1.getEnd().set(last3);
+//			三个点全部找齐，下面把midLine1和midLine2的重新设置
 			midLine1.updatePoints(last3, midLine1.getStart());
 
-//			midLine2.getStart().set(last3);
-//			midLine2.getEnd().set(last2);
 			midLine2.updatePoints(last3, last2);
-
-//			Geometry ball = JmeUtil.getSphere(assetManager, 6, width * 2, ColorRGBA.Red);
-//			ball.setLocalTranslation(last3);
-//			rootNode.attachChild(ball);
-//
-//			Geometry ball2 = JmeUtil.getSphere(assetManager, 6, width * 2, ColorRGBA.Green);
-//			ball2.setLocalTranslation(JmeUtil.getLineStart(midLine1));
-//			rootNode.attachChild(ball2);
 
 			// 另外，还需要一根线
 			tmpWireNode.attachChild(JmeUtil.createLineGeo(assetManager, new Line(last2, dest), color));
@@ -560,7 +552,6 @@ public class CircuitState extends BaseState {
 //			}
 //		}));
 		// 3、按钮监听事件
-//		def.getMagnetismList().forEach(m -> {
 		for (ControlIO c : def.getControlIOList()) {
 //				if (c.getType().indexOf(CfgConst.SWITCH_CTRL_INPUT) == -1) {
 //					continue;
@@ -573,7 +564,6 @@ public class CircuitState extends BaseState {
 				addListener(c.getSpatial(), controlIOClickListener);
 			}
 		}
-//		});
 //		4、元器件本身的监听事件
 		addListener(def.getSpatial(), elecCompRightClickListener);
 //		5、若当前为底座添加监听事件
@@ -1048,6 +1038,25 @@ public class CircuitState extends BaseState {
 		caseState.discard();
 		// 取消选中的元器件
 		clearElecCompSelect();
+	}
+
+	@Override
+	public void addElecCompEffect(CircuitElm elm, ParticleEffect effect) {
+		ElecCompDef def = elm.getElecCompDef();
+		Node sp = def.getSpatial();
+		Spatial emitter = effect.getEmitter(assetManager);
+		String param = def.getParam("effectLoc");
+		Vector3f loc = com.cas.circuit.util.JmeUtil.parseVector3f(param);
+		emitter.getLocalTranslation().addLocal(sp.getLocalTranslation()).addLocal(loc);
+		sp.getParent().attachChild(emitter);
+
+		this.brokenElecComp.put(def, emitter);
+	}
+
+	@Override
+	public void removeElecCompEffect(CircuitElm elm) {
+		Spatial emitter = this.brokenElecComp.get(elm.getElecCompDef());
+		Optional.ofNullable(emitter).ifPresent(s -> s.removeFromParent());
 	}
 
 }

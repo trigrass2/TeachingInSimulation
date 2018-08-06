@@ -10,10 +10,10 @@ import org.controlsfx.control.PopOver.ArrowLocation;
 
 import com.cas.sim.tis.app.state.CircuitState;
 import com.cas.sim.tis.app.state.TypicalCaseState;
-import com.cas.sim.tis.util.JmeUtil;
 import com.cas.sim.tis.util.MsgUtil;
 import com.cas.sim.tis.view.control.IDistory;
 import com.cas.sim.tis.view.controller.DrawingController;
+import com.jme3.math.ColorRGBA;
 
 import de.felixroske.jfxsupport.GUIState;
 import javafx.event.ActionEvent;
@@ -229,7 +229,13 @@ public class TypicalCaseBtnController implements IDistory {
 
 		Color color = (Color) cir.getFill();
 		wr.setOuterFill(color);
-		CircuitState.setColor(JmeUtil.convert(color));
+		CircuitState.setColor(convert(color));
+	}
+
+	private ColorRGBA convert(Color color) {
+		ColorRGBA colorRGBA = new ColorRGBA();
+		colorRGBA.set((float) color.getRed(), (float) color.getGreen(), (float) color.getBlue(), (float) color.getOpacity());
+		return colorRGBA;
 	}
 
 	@FXML

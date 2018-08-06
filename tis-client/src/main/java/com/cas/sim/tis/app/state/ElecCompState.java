@@ -91,7 +91,7 @@ public class ElecCompState extends BaseState {
 //			rootNode.addLight(probe);
 //		}));
 
-		CirSim sim = new CirSim(app);
+		CirSim sim = new CirSim(app, null);
 		CircuitElm.initClass(sim);
 //		说明：这里不启动电路线程
 

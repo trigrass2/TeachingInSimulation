@@ -1,6 +1,6 @@
 package com.cas.sim.tis.app.control;
 
-import com.cas.sim.tis.util.JmeUtil;
+import com.cas.circuit.util.JmeUtil;
 import com.jme3.math.ColorRGBA;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
