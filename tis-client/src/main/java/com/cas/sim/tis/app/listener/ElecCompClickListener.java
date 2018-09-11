@@ -37,7 +37,7 @@ public class ElecCompClickListener extends MouseEventAdapter {
 		clearWireSelected();
 
 		Spatial newWireNode = e.getSpatial();
-		camera.setCamFocus(newWireNode.getWorldTranslation(), true);
+		camera.setCamFocus(newWireNode.getWorldTranslation(), false);
 
 //		如果两次选择的模型一样，则视为取消选中
 		if (selectedComp == newWireNode) {

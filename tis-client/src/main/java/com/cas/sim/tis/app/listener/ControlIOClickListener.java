@@ -10,6 +10,11 @@ public class ControlIOClickListener extends MouseEventAdapter {
 	public void mouseClicked(MouseEvent e) {
 		ControlIO c = e.getSpatial().getUserData("entity");
 		c.getSwitchElms().forEach(s -> s.doSwitch(false));
+		if(c.getState() == ControlIO.STATE_OFF) {
+			c.on();// 吸合
+		}else if(c.getState() == ControlIO.STATE_ON) {
+			c.off();// 吸合
+		}
 	}
 
 }

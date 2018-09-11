@@ -11,11 +11,11 @@ public class ControlIOPressListener extends MouseEventAdapter {
 	@Override
 	public void mousePressed(MouseEvent e) {
 		ControlIO c = e.getSpatial().getUserData("entity");
-		c.absorbed(); // 吸合
+		c.on(); // 吸合
 		c.getSwitchElms().forEach(s -> s.doSwitch(true));
-
+		
 		Optional.ofNullable(c.getLinkage()).ifPresent(l -> {
-			l.absorbed();
+			l.on();
 			l.getSwitchElms().forEach(s -> s.doSwitch(true));
 		});
 	}
@@ -23,11 +23,11 @@ public class ControlIOPressListener extends MouseEventAdapter {
 	@Override
 	public void mouseReleased(MouseEvent e) {
 		ControlIO c = e.getSpatial().getUserData("entity");
-		c.unstuck(); // 松开
+		c.off(); // 松开
 		c.getSwitchElms().forEach(s -> s.doSwitch(false));
 
 		Optional.ofNullable(c.getLinkage()).ifPresent(l -> {
-			l.unstuck();
+			l.off();
 			l.getSwitchElms().forEach(s -> s.doSwitch(false));
 		});
 	}

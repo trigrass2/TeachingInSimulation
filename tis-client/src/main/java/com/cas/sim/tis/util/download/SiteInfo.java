@@ -15,6 +15,6 @@ public class SiteInfo {
 
 //	http://172.16.30.2:8082/resources/6e9fd759-718c-40f5-a3f3-5f053bb738d3.mp4
 	public String getFileName() {
-		return url.substring(url.lastIndexOf('/') + 1);
+		return url.substring(url.lastIndexOf('/') + 1 , url.lastIndexOf("."));
 	}
 }

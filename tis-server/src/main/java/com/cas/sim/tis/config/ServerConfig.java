@@ -69,7 +69,7 @@ public class ServerConfig {
 				if (handler != null) {
 					try {
 						handler.execute(client, m);
-						log.debug("消息处理成功");
+//						log.debug("消息处理成功");
 					} catch (Exception e) {
 						log.warn("消息处理失败", e);
 					}

@@ -61,7 +61,7 @@ public class ResourceServiceImpl implements ResourceService {
 	@Override
 	public ResponseEntity findResourceByIds(RequestEntity entity) {
 		Condition condition = new Condition(Resource.class);
-		condition.selectProperties("id", "name");
+		condition.selectProperties("id", "name", "type", "path");
 		condition.createCriteria()//
 				.andEqualTo("del", 0)//
 				.andIn("id", entity.getList("ids", Integer.class));//
@@ -74,7 +74,7 @@ public class ResourceServiceImpl implements ResourceService {
 	public ResponseEntity findResourcesByCreator(RequestEntity entity) {
 
 		Condition condition = new Condition(Resource.class);
-		condition.selectProperties("id", "name");
+		condition.selectProperties("id", "name", "type", "path");
 //		条件1、查找用户指定的几种资源类型
 		List<Integer> resourceTypes = JSON.parseArray(entity.getString("resourceTypes"), Integer.class);
 		if (resourceTypes.size() == 0) {
