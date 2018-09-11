@@ -25,6 +25,8 @@ public class Downloader {
 	private boolean stop = false; // 停止标志
 	private File infoFile; // 保存文件信息的临时文件
 
+	private Consumer<Integer> progressListener;
+	
 	public Downloader(SiteInfo siteInfo) {
 		this.siteInfo = siteInfo;
 		infoFile = new File(System.getProperty("java.io.tmpdir") + File.separator + siteInfo.getFileName() + ".tmp");
@@ -41,7 +43,9 @@ public class Downloader {
 	 * 开始下载文件 1. 获取文件长度 2. 分割文件 3. 实例化分段下载子线程 4. 启动子线程 5. 等待子线程的返回
 	 * @throws IOException
 	 */
-	public void execute(Consumer<Integer> progress) {
+	public void execute(Consumer<Integer> listener) {
+		this.progressListener = listener;
+
 		if (firstDown) {
 			fileLen = getFileSize();
 			if (fileLen == -1) {
@@ -89,14 +93,19 @@ public class Downloader {
 //						break;
 					}
 				}
-				if (progress != null) {
-					progress.accept((int) ((down / fileLen) * 100));
+				if (progressListener != null) {
+					progressListener.accept((int) ((down / fileLen) * 100));
 				}
 				if (breakWhile) break;
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+	
+	
+	public void setProgressListener(Consumer<Integer> progressListener) {
+		this.progressListener = progressListener;
 	}
 
 	/**
