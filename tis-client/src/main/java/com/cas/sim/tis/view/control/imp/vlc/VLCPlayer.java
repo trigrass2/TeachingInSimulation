@@ -1,9 +1,15 @@
 package com.cas.sim.tis.view.control.imp.vlc;
 
+import java.io.File;
 import java.nio.ByteBuffer;
+import java.util.HashMap;
+import java.util.Map;
 
 import com.cas.sim.tis.svg.SVGGlyph;
+import com.cas.sim.tis.util.download.Downloader;
+import com.cas.sim.tis.util.download.SiteInfo;
 import com.cas.sim.tis.view.control.IDistory;
+import com.cas.util.FileUtil;
 import com.sun.jna.Memory;
 import com.sun.jna.NativeLibrary;
 
@@ -44,6 +50,10 @@ public class VLCPlayer extends VBox implements IDistory {
 	*
 	*/
 	private static final double FPS = 25.0;
+
+	public static final String VLC_PATH = "cache";
+
+	private static Map<String, Downloader> downloaders = new HashMap<>();
 
 	/**
 	 * Lightweight JavaFX canvas, the video is rendered here.
@@ -98,8 +108,13 @@ public class VLCPlayer extends VBox implements IDistory {
 
 	private SVGGlyph play = new SVGGlyph("iconfont.svg.play", Color.web("#19b0c6"), 32);
 	private SVGGlyph pause = new SVGGlyph("iconfont.svg.pause", Color.web("#19b0c6"), 32);
+	private SVGGlyph download = new SVGGlyph("iconfont.svg.download", Color.web("#19b0c6"), 32);
 
 	private HBox loading;
+
+	private Button downloadButton;
+
+	private ProgressIndicator indicator;
 
 	static {
 		NativeLibrary.addSearchPath(RuntimeUtil.getLibVlcLibraryName(), "VLC");
@@ -197,11 +212,26 @@ public class VLCPlayer extends VBox implements IDistory {
 			mediaPlayerComponent.getMediaPlayer().setVolume(n.intValue());
 			volumeSliderTip.setText(String.valueOf(n.intValue()));
 		});
+
+		StackPane downloadPane = new StackPane();
+
+		downloadButton = new Button();
+		downloadButton.setGraphic(download);
+		downloadButton.getStyleClass().add("img-btn");
+		downloadButton.setTooltip(new Tooltip("缓存"));
+
+		indicator = new ProgressIndicator();
+		indicator.setPrefSize(32, 32);
+		indicator.setProgress(0.0F);
+		indicator.setVisible(false);
+
+		downloadPane.getChildren().addAll(downloadButton, indicator);
+
 		controls = new HBox(10);
 		controls.setPadding(new Insets(10));
 		controls.setAlignment(Pos.CENTER_LEFT);
 		controls.setStyle("-fx-background-color:#f0f0f0");
-		controls.getChildren().addAll(playPauseButton, playSlider, time, volumeMuteButton, volumeSlider);
+		controls.getChildren().addAll(playPauseButton, playSlider, time, volumeMuteButton, volumeSlider, downloadPane);
 		this.getChildren().add(controls);
 
 		mediaPlayerComponent = new DirectMediaPlayerComponent(new DirectBufferFormatCallback()) {
@@ -222,8 +252,64 @@ public class VLCPlayer extends VBox implements IDistory {
 		mediaPlayerComponent.getMediaPlayer().setVolume(50);
 	}
 
-	public void loadVideo(String videoPath) {
-		mediaPlayerComponent.getMediaPlayer().prepareMedia(videoPath);
+	public void loadVideo(String videoPath, String filename) {
+		// FIXME 判断当前视频是否已经下载
+		String localDirPath = System.getProperty("user.dir") + File.separator + VLC_PATH;
+		String localFilePath = localDirPath + File.separator + FileUtil.getFileName(filename);
+		if (FileUtil.exist(localFilePath)) {
+			Platform.runLater(() -> {
+				downloadButton.setVisible(false);
+				indicator.setVisible(true);
+				indicator.toFront();
+				indicator.setProgress(1.0F);
+			});
+			mediaPlayerComponent.getMediaPlayer().prepareMedia(localFilePath);
+		} else if (downloaders.containsKey(videoPath)) {
+			Platform.runLater(() -> {
+				downloadButton.setVisible(false);
+				indicator.setVisible(true);
+				indicator.toFront();
+				Task<Void> task = new Task<Void>() {
+
+					@Override
+					protected Void call() throws Exception {
+						Downloader downloader = downloaders.get(videoPath);
+						downloader.setProgressListener(process -> {
+							updateProcess(videoPath, localFilePath, process);
+						});
+						return null;
+					}
+				};
+				new Thread(task).start();
+			});
+			mediaPlayerComponent.getMediaPlayer().prepareMedia(videoPath);
+		} else {
+			Platform.runLater(() -> {
+				indicator.setVisible(false);
+				downloadButton.setVisible(true);
+				downloadButton.toFront();
+				downloadButton.setOnAction(e -> {
+					downloadButton.setVisible(false);
+					indicator.setVisible(true);
+					indicator.toFront();
+					Task<Void> task = new Task<Void>() {
+
+						@Override
+						protected Void call() throws Exception {
+							SiteInfo info = new SiteInfo(videoPath, localDirPath);
+							Downloader downloader = new Downloader(info);
+							downloaders.put(videoPath, downloader);
+							downloader.execute(process -> {
+								updateProcess(videoPath, localFilePath, process);
+							});
+							return null;
+						}
+					};
+					new Thread(task).start();
+				});
+			});
+			mediaPlayerComponent.getMediaPlayer().prepareMedia(videoPath);
+		}
 //		默认播放
 //		startTimer();
 	}
@@ -421,5 +507,18 @@ public class VLCPlayer extends VBox implements IDistory {
 	@Override
 	public void distroy() {
 		stopTimer();
+	}
+
+	private void updateProcess(String videoPath, String localFilePath, Integer process) {
+		indicator.setProgress(process / 100f);
+		if (process < 100) {
+			return;
+		}
+		downloaders.remove(videoPath);
+		double value = playSlider.getValue();
+		mediaPlayerComponent.getMediaPlayer().prepareMedia(localFilePath);
+		playTimer();
+		playSlider.setValue(value);
+		jump();
 	}
 }

@@ -252,7 +252,7 @@ public class ResourceViewer extends VBox implements IContent {
 				if (url == null) {
 					return null;
 				}
-				player.loadVideo(url);
+				player.loadVideo(url, resource.getPath());
 				return null;
 			}
 		};

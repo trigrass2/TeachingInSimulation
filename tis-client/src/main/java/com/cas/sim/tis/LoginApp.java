@@ -1,5 +1,6 @@
 package com.cas.sim.tis;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Locale;
 import java.util.ResourceBundle;
@@ -11,6 +12,7 @@ import org.slf4j.bridge.SLF4JBridgeHandler;
 
 import com.cas.sim.tis.svg.SVGHelper;
 import com.cas.sim.tis.util.AppPropertiesUtil;
+import com.cas.sim.tis.view.control.imp.vlc.VLCPlayer;
 import com.cas.sim.tis.view.controller.LoginController;
 import com.cas.sim.tis.view.controller.NetworkController;
 
@@ -30,6 +32,8 @@ public class LoginApp extends javafx.application.Application {
 		initSVG();
 
 		jul2slf4j();
+		
+		initDir();
 
 		launch(args);
 	}
@@ -87,6 +91,13 @@ public class LoginApp extends javafx.application.Application {
 		SLF4JBridgeHandler.install();
 	}
 
+	private static void initDir() {
+		File dir = new File(System.getProperty("user.dir") + File.separator + VLCPlayer.VLC_PATH);
+		if(!dir.exists()) {
+			dir.mkdirs();
+		}
+	}
+	
 	private static void loadConfiguration() {
 // 		初始化awt工具包使JavaFx中可以使用GraphicsEnvironment功能获得屏幕可支持分辨率
 		java.awt.Toolkit.getDefaultToolkit();
