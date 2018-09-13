@@ -460,7 +460,7 @@ public class PreparationDetail extends HBox implements IContent {
 	@FXML
 	private void typicalCase() {
 		Dialog<Integer> dialog = new Dialog<>();
-		dialog.setDialogPane(new TypicalCaseSelectDialog(false));
+		dialog.setDialogPane(new TypicalCaseSelectDialog(false, Session.get(Session.KEY_LOGIN_ROLE)));
 		dialog.setTitle(MsgUtil.getMessage("preparation.typical.case"));
 		dialog.setPrefSize(640, 500);
 		dialog.showAndWait().ifPresent(id -> {

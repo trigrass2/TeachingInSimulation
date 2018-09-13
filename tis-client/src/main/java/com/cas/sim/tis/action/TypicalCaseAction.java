@@ -44,11 +44,13 @@ public class TypicalCaseAction extends BaseAction {
 	/**
 	 * 根据创建人获得典型案例集合
 	 * @param creator 创建人编号
+	 * @param b 
 	 * @return List 典型案例集合
 	 */
-	public List<TypicalCase> getTypicalCasesByCreator(Integer creator) {
+	public List<TypicalCase> getTypicalCasesByCreator(Integer creator, boolean onlyPublished) {
 		RequestEntity req = new RequestEntityBuilder()//
 				.set("creator", creator)//
+				.set("onlyPublished", onlyPublished)//
 				.build();
 		ResponseEntity resp = service.findTypicalCasesByCreatorId(req);
 		return JSON.parseArray(resp.data, TypicalCase.class);
@@ -147,6 +149,16 @@ public class TypicalCaseAction extends BaseAction {
 //		} catch (Exception e) {
 //			LOG.warn("删除文件失败", e);
 //		}
+	}
+
+	public void published(Integer id, boolean published) {
+		TypicalCase typicalCase = new TypicalCase();
+		typicalCase.setId(id);
+		typicalCase.setPublish(published);
+		RequestEntity req = new RequestEntityBuilder()//
+				.set("typicalCase", typicalCase)//
+				.build();
+		service.updateTypicalCase(req);
 	}
 
 }
