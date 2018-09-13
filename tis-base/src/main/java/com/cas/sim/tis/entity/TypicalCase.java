@@ -26,4 +26,5 @@ public class TypicalCase implements Serializable {
 	private Integer updater;
 	private Date updateDate;
 	private Boolean del = false;
+	private Boolean publish = false;
 }
