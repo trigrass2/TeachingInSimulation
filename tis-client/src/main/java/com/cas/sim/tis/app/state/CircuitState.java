@@ -73,6 +73,7 @@ import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
+import com.jme3.renderer.queue.RenderQueue.ShadowMode;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
@@ -193,6 +194,7 @@ public class CircuitState extends BaseState implements ICircuitEffect {
 
 //		存放元器件的根节点
 		rootCompNode = new Node(COMP_ROOT);
+		rootCompNode.setShadowMode(ShadowMode.CastAndReceive);
 		root.attachChild(rootCompNode);
 //		
 		rootCompNode.addControl(new ShowNameOnHoverControl((name) -> {
