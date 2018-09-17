@@ -9,6 +9,7 @@ import com.cas.sim.tis.action.TypicalCaseAction;
 import com.cas.sim.tis.consts.RoleConst;
 import com.cas.sim.tis.consts.Session;
 import com.cas.sim.tis.entity.TypicalCase;
+import com.cas.sim.tis.entity.User;
 import com.cas.sim.tis.util.AlertUtil;
 import com.cas.sim.tis.util.MsgUtil;
 import com.cas.sim.tis.util.SpringUtil;
@@ -18,6 +19,7 @@ import com.cas.sim.tis.view.control.imp.table.Cell;
 import com.cas.sim.tis.view.control.imp.table.Column;
 import com.cas.sim.tis.view.control.imp.table.Row;
 import com.cas.sim.tis.view.control.imp.table.Table;
+import com.cas.sim.tis.view.control.imp.table.ToggelBtnCell;
 import com.cas.util.DateUtil;
 
 import javafx.geometry.Insets;
@@ -40,22 +42,32 @@ public class TypicalCaseSelectDialog extends DialogPane<Integer> {
 	private Table table;
 	private ToggleGroup group = new ToggleGroup();
 	private ToggleButton sys;
+	private Column<Boolean> visible;
 	private Column<String> delete;
 
-	public TypicalCaseSelectDialog(boolean editable) {
+	public TypicalCaseSelectDialog(boolean editable, int role) {
 		VBox box = new VBox(20);
 		VBox.setVgrow(box, Priority.ALWAYS);
 		box.setAlignment(Pos.TOP_CENTER);
 		box.setPadding(new Insets(20));
 
 		HBox toggleBox = new HBox(10);
-		if (Session.get(Session.KEY_LOGIN_ROLE, 0) != RoleConst.ADMIN) {
+		if (role == RoleConst.TEACHER) {
 			ToggleButton mine = new ToggleButton(MsgUtil.getMessage("typical.case.min.case"));
 			mine.setMinSize(100, 40);
 			mine.setStyle("-fx-font-size:14px");
 			mine.setUserData(Session.get(Session.KEY_LOGIN_ID));
 			group.getToggles().add(mine);
 			toggleBox.getChildren().add(mine);
+		} else if (role == RoleConst.STUDENT) {
+			ToggleButton tech = new ToggleButton(MsgUtil.getMessage("typical.case.tech.case"));
+			tech.setMinSize(100, 40);
+			tech.setStyle("-fx-font-size:14px");
+
+			User user = Session.get(Session.KEY_OBJECT);
+			tech.setUserData(user.getTeacherId());
+			group.getToggles().add(tech);
+			toggleBox.getChildren().add(tech);
 		}
 		sys = new ToggleButton(MsgUtil.getMessage("typical.case.sys.case"));
 		sys.setMinSize(100, 40);
@@ -67,7 +79,7 @@ public class TypicalCaseSelectDialog extends DialogPane<Integer> {
 			if (n == null) {
 				group.selectToggle(o);
 			} else {
-				reload();
+				reload(role);
 			}
 		});
 
@@ -105,6 +117,35 @@ public class TypicalCaseSelectDialog extends DialogPane<Integer> {
 		}));
 		table.getColumns().addAll(id, name, date);
 		if (editable) {
+			if (role != RoleConst.ADMIN) {
+				// 设置学生可见按钮
+				visible = new Column<Boolean>();
+				visible.setKey("publish");
+				visible.setCellFactory(ToggelBtnCell.forTableColumn(MsgUtil.getMessage("button.published"), MsgUtil.getMessage("button.unpublished"), "toggle-button", json -> {
+					Integer rid = json.getInteger("id");
+					boolean published = json.getBooleanValue("selected");
+					// 修改典型案例状态
+					SpringUtil.getBean(TypicalCaseAction.class).published(rid, published);
+					reload(role);
+				}, new StringConverter<Boolean>() {
+
+					@Override
+					public String toString(Boolean published) {
+						if (published) {
+							return MsgUtil.getMessage("button.published");
+						} else {
+							return MsgUtil.getMessage("button.unpublished");
+						}
+					}
+
+					@Override
+					public Boolean fromString(String string) {
+						return null;
+					}
+				}));
+				visible.setAlignment(Pos.CENTER_RIGHT);
+				table.getColumns().add(visible);
+			}
 			// 删除按钮
 			delete = new Column<String>();
 			delete.setCellFactory(BtnCell.forTableColumn(MsgUtil.getMessage("button.delete"), "red-btn", rid -> {
@@ -113,7 +154,7 @@ public class TypicalCaseSelectDialog extends DialogPane<Integer> {
 						return;
 					}
 					SpringUtil.getBean(TypicalCaseAction.class).deleteByLogic((Integer) rid);
-					reload();
+					reload(role);
 				});
 			}));
 			delete.setAlignment(Pos.CENTER_RIGHT);
@@ -148,20 +189,24 @@ public class TypicalCaseSelectDialog extends DialogPane<Integer> {
 		group.selectToggle(group.getToggles().get(0));
 	}
 
-	private void reload() {
+	private void reload(int role) {
 		Toggle toggle = group.getSelectedToggle();
 		Integer creator = TypeUtils.castToInt(toggle.getUserData());
+		boolean onlyPublished = role == RoleConst.STUDENT;
 		if (delete == null) {
-
+			if (onlyPublished && sys.isSelected()) {
+				onlyPublished = false;
+			}
 		} else if (sys.isSelected()) {
 			if (Session.get(Session.KEY_LOGIN_ROLE, 0) != RoleConst.ADMIN) {
+				table.getColumns().remove(visible);
 				table.getColumns().remove(delete);
 			}
 		} else if (!table.getColumns().contains(delete)) {
+			table.getColumns().add(visible);
 			table.getColumns().add(delete);
 		}
-
-		List<TypicalCase> cases = SpringUtil.getBean(TypicalCaseAction.class).getTypicalCasesByCreator(creator);
+		List<TypicalCase> cases = SpringUtil.getBean(TypicalCaseAction.class).getTypicalCasesByCreator(creator, onlyPublished);
 		JSONArray array = new JSONArray();
 		array.addAll(cases);
 		table.setItems(array);

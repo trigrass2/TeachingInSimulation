@@ -3,6 +3,8 @@ package com.cas.sim.tis.view.control.imp.jme;
 import java.util.Optional;
 
 import com.cas.sim.tis.action.TypicalCaseAction;
+import com.cas.sim.tis.consts.RoleConst;
+import com.cas.sim.tis.consts.Session;
 import com.cas.sim.tis.entity.TypicalCase;
 import com.cas.sim.tis.svg.SVGGlyph;
 import com.cas.sim.tis.util.AlertUtil;
@@ -47,17 +49,27 @@ public class TypicalCaseMenu implements ILeftContent {
 	@Override
 	public Region getLeftContent() {
 		VBox vb = new VBox(10);
-		Button create = createMenu(MsgUtil.getMessage("menu.button.new"), new SVGGlyph("iconfont.svg.new", Color.WHITE, 24));
-		create.setOnMouseClicked(e -> newCase());
+
+		HBox menu = new HBox(22);
 
 		Button open = createMenu(MsgUtil.getMessage("menu.button.open"), new SVGGlyph("iconfont.svg.open", Color.WHITE, 24));
 		open.setOnMouseClicked(e -> showCaseDialog());
 
-		Button save = createMenu(MsgUtil.getMessage("menu.button.save"), new SVGGlyph("iconfont.svg.save", Color.WHITE, 24));
-		save.setOnMouseClicked(e -> saveCase());
+		int role = Session.get(Session.KEY_LOGIN_ROLE, RoleConst.STUDENT);
+		if (role == RoleConst.STUDENT) {
+			menu.setAlignment(Pos.CENTER_LEFT);
+			menu.getChildren().add(open);
+		} else {
+			menu.setAlignment(Pos.CENTER);
+			Button create = createMenu(MsgUtil.getMessage("menu.button.new"), new SVGGlyph("iconfont.svg.new", Color.WHITE, 24));
+			create.setOnMouseClicked(e -> newCase());
 
-		HBox menu = new HBox(22, create, open, save);
-		menu.setAlignment(Pos.CENTER);
+			Button save = createMenu(MsgUtil.getMessage("menu.button.save"), new SVGGlyph("iconfont.svg.save", Color.WHITE, 24));
+			save.setOnMouseClicked(e -> saveCase());
+
+			menu.getChildren().addAll(create, open, save);
+		}
+
 //		菜单
 		vb.getChildren().add(menu);
 
@@ -79,7 +91,8 @@ public class TypicalCaseMenu implements ILeftContent {
 	// open打开案例选择面板
 	private void showCaseDialog() {
 		Dialog<Integer> dialog = new Dialog<>();
-		dialog.setDialogPane(new TypicalCaseSelectDialog(true));
+		int role = Session.get(Session.KEY_LOGIN_ROLE, RoleConst.STUDENT);
+		dialog.setDialogPane(new TypicalCaseSelectDialog(role != RoleConst.STUDENT, role));
 		dialog.setTitle(MsgUtil.getMessage("typical.case.title.list"));
 		dialog.setPrefSize(640, 500);
 		dialog.showAndWait().ifPresent(id -> {

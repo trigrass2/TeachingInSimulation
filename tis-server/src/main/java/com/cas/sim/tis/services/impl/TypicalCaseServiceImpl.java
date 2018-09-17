@@ -6,7 +6,6 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
 
-import com.alibaba.fastjson.JSON;
 import com.cas.sim.tis.entity.TypicalCase;
 import com.cas.sim.tis.mapper.TypicalCaseMapper;
 import com.cas.sim.tis.services.TypicalCaseService;
@@ -23,9 +22,16 @@ public class TypicalCaseServiceImpl implements TypicalCaseService {
 	@Override
 	public ResponseEntity findTypicalCasesByCreatorId(RequestEntity entity) {
 		Condition condition = new Condition(TypicalCase.class);
-		condition.createCriteria()//
-				.andEqualTo("del", 0)//
-				.andEqualTo("creator", entity.getInt("creator"));
+		if (entity.getBoolean("onlyPublished")) {
+			condition.createCriteria()//
+					.andEqualTo("del", 0)//
+					.andEqualTo("creator", entity.getInt("creator"))//
+					.andEqualTo("publish", true);
+		} else {
+			condition.createCriteria()//
+					.andEqualTo("del", 0)//
+					.andEqualTo("creator", entity.getInt("creator"));
+		}
 		condition.orderBy("createDate").desc();
 		List<TypicalCase> result = mapper.selectByCondition(condition);
 		return ResponseEntity.success(result);
