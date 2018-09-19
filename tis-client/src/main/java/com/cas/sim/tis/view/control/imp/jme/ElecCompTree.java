@@ -10,6 +10,8 @@ import com.cas.sim.tis.entity.ElecComp;
 import com.cas.sim.tis.util.SpringUtil;
 
 import javafx.scene.control.Accordion;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.ScrollPane.ScrollBarPolicy;
 import javafx.scene.control.TitledPane;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
@@ -30,7 +32,11 @@ public class ElecCompTree extends Accordion {
 			
 			t1.setText(type.getName());
 			
+			ScrollPane scrollPane = new ScrollPane();
+			scrollPane.setHbarPolicy(ScrollBarPolicy.NEVER);
 			VBox content = new VBox();
+			scrollPane.setContent(content);
+			
 			content.setSpacing(10);
 			
 			map.get(type.getType()).forEach(elecComp -> {
@@ -52,7 +58,7 @@ public class ElecCompTree extends Accordion {
 				content.getChildren().add(lbl);
 				group.getToggles().add(lbl);
 			});
-			t1.setContent(content);
+			t1.setContent(scrollPane);
 			
 		}
 	}
