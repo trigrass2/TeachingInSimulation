@@ -8,6 +8,7 @@ import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import com.alibaba.fastjson.JSON;
@@ -213,6 +214,18 @@ public class ResourceServiceImpl implements ResourceService {
 		return ResponseEntity.success(data);
 	}
 
+
+	@Override
+	public ResponseEntity addResource(RequestEntity entity) {
+		Resource resource = entity.getObject("resource", Resource.class);
+		ResourceType type = ResourceType.getResourceType(resource.getType());
+		if (type.isConvertable()) {
+			converter.resourceConverter(resource.getPath());
+		}
+		mapper.insertUseGeneratedKeys(resource);
+		return ResponseEntity.success(resource.getId());
+	}
+	
 	@Override
 	public ResponseEntity addResources(RequestEntity entity) {
 		// 1.获取事务控制管理器
@@ -356,5 +369,4 @@ public class ResourceServiceImpl implements ResourceService {
 		mapper.updateByPrimaryKeySelective(resource);
 		return ResponseEntity.success(null);
 	}
-
 }

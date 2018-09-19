@@ -9,6 +9,7 @@ import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 import javax.annotation.Nonnull;
 
@@ -17,7 +18,11 @@ import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPClientConfig;
 import org.apache.commons.net.ftp.FTPFile;
 import org.apache.commons.net.ftp.FTPReply;
+import org.apache.commons.net.io.CopyStreamEvent;
+import org.apache.commons.net.io.CopyStreamListener;
 import org.jetbrains.annotations.NotNull;
+
+import com.cas.util.MathUtil;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -107,7 +112,8 @@ public class FTPUtils {
 	 * 列出当前目录下的所有文件夹
 	 * @return
 	 */
-	@NotNull public List<String> listDirs() {
+	@NotNull
+	public List<String> listDirs() {
 		List<String> dirs = new ArrayList<>();
 		try {
 			FTPFile[] firs = ftpClient.listDirectories();
@@ -216,6 +222,40 @@ public class FTPUtils {
 	public FTPUtils uploadFile(File file, String storedName) throws Exception {
 		try (InputStream ins = new FileInputStream(file)) {
 			// 上传文件
+			boolean result = ftpClient.storeFile(convertToFtpEncode(storedName), ins);
+			if (result) {
+				log.info("本地文件【{}】已上传至服务器目录【{}】中，并且命名为【{}】", file.getPath(), remotePath, storedName);
+			} else {
+				log.error("文件【{}】上传失败", file.getPath());
+				throw new IOException("上传失败");
+			}
+		}
+		return this;
+	}
+
+	/**
+	 * 上传单个文件至FTP服务器
+	 * @param storePath 文件存储路径
+	 * @param file 上传文件
+	 * @param storedName 文件存储名称
+	 * @throws Exception
+	 */
+	public FTPUtils uploadFile(File file, String storedName, Consumer<Float> process) throws Exception {
+		try (InputStream ins = new FileInputStream(file)) {
+			// 上传文件
+			ftpClient.setCopyStreamListener(new CopyStreamListener() {
+				long length = file.length();
+
+				@Override
+				public void bytesTransferred(long totalBytesTransferred, int bytesTransferred, long streamSize) {
+					process.accept(MathUtil.round(2, totalBytesTransferred * 1d / length));
+				}
+
+				@Override
+				public void bytesTransferred(CopyStreamEvent event) {
+
+				}
+			});
 			boolean result = ftpClient.storeFile(convertToFtpEncode(storedName), ins);
 			if (result) {
 				log.info("本地文件【{}】已上传至服务器目录【{}】中，并且命名为【{}】", file.getPath(), remotePath, storedName);

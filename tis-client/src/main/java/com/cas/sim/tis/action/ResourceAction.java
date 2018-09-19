@@ -33,6 +33,14 @@ public class ResourceAction extends BaseAction {
 //		return service.addResource(resource);
 //	}
 
+	public Integer addResource(Resource resource) {
+		RequestEntity req = new RequestEntityBuilder()//
+				.set("resource", resource)//
+				.build();
+		ResponseEntity resp = service.addResource(req);
+		return JSON.parseObject(resp.data, Integer.class);
+	}
+
 	/**
 	 * 批量新增资源
 	 * @param resources 资源集合
@@ -130,7 +138,7 @@ public class ResourceAction extends BaseAction {
 			resp = service.countResourceByTypes(req);
 		}
 		List<String> data = JSON.parseArray(resp.data, String.class);
-		return JSON.parseObject(String.format("{%s}", StringUtil.combine(data,',')), new TypeReference<HashMap<Integer, Integer>>() {});
+		return JSON.parseObject(String.format("{%s}", StringUtil.combine(data, ',')), new TypeReference<HashMap<Integer, Integer>>() {});
 	}
 
 	/**
@@ -237,7 +245,7 @@ public class ResourceAction extends BaseAction {
 		Resource resource = new Resource();
 		resource.setId(id);
 		resource.setDel(true);
-		
+
 		RequestEntity req = new RequestEntityBuilder()//
 				.set("resource", resource)//
 				.build();

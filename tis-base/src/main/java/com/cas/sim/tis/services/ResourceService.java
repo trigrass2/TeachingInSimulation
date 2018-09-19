@@ -109,6 +109,14 @@ public interface ResourceService {
 	 */
 	@ThriftMethod
 	ResponseEntity countResourceByTypes(RequestEntity req);
+	
+	/**
+	 * 新增资源
+	 * @param entity （resource 资源对象）
+	 * @return 返回新增资源的ID集合
+	 */
+	@ThriftMethod
+	ResponseEntity addResource(RequestEntity entity);
 
 	/**
 	 * 批量新增资源

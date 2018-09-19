@@ -5,6 +5,7 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -153,59 +154,68 @@ public class ResourceUploadDialog extends DialogPane<List<Integer>> {
 			@Override
 			protected Void call() throws Exception {
 				List<String> renames = new ArrayList<>();
-				List<Resource> resources = new ArrayList<>();
+				List<Integer> ids = new ArrayList<>();
 				int creator = Session.get(Session.KEY_LOGIN_ID);
-				for (File uploadFile : uploadFiles) {
+				int total = uploadFiles.size();
+				for (int i = 0; i < total; i++) {
+					int index = i + 1;
+					File uploadFile = uploadFiles.get(i);
 					String filePath = uploadFile.getAbsolutePath();
 					String fileName = FileUtil.getFileName(filePath);
 					String ext = FileUtil.getFileExt(filePath);
 					// 重命名
 					String rename = UUID.randomUUID() + "." + ext;
 					renames.add(rename);
+					Platform.runLater(() -> {
+						uploadTip.setText(MsgUtil.getMessage("ftp.upload.waiting", index, total, fileName, 0));
+					});
 					// 封装资源记录
 					Resource resource = new Resource();
 					resource.setCreator(creator);
 					resource.setKeyword(keywords.getText());
 					resource.setPath(rename);
 					resource.setName(fileName);
-					resources.add(resource);
 					try {
-						if (type == null) {
-							int type = ResourceType.parseType(ext);
-							resource.setType(type);
-						} else {
-							resource.setType(type.getType());
-						}
+						int type = ResourceType.parseType(ext);
+						resource.setType(type);
 					} catch (Exception e) {
 						LOG.warn("解析文件后缀名出现错误", e);
 						throw e;
 					}
-				}
-				// 上传文件到FTP
-				// FIXME 批量上传
-				for (int i = 0; i < uploadFiles.size(); i++) {
-
 					try {
-						FTPUtils.connect().cd(ResourceConsts.FTP_RES_PATH).uploadFile(uploadFiles.get(i), renames.get(i)).disconnect();
+						FTPUtils.connect().cd(ResourceConsts.FTP_RES_PATH).uploadFile(uploadFiles.get(i), renames.get(i), new Consumer<Float>() {
+
+							@Override
+							public void accept(Float process) {
+								Platform.runLater(() -> {
+									uploadTip.setText(MsgUtil.getMessage("ftp.upload.waiting", index, total, fileName, process * 100));
+								});
+							}
+						}).disconnect();
+						Integer id = SpringUtil.getBean(ResourceAction.class).addResource(resource);
+						if (id == null) {
+							AlertUtil.showAlert(AlertType.ERROR, MsgUtil.getMessage("ftp.upload.converter.failure"));
+							setCloseable(true);
+							return null;
+						} else {
+							ids.add(id);
+						}
 					} catch (Exception e) {
-						uploadTip.setText(MsgUtil.getMessage("ftp.upload.failure"));
-						// 启用上传按钮
-						((Button) event.getSource()).setDisable(false);
+						// 记录到数据库
+						Platform.runLater(() -> {
+							uploadTip.setText(MsgUtil.getMessage("ftp.upload.failure"));
+							// 启用上传按钮
+							((Button) event.getSource()).setDisable(false);
+						});
 						return null;
 					}
 				}
 				// 记录到数据库
-				List<Integer> ids = SpringUtil.getBean(ResourceAction.class).addResources(resources);
 				Platform.runLater(() -> {
-					if (ids == null) {
-						uploadTip.setText(MsgUtil.getMessage("ftp.upload.converter.failure"));
-						// 启用上传按钮
-						((Button) event.getSource()).setDisable(false);
-						setCloseable(true);
-					} else {
-						AlertUtil.showAlert(dialog.getOwner(), AlertType.INFORMATION, MsgUtil.getMessage("ftp.upload.success"));
-						setResult(ids);
-					}
+					AlertUtil.showAlert(AlertType.INFORMATION, MsgUtil.getMessage("ftp.upload.success"));
+					// 启用上传按钮
+					((Button) event.getSource()).setDisable(false);
+					setResult(ids);
 				});
 				return null;
 			}
