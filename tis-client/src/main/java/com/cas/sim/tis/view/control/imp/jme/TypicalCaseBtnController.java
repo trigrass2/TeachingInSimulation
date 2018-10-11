@@ -38,6 +38,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ContentDisplay;
@@ -101,6 +102,8 @@ public class TypicalCaseBtnController implements Initializable, IDistory {
 //	private boolean layout;
 //	private boolean routing;
 
+	private boolean switchModeFailed;
+
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		modes.getItems().add(CaseMode.VIEW_MODE);
@@ -113,9 +116,16 @@ public class TypicalCaseBtnController implements Initializable, IDistory {
 		modes.getSelectionModel().selectedItemProperty().addListener((b, o, n) -> {
 			if (o == null) {
 				switchCaseMode(n);
+			} else if (switchModeFailed) {
+				switchModeFailed = false;
 			} else {
 				AlertUtil.showConfirm(MsgUtil.getMessage("typical.case.not.be.clean"), resp -> {
-					switchCaseMode(n);
+					if (ButtonType.YES == resp) {
+						switchCaseMode(n);
+					} else {
+						switchModeFailed = true;
+						modes.getSelectionModel().select(o);
+					}
 				});
 			}
 		});
