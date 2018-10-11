@@ -9,9 +9,9 @@ import java.util.ResourceBundle;
 import org.controlsfx.control.PopOver;
 import org.controlsfx.control.PopOver.ArrowLocation;
 
+import com.cas.sim.tis.app.state.ElecCaseState.CaseMode;
 import com.cas.sim.tis.app.state.typical.CircuitState;
 import com.cas.sim.tis.app.state.typical.TypicalCaseState;
-import com.cas.sim.tis.app.state.typical.TypicalCaseState.CaseMode;
 import com.cas.sim.tis.consts.Radius;
 import com.cas.sim.tis.consts.RoleConst;
 import com.cas.sim.tis.consts.Session;
@@ -92,6 +92,7 @@ public class TypicalCaseBtnController implements Initializable, IDistory {
 	private Label preview;
 
 	private Stage drawingWin;
+	private DrawingController controller;
 
 	private TypicalCase3D typicalCase3D;
 	private Label sectionPicked;
@@ -221,7 +222,7 @@ public class TypicalCaseBtnController implements Initializable, IDistory {
 				FXMLLoader loader = new FXMLLoader();
 				loader.setResources(ResourceBundle.getBundle("i18n/messages"));
 				Region root = loader.load(TypicalCaseBtnController.class.getResourceAsStream("/view/jme/Drawing.fxml"));
-				DrawingController controller = loader.getController();
+				controller = loader.getController();
 				controller.setStage(drawingWin);
 				controller.setUI(typicalCase3D);
 
@@ -231,6 +232,7 @@ public class TypicalCaseBtnController implements Initializable, IDistory {
 					((Button) event.getSource()).setDisable(false);
 				});
 			}
+			controller.setEditable(CaseMode.EDIT_MODE == modes.getSelectionModel().getSelectedItem());
 			drawingWin.show();
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -280,7 +282,7 @@ public class TypicalCaseBtnController implements Initializable, IDistory {
 
 		section.getChildren().add(new Label(MsgUtil.getMessage("typical.case.wire.radius")));
 		List<Label> list = new ArrayList<>();
-		
+
 		for (Radius radius : Radius.values()) {
 			Label label = new Label(radius.getRadius(), new WireRadius(radius.getInnerRadius(), Color.rgb(186, 100, 64), radius.getOutterRadius(), Color.TRANSPARENT));
 			label.setUserData(radius);

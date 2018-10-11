@@ -76,6 +76,10 @@ public class DrawingController implements Initializable {
 	private Button prev;
 	@FXML
 	private Button next;
+	@FXML
+	private Button add;
+	@FXML
+	private Button upload;
 
 	private boolean expanding = true;
 
@@ -447,5 +451,10 @@ public class DrawingController implements Initializable {
 		next.setDisable(true);
 		zoomIn.setDisable(true);
 		zoomOut.setDisable(true);
+	}
+
+	public void setEditable(boolean editable) {
+		this.add.setVisible(editable);
+		this.upload.setVisible(editable);
 	}
 }

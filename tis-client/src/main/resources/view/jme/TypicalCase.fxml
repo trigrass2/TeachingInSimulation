@@ -65,6 +65,11 @@
 		<HBox fx:id="view" spacing="10" visible="false" pickOnBounds="false" mouseTransparent="false" alignment="BOTTOM_LEFT">
 			<ToggleButton fx:id="autoComps" text="%typical.case.auto.comp" styleClass="recognize-btn" pickOnBounds="true" />
 			<ToggleButton fx:id="autoWires" text="%typical.case.auto.wire" styleClass="recognize-btn" pickOnBounds="true" />
+			<Button text="%typical.case.drawings" styleClass="recognize-btn" onAction="#showDrawingWin" pickOnBounds="true"><!-- 电路图 -->
+				<graphic>
+					<SVGGlyph name="iconfont.svg.drawing" size="20" fill="WHITE" />
+				</graphic>
+			</Button>
 		</HBox>
 		<HBox fx:id="trainOrEdit" spacing="10" visible="false" pickOnBounds="false" mouseTransparent="false" alignment="BOTTOM_LEFT">
 			<Button text="%typical.case.drawings" styleClass="recognize-btn" onAction="#showDrawingWin" pickOnBounds="true"><!-- 电路图 -->
