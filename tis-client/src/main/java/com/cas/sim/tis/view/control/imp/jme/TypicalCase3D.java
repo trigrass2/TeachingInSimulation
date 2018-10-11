@@ -3,6 +3,7 @@ package com.cas.sim.tis.view.control.imp.jme;
 import java.awt.MouseInfo;
 import java.awt.Point;
 import java.io.IOException;
+import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.regex.Matcher;
@@ -15,10 +16,12 @@ import com.cas.circuit.component.ElecCompDef;
 import com.cas.circuit.component.Wire;
 import com.cas.sim.tis.anno.FxThread;
 import com.cas.sim.tis.app.JmeApplication;
-import com.cas.sim.tis.app.state.CircuitState;
-import com.cas.sim.tis.app.state.TypicalCaseState;
+import com.cas.sim.tis.app.state.typical.CircuitState;
+import com.cas.sim.tis.app.state.typical.TypicalCaseState;
+import com.cas.sim.tis.app.state.typical.TypicalCaseState.CaseMode;
 import com.cas.sim.tis.entity.ElecComp;
 import com.cas.sim.tis.entity.TypicalCase;
+import com.cas.sim.tis.flow.Step;
 import com.cas.sim.tis.util.MsgUtil;
 import com.cas.sim.tis.view.control.IContent;
 import com.jme3x.jfx.injfx.JmeToJFXIntegrator;
@@ -215,13 +218,13 @@ public class TypicalCase3D implements IContent {
 		return appState.isClean();
 	}
 
-	public void setupCase(TypicalCase typicalCase) {
+	public void setupCase(TypicalCase typicalCase, CaseMode mode) {
 //		找到典型案例的状态机
 		TypicalCaseState appState = jmeApp.getStateManager().getState(TypicalCaseState.class);
 //		修改元器件模型
-		appState.setupCase(typicalCase);
-
+		appState.setupCase(typicalCase, mode);
 		btnController.clean();
+		btnController.setMode(mode);
 	}
 
 	public void selectedElecComp(ElecComp elecComp) {
@@ -299,10 +302,38 @@ public class TypicalCase3D implements IContent {
 	public void showName(String text, float x, float y) {
 		nameLabel.setText(text);
 		nameLabel.setLayoutX(x);
-////	解释：由于JME与Javafx坐标系上下颠倒，为了能正常获取鼠标坐标，将Javafx的坐标系向JME靠拢。
-////	详见JFXMouseInput:
-////	    private boolean useLocalCoords;
-////		private boolean inverseYCoord;
+//	解释：由于JME与Javafx坐标系上下颠倒，为了能正常获取鼠标坐标，将Javafx的坐标系向JME靠拢。
+//	详见JFXMouseInput:
+//	    private boolean useLocalCoords;
+//		private boolean inverseYCoord;
 		nameLabel.setLayoutY(canvas.getHeight() - y + 20);
+	}
+
+	public void setTitle(String title) {
+		btnController.setTitle(title);
+	}
+
+	public void autoComps(boolean layout) {
+		TypicalCaseState appState = jmeApp.getStateManager().getState(TypicalCaseState.class);
+		if (appState == null) {
+			return;
+		}
+		appState.autoComps(layout);
+	}
+
+	public void autoWires(boolean routing) {
+		TypicalCaseState appState = jmeApp.getStateManager().getState(TypicalCaseState.class);
+		if (appState == null) {
+			return;
+		}
+		appState.autoWires(routing);
+	}
+
+	public void loadSteps(List<Step> steps) {
+		btnController.loadSteps(steps);
+	}
+
+	public void flowNext() {
+		btnController.next();
 	}
 }

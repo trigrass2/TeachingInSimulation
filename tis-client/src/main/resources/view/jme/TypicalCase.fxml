@@ -13,34 +13,76 @@
 <?import org.controlsfx.control.SegmentedButton?>
 <?import javafx.scene.control.ToggleButton?>
 <?import javafx.scene.control.ToggleGroup?>
-
-<VBox pickOnBounds="false" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.cas.sim.tis.view.control.imp.jme.TypicalCaseBtnController">
-	<VBox VBox.vgrow="ALWAYS" mouseTransparent="true" />
-
-	<HBox spacing="10" pickOnBounds="false">
-		<CheckBox fx:id="showName" text="%rec.ckb.showName" styleClass="recognize-btn" onAction="#toggleTagName" pickOnBounds="true" />
-		<CheckBox fx:id="transparent" text="%rec.ckb.transparent" styleClass="recognize-btn" onAction="#toggleTransparent" pickOnBounds="true" />
-		<Button text="%typical.case.drawings" styleClass="recognize-btn" onAction="#showDrawingWin" pickOnBounds="true"><!-- 电路图 -->
-			<graphic>
-				<SVGGlyph name="iconfont.svg.drawing" size="20" fill="WHITE" />
-			</graphic>
-		</Button>
-		<Button text="%typical.case.wires" styleClass="recognize-btn" onAction="#showWirePicker" pickOnBounds="true"><!-- 导线 -->
-			<graphic>
-				<SVGGlyph name="iconfont.svg.wire" size="20" fill="WHITE" />
-			</graphic>
-		</Button>
-
-		<SegmentedButton >
-			<buttons>
-				<ToggleButton text="2D" styleClass="recognize-btn" onMouseClicked="#toggleDimension" />
-				<ToggleButton text="3D" styleClass="recognize-btn" onMouseClicked="#toggleDimension" selected="true"/>
-			</buttons>
-		</SegmentedButton>
+<?import com.cas.sim.tis.view.control.imp.Title?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.control.ScrollPane?>
+<?import com.cas.sim.tis.view.control.imp.typical.FlowItem?>
+<VBox fx:id="pane" pickOnBounds="false" visible="false" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.cas.sim.tis.view.control.imp.jme.TypicalCaseBtnController">
+	<HBox pickOnBounds="false" mouseTransparent="false">
+		<Title fx:id="title" />
+		<HBox HBox.hgrow="ALWAYS" spacing="10" alignment="TOP_RIGHT">
+			<ChoiceBox fx:id="modes" pickOnBounds="true"></ChoiceBox>
+			<CheckBox fx:id="showName" text="%rec.ckb.showName" styleClass="recognize-btn" onAction="#toggleTagName" pickOnBounds="true" />
+			<CheckBox fx:id="transparent" text="%rec.ckb.transparent" styleClass="recognize-btn" onAction="#toggleTransparent" pickOnBounds="true" />
+			<SegmentedButton>
+				<buttons>
+					<ToggleButton text="2D" styleClass="recognize-btn" onMouseClicked="#toggleDimension" />
+					<ToggleButton text="3D" styleClass="recognize-btn" onMouseClicked="#toggleDimension" selected="true" />
+				</buttons>
+			</SegmentedButton>
+		</HBox>
+		<padding>
+			<Insets top="10" right="10" />
+		</padding>
 	</HBox>
-	<padding>
-		<Insets left="10" bottom="10" />
-	</padding>
+	<HBox VBox.vgrow="ALWAYS" pickOnBounds="false" mouseTransparent="false" alignment="CENTER_RIGHT">
+		<ScrollPane fx:id="scroll" visible="false" prefWidth="300" minWidth="300" maxWidth="300" prefHeight="400" minHeight="400" maxHeight="400" hbarPolicy="NEVER" styleClass="cover">
+			<content>
+				<FlowItem fx:id="flow" spacing="10" pickOnBounds="false" mouseTransparent="false">
+				</FlowItem>
+			</content>
+		</ScrollPane>
+		<padding>
+			<Insets top="50" bottom="50" />
+		</padding>
+	</HBox>
+	<StackPane pickOnBounds="false" mouseTransparent="false">
+		<HBox fx:id="view" spacing="10" visible="false" pickOnBounds="false" mouseTransparent="false" alignment="BOTTOM_LEFT">
+			<ToggleButton fx:id="autoComps" text="%typical.case.auto.comp" styleClass="recognize-btn" pickOnBounds="true" />
+			<ToggleButton fx:id="autoWires" text="%typical.case.auto.wire" styleClass="recognize-btn" pickOnBounds="true" />
+			<Button styleClass="blue-btn" pickOnBounds="true" prefHeight="40" onAction="#prev">
+				<graphic>
+					<SVGGlyph name="iconfont.svg.left" size="20" fill="WHITE" />
+				</graphic>
+			</Button>
+			<!-- <Button styleClass="blue-btn" pickOnBounds="true" prefHeight="40"> -->
+			<!-- <graphic> -->
+			<!-- <SVGGlyph name="iconfont.svg.reset" size="20" fill="WHITE" /> -->
+			<!-- </graphic> -->
+			<!-- </Button> -->
+			<Button styleClass="blue-btn" pickOnBounds="true" prefHeight="40" onAction="#next">
+				<graphic>
+					<SVGGlyph name="iconfont.svg.right" size="20" fill="WHITE" />
+				</graphic>
+			</Button>
+		</HBox>
+		<HBox fx:id="trainOrEdit" spacing="10" visible="false" pickOnBounds="false" mouseTransparent="false" alignment="BOTTOM_LEFT">
+			<Button text="%typical.case.drawings" styleClass="recognize-btn" onAction="#showDrawingWin" pickOnBounds="true"><!-- 电路图 -->
+				<graphic>
+					<SVGGlyph name="iconfont.svg.drawing" size="20" fill="WHITE" />
+				</graphic>
+			</Button>
+			<Button text="%typical.case.wires" styleClass="recognize-btn" onAction="#showWirePicker" pickOnBounds="true"><!-- 导线 -->
+				<graphic>
+					<SVGGlyph name="iconfont.svg.wire" size="20" fill="WHITE" />
+				</graphic>
+			</Button>
+		</HBox>
+		<padding>
+			<Insets left="10" bottom="10" />
+		</padding>
+	</StackPane>
 	<!-- <PopOver fx:id="wirePicker" title="导线选择" arrowSize="10" arrowLocation="BOTTOM_CENTER"> -->
 	<!-- <HBox> -->
 	<!-- <VBox> -->

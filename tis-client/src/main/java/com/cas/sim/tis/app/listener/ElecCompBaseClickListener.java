@@ -3,7 +3,7 @@ package com.cas.sim.tis.app.listener;
 import com.cas.circuit.component.ElecCompDef;
 import com.cas.sim.tis.app.event.MouseEvent;
 import com.cas.sim.tis.app.event.MouseEventAdapter;
-import com.cas.sim.tis.app.state.TypicalCaseState;
+import com.cas.sim.tis.app.state.typical.TypicalCaseState;
 
 public class ElecCompBaseClickListener extends MouseEventAdapter {
 

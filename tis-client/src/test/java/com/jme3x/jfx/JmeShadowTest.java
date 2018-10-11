@@ -91,7 +91,7 @@ public class JmeShadowTest extends JmeApplication {
 		fpp = new FilterPostProcessor(assetManager);
 		fpp.addFilter(dlsf);
 
-		viewPort.setBackgroundColor(ColorRGBA.White);
+//		viewPort.setBackgroundColor(ColorRGBA.White);
 
 		pointLight = new PointLight();
 		pointLight.setColor(ColorRGBA.White);

@@ -39,6 +39,10 @@ public class ExamMessage extends AbstractMessage {
 	 */
 	public static final int EXAM_TYPE_PREPARATION = 2;
 	/**
+	 * 典型案例发布
+	 */
+	public static final int EXAM_TYPE_BROKEN = 3;
+	/**
 	 * 题库编号
 	 */
 	private int pid;

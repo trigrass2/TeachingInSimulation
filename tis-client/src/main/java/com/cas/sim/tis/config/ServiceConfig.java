@@ -6,6 +6,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import com.cas.sim.tis.services.BrokenCaseService;
+import com.cas.sim.tis.services.BrokenPublishService;
+import com.cas.sim.tis.services.BrokenRecordService;
 import com.cas.sim.tis.services.BrowseHistoryService;
 import com.cas.sim.tis.services.CatalogService;
 import com.cas.sim.tis.services.ClassService;
@@ -111,6 +113,18 @@ public class ServiceConfig {
 	}
 
 	@Bean
+	public BrokenPublishService brokenPublishService() {
+		DriftClient<BrokenPublishService> service = clientFactory.createDriftClient(BrokenPublishService.class);
+		return service.get();
+	}
+
+	@Bean
+	public BrokenRecordService brokenRecordService() {
+		DriftClient<BrokenRecordService> service = clientFactory.createDriftClient(BrokenRecordService.class);
+		return service.get();
+	}
+
+	@Bean
 	public DrawService drawService() {
 		DriftClient<DrawService> service = clientFactory.createDriftClient(DrawService.class);
 		return service.get();
@@ -145,13 +159,13 @@ public class ServiceConfig {
 		DriftClient<PreparationQuizService> service = clientFactory.createDriftClient(PreparationQuizService.class);
 		return service.get();
 	}
-	
+
 	@Bean
 	public PreparationLibraryService preparationLibraryService() {
 		DriftClient<PreparationLibraryService> service = clientFactory.createDriftClient(PreparationLibraryService.class);
 		return service.get();
 	}
-	
+
 	@Bean
 	public PreparationPublishService preparationPublishService() {
 		DriftClient<PreparationPublishService> service = clientFactory.createDriftClient(PreparationPublishService.class);

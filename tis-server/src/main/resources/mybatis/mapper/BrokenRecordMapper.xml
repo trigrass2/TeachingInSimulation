@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cas.sim.tis.mapper.BrokenRecordMapper">
+	<resultMap id="BaseResultMap" type="com.cas.sim.tis.entity.BrokenRecord">
+		<id column="ID" jdbcType="INTEGER" property="id" />
+		<result column="PID" jdbcType="INTEGER" property="publishId" />
+		<result column="ARCHIVE_PATH" jdbcType="VARCHAR" property="archivePath" />
+		<result column="CREATOR" jdbcType="INTEGER" property="creator" />
+		<result column="CREATE_DATE" jdbcType="TIMESTAMP" property="createDate" />
+	</resultMap>
+</mapper>

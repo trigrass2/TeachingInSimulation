@@ -1,4 +1,4 @@
-package com.cas.sim.tis.view.control.imp.preparation;
+package com.cas.sim.tis.view.control.imp.jme;
 
 import java.util.Date;
 import java.util.List;
@@ -42,6 +42,7 @@ public class TypicalCaseSelectDialog extends DialogPane<Integer> {
 	private Table table;
 	private ToggleGroup group = new ToggleGroup();
 	private ToggleButton sys;
+//	private Column<Boolean> exam;
 	private Column<Boolean> visible;
 	private Column<String> delete;
 
@@ -145,6 +146,37 @@ public class TypicalCaseSelectDialog extends DialogPane<Integer> {
 				}));
 				visible.setAlignment(Pos.CENTER_RIGHT);
 				table.getColumns().add(visible);
+//				// 发送考核
+//				exam = new Column<Boolean>();
+//				exam.setCellFactory(BtnCell.forTableColumn(MsgUtil.getMessage("button.exam"), "blue-btn", typicalId -> {
+//					// 获得当前教师负责的班级
+//					List<Class> classes = SpringUtil.getBean(ClassAction.class).findClassesByTeacherId(Session.get(Session.KEY_LOGIN_ID));
+//
+//					// 弹出班级选择框
+//					Dialog<Integer> dialog = new Dialog<>();
+//					dialog.setDialogPane(new ClassSelectDialog(classes));
+//					dialog.setTitle(MsgUtil.getMessage("class.dialog.select"));
+//					dialog.setPrefSize(652, 420);
+//					dialog.showAndWait().ifPresent(classId -> {
+//						try {
+//							Integer publishId = SpringUtil.getBean(BrokenPublishAction.class).publishBroken((Integer) typicalId, classId);
+//							// 记录当前考核发布编号
+//							Session.set(Session.KEY_TYPICAL_CASE_PUBLISH_ID, publishId);
+//							// 添加考核进行时菜单
+//							PageController controller = SpringUtil.getBean(PageController.class);
+//							ILeftContent content = controller.getLeftMenu();
+//							if (content instanceof IPublish) {
+//								((IPublish) content).publish(publishId);
+//							}
+//						} catch (Exception e) {
+//							e.printStackTrace();
+//							AlertUtil.showAlert(AlertType.ERROR, e.getMessage());
+//						}
+//					});
+//				}));
+//				exam.setAlignment(Pos.CENTER_RIGHT);
+//				exam.setPrefWidth(90);
+//				table.getColumns().addAll(visible, exam);
 			}
 			// 删除按钮
 			delete = new Column<String>();

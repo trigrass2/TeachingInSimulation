@@ -29,6 +29,8 @@ import com.cas.sim.tis.services.PreparationQuizService;
 import com.cas.sim.tis.services.PreparationResourceService;
 import com.cas.sim.tis.services.PreparationService;
 import com.cas.sim.tis.services.QuestionService;
+import com.cas.sim.tis.services.BrokenPublishService;
+import com.cas.sim.tis.services.BrokenRecordService;
 import com.cas.sim.tis.services.ResourceService;
 import com.cas.sim.tis.services.TypicalCaseService;
 import com.cas.sim.tis.services.UserService;
@@ -63,6 +65,10 @@ public class SwiftConfig {
 	private TypicalCaseService typicalCaseService;
 	@Resource
 	private BrokenCaseService brokenCaseService;
+	@Resource
+	private BrokenPublishService brokenPublishService;
+	@Resource
+	private BrokenRecordService brokenRecordService;
 	@Resource
 	private LibraryService libraryService;
 	@Resource
@@ -112,6 +118,8 @@ public class SwiftConfig {
 		services.add(new DriftService(elecCompService));
 		services.add(new DriftService(typicalCaseService));
 		services.add(new DriftService(brokenCaseService));
+		services.add(new DriftService(brokenPublishService));
+		services.add(new DriftService(brokenRecordService));
 		services.add(new DriftService(libraryService));
 		services.add(new DriftService(questionService));
 		services.add(new DriftService(libraryPublishService));

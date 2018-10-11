@@ -318,6 +318,31 @@
 }
 /*******************************************************************************
  *                                                                             *
+ * ChoiceBox                                                                   *
+ *                                                                             *
+ ******************************************************************************/
+
+.choice-box {
+    -fx-background-color: #19b0c6;
+	-fx-min-width: 108.0px;
+	-fx-pref-height: 40.0px;
+    -fx-background-insets: 0.0;
+    -fx-background-radius: 0.0;
+    -fx-padding: 0.0;
+    -fx-alignment: CENTER;
+    -fx-content-display: LEFT;
+    -fx-cursor: hand;
+}
+.choice-box > .label {
+    -fx-text-fill: #fff;
+    -fx-font-size: 14px;
+}
+
+.choice-box > .open-button > .arrow {
+    -fx-background-color: #fff;
+}
+/*******************************************************************************
+ *                                                                             *
  * 登录样式                                                          *
  *                                                                             *
  ******************************************************************************/

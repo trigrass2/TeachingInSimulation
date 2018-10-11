@@ -130,7 +130,7 @@ public class HomeController implements Initializable {
 		controller.loadLeftMenu(new TypicalCaseMenu(content));
 		controller.loadContent(content, PageLevel.Level1);
 
-		SpringUtil.getBean(PageController.class).showLoading();
+//		SpringUtil.getBean(PageController.class).showLoading();
 	}
 
 	/**

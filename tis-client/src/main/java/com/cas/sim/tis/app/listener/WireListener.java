@@ -4,7 +4,7 @@ import com.cas.circuit.component.Wire;
 import com.cas.sim.tis.app.control.HintControl;
 import com.cas.sim.tis.app.event.MouseEvent;
 import com.cas.sim.tis.app.event.MouseEventAdapter;
-import com.cas.sim.tis.app.state.CircuitState;
+import com.cas.sim.tis.app.state.typical.CircuitState;
 import com.cas.sim.tis.util.SpringUtil;
 import com.cas.sim.tis.view.control.IContent;
 import com.cas.sim.tis.view.control.imp.jme.TypicalCase3D;

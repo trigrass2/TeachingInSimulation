@@ -7,6 +7,7 @@ import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 public class JFxShadowTest extends Application {
 
@@ -18,10 +19,16 @@ public class JFxShadowTest extends Application {
 		canvas.setOnMouseClicked(event -> canvas.requestFocus());
 		
 		StackPane pane = new StackPane(canvas);
-		primaryStage.setScene(new Scene(pane));
+		
+		Scene scene = new Scene(pane);
+		scene.setFill(null);
+		primaryStage.setScene(scene);
+		primaryStage.initStyle(StageStyle.TRANSPARENT);
 		
 		JmeShadowTest app = new JmeShadowTest();
 		JmeToJFXIntegrator.startAndBind(app, canvas, Thread::new);
+		
+		
 	}
 
 	

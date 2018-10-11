@@ -3,9 +3,11 @@ package com.cas.sim.tis.message.handler;
 import java.util.List;
 
 import com.cas.sim.tis.Application;
+import com.cas.sim.tis.action.BrokenPublishAction;
 import com.cas.sim.tis.action.LibraryPublishAction;
 import com.cas.sim.tis.action.PreparationPublishAction;
 import com.cas.sim.tis.action.QuestionAction;
+import com.cas.sim.tis.entity.BrokenPublish;
 import com.cas.sim.tis.entity.LibraryPublish;
 import com.cas.sim.tis.entity.PreparationPublish;
 import com.cas.sim.tis.entity.Question;
@@ -28,6 +30,8 @@ public class ExamMessageHandler implements ClientHandler<ExamMessage> {
 			libraryExam(m);
 		} else if (ExamMessage.EXAM_TYPE_PREPARATION == examType) {
 			preparationExam(m);
+		} else if (ExamMessage.EXAM_TYPE_BROKEN == examType) {
+			repairExam(m);
 		}
 	}
 
@@ -69,6 +73,19 @@ public class ExamMessageHandler implements ClientHandler<ExamMessage> {
 				if (m.getPid() == controller.getPreparationPublish().getId()) {
 					controller.submit(true);
 				}
+			});
+		}
+	}
+	
+	private void repairExam(ExamMessage m) {
+		int messageType = m.getMessageType();
+		if (ExamMessage.MESSAGE_TYPE_START == messageType) {
+			BrokenPublish publish = SpringUtil.getBean(BrokenPublishAction.class).findPublishById(m.getPid());
+			// TODO 加载维修案例考核界面
+		} else if (ExamMessage.MESSAGE_TYPE_OVER == messageType) {
+			// TODO 考核结束显示界面
+			Platform.runLater(() -> {
+					
 			});
 		}
 	}

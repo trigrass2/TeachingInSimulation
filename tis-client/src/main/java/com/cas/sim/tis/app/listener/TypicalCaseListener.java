@@ -1,6 +1,6 @@
 package com.cas.sim.tis.app.listener;
 
-import com.cas.sim.tis.app.state.TypicalCaseState;
+import com.cas.sim.tis.app.state.typical.HoldState;
 import com.jme3.input.InputManager;
 import com.jme3.input.MouseInput;
 import com.jme3.input.controls.AnalogListener;
@@ -12,10 +12,10 @@ public class TypicalCaseListener implements AnalogListener {
 	private static final String TYPICAL_LEFT_ROTATE = "TYPICAL_LEFT_ROTATE";
 	private static final String TYPICAL_RIGHT_ROTATE = "TYPICAL_RIGHT_ROTATE";
 
-	private TypicalCaseState state;
+	private HoldState state;
 	private InputManager inputManager;
 
-	public TypicalCaseListener(TypicalCaseState state) {
+	public TypicalCaseListener(HoldState state) {
 		this.state = state;
 	}
 

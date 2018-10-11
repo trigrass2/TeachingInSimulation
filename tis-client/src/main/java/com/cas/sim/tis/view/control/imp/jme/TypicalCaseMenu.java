@@ -3,6 +3,7 @@ package com.cas.sim.tis.view.control.imp.jme;
 import java.util.Optional;
 
 import com.cas.sim.tis.action.TypicalCaseAction;
+import com.cas.sim.tis.app.state.typical.TypicalCaseState.CaseMode;
 import com.cas.sim.tis.consts.RoleConst;
 import com.cas.sim.tis.consts.Session;
 import com.cas.sim.tis.entity.TypicalCase;
@@ -13,7 +14,6 @@ import com.cas.sim.tis.util.SpringUtil;
 import com.cas.sim.tis.view.control.ILeftContent;
 import com.cas.sim.tis.view.control.imp.dialog.Dialog;
 import com.cas.sim.tis.view.control.imp.dialog.Tip.TipType;
-import com.cas.sim.tis.view.control.imp.preparation.TypicalCaseSelectDialog;
 import com.cas.sim.tis.view.controller.PageController;
 
 import javafx.application.Platform;
@@ -99,10 +99,10 @@ public class TypicalCaseMenu implements ILeftContent {
 			if (id == null) {
 				return;
 			}
-			SpringUtil.getBean(PageController.class).showLoading();
+//			SpringUtil.getBean(PageController.class).showLoading();
 			TypicalCaseAction action = SpringUtil.getBean(TypicalCaseAction.class);
 			TypicalCase typicalCase = action.findTypicalCaseById(id);
-			typicalCase3D.setupCase(typicalCase);
+			typicalCase3D.setupCase(typicalCase, CaseMode.VIEW_MODE);
 		});
 	}
 
@@ -111,12 +111,14 @@ public class TypicalCaseMenu implements ILeftContent {
 		// 0、判断当前是否有接线存在
 		if (typicalCase3D.isClean()) {
 			TypicalCase typicalCase = new TypicalCase();
-			typicalCase3D.setupCase(typicalCase);
+			typicalCase.setName("新建案例 *");
+			typicalCase3D.setupCase(typicalCase, CaseMode.EDIT_MODE);
 		} else {
 			AlertUtil.showConfirm(MsgUtil.getMessage("typical.case.not.be.clean"), resp -> {
 				if (resp == ButtonType.YES) {
 					TypicalCase typicalCase = new TypicalCase();
-					typicalCase3D.setupCase(typicalCase);
+					typicalCase.setName("新建案例 *");
+					typicalCase3D.setupCase(typicalCase, CaseMode.EDIT_MODE);
 				}
 			});
 		}

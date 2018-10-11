@@ -27,6 +27,7 @@ import com.cas.sim.tis.action.PreparationResourceAction;
 import com.cas.sim.tis.action.ResourceAction;
 import com.cas.sim.tis.action.TypicalCaseAction;
 import com.cas.sim.tis.action.UserAction;
+import com.cas.sim.tis.app.state.typical.TypicalCaseState.CaseMode;
 import com.cas.sim.tis.consts.GoalRelationshipType;
 import com.cas.sim.tis.consts.GoalType;
 import com.cas.sim.tis.consts.PreparationQuizType;
@@ -57,6 +58,7 @@ import com.cas.sim.tis.view.control.imp.dialog.Dialog;
 import com.cas.sim.tis.view.control.imp.dialog.Tip.TipType;
 import com.cas.sim.tis.view.control.imp.jme.Recongnize3D;
 import com.cas.sim.tis.view.control.imp.jme.TypicalCase3D;
+import com.cas.sim.tis.view.control.imp.jme.TypicalCaseSelectDialog;
 import com.cas.sim.tis.view.control.imp.question.PreviewQuestionPaper;
 import com.cas.sim.tis.view.control.imp.table.BtnCell;
 import com.cas.sim.tis.view.control.imp.table.Column;
@@ -635,7 +637,7 @@ public class PreparationDetail extends HBox implements IContent {
 		controller.loadContent(content, PageLevel.Level2);
 		controller.showLoading();
 		controller.setEndHideLoading((v) -> {
-			content.setupCase(typicalCase);
+			content.setupCase(typicalCase, CaseMode.VIEW_MODE);
 		});
 	}
 
