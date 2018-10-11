@@ -77,9 +77,13 @@ public class TypicalCaseBtnController implements Initializable, IDistory {
 	@FXML
 	private ToggleButton autoWires;
 	@FXML
+	private VBox steps;
+	@FXML
 	private ScrollPane scroll;
 	@FXML
 	private FlowItem flow;
+	@FXML
+	private HBox btns;
 
 	private TypicalCaseState state;
 
@@ -141,9 +145,8 @@ public class TypicalCaseBtnController implements Initializable, IDistory {
 			view.toFront();
 			view.setVisible(true);
 			trainOrEdit.setVisible(false);
-			showName.setDisable(false);
-			toggleTagName();
-			scroll.setVisible(true);
+			steps.setVisible(true);
+			btns.setVisible(true);
 			autoComps.setSelected(false);
 			autoWires.setSelected(false);
 			if (typicalCase3D != null) {
@@ -154,10 +157,8 @@ public class TypicalCaseBtnController implements Initializable, IDistory {
 			trainOrEdit.toFront();
 			trainOrEdit.setVisible(true);
 			view.setVisible(false);
-			showName.setSelected(true);
-			showName.setDisable(true);
-			toggleTagName();
-			scroll.setVisible(true);
+			steps.setVisible(true);
+			btns.setVisible(false);
 			if (typicalCase3D != null) {
 				typicalCase3D.autoWires(false);
 				typicalCase3D.autoComps(false);
@@ -166,9 +167,8 @@ public class TypicalCaseBtnController implements Initializable, IDistory {
 			trainOrEdit.toFront();
 			trainOrEdit.setVisible(true);
 			view.setVisible(false);
-			showName.setDisable(false);
-			toggleTagName();
-			scroll.setVisible(false);
+			steps.setVisible(false);
+			btns.setVisible(false);
 			if (typicalCase3D != null) {
 				typicalCase3D.autoComps(true);
 				typicalCase3D.autoWires(true);

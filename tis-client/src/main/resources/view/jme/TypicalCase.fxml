@@ -37,12 +37,26 @@
 		</padding>
 	</HBox>
 	<HBox VBox.vgrow="ALWAYS" pickOnBounds="false" mouseTransparent="false" alignment="CENTER_RIGHT">
-		<ScrollPane fx:id="scroll" visible="false" prefWidth="300" minWidth="300" maxWidth="300" prefHeight="400" minHeight="400" maxHeight="400" hbarPolicy="NEVER" styleClass="cover">
-			<content>
-				<FlowItem fx:id="flow" spacing="10" pickOnBounds="false" mouseTransparent="false">
-				</FlowItem>
-			</content>
-		</ScrollPane>
+		<VBox fx:id="steps" visible="false" prefWidth="300" minWidth="300" maxWidth="300" prefHeight="400" minHeight="400" maxHeight="400">
+			<ScrollPane fx:id="scroll" hbarPolicy="NEVER" styleClass="cover">
+				<content>
+					<FlowItem fx:id="flow" spacing="10" pickOnBounds="false" mouseTransparent="false">
+					</FlowItem>
+				</content>
+			</ScrollPane>
+			<HBox fx:id="btns">
+				<Button styleClass="blue-btn" pickOnBounds="true" prefWidth="150" onAction="#prev">
+					<graphic>
+						<SVGGlyph name="iconfont.svg.left" size="16" fill="WHITE" />
+					</graphic>
+				</Button>
+				<Button styleClass="blue-btn" pickOnBounds="true" prefWidth="150" onAction="#next">
+					<graphic>
+						<SVGGlyph name="iconfont.svg.right" size="16" fill="WHITE" />
+					</graphic>
+				</Button>
+			</HBox>
+		</VBox>
 		<padding>
 			<Insets top="50" bottom="50" />
 		</padding>
@@ -51,21 +65,6 @@
 		<HBox fx:id="view" spacing="10" visible="false" pickOnBounds="false" mouseTransparent="false" alignment="BOTTOM_LEFT">
 			<ToggleButton fx:id="autoComps" text="%typical.case.auto.comp" styleClass="recognize-btn" pickOnBounds="true" />
 			<ToggleButton fx:id="autoWires" text="%typical.case.auto.wire" styleClass="recognize-btn" pickOnBounds="true" />
-			<Button styleClass="blue-btn" pickOnBounds="true" prefHeight="40" onAction="#prev">
-				<graphic>
-					<SVGGlyph name="iconfont.svg.left" size="20" fill="WHITE" />
-				</graphic>
-			</Button>
-			<!-- <Button styleClass="blue-btn" pickOnBounds="true" prefHeight="40"> -->
-			<!-- <graphic> -->
-			<!-- <SVGGlyph name="iconfont.svg.reset" size="20" fill="WHITE" /> -->
-			<!-- </graphic> -->
-			<!-- </Button> -->
-			<Button styleClass="blue-btn" pickOnBounds="true" prefHeight="40" onAction="#next">
-				<graphic>
-					<SVGGlyph name="iconfont.svg.right" size="20" fill="WHITE" />
-				</graphic>
-			</Button>
 		</HBox>
 		<HBox fx:id="trainOrEdit" spacing="10" visible="false" pickOnBounds="false" mouseTransparent="false" alignment="BOTTOM_LEFT">
 			<Button text="%typical.case.drawings" styleClass="recognize-btn" onAction="#showDrawingWin" pickOnBounds="true"><!-- 电路图 -->
