@@ -18,7 +18,7 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.control.ScrollPane?>
 <?import com.cas.sim.tis.view.control.imp.typical.FlowItem?>
-<VBox fx:id="pane" pickOnBounds="false" visible="false" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.cas.sim.tis.view.control.imp.ElecCaseBtnController">
+<VBox fx:id="pane" pickOnBounds="false" visible="false" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.cas.sim.tis.view.control.imp.jme.TypicalCaseBtnController">
 	<HBox pickOnBounds="false" mouseTransparent="false">
 		<Title fx:id="title" />
 		<HBox HBox.hgrow="ALWAYS" spacing="10" alignment="TOP_RIGHT">

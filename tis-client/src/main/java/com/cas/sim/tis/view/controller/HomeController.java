@@ -129,7 +129,10 @@ public class HomeController implements Initializable {
 		PageController controller = SpringUtil.getBean(PageController.class);
 		TypicalCase3D content = new TypicalCase3D();
 
-		controller.loadLeftMenu(new TypicalCaseMenu(content));
+		TypicalCaseMenu menu = new TypicalCaseMenu(content);
+		menu.setName(MsgUtil.getMessage("menu.item.typical"));
+		
+		controller.loadLeftMenu(menu);
 		controller.loadContent(content, PageLevel.Level1);
 
 //		SpringUtil.getBean(PageController.class).showLoading();
@@ -152,7 +155,8 @@ public class HomeController implements Initializable {
 		BrokenCase3D content = new BrokenCase3D();
 		
 		BrokenCaseMenu menu = new BrokenCaseMenu(content);
-		menu.setName(MsgUtil.getMessage(""));
+		menu.setName(MsgUtil.getMessage("menu.item.repair"));
+		
 		controller.loadLeftMenu(menu);
 		controller.loadContent(content, PageLevel.Level1);
 	}

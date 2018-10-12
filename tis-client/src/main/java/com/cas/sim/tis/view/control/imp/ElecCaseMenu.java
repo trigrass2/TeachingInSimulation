@@ -22,7 +22,7 @@ import javafx.scene.text.TextAlignment;
 
 public abstract class ElecCaseMenu implements ILeftContent {
 
-	private Label name;
+	private Label name = new Label();
 	private ToggleGroup group = new ToggleGroup();
 	
 	protected ElecCase3D<?> elecCase3D;
@@ -41,7 +41,6 @@ public abstract class ElecCaseMenu implements ILeftContent {
 	public Region getLeftContent() {
 		VBox vb = new VBox(10);
 
-		name = new Label();
 		name.getStyleClass().add("left-menu-orange");
 		name.setWrapText(true);
 		
