@@ -1,4 +1,4 @@
-package com.cas.sim.tis.view.control.imp.jme;
+package com.cas.sim.tis.view.control.imp.broken;
 
 import java.awt.MouseInfo;
 import java.awt.Point;
@@ -10,10 +10,10 @@ import java.util.regex.Pattern;
 import com.cas.circuit.component.ElecCompDef;
 import com.cas.circuit.component.Wire;
 import com.cas.sim.tis.app.state.ElecCaseState.CaseMode;
+import com.cas.sim.tis.app.state.broken.BrokenCaseState;
 import com.cas.sim.tis.app.state.typical.CircuitState;
-import com.cas.sim.tis.app.state.typical.TypicalCaseState;
+import com.cas.sim.tis.entity.BrokenCase;
 import com.cas.sim.tis.entity.ElecComp;
-import com.cas.sim.tis.entity.TypicalCase;
 import com.cas.sim.tis.flow.Step;
 import com.cas.sim.tis.util.MsgUtil;
 import com.cas.sim.tis.view.control.IContent;
@@ -26,7 +26,7 @@ import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextInputDialog;
 
-public class TypicalCase3D extends ElecCase3D<TypicalCase> implements IContent {
+public class BrokenCase3D extends ElecCase3D<BrokenCase> implements IContent {
 
 	private static final String REGEX_CHINESE = "[\u4e00-\u9fa5·！￥……（）【】｛｝：；“”‘’？。，]";// 中文正则
 
@@ -37,8 +37,8 @@ public class TypicalCase3D extends ElecCase3D<TypicalCase> implements IContent {
 	private MenuItem reset;
 	private ElecCompDef compDef;
 
-	public TypicalCase3D() {
-		super(new TypicalCaseState());
+	public BrokenCase3D() {
+		super(new BrokenCaseState());
 	}
 
 	@Override
@@ -48,7 +48,7 @@ public class TypicalCase3D extends ElecCase3D<TypicalCase> implements IContent {
 
 	@Override
 	public void distroy() {
-		TypicalCaseState compState = jmeApp.getStateManager().getState(TypicalCaseState.class);
+		BrokenCaseState compState = jmeApp.getStateManager().getState(BrokenCaseState.class);
 		jmeApp.getStateManager().detach(compState);
 		jmeApp.stop(true);
 
@@ -60,23 +60,23 @@ public class TypicalCase3D extends ElecCase3D<TypicalCase> implements IContent {
 	 * @return
 	 */
 	public boolean isClean() {
-		TypicalCaseState appState = jmeApp.getStateManager().getState(TypicalCaseState.class);
+		BrokenCaseState appState = jmeApp.getStateManager().getState(BrokenCaseState.class);
 		return appState.isClean();
 	}
 
-	public void setupCase(TypicalCase typicalCase, CaseMode mode) {
+	public void setupCase(BrokenCase brokenCase, CaseMode mode) {
 //		找到典型案例的状态机
-		TypicalCaseState appState = jmeApp.getStateManager().getState(TypicalCaseState.class);
+		BrokenCaseState appState = jmeApp.getStateManager().getState(BrokenCaseState.class);
 //		修改元器件模型
-		appState.setupCase(typicalCase, mode);
+		appState.setupCase(brokenCase, mode);
 		btnController.clean();
 		btnController.setMode(mode);
 	}
 
 	public void selectedElecComp(ElecComp elecComp) {
 //		找到典型案例的状态机
-		TypicalCaseState appState = jmeApp.getStateManager().getState(TypicalCaseState.class);
-		
+		BrokenCaseState appState = jmeApp.getStateManager().getState(BrokenCaseState.class);
+//		
 		jmeApp.enqueue(() -> {
 			appState.hold(elecComp);
 			// 需要再focuse一下，否则按键无法监听
@@ -91,7 +91,8 @@ public class TypicalCase3D extends ElecCase3D<TypicalCase> implements IContent {
 	 */
 	public void save() {
 //		找到典型案例的状态机
-		TypicalCaseState appState = jmeApp.getStateManager().getState(TypicalCaseState.class);
+		BrokenCaseState appState = jmeApp.getStateManager().getState(BrokenCaseState.class);
+//		
 		appState.save();
 	}
 
@@ -124,27 +125,23 @@ public class TypicalCase3D extends ElecCase3D<TypicalCase> implements IContent {
 		Point anchor = MouseInfo.getPointerInfo().getLocation();
 		menuWire.show(GUIState.getStage(), anchor.x, anchor.y);
 	}
-
-	public TypicalCase getTypicalCase() {
-		return ((TypicalCaseState) state).getElecCase();
+	
+	public BrokenCase getBrokenCase() {
+		return ((BrokenCaseState) state).getElecCase();
 	}
 
 	public void switchTo2D() {
-		TypicalCaseState appState = jmeApp.getStateManager().getState(TypicalCaseState.class);
+		BrokenCaseState appState = jmeApp.getStateManager().getState(BrokenCaseState.class);
 		appState.switchTo2D();
 	}
 
 	public void switchTo3D() {
-		TypicalCaseState appState = jmeApp.getStateManager().getState(TypicalCaseState.class);
+		BrokenCaseState appState = jmeApp.getStateManager().getState(BrokenCaseState.class);
 		appState.switchTo3D();
 	}
 
-	public void autoComps(boolean layout) {
-		((TypicalCaseState) state).autoComps(layout);
-	}
-
-	public void autoWires(boolean routing) {
-		((TypicalCaseState) state).autoWires(routing);
+	public void setTitle(String title) {
+		btnController.setTitle(title);
 	}
 
 	public void loadSteps(List<Step> steps) {

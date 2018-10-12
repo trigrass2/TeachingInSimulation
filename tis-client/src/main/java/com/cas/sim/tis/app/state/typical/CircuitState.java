@@ -34,7 +34,6 @@ import com.cas.circuit.util.JaxbUtil;
 import com.cas.circuit.util.JmeUtil;
 import com.cas.circuit.vo.Archive;
 import com.cas.sim.tis.action.ElecCompAction;
-import com.cas.sim.tis.action.TypicalCaseAction;
 import com.cas.sim.tis.anno.JmeThread;
 import com.cas.sim.tis.app.control.BaseOnRelayHoverControl;
 import com.cas.sim.tis.app.control.ShowNameOnHoverControl;
@@ -50,17 +49,18 @@ import com.cas.sim.tis.app.listener.ElecCompClickListener;
 import com.cas.sim.tis.app.listener.TerminalListener;
 import com.cas.sim.tis.app.listener.WireListener;
 import com.cas.sim.tis.app.state.BaseState;
-import com.cas.sim.tis.app.state.typical.TypicalCaseState.CaseMode;
+import com.cas.sim.tis.app.state.ElecCaseState;
+import com.cas.sim.tis.app.state.ElecCaseState.CaseMode;
 import com.cas.sim.tis.consts.Radius;
 import com.cas.sim.tis.consts.WireColor;
 import com.cas.sim.tis.entity.ElecComp;
-import com.cas.sim.tis.entity.TypicalCase;
 import com.cas.sim.tis.flow.Step;
 import com.cas.sim.tis.flow.Step.StepType;
 import com.cas.sim.tis.util.AlertUtil;
 import com.cas.sim.tis.util.HTTPUtils;
 import com.cas.sim.tis.util.MsgUtil;
 import com.cas.sim.tis.util.SpringUtil;
+import com.cas.sim.tis.view.control.imp.ElecCase3D;
 import com.cas.sim.tis.view.control.imp.dialog.Tip.TipType;
 import com.cas.util.StringUtil;
 import com.jme3.asset.ModelKey;
@@ -129,8 +129,6 @@ public class CircuitState extends BaseState implements ICircuitEffect {
 	Quaternion roll90 = new Quaternion().fromAngleNormalAxis(FastMath.HALF_PI, Vector3f.UNIT_Y);
 
 	private HoldState holdState;
-	private TypicalCaseState caseState;
-	private TypicalCase typicalCase;
 	private List<ElecCompDef> compList = new ArrayList<>();
 
 	@Nullable
@@ -171,10 +169,14 @@ public class CircuitState extends BaseState implements ICircuitEffect {
 
 	private CaseMode mode;
 
-	public CircuitState(TypicalCaseState caseState, HoldState holdState, TypicalCase typicalCase, Node root) {
-		this.typicalCase = typicalCase;
+	private ElecCase3D<?> ui;
+
+	private ElecCaseState<?> caseState;
+	
+	public CircuitState(ElecCaseState<?> caseState, HoldState holdState, ElecCase3D<?> ui, Node root) {
 		this.caseState = caseState;
 		this.holdState = holdState;
+		this.ui = ui;
 		this.root = root;
 	}
 
@@ -203,7 +205,11 @@ public class CircuitState extends BaseState implements ICircuitEffect {
 		MouseEventState.setMouseVisible(elecCompBox, false);
 		root.attachChild(elecCompBox);
 		elecCompRightClickListener = new ElecCompClickListener(this, elecCompBox, caseState.getCameraState());
-
+//		存放导线的根节点
+		rootWireNode = new Node(WIRE_ROOT);
+//		设置导线始终显示
+		rootWireNode.setCullHint(CullHint.Never);
+		root.attachChild(rootWireNode);
 //		存放元器件的根节点
 		rootCompNode = new Node(COMP_ROOT);
 		rootCompNode.setShadowMode(ShadowMode.CastAndReceive);
@@ -211,15 +217,8 @@ public class CircuitState extends BaseState implements ICircuitEffect {
 //		
 		rootCompNode.addControl(new ShowNameOnHoverControl((name) -> {
 			Vector2f pos = inputManager.getCursorPosition();
-			Platform.runLater(() -> caseState.getUI().showName(name, pos.x, pos.y));
+			Platform.runLater(() -> ui.showName(name, pos.x, pos.y));
 		}, inputManager, cam));
-
-//		存放导线的根节点
-		rootWireNode = new Node(WIRE_ROOT);
-//		设置导线始终显示
-		rootWireNode.setCullHint(CullHint.Never);
-		root.attachChild(rootWireNode);
-
 //		2、排布导线所在的模型
 		this.wirePlane = root.getChild("WIRE-PLANE");
 //		wirePlane这个模型是指用于接线过程中，本身也是不可见的模型，这里是为了避免影响其它模型的点击事件
@@ -717,17 +716,13 @@ public class CircuitState extends BaseState implements ICircuitEffect {
 		}
 	}
 
-	public void save() {
+	public Archive getArchive() {
 		Archive archive = new Archive();
-//		
-		archive.setName(typicalCase.getName());
-
 //		保存元器件列表
 		saveEleccomps(archive);
 //		保存导线
 		saveWires(archive);
-
-		SpringUtil.getBean(TypicalCaseAction.class).save(typicalCase, archive);
+		return archive;
 	}
 
 	private void saveEleccomps(Archive archive) {

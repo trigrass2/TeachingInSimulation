@@ -15,6 +15,8 @@ import com.cas.sim.tis.util.SpringUtil;
 import com.cas.sim.tis.view.PageView;
 import com.cas.sim.tis.view.control.imp.Decoration;
 import com.cas.sim.tis.view.control.imp.HomeMenu;
+import com.cas.sim.tis.view.control.imp.broken.BrokenCase3D;
+import com.cas.sim.tis.view.control.imp.broken.BrokenCaseMenu;
 import com.cas.sim.tis.view.control.imp.dialog.Dialog;
 import com.cas.sim.tis.view.control.imp.jme.Recongnize3D;
 import com.cas.sim.tis.view.control.imp.jme.RecongnizeMenu;
@@ -143,6 +145,14 @@ public class HomeController implements Initializable {
 	 * 电路维修
 	 */
 	public void repair() {
+		// 跳转到典型案例页面
+		Application.showView(PageView.class);
+
+		PageController controller = SpringUtil.getBean(PageController.class);
+		BrokenCase3D content = new BrokenCase3D();
+		
+		controller.loadLeftMenu(new BrokenCaseMenu(content));
+		controller.loadContent(content, PageLevel.Level1);
 	}
 
 	@FXML

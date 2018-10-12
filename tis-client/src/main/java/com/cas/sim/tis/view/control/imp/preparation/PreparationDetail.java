@@ -27,7 +27,7 @@ import com.cas.sim.tis.action.PreparationResourceAction;
 import com.cas.sim.tis.action.ResourceAction;
 import com.cas.sim.tis.action.TypicalCaseAction;
 import com.cas.sim.tis.action.UserAction;
-import com.cas.sim.tis.app.state.typical.TypicalCaseState.CaseMode;
+import com.cas.sim.tis.app.state.ElecCaseState.CaseMode;
 import com.cas.sim.tis.consts.GoalRelationshipType;
 import com.cas.sim.tis.consts.GoalType;
 import com.cas.sim.tis.consts.PreparationQuizType;

@@ -11,15 +11,14 @@ import com.cas.sim.tis.action.ResourceAction;
 import com.cas.sim.tis.consts.ResourceConsts;
 import com.cas.sim.tis.consts.ResourceType;
 import com.cas.sim.tis.entity.Resource;
-import com.cas.sim.tis.entity.TypicalCase;
 import com.cas.sim.tis.svg.SVGGlyph;
 import com.cas.sim.tis.util.AlertUtil;
 import com.cas.sim.tis.util.HTTPUtils;
 import com.cas.sim.tis.util.MsgUtil;
 import com.cas.sim.tis.util.SpringUtil;
+import com.cas.sim.tis.view.control.imp.ElecCaseBtnController;
 import com.cas.sim.tis.view.control.imp.dialog.Dialog;
 import com.cas.sim.tis.view.control.imp.jme.DrawingSelectDialog;
-import com.cas.sim.tis.view.control.imp.jme.TypicalCase3D;
 import com.cas.sim.tis.view.control.imp.preparation.ResourceUploadDialog;
 import com.cas.util.MathUtil;
 import com.cas.util.StringUtil;
@@ -92,12 +91,13 @@ public class DrawingController implements Initializable {
 
 	private double xOffset;
 	private double yOffset;
-	private TypicalCase3D typicalCase3D;
 
 	private List<String> drawings = new ArrayList<String>();
 	private ToggleGroup group = new ToggleGroup();
 	private int index;
 
+	private ElecCaseBtnController btnController;
+	
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		handle.setOnMouseDragged(e -> {
@@ -319,11 +319,8 @@ public class DrawingController implements Initializable {
 		});
 	}
 
-	private void initDrawings(TypicalCase3D typicalCase3D) {
+	private void initDrawings(String drawings) {
 		clean();
-
-		TypicalCase typicalCase = typicalCase3D.getTypicalCase();
-		String drawings = typicalCase.getDrawings();
 
 		if (StringUtils.isEmpty(drawings)) {
 			return;
@@ -351,14 +348,8 @@ public class DrawingController implements Initializable {
 	}
 
 	private void refresh() {
-		TypicalCase typicalCase = typicalCase3D.getTypicalCase();
-		typicalCase.setDrawings(StringUtil.combine(drawings));
-//		if (typicalCase.getId() != null) {
-//			// 典型案例已经保存过，则直接更新新增图纸到数据库
-//			TypicalCaseAction action = SpringUtil.getBean(TypicalCaseAction.class);
-//			action.modify(typicalCase);
-//		}
-		initDrawings(typicalCase3D);
+		btnController.setDrawings(StringUtil.combine(drawings));
+		initDrawings(btnController.getDrawings());
 	}
 
 	@FXML
@@ -404,17 +395,13 @@ public class DrawingController implements Initializable {
 	public void setStage(Stage stage) {
 		this.stage = stage;
 		this.stage.setOnShowing(e -> {
-			if (typicalCase3D != null) {
-				initDrawings(typicalCase3D);
+			if (btnController != null) {
+				initDrawings(btnController.getDrawings());
 			}
 		});
 		this.stage.heightProperty().addListener((b, o, n) -> {
 			resizePane();
 		});
-	}
-
-	public void setUI(TypicalCase3D typicalCase3D) {
-		this.typicalCase3D = typicalCase3D;
 	}
 
 	private void resizePane() {
@@ -456,5 +443,9 @@ public class DrawingController implements Initializable {
 	public void setEditable(boolean editable) {
 		this.add.setVisible(editable);
 		this.upload.setVisible(editable);
+	}
+
+	public void setElecCaseBtnController(ElecCaseBtnController btnController) {
+		this.btnController = btnController;
 	}
 }
