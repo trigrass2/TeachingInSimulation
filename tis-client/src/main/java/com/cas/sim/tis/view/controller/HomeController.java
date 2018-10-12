@@ -151,7 +151,9 @@ public class HomeController implements Initializable {
 		PageController controller = SpringUtil.getBean(PageController.class);
 		BrokenCase3D content = new BrokenCase3D();
 		
-		controller.loadLeftMenu(new BrokenCaseMenu(content));
+		BrokenCaseMenu menu = new BrokenCaseMenu(content);
+		menu.setName(MsgUtil.getMessage(""));
+		controller.loadLeftMenu(menu);
 		controller.loadContent(content, PageLevel.Level1);
 	}
 
