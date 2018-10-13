@@ -375,6 +375,10 @@ public abstract class ElecCaseBtnController implements Initializable, IDistory {
 		next();
 	}
 
+	public void setElecCase3D(ElecCase3D<?> elecCase3D) {
+		this.elecCase3D = elecCase3D;
+	}
+	
 	@FXML
 	public void prev() {
 		flow.prev(scroll);

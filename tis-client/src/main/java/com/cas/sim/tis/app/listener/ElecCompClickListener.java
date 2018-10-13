@@ -9,7 +9,6 @@ import com.cas.sim.tis.app.state.typical.CircuitState;
 import com.cas.sim.tis.util.SpringUtil;
 import com.cas.sim.tis.view.control.IContent;
 import com.cas.sim.tis.view.control.imp.ElecCase3D;
-import com.cas.sim.tis.view.control.imp.jme.TypicalCase3D;
 import com.cas.sim.tis.view.controller.PageController;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Spatial;

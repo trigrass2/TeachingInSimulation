@@ -115,6 +115,8 @@ public abstract class ElecCase3D<T> implements IDistory {
 		createWirePopupMenu();
 
 		createCompPopupMenu();
+		
+		btnController.setElecCase3D(this);
 	}
 
 	public void selectedElecComp(ElecComp elecComp) {
