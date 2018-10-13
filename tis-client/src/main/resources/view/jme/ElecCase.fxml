@@ -18,7 +18,7 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.control.ScrollPane?>
 <?import com.cas.sim.tis.view.control.imp.typical.FlowItem?>
-<VBox fx:id="pane" pickOnBounds="false" visible="false" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.cas.sim.tis.view.control.imp.jme.TypicalCaseBtnController">
+<VBox fx:id="pane" pickOnBounds="false" visible="false" xmlns:fx="http://javafx.com/fxml/1">
 	<HBox pickOnBounds="false" mouseTransparent="false">
 		<Title fx:id="title" />
 		<HBox HBox.hgrow="ALWAYS" spacing="10" alignment="TOP_RIGHT">
@@ -65,19 +65,19 @@
 		<HBox fx:id="view" spacing="10" visible="false" pickOnBounds="false" mouseTransparent="false" alignment="BOTTOM_LEFT">
 			<ToggleButton fx:id="autoComps" text="%typical.case.auto.comp" styleClass="recognize-btn" pickOnBounds="true" />
 			<ToggleButton fx:id="autoWires" text="%typical.case.auto.wire" styleClass="recognize-btn" pickOnBounds="true" />
-			<Button text="%typical.case.drawings" styleClass="recognize-btn" onAction="#showDrawingWin" pickOnBounds="true"><!-- 电路图 -->
+			<Button text="%elec.case.drawings" styleClass="recognize-btn" onAction="#showDrawingWin" pickOnBounds="true"><!-- 电路图 -->
 				<graphic>
 					<SVGGlyph name="iconfont.svg.drawing" size="20" fill="WHITE" />
 				</graphic>
 			</Button>
 		</HBox>
 		<HBox fx:id="trainOrEdit" spacing="10" visible="false" pickOnBounds="false" mouseTransparent="false" alignment="BOTTOM_LEFT">
-			<Button text="%typical.case.drawings" styleClass="recognize-btn" onAction="#showDrawingWin" pickOnBounds="true"><!-- 电路图 -->
+			<Button text="%elec.case.drawings" styleClass="recognize-btn" onAction="#showDrawingWin" pickOnBounds="true"><!-- 电路图 -->
 				<graphic>
 					<SVGGlyph name="iconfont.svg.drawing" size="20" fill="WHITE" />
 				</graphic>
 			</Button>
-			<Button text="%typical.case.wires" styleClass="recognize-btn" onAction="#showWirePicker" pickOnBounds="true"><!-- 导线 -->
+			<Button text="%elec.case.wires" styleClass="recognize-btn" onAction="#showWirePicker" pickOnBounds="true"><!-- 导线 -->
 				<graphic>
 					<SVGGlyph name="iconfont.svg.wire" size="20" fill="WHITE" />
 				</graphic>

@@ -41,9 +41,9 @@ public abstract class ElecCaseState<T>extends BaseState {
 	protected CaseMode mode;
 	
 	public enum CaseMode {
-		VIEW_MODE(MsgUtil.getMessage("typical.case.mode.view")), // 查看模式（控制一步步显示元器件，导线）
-		TRAIN_MODE(MsgUtil.getMessage("typical.case.mode.train")), // 练习模式（教师、学生根据案例自由摆放元器件导线）
-		EDIT_MODE(MsgUtil.getMessage("typical.case.mode.edit"));// 编辑模式（教师编辑案例）
+		VIEW_MODE(MsgUtil.getMessage("elec.case.mode.view")), // 查看模式（控制一步步显示元器件，导线）
+		TRAIN_MODE(MsgUtil.getMessage("elec.case.mode.train")), // 练习模式（教师、学生根据案例自由摆放元器件导线）
+		EDIT_MODE(MsgUtil.getMessage("elec.case.mode.edit"));// 编辑模式（教师编辑案例）
 
 		private String name;
 
@@ -96,6 +96,8 @@ public abstract class ElecCaseState<T>extends BaseState {
 		rootNode.detachAllChildren();
 		// 移除操作模式State
 		stateManager.detach(cameraState);
+		stateManager.detach(circuitState);
+		stateManager.detach(holdState);
 		super.cleanup();
 	}
 

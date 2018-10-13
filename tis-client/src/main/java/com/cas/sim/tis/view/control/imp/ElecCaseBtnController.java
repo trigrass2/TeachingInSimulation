@@ -13,8 +13,6 @@ import com.cas.sim.tis.app.state.ElecCaseState;
 import com.cas.sim.tis.app.state.ElecCaseState.CaseMode;
 import com.cas.sim.tis.app.state.typical.CircuitState;
 import com.cas.sim.tis.consts.Radius;
-import com.cas.sim.tis.consts.RoleConst;
-import com.cas.sim.tis.consts.Session;
 import com.cas.sim.tis.consts.WireColor;
 import com.cas.sim.tis.flow.Step;
 import com.cas.sim.tis.util.AlertUtil;
@@ -100,22 +98,25 @@ public abstract class ElecCaseBtnController implements Initializable, IDistory {
 
 	private boolean switchModeFailed;
 
+	private CaseMode[] enableModes;
+
+	public ElecCaseBtnController(CaseMode... enableModes) {
+		this.enableModes = enableModes;
+	}
+
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		modes.getItems().add(CaseMode.VIEW_MODE);
-		modes.getItems().add(CaseMode.TRAIN_MODE);
-
-		int role = Session.get(Session.KEY_LOGIN_ROLE);
-		if (RoleConst.TEACHER <= role) {
-			modes.getItems().add(CaseMode.EDIT_MODE);
-		}
+		modes.getItems().addAll(enableModes);
 		modes.getSelectionModel().selectedItemProperty().addListener((b, o, n) -> {
+			if (n == null) {
+				return;
+			}
 			if (o == null) {
 				switchCaseMode(n);
 			} else if (switchModeFailed) {
 				switchModeFailed = false;
-			} else {
-				AlertUtil.showConfirm(MsgUtil.getMessage("typical.case.not.be.clean"), resp -> {
+			} else if (CaseMode.EDIT_MODE == o) {
+				AlertUtil.showConfirm(MsgUtil.getMessage("elec.case.not.be.clean"), resp -> {
 					if (ButtonType.YES == resp) {
 						switchCaseMode(n);
 					} else {
@@ -123,6 +124,8 @@ public abstract class ElecCaseBtnController implements Initializable, IDistory {
 						modes.getSelectionModel().select(o);
 					}
 				});
+			} else {
+				switchCaseMode(n);
 			}
 		});
 		modes.getSelectionModel().selectFirst();
@@ -220,7 +223,7 @@ public abstract class ElecCaseBtnController implements Initializable, IDistory {
 	private void initNumberPane(VBox number) {
 		number.setAlignment(Pos.TOP_CENTER);
 
-		number.getChildren().add(new Label(MsgUtil.getMessage("typical.case.wire.preview")));
+		number.getChildren().add(new Label(MsgUtil.getMessage("elec.case.wires.preview")));
 
 		number.getChildren().add(preview = new Label("--", new WireRadius()));
 		preview.setPrefSize(80, 80);
@@ -232,7 +235,7 @@ public abstract class ElecCaseBtnController implements Initializable, IDistory {
 	private void initSectionPane(VBox section) {
 		section.setAlignment(Pos.TOP_CENTER);
 
-		section.getChildren().add(new Label(MsgUtil.getMessage("typical.case.wire.radius")));
+		section.getChildren().add(new Label(MsgUtil.getMessage("elec.case.wires.radius")));
 		List<Label> list = new ArrayList<>();
 
 		for (Radius radius : Radius.values()) {
@@ -276,7 +279,7 @@ public abstract class ElecCaseBtnController implements Initializable, IDistory {
 	private void initWireColorPane(VBox color) {
 		color.setAlignment(Pos.TOP_CENTER);
 
-		color.getChildren().add(new Label(MsgUtil.getMessage("typical.case.wire.color")));
+		color.getChildren().add(new Label(MsgUtil.getMessage("elec.case.wires.color")));
 
 		List<Label> list = new ArrayList<>();
 		for (WireColor wireColor : WireColor.values()) {
@@ -317,13 +320,13 @@ public abstract class ElecCaseBtnController implements Initializable, IDistory {
 			wirePicker = new PopOver();
 			wirePicker.setArrowLocation(ArrowLocation.BOTTOM_CENTER);
 			wirePicker.setPrefSize(300, 400);
-			wirePicker.setTitle(MsgUtil.getMessage("typical.case.wire.pane"));
+			wirePicker.setTitle(MsgUtil.getMessage("elec.case.wires.pane"));
 			wirePicker.setContentNode(getWirePickContent());
 		}
 		Point2D point = wire.localToScreen(wire.getWidth() / 2, -10);
 		wirePicker.show(wire, point.getX(), point.getY());
 	}
-	
+
 	public void setTitle(String title) {
 		this.title.setTitle(title);
 		this.title.setVisible(true);
@@ -335,12 +338,7 @@ public abstract class ElecCaseBtnController implements Initializable, IDistory {
 
 	@Override
 	public void distroy() {
-		if (drawingWin != null) {
-			drawingWin.close();
-		}
-		if (wirePicker != null && wirePicker.isShowing()) {
-			wirePicker.hide();
-		}
+		clean();
 	}
 
 	public void clean() {
@@ -353,8 +351,10 @@ public abstract class ElecCaseBtnController implements Initializable, IDistory {
 
 		if (wirePicker != null) {
 			wirePicker.setContentNode(getWirePickContent());
+			wirePicker.hide();
 		}
 
+		modes.getSelectionModel().select(null);
 		autoComps.setSelected(false);
 		autoWires.setSelected(false);
 		pane.setVisible(true);

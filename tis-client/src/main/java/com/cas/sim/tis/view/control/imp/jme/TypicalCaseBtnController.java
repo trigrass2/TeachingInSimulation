@@ -13,6 +13,10 @@ import com.cas.sim.tis.view.controller.PageController;
 
 public class TypicalCaseBtnController extends ElecCaseBtnController {
 
+	public TypicalCaseBtnController(CaseMode ...enableModes) {
+		super(enableModes);
+	}
+	
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		super.initialize(location, resources);

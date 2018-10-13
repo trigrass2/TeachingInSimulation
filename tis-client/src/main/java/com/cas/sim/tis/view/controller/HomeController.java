@@ -6,6 +6,9 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 import com.cas.sim.tis.Application;
+import com.cas.sim.tis.app.state.ElecCaseState.CaseMode;
+import com.cas.sim.tis.app.state.broken.BrokenCaseState;
+import com.cas.sim.tis.app.state.typical.TypicalCaseState;
 import com.cas.sim.tis.consts.MenuEnum;
 import com.cas.sim.tis.consts.RoleConst;
 import com.cas.sim.tis.consts.Session;
@@ -16,11 +19,13 @@ import com.cas.sim.tis.view.PageView;
 import com.cas.sim.tis.view.control.imp.Decoration;
 import com.cas.sim.tis.view.control.imp.HomeMenu;
 import com.cas.sim.tis.view.control.imp.broken.BrokenCase3D;
+import com.cas.sim.tis.view.control.imp.broken.BrokenCaseBtnController;
 import com.cas.sim.tis.view.control.imp.broken.BrokenCaseMenu;
 import com.cas.sim.tis.view.control.imp.dialog.Dialog;
 import com.cas.sim.tis.view.control.imp.jme.Recongnize3D;
 import com.cas.sim.tis.view.control.imp.jme.RecongnizeMenu;
 import com.cas.sim.tis.view.control.imp.jme.TypicalCase3D;
+import com.cas.sim.tis.view.control.imp.jme.TypicalCaseBtnController;
 import com.cas.sim.tis.view.control.imp.jme.TypicalCaseMenu;
 import com.cas.sim.tis.view.control.imp.setting.SettingDialog;
 import com.cas.sim.tis.view.controller.PageController.PageLevel;
@@ -127,11 +132,17 @@ public class HomeController implements Initializable {
 		Application.showView(PageView.class);
 
 		PageController controller = SpringUtil.getBean(PageController.class);
-		TypicalCase3D content = new TypicalCase3D();
+		TypicalCase3D content = null;
+		int role = Session.get(Session.KEY_LOGIN_ROLE);
+		if (role >= RoleConst.TEACHER) {
+			content = new TypicalCase3D(new TypicalCaseState(), new TypicalCaseBtnController(CaseMode.VIEW_MODE, CaseMode.TRAIN_MODE, CaseMode.EDIT_MODE));
+		} else {
+			content = new TypicalCase3D(new TypicalCaseState(), new TypicalCaseBtnController(CaseMode.VIEW_MODE, CaseMode.TRAIN_MODE));
+		}
 
 		TypicalCaseMenu menu = new TypicalCaseMenu(content);
 		menu.setName(MsgUtil.getMessage("menu.item.typical"));
-		
+
 		controller.loadLeftMenu(menu);
 		controller.loadContent(content, PageLevel.Level1);
 
@@ -152,11 +163,17 @@ public class HomeController implements Initializable {
 		Application.showView(PageView.class);
 
 		PageController controller = SpringUtil.getBean(PageController.class);
-		BrokenCase3D content = new BrokenCase3D();
-		
+		BrokenCase3D content = null;
+		int role = Session.get(Session.KEY_LOGIN_ROLE);
+		if (role >= RoleConst.TEACHER) {
+			content = new BrokenCase3D(new BrokenCaseState(), new BrokenCaseBtnController(CaseMode.TRAIN_MODE, CaseMode.EDIT_MODE));
+		} else {
+			content = new BrokenCase3D(new BrokenCaseState(), new BrokenCaseBtnController(CaseMode.TRAIN_MODE));
+		}
+
 		BrokenCaseMenu menu = new BrokenCaseMenu(content);
 		menu.setName(MsgUtil.getMessage("menu.item.repair"));
-		
+
 		controller.loadLeftMenu(menu);
 		controller.loadContent(content, PageLevel.Level1);
 	}

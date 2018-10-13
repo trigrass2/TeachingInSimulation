@@ -394,7 +394,6 @@ public class CircuitState extends BaseState implements ICircuitEffect {
 		}
 
 //		前三段导线
-//		
 		Vector3f second = dest.add(dir.mult(minLen));
 
 		startLine1 = new Line(dest, second);//

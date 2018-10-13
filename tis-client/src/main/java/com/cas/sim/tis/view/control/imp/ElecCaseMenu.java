@@ -7,6 +7,7 @@ import com.cas.sim.tis.util.MsgUtil;
 import com.cas.sim.tis.view.control.ILeftContent;
 import com.cas.sim.tis.view.control.imp.jme.ElecCompTree;
 
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
@@ -24,10 +25,9 @@ public abstract class ElecCaseMenu implements ILeftContent {
 
 	private Label name = new Label();
 	private ToggleGroup group = new ToggleGroup();
-	
+
 	protected ElecCase3D<?> elecCase3D;
 
-	
 	public ElecCaseMenu(ElecCase3D<?> elecCase3D) {
 		this.elecCase3D = elecCase3D;
 		this.group.selectedToggleProperty().addListener((b, o, n) -> {
@@ -36,14 +36,14 @@ public abstract class ElecCaseMenu implements ILeftContent {
 			}
 		});
 	}
-	
+
 	@Override
 	public Region getLeftContent() {
 		VBox vb = new VBox(10);
 
 		name.getStyleClass().add("left-menu-orange");
 		name.setWrapText(true);
-		
+
 		HBox menu = new HBox(22);
 
 		Button open = createMenu(MsgUtil.getMessage("menu.button.open"), new SVGGlyph("iconfont.svg.open", Color.WHITE, 24));
@@ -68,13 +68,14 @@ public abstract class ElecCaseMenu implements ILeftContent {
 		vb.getChildren().add(name);
 		vb.getChildren().add(menu);
 		vb.getChildren().add(new ElecCompTree(elecComp -> elecCase3D.selectedElecComp(elecComp), group));
+		vb.setPadding(new Insets(10, 0, 0, 0));
 		return vb;
 	}
 
 	public void setName(String name) {
 		this.name.setText(name);
 	}
-	
+
 	private Button createMenu(String text, Node graphic) {
 		Button btn = new Button(text, graphic);
 		btn.setContentDisplay(ContentDisplay.TOP);
@@ -84,11 +85,11 @@ public abstract class ElecCaseMenu implements ILeftContent {
 		btn.setFont(new Font(12));
 		return btn;
 	}
-	
+
 	protected abstract void showCaseDialog();
-	
+
 	protected abstract void newCase();
-	
+
 	protected abstract void saveCase();
-	
+
 }

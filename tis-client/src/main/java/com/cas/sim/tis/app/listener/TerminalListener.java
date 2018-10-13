@@ -14,9 +14,7 @@ public class TerminalListener extends MouseEventAdapter {
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		Terminal t = e.getSpatial().getUserData("entity");
-		
-		circuit.onTernialClick(t);
+		Terminal terminal = e.getSpatial().getUserData("entity");
+		circuit.onTernialClick(terminal);
 	}
-
 }

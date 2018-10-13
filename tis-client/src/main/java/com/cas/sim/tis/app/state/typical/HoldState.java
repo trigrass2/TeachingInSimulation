@@ -98,7 +98,7 @@ public class HoldState extends BaseState {
 	 */
 	@JmeThread
 	public void putDown(CircuitState circuitState) {
-		if (elecComp == null) {
+		if (elecComp == null || circuitState == null) {
 			return;
 		}
 

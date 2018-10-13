@@ -1,21 +1,37 @@
 package com.cas.sim.tis.view.control.imp;
 
+import java.awt.MouseInfo;
+import java.awt.Point;
 import java.io.IOException;
+import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+import com.cas.circuit.component.ElecCompDef;
+import com.cas.circuit.component.Terminal;
+import com.cas.circuit.component.Wire;
 import com.cas.sim.tis.anno.FxThread;
 import com.cas.sim.tis.app.JmeApplication;
 import com.cas.sim.tis.app.state.ElecCaseState;
+import com.cas.sim.tis.app.state.typical.CircuitState;
 import com.cas.sim.tis.entity.ElecComp;
+import com.cas.sim.tis.util.MsgUtil;
+import com.cas.sim.tis.view.control.IDistory;
 import com.jme3x.jfx.injfx.JmeToJFXIntegrator;
 import com.jme3x.jfx.injfx.input.JFXMouseInput;
 
+import de.felixroske.jfxsupport.GUIState;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.canvas.Canvas;
+import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.TextInputDialog;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
@@ -24,7 +40,9 @@ import javafx.scene.paint.Color;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public abstract class ElecCase3D<T> {
+public abstract class ElecCase3D<T> implements IDistory {
+
+	protected static final String REGEX_CHINESE = "[\u4e00-\u9fa5·！￥……（）【】｛｝：；“”‘’？。，]";// 中文正则
 
 	protected JmeApplication jmeApp;
 	protected Canvas canvas;
@@ -32,11 +50,24 @@ public abstract class ElecCase3D<T> {
 
 	protected Label nameLabel;
 	protected AnchorPane pane;
-	
+
 	protected ElecCaseState<T> state;
 	protected ElecCaseBtnController btnController;
+
+	protected ContextMenu menuWire = new ContextMenu();
+	protected ContextMenu menuComp = new ContextMenu();
+
+	protected ElecCompDef compDef;
+	protected Wire wire;
+	protected Terminal terminal;
 	
-	public ElecCase3D(ElecCaseState<T> state) {
+	protected MenuItem reset;
+	protected Menu terms;
+
+	public ElecCase3D(ElecCaseState<T> state, ElecCaseBtnController btnController) {
+		this.state = state;
+		this.btnController = btnController;
+
 //		创建一个Canvas层，用于显示JME
 		canvas = new Canvas();
 		canvas.setFocusTraversable(true);
@@ -56,13 +87,13 @@ public abstract class ElecCase3D<T> {
 		state.setUI(this);
 		jmeApp.getStateManager().attach(state);
 		JmeToJFXIntegrator.startAndBind(jmeApp, canvas, Thread::new);
-		
+
 //		2、创建一些界面控件
 		FXMLLoader loader = new FXMLLoader();
 		loader.setResources(ResourceBundle.getBundle("i18n/messages"));
 		try {
+			loader.setController(btnController);
 			btns = loader.load(ElecCase3D.class.getResourceAsStream("/view/jme/ElecCase.fxml"));
-			btnController = loader.getController();
 			btnController.setState(state);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -85,7 +116,7 @@ public abstract class ElecCase3D<T> {
 
 		createCompPopupMenu();
 	}
-	
+
 	public void selectedElecComp(ElecComp elecComp) {
 //		找到典型案例的状态机
 		jmeApp.enqueue(() -> {
@@ -111,12 +142,122 @@ public abstract class ElecCase3D<T> {
 	public void setTitle(String title) {
 		btnController.setTitle(title);
 	}
-	
-	protected abstract void createCompPopupMenu();
 
-	protected abstract void createWirePopupMenu();
-	
+	protected void createCompPopupMenu() {
+		MenuItem tag = new MenuItem(MsgUtil.getMessage("button.tag"));
+		MenuItem del = new MenuItem(MsgUtil.getMessage("button.delete"));
+		this.menuComp.getItems().addAll(tag, del);
+
+		TextInputDialog steamIdDialog = new TextInputDialog();
+		steamIdDialog.setTitle(MsgUtil.getMessage("button.tag"));
+		steamIdDialog.setHeaderText(null);
+		steamIdDialog.setContentText(MsgUtil.getMessage("elec.case.prompt.input.comp.tag"));
+		steamIdDialog.getEditor().textProperty().addListener((b, o, n) -> {
+			if (n == null) {
+				return;
+			}
+			Pattern pat = Pattern.compile(REGEX_CHINESE);
+			Matcher mat = pat.matcher(n);
+			if (mat.find()) {
+				steamIdDialog.getEditor().setText(o);
+			}
+		});
+
+		tag.setOnAction(e -> {
+			steamIdDialog.getEditor().setText(compDef.getProxy().getTagName());
+			steamIdDialog.showAndWait().ifPresent(tagName -> {
+				compDef.getProxy().setTagName(tagName);
+			});
+		});
+
+		del.setOnAction(e -> {
+			CircuitState state = jmeApp.getStateManager().getState(CircuitState.class);
+			if (state == null) {
+				return;
+			}
+			state.detachFromCircuit(compDef);
+//			if (!enable) {
+//				AlertUtil.showAlert(AlertType.WARNING, MsgUtil.getMessage("alert.warning.wiring"));
+//			}
+		});
+
+		reset = new MenuItem(MsgUtil.getMessage("button.reset"));
+		reset.setOnAction(e -> {
+			compDef.reset();
+		});
+	}
+
+	protected void createWirePopupMenu() {
+		MenuItem tag = new MenuItem(MsgUtil.getMessage("elec.case.wires.num"));
+		MenuItem del = new MenuItem(MsgUtil.getMessage("button.delete"));
+		menuWire.getItems().addAll(tag, del);
+
+		TextInputDialog steamIdDialog = new TextInputDialog();
+		steamIdDialog.setTitle(MsgUtil.getMessage("elec.case.wires.num"));
+		steamIdDialog.setHeaderText(null);
+		steamIdDialog.setContentText(MsgUtil.getMessage("elec.case.prompt.input.wire.num"));
+		steamIdDialog.getEditor().textProperty().addListener((b, o, n) -> {
+			if (n == null) {
+				return;
+			}
+			Pattern pat = Pattern.compile(REGEX_CHINESE);
+			Matcher mat = pat.matcher(n);
+			if (mat.find()) {
+				steamIdDialog.getEditor().setText(o);
+			}
+		});
+
+		tag.setOnAction(e -> {
+			steamIdDialog.getEditor().setText(wire.getProxy().getNumber());
+			steamIdDialog.showAndWait().ifPresent(number -> {
+				wire.getProxy().setNumber(number);
+			});
+		});
+		del.setOnAction(e -> {
+			CircuitState state = jmeApp.getStateManager().getState(CircuitState.class);
+			state.detachFromCircuit(wire);
+//			if (!enable) {
+//				AlertUtil.showAlert(AlertType.WARNING, MsgUtil.getMessage("alert.warning.power.on"));
+//			}
+		});
+	}
+
 	protected abstract void switchTo2D();
-	
+
 	protected abstract void switchTo3D();
+
+	/**
+	 * 显示元器件弹出菜单
+	 * @param compDef 当前要操作的元器件对象
+	 */
+	public void showPopupMenu(ElecCompDef compDef) {
+		this.compDef = compDef;
+
+		String reset = compDef.getParam("reset", "0");
+		Optional.ofNullable(reset).ifPresent(t -> {
+			if ("1".equals(t)) {
+				menuComp.getItems().add(0, this.reset);
+			} else {
+				menuComp.getItems().remove(this.reset);
+			}
+		});
+
+		Point anchor = MouseInfo.getPointerInfo().getLocation();
+		menuComp.show(GUIState.getStage(), anchor.x, anchor.y);
+	}
+
+	/**
+	 * 显示导线弹出菜单
+	 * @param compDef 当前要操作的导线对象
+	 */
+	public void showPopupMenu(Wire wire) {
+		this.wire = wire;
+		Point anchor = MouseInfo.getPointerInfo().getLocation();
+		menuWire.show(GUIState.getStage(), anchor.x, anchor.y);
+	}
+
+	@Override
+	public void distroy() {
+		btnController.distroy();
+	}
 }

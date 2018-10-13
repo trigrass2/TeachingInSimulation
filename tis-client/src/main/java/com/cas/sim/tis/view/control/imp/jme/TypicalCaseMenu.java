@@ -52,7 +52,7 @@ public class TypicalCaseMenu extends ElecCaseMenu implements ILeftContent {
 			typicalCase.setName("新建案例 *");
 			((TypicalCase3D)elecCase3D).setupCase(typicalCase, CaseMode.EDIT_MODE);
 		} else {
-			AlertUtil.showConfirm(MsgUtil.getMessage("typical.case.not.be.clean"), resp -> {
+			AlertUtil.showConfirm(MsgUtil.getMessage("broken.case.not.be.clean"), resp -> {
 				if (resp == ButtonType.YES) {
 					TypicalCase typicalCase = new TypicalCase();
 					typicalCase.setName("新建案例 *");
@@ -73,7 +73,7 @@ public class TypicalCaseMenu extends ElecCaseMenu implements ILeftContent {
 				TextInputDialog steamIdDialog = new TextInputDialog();
 				steamIdDialog.setTitle(MsgUtil.getMessage("menu.button.save"));
 				steamIdDialog.setHeaderText(null);
-				steamIdDialog.setContentText(MsgUtil.getMessage("typical.case.prompt.input.case"));
+				steamIdDialog.setContentText(MsgUtil.getMessage("elec.case.prompt.input.case"));
 				Optional<String> steamID = steamIdDialog.showAndWait();
 //				FIXME 用户输入了一个已经存在的案例名称当如何处理
 				if (!steamID.isPresent()) {

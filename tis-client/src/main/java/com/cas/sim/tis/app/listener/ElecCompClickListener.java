@@ -8,6 +8,7 @@ import com.cas.sim.tis.app.state.SceneCameraState;
 import com.cas.sim.tis.app.state.typical.CircuitState;
 import com.cas.sim.tis.util.SpringUtil;
 import com.cas.sim.tis.view.control.IContent;
+import com.cas.sim.tis.view.control.imp.ElecCase3D;
 import com.cas.sim.tis.view.control.imp.jme.TypicalCase3D;
 import com.cas.sim.tis.view.controller.PageController;
 import com.jme3.scene.Geometry;
@@ -55,9 +56,9 @@ public class ElecCompClickListener extends MouseEventAdapter {
 	public void mouseRightClicked(MouseEvent e) {
 		IContent content = SpringUtil.getBean(PageController.class).getIContent();
 		ElecCompDef def = e.getSpatial().getUserData("entity");
-		if (content instanceof TypicalCase3D) {
+		if (content instanceof ElecCase3D) {
 			Platform.runLater(() -> {
-				((TypicalCase3D) content).showPopupMenu(def);
+				((ElecCase3D<?>) content).showPopupMenu(def);
 			});
 		}
 	}

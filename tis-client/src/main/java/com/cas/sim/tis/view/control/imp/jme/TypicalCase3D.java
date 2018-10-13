@@ -1,44 +1,24 @@
 package com.cas.sim.tis.view.control.imp.jme;
 
-import java.awt.MouseInfo;
-import java.awt.Point;
 import java.util.List;
-import java.util.Optional;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-import com.cas.circuit.component.ElecCompDef;
-import com.cas.circuit.component.Wire;
+import com.cas.sim.tis.app.state.ElecCaseState;
 import com.cas.sim.tis.app.state.ElecCaseState.CaseMode;
-import com.cas.sim.tis.app.state.typical.CircuitState;
 import com.cas.sim.tis.app.state.typical.TypicalCaseState;
 import com.cas.sim.tis.entity.ElecComp;
 import com.cas.sim.tis.entity.TypicalCase;
 import com.cas.sim.tis.flow.Step;
-import com.cas.sim.tis.util.MsgUtil;
 import com.cas.sim.tis.view.control.IContent;
 import com.cas.sim.tis.view.control.imp.ElecCase3D;
+import com.cas.sim.tis.view.control.imp.ElecCaseBtnController;
 
-import de.felixroske.jfxsupport.GUIState;
 import javafx.application.Platform;
 import javafx.scene.Node;
-import javafx.scene.control.ContextMenu;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.TextInputDialog;
 
 public class TypicalCase3D extends ElecCase3D<TypicalCase> implements IContent {
 
-	private static final String REGEX_CHINESE = "[\u4e00-\u9fa5·！￥……（）【】｛｝：；“”‘’？。，]";// 中文正则
-
-	private ContextMenu menuWire;
-	private ContextMenu menuComp;
-
-	private Wire wire;
-	private MenuItem reset;
-	private ElecCompDef compDef;
-
-	public TypicalCase3D() {
-		super(new TypicalCaseState());
+	public TypicalCase3D(ElecCaseState<TypicalCase> state, ElecCaseBtnController btnController) {
+		super(state, btnController);
 	}
 
 	@Override
@@ -95,36 +75,6 @@ public class TypicalCase3D extends ElecCase3D<TypicalCase> implements IContent {
 		appState.save();
 	}
 
-	/**
-	 * 显示元器件弹出菜单
-	 * @param compDef 当前要操作的元器件对象
-	 */
-	public void showPopupMenu(ElecCompDef compDef) {
-		this.compDef = compDef;
-
-		String reset = compDef.getParam("reset", "0");
-		Optional.ofNullable(reset).ifPresent(t -> {
-			if ("1".equals(t)) {
-				menuComp.getItems().add(0, this.reset);
-			} else {
-				menuComp.getItems().remove(this.reset);
-			}
-		});
-
-		Point anchor = MouseInfo.getPointerInfo().getLocation();
-		menuComp.show(GUIState.getStage(), anchor.x, anchor.y);
-	}
-
-	/**
-	 * 显示导线弹出菜单
-	 * @param compDef 当前要操作的导线对象
-	 */
-	public void showPopupMenu(Wire wire) {
-		this.wire = wire;
-		Point anchor = MouseInfo.getPointerInfo().getLocation();
-		menuWire.show(GUIState.getStage(), anchor.x, anchor.y);
-	}
-
 	public TypicalCase getTypicalCase() {
 		return ((TypicalCaseState) state).getElecCase();
 	}
@@ -153,86 +103,5 @@ public class TypicalCase3D extends ElecCase3D<TypicalCase> implements IContent {
 
 	public void flowNext() {
 		btnController.next();
-	}
-
-	@Override
-	protected void createCompPopupMenu() {
-		MenuItem tag = new MenuItem(MsgUtil.getMessage("button.tag"));
-		MenuItem del = new MenuItem(MsgUtil.getMessage("button.delete"));
-		this.menuComp = new ContextMenu(tag, del);
-
-		TextInputDialog steamIdDialog = new TextInputDialog();
-		steamIdDialog.setTitle(MsgUtil.getMessage("button.tag"));
-		steamIdDialog.setHeaderText(null);
-		steamIdDialog.setContentText(MsgUtil.getMessage("typical.case.prompt.input.comp.tag"));
-		steamIdDialog.getEditor().textProperty().addListener((b, o, n) -> {
-			if (n == null) {
-				return;
-			}
-			Pattern pat = Pattern.compile(REGEX_CHINESE);
-			Matcher mat = pat.matcher(n);
-			if (mat.find()) {
-				steamIdDialog.getEditor().setText(o);
-			}
-		});
-
-		tag.setOnAction(e -> {
-			steamIdDialog.getEditor().setText(compDef.getProxy().getTagName());
-			steamIdDialog.showAndWait().ifPresent(tagName -> {
-				compDef.getProxy().setTagName(tagName);
-			});
-		});
-
-		del.setOnAction(e -> {
-			CircuitState state = jmeApp.getStateManager().getState(CircuitState.class);
-			if (state == null) {
-				return;
-			}
-			state.detachFromCircuit(compDef);
-//			if (!enable) {
-//				AlertUtil.showAlert(AlertType.WARNING, MsgUtil.getMessage("alert.warning.wiring"));
-//			}
-		});
-
-		reset = new MenuItem(MsgUtil.getMessage("button.reset"));
-		reset.setOnAction(e -> {
-			compDef.reset();
-		});
-	}
-
-	@Override
-	protected void createWirePopupMenu() {
-		MenuItem tag = new MenuItem(MsgUtil.getMessage("typical.case.wire.num"));
-		MenuItem del = new MenuItem(MsgUtil.getMessage("button.delete"));
-		menuWire = new ContextMenu(tag, del);
-
-		TextInputDialog steamIdDialog = new TextInputDialog();
-		steamIdDialog.setTitle(MsgUtil.getMessage("typical.case.wire.num"));
-		steamIdDialog.setHeaderText(null);
-		steamIdDialog.setContentText(MsgUtil.getMessage("typical.case.prompt.input.wire.num"));
-		steamIdDialog.getEditor().textProperty().addListener((b, o, n) -> {
-			if (n == null) {
-				return;
-			}
-			Pattern pat = Pattern.compile(REGEX_CHINESE);
-			Matcher mat = pat.matcher(n);
-			if (mat.find()) {
-				steamIdDialog.getEditor().setText(o);
-			}
-		});
-
-		tag.setOnAction(e -> {
-			steamIdDialog.getEditor().setText(wire.getProxy().getNumber());
-			steamIdDialog.showAndWait().ifPresent(number -> {
-				wire.getProxy().setNumber(number);
-			});
-		});
-		del.setOnAction(e -> {
-			CircuitState state = jmeApp.getStateManager().getState(CircuitState.class);
-			state.detachFromCircuit(wire);
-//			if (!enable) {
-//				AlertUtil.showAlert(AlertType.WARNING, MsgUtil.getMessage("alert.warning.power.on"));
-//			}
-		});
 	}
 }

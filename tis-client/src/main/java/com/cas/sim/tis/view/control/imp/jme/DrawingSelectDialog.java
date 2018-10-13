@@ -119,7 +119,7 @@ public class DrawingSelectDialog extends DialogPane<Integer> {
 		ok.setOnAction(e -> {
 			Row selected = table.getSelectedRow();
 			if (selected == null) {
-				error.setText(MsgUtil.getMessage("alert.warning.must.select", MsgUtil.getMessage("typical.case.drawings")));
+				error.setText(MsgUtil.getMessage("alert.warning.must.select", MsgUtil.getMessage("elec.case.drawings")));
 				return;
 			}
 			dialog.setResult(selected.getItems().getInteger("id"));

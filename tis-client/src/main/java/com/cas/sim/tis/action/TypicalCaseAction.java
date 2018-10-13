@@ -44,7 +44,7 @@ public class TypicalCaseAction extends BaseAction {
 	/**
 	 * 根据创建人获得典型案例集合
 	 * @param creator 创建人编号
-	 * @param b 
+	 * @param onlyPublished 学生可见 
 	 * @return List 典型案例集合
 	 */
 	public List<TypicalCase> getTypicalCasesByCreator(Integer creator, boolean onlyPublished) {
@@ -83,7 +83,7 @@ public class TypicalCaseAction extends BaseAction {
 //		2、将文件上传到FTP服务器
 		// 服务器路径目录：/archives/登录者ID
 		Integer userId = Session.get(Session.KEY_LOGIN_ID);
-		String remotePath = String.format("/archives/%s", String.valueOf(userId));
+		String remotePath = String.format("/archives/typical/%s", String.valueOf(userId));
 
 		try {
 			FTPUtils.connect().cd(remotePath).uploadFile(//

@@ -1,6 +1,7 @@
 package com.cas.sim.tis.entity;
 
 import java.io.Serializable;
+import java.util.Date;
 
 import javax.persistence.Id;
 
@@ -20,5 +21,11 @@ public class BrokenCase implements Serializable {
 	private String name;
 //	电路存档的路径
 	private String archivePath;
-	private Integer creatorId;
+	private String drawings;
+	private Integer creator;
+	private Date createDate;
+	private Integer updater;
+	private Date updateDate;
+	private Boolean del = false;
+	private Boolean publish = false;
 }

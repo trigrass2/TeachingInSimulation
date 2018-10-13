@@ -291,7 +291,7 @@ public class DrawingController implements Initializable {
 	private void showSelectDrawingDialog() {
 		Dialog<Integer> dialog = new Dialog<>();
 		dialog.setDialogPane(new DrawingSelectDialog());
-		dialog.setTitle(MsgUtil.getMessage("typical.case.drawings.select"));
+		dialog.setTitle(MsgUtil.getMessage("elec.case.drawings.select"));
 		dialog.setPrefSize(640, 540);
 		dialog.initOwner(stage);
 		dialog.showAndWait().ifPresent(id -> {
@@ -307,7 +307,7 @@ public class DrawingController implements Initializable {
 	private void showUploadDrawingDialog() {
 		Dialog<List<Integer>> dialog = new Dialog<>();
 		dialog.setDialogPane(new ResourceUploadDialog(ResourceType.DRAWING));
-		dialog.setTitle(MsgUtil.getMessage("typical.case.drawings.upload"));
+		dialog.setTitle(MsgUtil.getMessage("elec.case.drawings.upload"));
 		dialog.setPrefSize(640, 330);
 		dialog.initOwner(stage);
 		dialog.showAndWait().ifPresent(ids -> {

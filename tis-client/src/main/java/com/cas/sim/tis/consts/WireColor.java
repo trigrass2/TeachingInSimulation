@@ -9,7 +9,7 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 public enum WireColor {
-	YELLOW(Color.YELLOW, "typical.case.wire.yellow"), GREEN(Color.GREEN, "typical.case.wire.green"), RED(Color.RED, "typical.case.wire.red"), BLUE(Color.BLUE, "typical.case.wire.blue"), BLACK(Color.BLACK, "typical.case.wire.black");
+	YELLOW(Color.YELLOW, "elec.case.wires.yellow"), GREEN(Color.GREEN, "elec.case.wires.green"), RED(Color.RED, "elec.case.wires.red"), BLUE(Color.BLUE, "elec.case.wires.blue"), BLACK(Color.BLACK, "elec.case.wires.black");
 
 	private Color color;
 	private String textKey;

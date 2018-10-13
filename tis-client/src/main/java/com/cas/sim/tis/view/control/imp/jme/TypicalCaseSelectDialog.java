@@ -42,7 +42,6 @@ public class TypicalCaseSelectDialog extends DialogPane<Integer> {
 	private Table table;
 	private ToggleGroup group = new ToggleGroup();
 	private ToggleButton sys;
-//	private Column<Boolean> exam;
 	private Column<Boolean> visible;
 	private Column<String> delete;
 
@@ -54,14 +53,14 @@ public class TypicalCaseSelectDialog extends DialogPane<Integer> {
 
 		HBox toggleBox = new HBox(10);
 		if (role == RoleConst.TEACHER) {
-			ToggleButton mine = new ToggleButton(MsgUtil.getMessage("typical.case.min.case"));
+			ToggleButton mine = new ToggleButton(MsgUtil.getMessage("elec.case.min.case"));
 			mine.setMinSize(100, 40);
 			mine.setStyle("-fx-font-size:14px");
 			mine.setUserData(Session.get(Session.KEY_LOGIN_ID));
 			group.getToggles().add(mine);
 			toggleBox.getChildren().add(mine);
 		} else if (role == RoleConst.STUDENT) {
-			ToggleButton tech = new ToggleButton(MsgUtil.getMessage("typical.case.tech.case"));
+			ToggleButton tech = new ToggleButton(MsgUtil.getMessage("elec.case.tech.case"));
 			tech.setMinSize(100, 40);
 			tech.setStyle("-fx-font-size:14px");
 
@@ -70,7 +69,7 @@ public class TypicalCaseSelectDialog extends DialogPane<Integer> {
 			group.getToggles().add(tech);
 			toggleBox.getChildren().add(tech);
 		}
-		sys = new ToggleButton(MsgUtil.getMessage("typical.case.sys.case"));
+		sys = new ToggleButton(MsgUtil.getMessage("elec.case.sys.case"));
 		sys.setMinSize(100, 40);
 		sys.setStyle("-fx-font-size:14px");
 		sys.setUserData(1);
@@ -146,37 +145,6 @@ public class TypicalCaseSelectDialog extends DialogPane<Integer> {
 				}));
 				visible.setAlignment(Pos.CENTER_RIGHT);
 				table.getColumns().add(visible);
-//				// 发送考核
-//				exam = new Column<Boolean>();
-//				exam.setCellFactory(BtnCell.forTableColumn(MsgUtil.getMessage("button.exam"), "blue-btn", typicalId -> {
-//					// 获得当前教师负责的班级
-//					List<Class> classes = SpringUtil.getBean(ClassAction.class).findClassesByTeacherId(Session.get(Session.KEY_LOGIN_ID));
-//
-//					// 弹出班级选择框
-//					Dialog<Integer> dialog = new Dialog<>();
-//					dialog.setDialogPane(new ClassSelectDialog(classes));
-//					dialog.setTitle(MsgUtil.getMessage("class.dialog.select"));
-//					dialog.setPrefSize(652, 420);
-//					dialog.showAndWait().ifPresent(classId -> {
-//						try {
-//							Integer publishId = SpringUtil.getBean(BrokenPublishAction.class).publishBroken((Integer) typicalId, classId);
-//							// 记录当前考核发布编号
-//							Session.set(Session.KEY_TYPICAL_CASE_PUBLISH_ID, publishId);
-//							// 添加考核进行时菜单
-//							PageController controller = SpringUtil.getBean(PageController.class);
-//							ILeftContent content = controller.getLeftMenu();
-//							if (content instanceof IPublish) {
-//								((IPublish) content).publish(publishId);
-//							}
-//						} catch (Exception e) {
-//							e.printStackTrace();
-//							AlertUtil.showAlert(AlertType.ERROR, e.getMessage());
-//						}
-//					});
-//				}));
-//				exam.setAlignment(Pos.CENTER_RIGHT);
-//				exam.setPrefWidth(90);
-//				table.getColumns().addAll(visible, exam);
 			}
 			// 删除按钮
 			delete = new Column<String>();

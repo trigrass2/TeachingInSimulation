@@ -81,7 +81,7 @@
 					<children>
 						<HBox alignment="CENTER" spacing="10.0" style="-fx-background-color:#2c5381ee;">
 							<children>
-								<Button contentDisplay="RIGHT" mnemonicParsing="false" onAction="#toggle" textFill="WHITE" styleClass="img-btn" text="%typical.case.drawings.list">
+								<Button contentDisplay="RIGHT" mnemonicParsing="false" onAction="#toggle" textFill="WHITE" styleClass="img-btn" text="%elec.case.drawings.list">
 									<graphic>
 										<SVGGlyph name="iconfont.svg.down" size="10" fill="WHITE" />
 									</graphic>

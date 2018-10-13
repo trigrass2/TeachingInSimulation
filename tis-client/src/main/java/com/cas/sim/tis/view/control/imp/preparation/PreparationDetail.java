@@ -28,6 +28,7 @@ import com.cas.sim.tis.action.ResourceAction;
 import com.cas.sim.tis.action.TypicalCaseAction;
 import com.cas.sim.tis.action.UserAction;
 import com.cas.sim.tis.app.state.ElecCaseState.CaseMode;
+import com.cas.sim.tis.app.state.typical.TypicalCaseState;
 import com.cas.sim.tis.consts.GoalRelationshipType;
 import com.cas.sim.tis.consts.GoalType;
 import com.cas.sim.tis.consts.PreparationQuizType;
@@ -58,6 +59,7 @@ import com.cas.sim.tis.view.control.imp.dialog.Dialog;
 import com.cas.sim.tis.view.control.imp.dialog.Tip.TipType;
 import com.cas.sim.tis.view.control.imp.jme.Recongnize3D;
 import com.cas.sim.tis.view.control.imp.jme.TypicalCase3D;
+import com.cas.sim.tis.view.control.imp.jme.TypicalCaseBtnController;
 import com.cas.sim.tis.view.control.imp.jme.TypicalCaseSelectDialog;
 import com.cas.sim.tis.view.control.imp.question.PreviewQuestionPaper;
 import com.cas.sim.tis.view.control.imp.table.BtnCell;
@@ -632,7 +634,7 @@ public class PreparationDetail extends HBox implements IContent {
 		TypicalCase typicalCase = SpringUtil.getBean(TypicalCaseAction.class).findTypicalCaseById(id);
 
 		PageController controller = SpringUtil.getBean(PageController.class);
-		TypicalCase3D content = new TypicalCase3D();
+		TypicalCase3D content = new TypicalCase3D(new TypicalCaseState(), new TypicalCaseBtnController(CaseMode.VIEW_MODE, CaseMode.TRAIN_MODE));
 
 		controller.loadContent(content, PageLevel.Level2);
 		controller.showLoading();
