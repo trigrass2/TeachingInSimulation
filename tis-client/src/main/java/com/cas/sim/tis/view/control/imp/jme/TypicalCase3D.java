@@ -5,8 +5,8 @@ import java.util.List;
 import com.cas.sim.tis.app.state.ElecCaseState;
 import com.cas.sim.tis.app.state.ElecCaseState.CaseMode;
 import com.cas.sim.tis.app.state.typical.TypicalCaseState;
+import com.cas.sim.tis.entity.ArchiveCase;
 import com.cas.sim.tis.entity.ElecComp;
-import com.cas.sim.tis.entity.TypicalCase;
 import com.cas.sim.tis.flow.Step;
 import com.cas.sim.tis.view.control.IContent;
 import com.cas.sim.tis.view.control.imp.ElecCase3D;
@@ -15,9 +15,9 @@ import com.cas.sim.tis.view.control.imp.ElecCaseBtnController;
 import javafx.application.Platform;
 import javafx.scene.Node;
 
-public class TypicalCase3D extends ElecCase3D<TypicalCase> implements IContent {
+public class TypicalCase3D extends ElecCase3D<ArchiveCase> implements IContent {
 
-	public TypicalCase3D(ElecCaseState<TypicalCase> state, ElecCaseBtnController btnController) {
+	public TypicalCase3D(ElecCaseState<ArchiveCase> state, ElecCaseBtnController btnController) {
 		super(state, btnController);
 	}
 
@@ -44,7 +44,7 @@ public class TypicalCase3D extends ElecCase3D<TypicalCase> implements IContent {
 		return appState.isClean();
 	}
 
-	public void setupCase(TypicalCase typicalCase, CaseMode mode) {
+	public void setupCase(ArchiveCase typicalCase, CaseMode mode) {
 //		找到典型案例的状态机
 		TypicalCaseState appState = jmeApp.getStateManager().getState(TypicalCaseState.class);
 //		修改元器件模型
@@ -56,7 +56,7 @@ public class TypicalCase3D extends ElecCase3D<TypicalCase> implements IContent {
 	public void selectedElecComp(ElecComp elecComp) {
 //		找到典型案例的状态机
 		TypicalCaseState appState = jmeApp.getStateManager().getState(TypicalCaseState.class);
-		
+
 		jmeApp.enqueue(() -> {
 			appState.hold(elecComp);
 			// 需要再focuse一下，否则按键无法监听
@@ -75,7 +75,7 @@ public class TypicalCase3D extends ElecCase3D<TypicalCase> implements IContent {
 		appState.save();
 	}
 
-	public TypicalCase getTypicalCase() {
+	public ArchiveCase getArchiveCase() {
 		return ((TypicalCaseState) state).getElecCase();
 	}
 
@@ -98,10 +98,10 @@ public class TypicalCase3D extends ElecCase3D<TypicalCase> implements IContent {
 	}
 
 	public void loadSteps(List<Step> steps) {
-		btnController.loadSteps(steps);
+		((TypicalCaseBtnController) btnController).loadSteps(steps);
 	}
 
 	public void flowNext() {
-		btnController.next();
+		((TypicalCaseBtnController) btnController).next();
 	}
 }

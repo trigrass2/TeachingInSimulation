@@ -1,4 +1,4 @@
-package com.cas.sim.tis.view.control.imp.broken;
+package com.cas.sim.tis.view.control.imp.free;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -8,23 +8,23 @@ import com.cas.sim.tis.util.SpringUtil;
 import com.cas.sim.tis.view.control.imp.ElecCaseBtnController;
 import com.cas.sim.tis.view.controller.PageController;
 
-public class BrokenCaseBtnController extends ElecCaseBtnController {
+public class FreeCaseBtnController extends ElecCaseBtnController {
 
-	private BrokenFlowItem flow;
+	private FreeFlowItem flow;
 
-	public BrokenCaseBtnController(CaseMode... enableModes) {
+	public FreeCaseBtnController(CaseMode... enableModes) {
 		super(enableModes);
 	}
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		super.initialize(location, resources);
-		scroll.setContent(flow = new BrokenFlowItem());
+		scroll.setContent(flow = new FreeFlowItem());
 	}
 	
 	@Override
 	protected void switchCaseMode(CaseMode mode) {
-//		BrokenCase3D brokenCase3D = (BrokenCase3D) elecCase3D;
+//		FreeCase3D freeCase3D = (FreeCase3D) elecCase3D;
 		SpringUtil.getBean(PageController.class).showLoading();
 		if (CaseMode.BROKEN_TRAIN_MODE == mode) {
 			trainOrEdit.toFront();
@@ -46,27 +46,27 @@ public class BrokenCaseBtnController extends ElecCaseBtnController {
 
 	@Override
 	public String getDrawings() {
-//		BrokenCase brokenCase = ((BrokenCaseState) elecCaseState).getElecCase();
-//		if (brokenCase == null) {
+//		FreeCase freeCase = ((FreeCaseState) elecCaseState).getElecCase();
+//		if (freeCase == null) {
 		return null;
 //		} else {
-//			return brokenCase.getDrawings();
+//			return freeCase.getDrawings();
 //		}
 	}
 
 	@Override
 	public void setDrawings(String drawings) {
-//		BrokenCase brokenCase = ((BrokenCaseState) elecCaseState).getElecCase();
-//		if (brokenCase != null) {
-//			brokenCase.setDrawings(drawings);
+//		FreeCase freeCase = ((FreeCaseState) elecCaseState).getElecCase();
+//		if (freeCase != null) {
+//			freeCase.setDrawings(drawings);
 //		}
 	}
 
-	public void addBrokenItem(BrokenItem item) {
+	public void addFreeItem(FreeItem item) {
 		flow.getChildren().add(item);
 	}
 
-	public void removeBrokenItem(BrokenItem item) {
+	public void removeFreeItem(FreeItem item) {
 		flow.getChildren().remove(item);
 	}
 

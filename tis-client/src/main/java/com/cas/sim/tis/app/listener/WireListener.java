@@ -7,7 +7,7 @@ import com.cas.sim.tis.app.event.MouseEventAdapter;
 import com.cas.sim.tis.app.state.typical.CircuitState;
 import com.cas.sim.tis.util.SpringUtil;
 import com.cas.sim.tis.view.control.IContent;
-import com.cas.sim.tis.view.control.imp.jme.TypicalCase3D;
+import com.cas.sim.tis.view.control.imp.ElecCase3D;
 import com.cas.sim.tis.view.controller.PageController;
 import com.jme3.scene.Spatial;
 
@@ -50,9 +50,9 @@ public class WireListener extends MouseEventAdapter {
 		// 选中显示导线菜单
 		IContent content = SpringUtil.getBean(PageController.class).getIContent();
 		Wire wire = e.getSpatial().getUserData("entity");
-		if (content instanceof TypicalCase3D) {
+		if (content instanceof ElecCase3D<?>) {
 			Platform.runLater(() -> {
-				((TypicalCase3D) content).showPopupMenu(wire);
+				((ElecCase3D<?>) content).showPopupMenu(wire);
 			});
 		}
 	}

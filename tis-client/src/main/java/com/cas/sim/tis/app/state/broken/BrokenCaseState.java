@@ -24,7 +24,7 @@ public class BrokenCaseState extends ElecCaseState<BrokenCase> {
 			stateManager.detach(circuitState);
 		}
 		// 检测模式时，不可拿去元器件
-		holdState.setEnabled(CaseMode.TRAIN_MODE != mode);
+		holdState.setEnabled(CaseMode.EDIT_MODE == mode);
 		// 创建新的circuitState
 		circuitState = new CircuitState(this, holdState, ui, root);
 		circuitState.setOnInitialized((n) -> {

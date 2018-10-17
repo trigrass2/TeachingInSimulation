@@ -69,6 +69,12 @@ public class TrainState extends BaseState {
 			return false;
 		} else if (!proxy.getRadius().equals(linked.getRadius())) {
 			return false;
+		} else if (proxy.getComp1Uuid().equals(proxy.getComp2Uuid())) {
+			if (proxy.getComp1Uuid().equals(comp1Uuid)) {
+				return proxy.getComp2Uuid().equals(comp2Uuid);
+			} else if (proxy.getComp1Uuid().equals(comp2Uuid)) {
+				return proxy.getComp2Uuid().equals(comp1Uuid);
+			}
 		} else if (proxy.getComp1Uuid().equals(comp1Uuid)) {
 			if (!proxy.getTernimal1Id().equals(ternimal1Id)) {
 				return false;

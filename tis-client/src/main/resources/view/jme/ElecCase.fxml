@@ -17,7 +17,6 @@
 <?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.control.ScrollPane?>
-<?import com.cas.sim.tis.view.control.imp.typical.FlowItem?>
 <VBox fx:id="pane" pickOnBounds="false" visible="false" xmlns:fx="http://javafx.com/fxml/1">
 	<HBox pickOnBounds="false" mouseTransparent="false">
 		<Title fx:id="title" />
@@ -37,12 +36,9 @@
 		</padding>
 	</HBox>
 	<HBox VBox.vgrow="ALWAYS" pickOnBounds="false" mouseTransparent="false" alignment="CENTER_RIGHT">
-		<VBox fx:id="steps" visible="false" prefWidth="300" minWidth="300" maxWidth="300" prefHeight="400" minHeight="400" maxHeight="400">
-			<ScrollPane fx:id="scroll" hbarPolicy="NEVER" styleClass="cover">
-				<content>
-					<FlowItem fx:id="flow" spacing="10" pickOnBounds="false" mouseTransparent="false">
-					</FlowItem>
-				</content>
+		<VBox fx:id="steps" visible="false" prefWidth="300" minWidth="300" maxWidth="300">
+			<ScrollPane fx:id="scroll" hbarPolicy="NEVER" styleClass="cover" prefHeight="400" minHeight="400" maxHeight="400">
+				<content></content>
 			</ScrollPane>
 			<HBox fx:id="btns">
 				<Button styleClass="blue-btn" pickOnBounds="true" prefWidth="150" onAction="#prev">

@@ -28,7 +28,7 @@ import com.cas.sim.tis.services.PreparationResourceService;
 import com.cas.sim.tis.services.PreparationService;
 import com.cas.sim.tis.services.QuestionService;
 import com.cas.sim.tis.services.ResourceService;
-import com.cas.sim.tis.services.TypicalCaseService;
+import com.cas.sim.tis.services.ArchiveCaseService;
 import com.cas.sim.tis.services.UserService;
 
 import io.airlift.drift.client.DriftClient;
@@ -101,8 +101,8 @@ public class ServiceConfig {
 	}
 
 	@Bean
-	public TypicalCaseService typicalCaseService() {
-		DriftClient<TypicalCaseService> service = clientFactory.createDriftClient(TypicalCaseService.class);
+	public ArchiveCaseService archiveCaseService() {
+		DriftClient<ArchiveCaseService> service = clientFactory.createDriftClient(ArchiveCaseService.class);
 		return service.get();
 	}
 

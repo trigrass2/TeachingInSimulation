@@ -14,14 +14,11 @@ import com.cas.sim.tis.app.state.ElecCaseState.CaseMode;
 import com.cas.sim.tis.app.state.typical.CircuitState;
 import com.cas.sim.tis.consts.Radius;
 import com.cas.sim.tis.consts.WireColor;
-import com.cas.sim.tis.flow.Step;
 import com.cas.sim.tis.util.AlertUtil;
 import com.cas.sim.tis.util.MsgUtil;
 import com.cas.sim.tis.view.control.IDistory;
 import com.cas.sim.tis.view.control.imp.jme.TypicalCaseBtnController;
 import com.cas.sim.tis.view.control.imp.jme.WireRadius;
-import com.cas.sim.tis.view.control.imp.typical.FlowItem;
-import com.cas.sim.tis.view.control.imp.typical.StepItem;
 import com.cas.sim.tis.view.controller.DrawingController;
 
 import de.felixroske.jfxsupport.GUIState;
@@ -79,8 +76,6 @@ public abstract class ElecCaseBtnController implements Initializable, IDistory {
 	@FXML
 	protected ScrollPane scroll;
 	@FXML
-	protected FlowItem flow;
-	@FXML
 	protected HBox btns;
 
 	protected ElecCase3D<?> elecCase3D;
@@ -108,7 +103,7 @@ public abstract class ElecCaseBtnController implements Initializable, IDistory {
 	public void initialize(URL location, ResourceBundle resources) {
 		modes.getItems().addAll(enableModes);
 		modes.getSelectionModel().selectedItemProperty().addListener((b, o, n) -> {
-			if (n == null) {
+			if (n == null || o == n) {
 				return;
 			}
 			if (o == null) {
@@ -129,6 +124,7 @@ public abstract class ElecCaseBtnController implements Initializable, IDistory {
 			}
 		});
 		modes.getSelectionModel().selectFirst();
+		System.out.println(modes.getSelectionModel().getSelectedItem());
 	}
 
 	protected abstract void switchCaseMode(CaseMode mode);
@@ -364,28 +360,11 @@ public abstract class ElecCaseBtnController implements Initializable, IDistory {
 		modes.getSelectionModel().select(mode);
 	}
 
-	public void loadSteps(List<Step> steps) {
-		this.flow.getChildren().clear();
-
-		for (int i = 0; i < steps.size(); i++) {
-			Step step = steps.get(i);
-			StepItem item = new StepItem(i, step);
-			flow.getChildren().add(item);
-		}
-		next();
-	}
-
 	public void setElecCase3D(ElecCase3D<?> elecCase3D) {
 		this.elecCase3D = elecCase3D;
 	}
 	
-	@FXML
-	public void prev() {
-		flow.prev(scroll);
-	}
+	public abstract void prev();
 
-	@FXML
-	public void next() {
-		flow.next(scroll);
-	}
+	public abstract void next();
 }

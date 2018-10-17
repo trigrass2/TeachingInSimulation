@@ -172,7 +172,7 @@ public class CircuitState extends BaseState implements ICircuitEffect {
 	private ElecCase3D<?> ui;
 
 	private ElecCaseState<?> caseState;
-	
+
 	public CircuitState(ElecCaseState<?> caseState, HoldState holdState, ElecCase3D<?> ui, Node root) {
 		this.caseState = caseState;
 		this.holdState = holdState;
@@ -499,7 +499,7 @@ public class CircuitState extends BaseState implements ICircuitEffect {
 		Geometry realWire = JmeUtil.createCylinderLine(assetManager, pointList, radius.getRadiusWidth(), color.getColorRGBA());
 		attachToCircuit(realWire, wire);
 
-		if (CaseMode.TRAIN_MODE == mode) {
+		if (CaseMode.TYPICAL_TRAIN_MODE == mode || CaseMode.BROKEN_TRAIN_MODE == mode) {
 			TrainState trainState = stateManager.getState(TrainState.class);
 			if (trainState.checkWire(wire)) {
 				trainState.next();
@@ -588,7 +588,7 @@ public class CircuitState extends BaseState implements ICircuitEffect {
 				addListener(c.getSpatial(), controlIOClickListener);
 			}
 		}
-		if (CaseMode.EDIT_MODE == mode) {
+		if (!mode.isHideCircuit()) {
 //			4、元器件本身的监听事件
 			addListener(def.getSpatial(), elecCompRightClickListener);
 //			5、若当前为底座添加监听事件
@@ -616,6 +616,9 @@ public class CircuitState extends BaseState implements ICircuitEffect {
 
 	public void read(Archive archive, CaseMode mode) {
 		this.mode = mode;
+		if (archive == null) {
+			return;
+		}
 		readEleccomps(archive.getCompList());
 		readWires(archive.getWireList());
 	}
@@ -638,6 +641,9 @@ public class CircuitState extends BaseState implements ICircuitEffect {
 			compMdl.setLocalTranslation(proxyComp.getLocation());
 			compMdl.setLocalRotation(proxyComp.getRotation());
 //			compMdl.scale(25);
+			if (mode.isHideCircuit()) {
+				compMdl.setCullHint(CullHint.Always);
+			}
 
 //			3、初始化元器件逻辑对象
 			URL cfgUrl = HTTPUtils.getUrl(elecComp.getCfgPath());
@@ -661,11 +667,6 @@ public class CircuitState extends BaseState implements ICircuitEffect {
 			step.setModel(compMdl);
 			steps.add(step);
 		});
-		if (CaseMode.EDIT_MODE != mode) {
-			for (ElecCompDef def : compList) {
-				def.getSpatial().setCullHint(CullHint.Always);
-			}
-		}
 	}
 
 //	从存档中读取导线信息
@@ -687,8 +688,10 @@ public class CircuitState extends BaseState implements ICircuitEffect {
 			WireColor wireColor = WireColor.getWireColorByKey(proxy.getColor());
 			Radius radius = Radius.getRadiusByKey(proxy.getRadius());
 			Geometry wireMdl = JmeUtil.createCylinderLine(assetManager, proxy.getPointList(), radius.getRadiusWidth(), wireColor.getColorRGBA());
-
-			if (CaseMode.TRAIN_MODE != mode) {
+			if (mode.isHideCircuit()) {
+				wireMdl.setCullHint(CullHint.Always);
+			}
+			if (CaseMode.TYPICAL_TRAIN_MODE != mode) {
 				Wire wire = new Wire();
 				wire.setProxy(proxy);
 
@@ -708,11 +711,6 @@ public class CircuitState extends BaseState implements ICircuitEffect {
 			step.setModel(wireMdl);
 			steps.add(step);
 		});
-		if (CaseMode.EDIT_MODE != mode) {
-			for (Wire wire : wireList) {
-				wire.getSpatial().setCullHint(CullHint.Always);
-			}
-		}
 	}
 
 	public Archive getArchive() {
@@ -967,7 +965,8 @@ public class CircuitState extends BaseState implements ICircuitEffect {
 		baseMdl.removeControl(BaseOnRelayHoverControl.class);
 	}
 
-	void attachToCircuit(Geometry wireMdl, Wire wire) {
+	@JmeThread
+	public void attachToCircuit(Geometry wireMdl, Wire wire) {
 //		1、将导线加入场景
 // 		其实：wireNode.getChildren()是SafeArrayList类型，自带同步功能。不会出现java.util.ConcurrentModificationException
 		rootWireNode.attachChild(wireMdl);
@@ -981,13 +980,16 @@ public class CircuitState extends BaseState implements ICircuitEffect {
 		tag.setText(proxy.getNumber());
 		WireNumberControl control = new WireNumberControl(cam, guiNode, tag, wire.getProxy().getPointList());
 //		默认状态下不启动
+		control.setEnabled(false);
 		wireMdl.addControl(control);
 		proxy.setTagNode(tag);
 
 // 		2、将模型与逻辑对象绑定
 		wire.setSpatial(wireMdl);
 //		3、绑定监听事件
-		addListener(wireMdl, wireListener);
+		if (!mode.isHideCircuit()) {
+			addListener(wireMdl, wireListener);
+		}
 //		4、将导线加入列表中
 		wireList.add(wire);
 
@@ -1147,5 +1149,13 @@ public class CircuitState extends BaseState implements ICircuitEffect {
 
 	public List<Step> getSteps() {
 		return steps;
+	}
+
+	public void setWireBroken(Wire wire, boolean broken) {
+		if (wire == null) {
+			return;
+		}
+		wire.setBroken(broken);
+		cirSim.needAnalyze();
 	}
 }

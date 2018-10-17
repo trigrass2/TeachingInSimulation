@@ -60,7 +60,7 @@ public abstract class ElecCase3D<T> implements IDistory {
 	protected ElecCompDef compDef;
 	protected Wire wire;
 	protected Terminal terminal;
-	
+
 	protected MenuItem reset;
 	protected Menu terms;
 
@@ -115,7 +115,7 @@ public abstract class ElecCase3D<T> implements IDistory {
 		createWirePopupMenu();
 
 		createCompPopupMenu();
-		
+
 		btnController.setElecCase3D(this);
 	}
 
@@ -253,6 +253,9 @@ public abstract class ElecCase3D<T> implements IDistory {
 	 * @param compDef 当前要操作的导线对象
 	 */
 	public void showPopupMenu(Wire wire) {
+		if (state.getMode().isHideCircuit()) {
+			return;
+		}
 		this.wire = wire;
 		Point anchor = MouseInfo.getPointerInfo().getLocation();
 		menuWire.show(GUIState.getStage(), anchor.x, anchor.y);

@@ -3,9 +3,9 @@
 <mapper namespace="com.cas.sim.tis.mapper.BrokenCaseMapper">
 	<resultMap id="BaseResultMap" type="com.cas.sim.tis.entity.BrokenCase">
 		<id column="ID" jdbcType="INTEGER" property="id" />
+		<id column="TID" jdbcType="INTEGER" property="typicalId" />
 		<result column="NAME" jdbcType="VARCHAR" property="name" />
 		<result column="ARCHIVE_PATH" jdbcType="VARCHAR" property="archivePath" />
-		<result column="DRAWINGS" jdbcType="VARCHAR" property="drawings" />
 		<result column="CREATOR" jdbcType="INTEGER" property="creator" />
 		<result column="CREATE_DATE" jdbcType="TIMESTAMP" property="createDate" />
 		<result column="UPDATER" jdbcType="INTEGER" property="updater" />

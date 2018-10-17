@@ -22,6 +22,8 @@ import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 
 import javafx.application.Platform;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 
 public abstract class ElecCaseState<T>extends BaseState {
 //	每次打开新的案例，都会创建一个新的节点，存放与案例相关的模型
@@ -39,18 +41,18 @@ public abstract class ElecCaseState<T>extends BaseState {
 	protected CircuitState circuitState;
 
 	protected CaseMode mode;
-	
+
+	@Getter
+	@AllArgsConstructor
 	public enum CaseMode {
-		VIEW_MODE(MsgUtil.getMessage("elec.case.mode.view")), // 查看模式（控制一步步显示元器件，导线）
-		TRAIN_MODE(MsgUtil.getMessage("elec.case.mode.train")), // 练习模式（教师、学生根据案例自由摆放元器件导线）
-		EDIT_MODE(MsgUtil.getMessage("elec.case.mode.edit"));// 编辑模式（教师编辑案例）
+		VIEW_MODE(MsgUtil.getMessage("elec.case.mode.view"), true), // 查看模式（控制一步步显示元器件，导线）
+		TYPICAL_TRAIN_MODE(MsgUtil.getMessage("elec.case.mode.train"), true), // 练习模式（教师、学生根据案例自由摆放元器件导线）
+		BROKEN_TRAIN_MODE(MsgUtil.getMessage("elec.case.mode.train"), false), // 练习模式（教师、学生根据案例检测故障）
+		EDIT_MODE(MsgUtil.getMessage("elec.case.mode.edit"), false);// 编辑模式（教师编辑案例）
 
 		private String name;
-
-		private CaseMode(String name) {
-			this.name = name;
-		}
-
+		private boolean hideCircuit;
+		
 		@Override
 		public String toString() {
 			return name;
@@ -132,7 +134,7 @@ public abstract class ElecCaseState<T>extends BaseState {
 		addListener(compPlane, new MouseEventAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				if (CaseMode.TRAIN_MODE != mode) {
+				if (CaseMode.TYPICAL_TRAIN_MODE != mode || CaseMode.BROKEN_TRAIN_MODE != mode) {
 					holdState.putDown(circuitState);
 				}
 			}
@@ -149,14 +151,14 @@ public abstract class ElecCaseState<T>extends BaseState {
 			holdState.hold(elecComp);
 		}
 	}
-	
+
 	public void putDownOnBase(ElecCompDef def) {
 		if (CaseMode.VIEW_MODE == mode || circuitState == null) {
 			return;
 		}
 		holdState.putDownOnBase(def, circuitState);
 	}
-	
+
 	public boolean isClean() {
 		if (CaseMode.VIEW_MODE == mode || circuitState == null) {
 			return true;
@@ -164,17 +166,17 @@ public abstract class ElecCaseState<T>extends BaseState {
 			return circuitState.isClean();
 		}
 	}
-	
+
 	public abstract void setMode(CaseMode mode);
-	
+
 	public abstract void save();
-	
+
 	public abstract void newCase();
-	
+
 	public abstract void setupCase(T elecCase, CaseMode mode);
-	
+
 	public abstract T getElecCase();
-	
+
 	public CircuitState getCircuitState() {
 		return circuitState;
 	}
@@ -182,12 +184,16 @@ public abstract class ElecCaseState<T>extends BaseState {
 	public SceneCameraState getCameraState() {
 		return cameraState;
 	}
-	
+
 	public void setUI(ElecCase3D<T> ui) {
 		this.ui = ui;
 	}
 
 	public ElecCase3D<T> getUI() {
 		return ui;
+	}
+
+	public CaseMode getMode() {
+		return mode;
 	}
 }

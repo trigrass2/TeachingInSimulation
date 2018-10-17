@@ -32,7 +32,7 @@ import com.cas.sim.tis.services.QuestionService;
 import com.cas.sim.tis.services.BrokenPublishService;
 import com.cas.sim.tis.services.BrokenRecordService;
 import com.cas.sim.tis.services.ResourceService;
-import com.cas.sim.tis.services.TypicalCaseService;
+import com.cas.sim.tis.services.ArchiveCaseService;
 import com.cas.sim.tis.services.UserService;
 import com.google.common.collect.ImmutableSet;
 
@@ -62,7 +62,7 @@ public class SwiftConfig {
 	@Resource
 	private ElecCompService elecCompService;
 	@Resource
-	private TypicalCaseService typicalCaseService;
+	private ArchiveCaseService archiveCaseService;
 	@Resource
 	private BrokenCaseService brokenCaseService;
 	@Resource
@@ -116,7 +116,7 @@ public class SwiftConfig {
 		services.add(new DriftService(browseHistoryService));
 		services.add(new DriftService(drawService));
 		services.add(new DriftService(elecCompService));
-		services.add(new DriftService(typicalCaseService));
+		services.add(new DriftService(archiveCaseService));
 		services.add(new DriftService(brokenCaseService));
 		services.add(new DriftService(brokenPublishService));
 		services.add(new DriftService(brokenRecordService));

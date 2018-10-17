@@ -4,9 +4,9 @@ import java.util.Optional;
 
 import com.cas.circuit.vo.Archive;
 import com.cas.sim.tis.action.ArchiveAction;
-import com.cas.sim.tis.action.TypicalCaseAction;
+import com.cas.sim.tis.action.ArchiveCaseAction;
 import com.cas.sim.tis.app.state.ElecCaseState;
-import com.cas.sim.tis.entity.TypicalCase;
+import com.cas.sim.tis.entity.ArchiveCase;
 import com.cas.sim.tis.util.SpringUtil;
 import com.cas.sim.tis.view.control.imp.jme.TypicalCase3D;
 import com.cas.sim.tis.view.controller.PageController;
@@ -17,9 +17,9 @@ import javafx.application.Platform;
  * 典型案例模块
  * @author Administrator
  */
-public class TypicalCaseState extends ElecCaseState<TypicalCase> {
+public class TypicalCaseState extends ElecCaseState<ArchiveCase> {
 
-	private TypicalCase typicalCase;
+	private ArchiveCase archiveCase;
 
 	public void setMode(CaseMode mode) {
 		// 1、清理垃圾
@@ -32,10 +32,10 @@ public class TypicalCaseState extends ElecCaseState<TypicalCase> {
 		circuitState = new CircuitState(this, holdState, ui, root);
 		circuitState.setOnInitialized((n) -> {
 			// 尝试解析出存档对象
-			Archive archive = SpringUtil.getBean(ArchiveAction.class).parse(typicalCase.getArchivePath());
+			Archive archive = SpringUtil.getBean(ArchiveAction.class).parse(archiveCase.getArchivePath());
+			circuitState.read(archive, mode);
 			Optional.ofNullable(archive).ifPresent(a -> {
-				circuitState.read(a, mode);
-				if (CaseMode.TRAIN_MODE == mode) {
+				if (CaseMode.TYPICAL_TRAIN_MODE == mode) {
 					TrainState trainState = new TrainState((TypicalCase3D) ui, circuitState.getSteps(), circuitState.getRootCompNode());
 					stateManager.attach(trainState);
 					Platform.runLater(() -> ((TypicalCase3D) ui).loadSteps(circuitState.getSteps()));
@@ -58,22 +58,22 @@ public class TypicalCaseState extends ElecCaseState<TypicalCase> {
 			return;
 		}
 		Archive archive = circuitState.getArchive();
-		archive.setName(typicalCase.getName());
-		SpringUtil.getBean(TypicalCaseAction.class).save(typicalCase, archive);
+		archive.setName(archiveCase.getName());
+		SpringUtil.getBean(ArchiveCaseAction.class).save(archiveCase, archive);
 	}
 
 	public void newCase() {
-		TypicalCase typicalCase = new TypicalCase();
-		typicalCase.setName("新建案例 *");
-		setupCase(typicalCase, CaseMode.EDIT_MODE);
+		ArchiveCase archiveCase = new ArchiveCase();
+		archiveCase.setName("新建案例 *");
+		setupCase(archiveCase, CaseMode.EDIT_MODE);
 	}
 
 //	打开一个案例（管理员、教师、学生）
-	public void setupCase(TypicalCase typicalCase, CaseMode mode) {
-		this.typicalCase = typicalCase;
+	public void setupCase(ArchiveCase archiveCase, CaseMode mode) {
+		this.archiveCase = archiveCase;
 		setMode(mode);
 		Platform.runLater(() -> {
-			ui.setTitle(typicalCase.getName());
+			ui.setTitle(archiveCase.getName());
 			// 结束加载界面
 			SpringUtil.getBean(PageController.class).hideLoading();
 		});
@@ -94,7 +94,7 @@ public class TypicalCaseState extends ElecCaseState<TypicalCase> {
 	}
 
 	@Override
-	public TypicalCase getElecCase() {
-		return typicalCase;
+	public ArchiveCase getElecCase() {
+		return archiveCase;
 	}
 }

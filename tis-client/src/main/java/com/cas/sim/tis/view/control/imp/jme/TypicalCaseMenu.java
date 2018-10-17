@@ -2,11 +2,11 @@ package com.cas.sim.tis.view.control.imp.jme;
 
 import java.util.Optional;
 
-import com.cas.sim.tis.action.TypicalCaseAction;
+import com.cas.sim.tis.action.ArchiveCaseAction;
 import com.cas.sim.tis.app.state.ElecCaseState.CaseMode;
 import com.cas.sim.tis.consts.RoleConst;
 import com.cas.sim.tis.consts.Session;
-import com.cas.sim.tis.entity.TypicalCase;
+import com.cas.sim.tis.entity.ArchiveCase;
 import com.cas.sim.tis.util.AlertUtil;
 import com.cas.sim.tis.util.MsgUtil;
 import com.cas.sim.tis.util.SpringUtil;
@@ -38,8 +38,8 @@ public class TypicalCaseMenu extends ElecCaseMenu implements ILeftContent {
 				return;
 			}
 //			SpringUtil.getBean(PageController.class).showLoading();
-			TypicalCaseAction action = SpringUtil.getBean(TypicalCaseAction.class);
-			TypicalCase typicalCase = action.findTypicalCaseById(id);
+			ArchiveCaseAction action = SpringUtil.getBean(ArchiveCaseAction.class);
+			ArchiveCase typicalCase = action.findArchiveCaseById(id);
 			((TypicalCase3D)elecCase3D).setupCase(typicalCase, CaseMode.VIEW_MODE);
 		});
 	}
@@ -48,15 +48,15 @@ public class TypicalCaseMenu extends ElecCaseMenu implements ILeftContent {
 		SpringUtil.getBean(PageController.class).showLoading();
 		// 0、判断当前是否有接线存在
 		if (((TypicalCase3D)elecCase3D).isClean()) {
-			TypicalCase typicalCase = new TypicalCase();
-			typicalCase.setName("新建案例 *");
-			((TypicalCase3D)elecCase3D).setupCase(typicalCase, CaseMode.EDIT_MODE);
+			ArchiveCase archiveCase = new ArchiveCase();
+			archiveCase.setName("新建案例 *");
+			((TypicalCase3D)elecCase3D).setupCase(archiveCase, CaseMode.EDIT_MODE);
 		} else {
 			AlertUtil.showConfirm(MsgUtil.getMessage("broken.case.not.be.clean"), resp -> {
 				if (resp == ButtonType.YES) {
-					TypicalCase typicalCase = new TypicalCase();
-					typicalCase.setName("新建案例 *");
-					((TypicalCase3D)elecCase3D).setupCase(typicalCase, CaseMode.EDIT_MODE);
+					ArchiveCase archiveCase = new ArchiveCase();
+					archiveCase.setName("新建案例 *");
+					((TypicalCase3D)elecCase3D).setupCase(archiveCase, CaseMode.EDIT_MODE);
 				}
 			});
 		}
@@ -66,9 +66,9 @@ public class TypicalCaseMenu extends ElecCaseMenu implements ILeftContent {
 //		显示等待界面
 		SpringUtil.getBean(PageController.class).showLoading();
 		try {
-			TypicalCase typicalCase = ((TypicalCase3D)elecCase3D).getTypicalCase();
+			ArchiveCase archiveCase = ((TypicalCase3D)elecCase3D).getArchiveCase();
 //			如果该案例没有ID，则表明是新增的案例，此时需要用户提供一个案例名称
-			if (typicalCase.getId() == null) {
+			if (archiveCase.getId() == null) {
 //				创建一个输入对话框，让用户填写案例名称
 				TextInputDialog steamIdDialog = new TextInputDialog();
 				steamIdDialog.setTitle(MsgUtil.getMessage("menu.button.save"));
@@ -79,7 +79,7 @@ public class TypicalCaseMenu extends ElecCaseMenu implements ILeftContent {
 				if (!steamID.isPresent()) {
 					return;
 				}
-				typicalCase.setName(steamID.get());
+				archiveCase.setName(steamID.get());
 			}
 			((TypicalCase3D)elecCase3D).save();
 

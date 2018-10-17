@@ -11,14 +11,13 @@ import javafx.scene.text.Text;
 public class StepItem extends Text {
 	protected ObjectProperty<State> state;
 
-	private int index;
 	private Spatial mdl;
 
 	public enum State {
 		DONE, DOING, TODO
 	}
 
-	public StepItem(int index, Step step) {
+	public StepItem(Step step) {
 		this.mdl = step.getModel();
 		setText(step.getName());
 		setFill(Color.WHITE);
@@ -54,10 +53,6 @@ public class StepItem extends Text {
 			};
 		}
 		return state;
-	}
-
-	public int getIndex() {
-		return index;
 	}
 
 	public Spatial getMdl() {

@@ -1,18 +1,24 @@
 package com.cas.sim.tis.view.control.imp.jme;
 
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 
 import com.cas.sim.tis.app.state.ElecCaseState.CaseMode;
 import com.cas.sim.tis.app.state.typical.TypicalCaseState;
-import com.cas.sim.tis.entity.TypicalCase;
+import com.cas.sim.tis.entity.ArchiveCase;
+import com.cas.sim.tis.flow.Step;
 import com.cas.sim.tis.util.MsgUtil;
 import com.cas.sim.tis.util.SpringUtil;
 import com.cas.sim.tis.view.control.imp.ElecCaseBtnController;
+import com.cas.sim.tis.view.control.imp.typical.StepItem;
+import com.cas.sim.tis.view.control.imp.typical.TypicalFlowItem;
 import com.cas.sim.tis.view.controller.PageController;
 
 public class TypicalCaseBtnController extends ElecCaseBtnController {
 
+	private TypicalFlowItem flow;
+	
 	public TypicalCaseBtnController(CaseMode ...enableModes) {
 		super(enableModes);
 	}
@@ -20,6 +26,7 @@ public class TypicalCaseBtnController extends ElecCaseBtnController {
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		super.initialize(location, resources);
+		scroll.setContent(flow = new TypicalFlowItem());
 		autoComps.selectedProperty().addListener((b, o, n) -> {
 			if (n) {
 				autoComps.setText(MsgUtil.getMessage("typical.case.clear.comp"));
@@ -38,6 +45,7 @@ public class TypicalCaseBtnController extends ElecCaseBtnController {
 			}
 			((TypicalCase3D) elecCase3D).autoWires(n);
 		});
+		
 	}
 
 	protected void switchCaseMode(CaseMode mode) {
@@ -55,7 +63,7 @@ public class TypicalCaseBtnController extends ElecCaseBtnController {
 				typicalCase3D.autoComps(false);
 				typicalCase3D.autoWires(false);
 			}
-		} else if (CaseMode.TRAIN_MODE == mode) {
+		} else if (CaseMode.TYPICAL_TRAIN_MODE == mode) {
 			trainOrEdit.toFront();
 			trainOrEdit.setVisible(true);
 			view.setVisible(false);
@@ -83,19 +91,41 @@ public class TypicalCaseBtnController extends ElecCaseBtnController {
 
 	@Override
 	public String getDrawings() {
-		TypicalCase typicalCase = ((TypicalCaseState)elecCaseState).getElecCase();
-		if (typicalCase == null) {
+		ArchiveCase archiveCase = ((TypicalCaseState)elecCaseState).getElecCase();
+		if (archiveCase == null) {
 			return null;
 		} else {
-			return typicalCase.getDrawings();
+			return archiveCase.getDrawings();
 		}
 	}
 
 	@Override
 	public void setDrawings(String drawings) {
-		TypicalCase typicalCase = ((TypicalCaseState)elecCaseState).getElecCase();
-		if (typicalCase != null) {
-			typicalCase.setDrawings(drawings);
+		ArchiveCase archiveCase = ((TypicalCaseState)elecCaseState).getElecCase();
+		if (archiveCase != null) {
+			archiveCase.setDrawings(drawings);
 		}
 	}
+	
+	public void loadSteps(List<Step> steps) {
+		this.flow.getChildren().clear();
+
+		for (int i = 0; i < steps.size(); i++) {
+			Step step = steps.get(i);
+			StepItem item = new StepItem(step);
+			flow.getChildren().add(item);
+		}
+		next();
+	}
+
+	@Override
+	public void prev() {
+		flow.prev(scroll);
+	}
+
+	@Override
+	public void next() {
+		flow.next(scroll);
+	}
+	
 }

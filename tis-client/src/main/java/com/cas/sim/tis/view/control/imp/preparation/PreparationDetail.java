@@ -16,6 +16,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
 
 import com.alibaba.fastjson.JSONArray;
+import com.cas.sim.tis.action.ArchiveCaseAction;
 import com.cas.sim.tis.action.BrokenCaseAction;
 import com.cas.sim.tis.action.ElecCompAction;
 import com.cas.sim.tis.action.GoalAction;
@@ -25,7 +26,6 @@ import com.cas.sim.tis.action.PreparationLibraryAction;
 import com.cas.sim.tis.action.PreparationQuizAction;
 import com.cas.sim.tis.action.PreparationResourceAction;
 import com.cas.sim.tis.action.ResourceAction;
-import com.cas.sim.tis.action.TypicalCaseAction;
 import com.cas.sim.tis.action.UserAction;
 import com.cas.sim.tis.app.state.ElecCaseState.CaseMode;
 import com.cas.sim.tis.app.state.typical.TypicalCaseState;
@@ -36,6 +36,7 @@ import com.cas.sim.tis.consts.PreparationResourceType;
 import com.cas.sim.tis.consts.ResourceType;
 import com.cas.sim.tis.consts.RoleConst;
 import com.cas.sim.tis.consts.Session;
+import com.cas.sim.tis.entity.ArchiveCase;
 import com.cas.sim.tis.entity.BrokenCase;
 import com.cas.sim.tis.entity.Catalog;
 import com.cas.sim.tis.entity.ElecComp;
@@ -46,7 +47,6 @@ import com.cas.sim.tis.entity.PreparationLibrary;
 import com.cas.sim.tis.entity.PreparationQuiz;
 import com.cas.sim.tis.entity.PreparationResource;
 import com.cas.sim.tis.entity.Resource;
-import com.cas.sim.tis.entity.TypicalCase;
 import com.cas.sim.tis.entity.User;
 import com.cas.sim.tis.svg.SVGGlyph;
 import com.cas.sim.tis.util.AlertUtil;
@@ -631,15 +631,15 @@ public class PreparationDetail extends HBox implements IContent {
 	}
 
 	private void openTypicalCase(Integer id) {
-		TypicalCase typicalCase = SpringUtil.getBean(TypicalCaseAction.class).findTypicalCaseById(id);
+		ArchiveCase archiveCase = SpringUtil.getBean(ArchiveCaseAction.class).findArchiveCaseById(id);
 
 		PageController controller = SpringUtil.getBean(PageController.class);
-		TypicalCase3D content = new TypicalCase3D(new TypicalCaseState(), new TypicalCaseBtnController(CaseMode.VIEW_MODE, CaseMode.TRAIN_MODE));
+		TypicalCase3D content = new TypicalCase3D(new TypicalCaseState(), new TypicalCaseBtnController(CaseMode.VIEW_MODE, CaseMode.TYPICAL_TRAIN_MODE));
 
 		controller.loadContent(content, PageLevel.Level2);
 		controller.showLoading();
 		controller.setEndHideLoading((v) -> {
-			content.setupCase(typicalCase, CaseMode.VIEW_MODE);
+			content.setupCase(archiveCase, CaseMode.VIEW_MODE);
 		});
 	}
 

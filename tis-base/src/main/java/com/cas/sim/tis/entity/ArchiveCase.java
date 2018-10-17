@@ -9,7 +9,7 @@ import lombok.Getter;
 import lombok.Setter;
 @Getter
 @Setter
-public class TypicalCase implements Serializable {
+public class ArchiveCase implements Serializable {
 	/**
 	 * 
 	 */
@@ -21,6 +21,7 @@ public class TypicalCase implements Serializable {
 //	电路存档的路径
 	private String archivePath;
 	private String drawings;
+	private Integer type;
 	private Integer creator;
 	private Date createDate;
 	private Integer updater;

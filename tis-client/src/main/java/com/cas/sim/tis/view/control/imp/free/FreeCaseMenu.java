@@ -1,14 +1,12 @@
-package com.cas.sim.tis.view.control.imp.broken;
+package com.cas.sim.tis.view.control.imp.free;
 
 import java.util.Optional;
 
 import com.cas.sim.tis.action.ArchiveCaseAction;
-import com.cas.sim.tis.action.BrokenCaseAction;
 import com.cas.sim.tis.app.state.ElecCaseState.CaseMode;
 import com.cas.sim.tis.consts.RoleConst;
 import com.cas.sim.tis.consts.Session;
 import com.cas.sim.tis.entity.ArchiveCase;
-import com.cas.sim.tis.entity.BrokenCase;
 import com.cas.sim.tis.util.AlertUtil;
 import com.cas.sim.tis.util.MsgUtil;
 import com.cas.sim.tis.util.SpringUtil;
@@ -23,26 +21,25 @@ import javafx.application.Platform;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.TextInputDialog;
 
-public class BrokenCaseMenu extends ElecCaseMenu {
+public class FreeCaseMenu extends ElecCaseMenu {
 
-	public BrokenCaseMenu(ElecCase3D<?> elecCase3D) {
+	public FreeCaseMenu(ElecCase3D<?> elecCase3D) {
 		super(elecCase3D);
 	}
 
 	@Override
 	protected void showCaseDialog() {
 		Dialog<Integer> dialog = new Dialog<>();
-		int role = Session.get(Session.KEY_LOGIN_ROLE, RoleConst.STUDENT);
-		dialog.setDialogPane(new BrokenCaseSelectDialog(role != RoleConst.STUDENT, role));
-		dialog.setTitle(MsgUtil.getMessage("broken.case.title.list"));
+		dialog.setDialogPane(new FreeCaseSelectDialog());
+		dialog.setTitle(MsgUtil.getMessage("free.case.title.list"));
 		dialog.setPrefSize(640, 500);
 		dialog.showAndWait().ifPresent(id -> {
 			if (id == null) {
 				return;
 			}
-			BrokenCaseAction action = SpringUtil.getBean(BrokenCaseAction.class);
-			BrokenCase brokenCase = action.findBrokenCaseById(id);
-			((BrokenCase3D) elecCase3D).setupCase(brokenCase, CaseMode.BROKEN_TRAIN_MODE);
+			ArchiveCaseAction action = SpringUtil.getBean(ArchiveCaseAction.class);
+			ArchiveCase freeCase = action.findArchiveCaseById(id);
+			((FreeCase3D) elecCase3D).setupCase(freeCase, CaseMode.BROKEN_TRAIN_MODE);
 		});
 	}
 
@@ -57,25 +54,18 @@ public class BrokenCaseMenu extends ElecCaseMenu {
 			if (id == null) {
 				return;
 			}
-			ArchiveCaseAction action = SpringUtil.getBean(ArchiveCaseAction.class);
-			ArchiveCase typicalCase = action.findArchiveCaseById(id);
-			
 			SpringUtil.getBean(PageController.class).showLoading();
 			// 0、判断当前是否有接线存在
-			if (((BrokenCase3D) elecCase3D).isClean()) {
-				BrokenCase brokenCase = new BrokenCase();
-				brokenCase.setTypicalId(id);
-				brokenCase.setName("新建故障 *");
-				brokenCase.setArchivePath(typicalCase.getArchivePath());
-				((BrokenCase3D) elecCase3D).setupCase(brokenCase, CaseMode.EDIT_MODE);
+			if (((FreeCase3D) elecCase3D).isClean()) {
+				ArchiveCase archiveCase = new ArchiveCase();
+				archiveCase.setName("新建故障 *");
+				((FreeCase3D) elecCase3D).setupCase(archiveCase, CaseMode.EDIT_MODE);
 			} else {
-				AlertUtil.showConfirm(MsgUtil.getMessage("broken.case.not.be.clean"), resp -> {
+				AlertUtil.showConfirm(MsgUtil.getMessage("free.case.not.be.clean"), resp -> {
 					if (resp == ButtonType.YES) {
-						BrokenCase brokenCase = new BrokenCase();
-						brokenCase.setTypicalId(id);
-						brokenCase.setName("新建故障 *");
-						brokenCase.setArchivePath(typicalCase.getArchivePath());
-						((BrokenCase3D) elecCase3D).setupCase(brokenCase, CaseMode.EDIT_MODE);
+						ArchiveCase archiveCase = new ArchiveCase();
+						archiveCase.setName("新建故障 *");
+						((FreeCase3D) elecCase3D).setupCase(archiveCase, CaseMode.EDIT_MODE);
 					}
 				});
 			}
@@ -87,22 +77,22 @@ public class BrokenCaseMenu extends ElecCaseMenu {
 //		显示等待界面
 		SpringUtil.getBean(PageController.class).showLoading();
 		try {
-			BrokenCase brokenCase = ((BrokenCase3D) elecCase3D).getBrokenCase();
+			ArchiveCase freeCase = ((FreeCase3D) elecCase3D).getArchiveCase();
 //			如果该案例没有ID，则表明是新增的案例，此时需要用户提供一个案例名称
-			if (brokenCase.getId() == null) {
+			if (freeCase.getId() == null) {
 //				创建一个输入对话框，让用户填写案例名称
 				TextInputDialog steamIdDialog = new TextInputDialog();
 				steamIdDialog.setTitle(MsgUtil.getMessage("menu.button.save"));
 				steamIdDialog.setHeaderText(null);
-				steamIdDialog.setContentText(MsgUtil.getMessage("broken.case.prompt.input.case"));
+				steamIdDialog.setContentText(MsgUtil.getMessage("free.case.prompt.input.case"));
 				Optional<String> steamID = steamIdDialog.showAndWait();
 //				FIXME 用户输入了一个已经存在的案例名称当如何处理
 				if (!steamID.isPresent()) {
 					return;
 				}
-				brokenCase.setName(steamID.get());
+				freeCase.setName(steamID.get());
 			}
-			((BrokenCase3D) elecCase3D).save();
+			((FreeCase3D) elecCase3D).save();
 
 			AlertUtil.showTip(TipType.INFO, MsgUtil.getMessage("alert.information.data.save.success"));
 		} finally {

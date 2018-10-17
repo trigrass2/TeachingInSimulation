@@ -5,10 +5,10 @@ import java.util.List;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.util.TypeUtils;
-import com.cas.sim.tis.action.TypicalCaseAction;
+import com.cas.sim.tis.action.ArchiveCaseAction;
 import com.cas.sim.tis.consts.RoleConst;
 import com.cas.sim.tis.consts.Session;
-import com.cas.sim.tis.entity.TypicalCase;
+import com.cas.sim.tis.entity.ArchiveCase;
 import com.cas.sim.tis.entity.User;
 import com.cas.sim.tis.util.AlertUtil;
 import com.cas.sim.tis.util.MsgUtil;
@@ -125,7 +125,7 @@ public class TypicalCaseSelectDialog extends DialogPane<Integer> {
 					Integer rid = json.getInteger("id");
 					boolean published = json.getBooleanValue("selected");
 					// 修改典型案例状态
-					SpringUtil.getBean(TypicalCaseAction.class).published(rid, published);
+					SpringUtil.getBean(ArchiveCaseAction.class).published(rid, published);
 					reload(role);
 				}, new StringConverter<Boolean>() {
 
@@ -153,7 +153,7 @@ public class TypicalCaseSelectDialog extends DialogPane<Integer> {
 					if (response == ButtonType.NO) {
 						return;
 					}
-					SpringUtil.getBean(TypicalCaseAction.class).deleteByLogic((Integer) rid);
+					SpringUtil.getBean(ArchiveCaseAction.class).deleteByLogic((Integer) rid);
 					reload(role);
 				});
 			}));
@@ -206,7 +206,7 @@ public class TypicalCaseSelectDialog extends DialogPane<Integer> {
 			table.getColumns().add(visible);
 			table.getColumns().add(delete);
 		}
-		List<TypicalCase> cases = SpringUtil.getBean(TypicalCaseAction.class).getTypicalCasesByCreator(creator, onlyPublished);
+		List<ArchiveCase> cases = SpringUtil.getBean(ArchiveCaseAction.class).getArchiveCasesByCreator(creator, onlyPublished);
 		JSONArray array = new JSONArray();
 		array.addAll(cases);
 		table.setItems(array);
