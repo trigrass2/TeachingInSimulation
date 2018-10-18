@@ -23,7 +23,7 @@
 		union
 		select r2.id,8 as icon,e.name from (select * from preparation_resource where pid=#{pid} and del=0 and type=2) r2 left join elec_comp e on r2.rid=e.id
 		union
-		select r3.id,8 as icon,t.name from (select * from preparation_resource where pid=#{pid} and del=0 and type=3) r3 left join typical_case t on r3.rid=t.id)a
+		select r3.id,8 as icon,t.name from (select * from preparation_resource where pid=#{pid} and del=0 and type=3) r3 left join archive_case t on r3.rid=t.id)a
 		order by a.id;
 	</select>
 </mapper>
