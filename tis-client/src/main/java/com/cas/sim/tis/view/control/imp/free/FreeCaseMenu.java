@@ -23,6 +23,7 @@ public class FreeCaseMenu extends ElecCaseMenu {
 
 	public FreeCaseMenu(ElecCase3D<?> elecCase3D) {
 		super(elecCase3D);
+		setEditable(true);// 默认显示编辑按钮
 	}
 
 	@Override
@@ -89,5 +90,9 @@ public class FreeCaseMenu extends ElecCaseMenu {
 //			保存完成，关闭等待界面
 			Platform.runLater(() -> SpringUtil.getBean(PageController.class).hideLoading());
 		}
+	}
+	
+	public void setEditable(boolean editable){
+		this.menu.setVisible(editable);
 	}
 }

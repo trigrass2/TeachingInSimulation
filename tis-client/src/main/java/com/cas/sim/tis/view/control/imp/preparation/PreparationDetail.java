@@ -29,7 +29,9 @@ import com.cas.sim.tis.action.ResourceAction;
 import com.cas.sim.tis.action.UserAction;
 import com.cas.sim.tis.app.state.ElecCaseState.CaseMode;
 import com.cas.sim.tis.app.state.broken.BrokenCaseState;
+import com.cas.sim.tis.app.state.free.FreeCaseState;
 import com.cas.sim.tis.app.state.typical.TypicalCaseState;
+import com.cas.sim.tis.consts.ArchiveType;
 import com.cas.sim.tis.consts.GoalRelationshipType;
 import com.cas.sim.tis.consts.GoalType;
 import com.cas.sim.tis.consts.PreparationQuizType;
@@ -61,6 +63,9 @@ import com.cas.sim.tis.view.control.imp.broken.BrokenCaseBtnController;
 import com.cas.sim.tis.view.control.imp.broken.BrokenCaseSelectDialog;
 import com.cas.sim.tis.view.control.imp.dialog.Dialog;
 import com.cas.sim.tis.view.control.imp.dialog.Tip.TipType;
+import com.cas.sim.tis.view.control.imp.free.FreeCase3D;
+import com.cas.sim.tis.view.control.imp.free.FreeCaseBtnController;
+import com.cas.sim.tis.view.control.imp.free.FreeCaseMenu;
 import com.cas.sim.tis.view.control.imp.jme.Recongnize3D;
 import com.cas.sim.tis.view.control.imp.jme.TypicalCase3D;
 import com.cas.sim.tis.view.control.imp.jme.TypicalCaseBtnController;
@@ -637,7 +642,7 @@ public class PreparationDetail extends HBox implements IContent {
 
 		PageController controller = SpringUtil.getBean(PageController.class);
 		TypicalCase3D content = new TypicalCase3D(new TypicalCaseState(), new TypicalCaseBtnController(CaseMode.VIEW_MODE));
-		
+
 		controller.loadContent(content, PageLevel.Level2);
 		controller.setEndHideLoading((v) -> {
 			content.setupCase(archiveCase, CaseMode.VIEW_MODE);
@@ -654,7 +659,7 @@ public class PreparationDetail extends HBox implements IContent {
 
 		PageController controller = SpringUtil.getBean(PageController.class);
 		BrokenCase3D content = new BrokenCase3D(new BrokenCaseState(), new BrokenCaseBtnController(CaseMode.BROKEN_TRAIN_MODE));
-		
+
 		controller.loadContent(content, PageLevel.Level2);
 		controller.setEndHideLoading((v) -> {
 			content.setupCase(brokenCase, CaseMode.BROKEN_TRAIN_MODE);
@@ -662,7 +667,22 @@ public class PreparationDetail extends HBox implements IContent {
 	}
 
 	private void openFreeMode() {
-
+		ArchiveCase archiveCase = new ArchiveCase();
+		archiveCase.setName("自由接线");
+		archiveCase.setType(ArchiveType.FREE.getIndex());
+		
+		PageController controller = SpringUtil.getBean(PageController.class);
+		FreeCase3D content = new FreeCase3D(new FreeCaseState(), new FreeCaseBtnController(CaseMode.EDIT_MODE));
+		
+		FreeCaseMenu menu = new FreeCaseMenu(content);
+		menu.setName(MsgUtil.getMessage("menu.item.free"));
+		menu.setEditable(false);
+		
+		controller.loadContent(content, PageLevel.Level2);
+		controller.loadLeftMenu(menu);
+		controller.setEndHideLoading((v) -> {
+			content.setupCase(archiveCase, CaseMode.EDIT_MODE);
+		});
 	}
 
 	@Override
