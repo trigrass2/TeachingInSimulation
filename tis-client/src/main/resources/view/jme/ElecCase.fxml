@@ -36,11 +36,11 @@
 		</padding>
 	</HBox>
 	<HBox VBox.vgrow="ALWAYS" pickOnBounds="false" mouseTransparent="false" alignment="CENTER_RIGHT">
-		<VBox fx:id="steps" visible="false" prefWidth="300" minWidth="300" maxWidth="300">
+		<VBox fx:id="steps" visible="false" prefWidth="300" minWidth="300" maxWidth="300" prefHeight="430" minHeight="430" maxHeight="430">
 			<ScrollPane fx:id="scroll" hbarPolicy="NEVER" styleClass="cover" prefHeight="400" minHeight="400" maxHeight="400">
 				<content></content>
 			</ScrollPane>
-			<HBox fx:id="btns">
+			<HBox fx:id="btns" style="-fx-background-color:red;">
 				<Button styleClass="blue-btn" pickOnBounds="true" prefWidth="150" onAction="#prev">
 					<graphic>
 						<SVGGlyph name="iconfont.svg.left" size="16" fill="WHITE" />
