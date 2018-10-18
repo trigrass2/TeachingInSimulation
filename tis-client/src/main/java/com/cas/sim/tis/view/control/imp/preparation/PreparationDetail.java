@@ -28,6 +28,7 @@ import com.cas.sim.tis.action.PreparationResourceAction;
 import com.cas.sim.tis.action.ResourceAction;
 import com.cas.sim.tis.action.UserAction;
 import com.cas.sim.tis.app.state.ElecCaseState.CaseMode;
+import com.cas.sim.tis.app.state.broken.BrokenCaseState;
 import com.cas.sim.tis.app.state.typical.TypicalCaseState;
 import com.cas.sim.tis.consts.GoalRelationshipType;
 import com.cas.sim.tis.consts.GoalType;
@@ -55,6 +56,9 @@ import com.cas.sim.tis.util.SpringUtil;
 import com.cas.sim.tis.view.control.IContent;
 import com.cas.sim.tis.view.control.imp.ResourceViewer;
 import com.cas.sim.tis.view.control.imp.Title;
+import com.cas.sim.tis.view.control.imp.broken.BrokenCase3D;
+import com.cas.sim.tis.view.control.imp.broken.BrokenCaseBtnController;
+import com.cas.sim.tis.view.control.imp.broken.BrokenCaseSelectDialog;
 import com.cas.sim.tis.view.control.imp.dialog.Dialog;
 import com.cas.sim.tis.view.control.imp.dialog.Tip.TipType;
 import com.cas.sim.tis.view.control.imp.jme.Recongnize3D;
@@ -529,10 +533,8 @@ public class PreparationDetail extends HBox implements IContent {
 
 	@FXML
 	private void repair() {
-		List<BrokenCase> cases = SpringUtil.getBean(BrokenCaseAction.class).getBrokenCaseList();
-
 		Dialog<Integer> dialog = new Dialog<>();
-		dialog.setDialogPane(new BrokenCaseSelectDialog(cases));
+		dialog.setDialogPane(new BrokenCaseSelectDialog(false, Session.get(Session.KEY_LOGIN_ROLE)));
 		dialog.setTitle(MsgUtil.getMessage("preparation.broken.case"));
 		dialog.setPrefSize(640, 500);
 		dialog.showAndWait().ifPresent(id -> {
@@ -634,8 +636,8 @@ public class PreparationDetail extends HBox implements IContent {
 		ArchiveCase archiveCase = SpringUtil.getBean(ArchiveCaseAction.class).findArchiveCaseById(id);
 
 		PageController controller = SpringUtil.getBean(PageController.class);
-		TypicalCase3D content = new TypicalCase3D(new TypicalCaseState(), new TypicalCaseBtnController(CaseMode.VIEW_MODE, CaseMode.TYPICAL_TRAIN_MODE));
-
+		TypicalCase3D content = new TypicalCase3D(new TypicalCaseState(), new TypicalCaseBtnController(CaseMode.VIEW_MODE));
+		
 		controller.loadContent(content, PageLevel.Level2);
 		controller.showLoading();
 		controller.setEndHideLoading((v) -> {
@@ -649,7 +651,16 @@ public class PreparationDetail extends HBox implements IContent {
 	}
 
 	private void openBrokenCase(Integer id) {
+		BrokenCase brokenCase = SpringUtil.getBean(BrokenCaseAction.class).findBrokenCaseById(id);
 
+		PageController controller = SpringUtil.getBean(PageController.class);
+		BrokenCase3D content = new BrokenCase3D(new BrokenCaseState(), new BrokenCaseBtnController(CaseMode.BROKEN_TRAIN_MODE));
+		
+		controller.loadContent(content, PageLevel.Level2);
+		controller.showLoading();
+		controller.setEndHideLoading((v) -> {
+			content.setupCase(brokenCase, CaseMode.BROKEN_TRAIN_MODE);
+		});
 	}
 
 	private void openFreeMode() {

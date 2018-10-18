@@ -88,7 +88,7 @@
 											<content>
 												<!-- <ScrollPane fitToWidth="true" hbarPolicy="NEVER"> -->
 												<!-- <content> -->
-												<VBox>
+												<VBox spacing="10">
 													<children>
 														<Table fx:id="quizs" serial="true" rowHeight="45" rowsSpacing="2" spacing="10" headerable="false" separatorable="false" normalStyleClass="table-row" hoverStyleClass="table-row-hover" selectedStyleClass="table-row-selected" />
 														<VBox fx:id="libraries" spacing="10"></VBox>

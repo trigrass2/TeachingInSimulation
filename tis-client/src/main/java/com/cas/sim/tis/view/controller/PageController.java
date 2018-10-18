@@ -261,9 +261,9 @@ public class PageController implements Initializable {
 
 	public IContent getIContent() {
 		if (PageLevel.Level1 == level) {
-			return level1Content;
-		} else if (PageLevel.Level2 == level) {
 			return level2Content;
+		} else if (PageLevel.Level2 == level) {
+			return level1Content;
 		}
 		return null;
 	}
