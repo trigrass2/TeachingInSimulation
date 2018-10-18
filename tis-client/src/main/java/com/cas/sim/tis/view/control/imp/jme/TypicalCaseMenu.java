@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import com.cas.sim.tis.action.ArchiveCaseAction;
 import com.cas.sim.tis.app.state.ElecCaseState.CaseMode;
+import com.cas.sim.tis.consts.ArchiveType;
 import com.cas.sim.tis.consts.RoleConst;
 import com.cas.sim.tis.consts.Session;
 import com.cas.sim.tis.entity.ArchiveCase;
@@ -50,12 +51,14 @@ public class TypicalCaseMenu extends ElecCaseMenu implements ILeftContent {
 		if (((TypicalCase3D)elecCase3D).isClean()) {
 			ArchiveCase archiveCase = new ArchiveCase();
 			archiveCase.setName("新建案例 *");
+			archiveCase.setType(ArchiveType.TYPICAL.getIndex());
 			((TypicalCase3D)elecCase3D).setupCase(archiveCase, CaseMode.EDIT_MODE);
 		} else {
-			AlertUtil.showConfirm(MsgUtil.getMessage("broken.case.not.be.clean"), resp -> {
+			AlertUtil.showConfirm(MsgUtil.getMessage("elec.case.not.be.clean"), resp -> {
 				if (resp == ButtonType.YES) {
 					ArchiveCase archiveCase = new ArchiveCase();
 					archiveCase.setName("新建案例 *");
+					archiveCase.setType(ArchiveType.TYPICAL.getIndex());
 					((TypicalCase3D)elecCase3D).setupCase(archiveCase, CaseMode.EDIT_MODE);
 				}
 			});

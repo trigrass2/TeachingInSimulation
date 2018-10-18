@@ -6,6 +6,7 @@ import java.util.List;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.util.TypeUtils;
 import com.cas.sim.tis.action.ArchiveCaseAction;
+import com.cas.sim.tis.consts.ArchiveType;
 import com.cas.sim.tis.consts.RoleConst;
 import com.cas.sim.tis.consts.Session;
 import com.cas.sim.tis.entity.ArchiveCase;
@@ -93,7 +94,7 @@ public class TypicalCaseSelectDialog extends DialogPane<Integer> {
 		id.setPrimary(true);
 		id.setVisible(false);
 		id.setKey("id");
-		// 典型案例
+		// 案例
 		Column<Integer> name = new Column<>();
 		name.setKey("name");
 		name.setText(MsgUtil.getMessage("preparation.typical.case"));
@@ -206,7 +207,7 @@ public class TypicalCaseSelectDialog extends DialogPane<Integer> {
 			table.getColumns().add(visible);
 			table.getColumns().add(delete);
 		}
-		List<ArchiveCase> cases = SpringUtil.getBean(ArchiveCaseAction.class).getArchiveCasesByCreator(creator, onlyPublished);
+		List<ArchiveCase> cases = SpringUtil.getBean(ArchiveCaseAction.class).getArchiveCasesByCreator(creator, onlyPublished, ArchiveType.TYPICAL.getIndex());
 		JSONArray array = new JSONArray();
 		array.addAll(cases);
 		table.setItems(array);

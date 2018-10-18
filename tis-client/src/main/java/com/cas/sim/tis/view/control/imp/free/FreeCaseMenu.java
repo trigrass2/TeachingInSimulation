@@ -4,8 +4,7 @@ import java.util.Optional;
 
 import com.cas.sim.tis.action.ArchiveCaseAction;
 import com.cas.sim.tis.app.state.ElecCaseState.CaseMode;
-import com.cas.sim.tis.consts.RoleConst;
-import com.cas.sim.tis.consts.Session;
+import com.cas.sim.tis.consts.ArchiveType;
 import com.cas.sim.tis.entity.ArchiveCase;
 import com.cas.sim.tis.util.AlertUtil;
 import com.cas.sim.tis.util.MsgUtil;
@@ -14,7 +13,6 @@ import com.cas.sim.tis.view.control.imp.ElecCase3D;
 import com.cas.sim.tis.view.control.imp.ElecCaseMenu;
 import com.cas.sim.tis.view.control.imp.dialog.Dialog;
 import com.cas.sim.tis.view.control.imp.dialog.Tip.TipType;
-import com.cas.sim.tis.view.control.imp.jme.TypicalCaseSelectDialog;
 import com.cas.sim.tis.view.controller.PageController;
 
 import javafx.application.Platform;
@@ -39,37 +37,29 @@ public class FreeCaseMenu extends ElecCaseMenu {
 			}
 			ArchiveCaseAction action = SpringUtil.getBean(ArchiveCaseAction.class);
 			ArchiveCase freeCase = action.findArchiveCaseById(id);
-			((FreeCase3D) elecCase3D).setupCase(freeCase, CaseMode.BROKEN_TRAIN_MODE);
+			((FreeCase3D) elecCase3D).setupCase(freeCase, CaseMode.EDIT_MODE);
 		});
 	}
 
 	@Override
 	protected void newCase() {
-		Dialog<Integer> dialog = new Dialog<>();
-		int role = Session.get(Session.KEY_LOGIN_ROLE, RoleConst.STUDENT);
-		dialog.setDialogPane(new TypicalCaseSelectDialog(false, role));
-		dialog.setTitle(MsgUtil.getMessage("typical.case.title.list"));
-		dialog.setPrefSize(640, 500);
-		dialog.showAndWait().ifPresent(id -> {
-			if (id == null) {
-				return;
-			}
-			SpringUtil.getBean(PageController.class).showLoading();
-			// 0、判断当前是否有接线存在
-			if (((FreeCase3D) elecCase3D).isClean()) {
-				ArchiveCase archiveCase = new ArchiveCase();
-				archiveCase.setName("新建故障 *");
-				((FreeCase3D) elecCase3D).setupCase(archiveCase, CaseMode.EDIT_MODE);
-			} else {
-				AlertUtil.showConfirm(MsgUtil.getMessage("free.case.not.be.clean"), resp -> {
-					if (resp == ButtonType.YES) {
-						ArchiveCase archiveCase = new ArchiveCase();
-						archiveCase.setName("新建故障 *");
-						((FreeCase3D) elecCase3D).setupCase(archiveCase, CaseMode.EDIT_MODE);
-					}
-				});
-			}
-		});
+		SpringUtil.getBean(PageController.class).showLoading();
+		// 0、判断当前是否有接线存在
+		if (((FreeCase3D)elecCase3D).isClean()) {
+			ArchiveCase archiveCase = new ArchiveCase();
+			archiveCase.setName("新建案例 *");
+			archiveCase.setType(ArchiveType.FREE.getIndex());
+			((FreeCase3D)elecCase3D).setupCase(archiveCase, CaseMode.EDIT_MODE);
+		} else {
+			AlertUtil.showConfirm(MsgUtil.getMessage("elec.case.not.be.clean"), resp -> {
+				if (resp == ButtonType.YES) {
+					ArchiveCase archiveCase = new ArchiveCase();
+					archiveCase.setName("新建案例 *");
+					archiveCase.setType(ArchiveType.FREE.getIndex());
+					((FreeCase3D)elecCase3D).setupCase(archiveCase, CaseMode.EDIT_MODE);
+				}
+			});
+		}
 	}
 
 	@Override
