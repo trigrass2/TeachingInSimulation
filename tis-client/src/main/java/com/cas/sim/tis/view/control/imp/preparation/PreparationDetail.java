@@ -639,7 +639,6 @@ public class PreparationDetail extends HBox implements IContent {
 		TypicalCase3D content = new TypicalCase3D(new TypicalCaseState(), new TypicalCaseBtnController(CaseMode.VIEW_MODE));
 		
 		controller.loadContent(content, PageLevel.Level2);
-		controller.showLoading();
 		controller.setEndHideLoading((v) -> {
 			content.setupCase(archiveCase, CaseMode.VIEW_MODE);
 		});
@@ -657,7 +656,6 @@ public class PreparationDetail extends HBox implements IContent {
 		BrokenCase3D content = new BrokenCase3D(new BrokenCaseState(), new BrokenCaseBtnController(CaseMode.BROKEN_TRAIN_MODE));
 		
 		controller.loadContent(content, PageLevel.Level2);
-		controller.showLoading();
 		controller.setEndHideLoading((v) -> {
 			content.setupCase(brokenCase, CaseMode.BROKEN_TRAIN_MODE);
 		});

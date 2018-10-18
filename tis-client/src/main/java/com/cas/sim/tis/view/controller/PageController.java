@@ -112,8 +112,7 @@ public class PageController implements Initializable {
 		// 返回上一个界面
 		if (this.level == PageLevel.Level2) {
 			this.level = PageLevel.Level1;
-			this.level1Content.distroy();
-			this.level1Content = level2Content;
+			this.level2Content.distroy();
 			this.level2Content = null;
 			this.content.getChildren().addAll(level1Content.getContent());
 		} else {
@@ -168,8 +167,7 @@ public class PageController implements Initializable {
 			if (this.level2Content != null) {
 				this.level2Content.distroy();
 			}
-			this.level2Content = this.level1Content;
-			this.level1Content = content;
+			this.level2Content = content;
 		}
 		this.content.getChildren().addAll(content.getContent());
 	}
@@ -261,9 +259,9 @@ public class PageController implements Initializable {
 
 	public IContent getIContent() {
 		if (PageLevel.Level1 == level) {
-			return level2Content;
-		} else if (PageLevel.Level2 == level) {
 			return level1Content;
+		} else if (PageLevel.Level2 == level) {
+			return level2Content;
 		}
 		return null;
 	}
