@@ -223,10 +223,29 @@ public abstract class ElecCase3D<T> implements IDistory {
 //			}
 		});
 	}
+	
+	/**
+	 * 界面上点击保存按钮
+	 */
+	public void save() {
+		state.save();
+	}
 
-	protected abstract void switchTo2D();
+	/**
+	 * 判断当前接线板上是否存在元器件、导线
+	 * @return
+	 */
+	public boolean isClean() {
+		return state.isClean();
+	}
 
-	protected abstract void switchTo3D();
+	public void switchTo2D() {
+		state.switchTo2D();
+	}
+
+	public void switchTo3D() {
+		state.switchTo3D();
+	}
 
 	/**
 	 * 显示元器件弹出菜单
@@ -261,8 +280,12 @@ public abstract class ElecCase3D<T> implements IDistory {
 		menuWire.show(GUIState.getStage(), anchor.x, anchor.y);
 	}
 
+
 	@Override
 	public void distroy() {
+		jmeApp.getStateManager().detach(state);
+		jmeApp.stop(true);
+
 		btnController.distroy();
 	}
 }

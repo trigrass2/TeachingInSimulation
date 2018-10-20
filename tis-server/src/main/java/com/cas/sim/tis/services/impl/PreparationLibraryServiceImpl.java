@@ -35,7 +35,10 @@ public class PreparationLibraryServiceImpl implements PreparationLibraryService 
 	@Override
 	@Transactional
 	public void addPreparationLibrary(RequestEntity entity) {
+		Integer pid = entity.getInt("pid");
 		PreparationLibrary library = entity.getObject("library", PreparationLibrary.class);
+		library.setPreparationId(pid);
+		
 		mapper.insertUseGeneratedKeys(library);
 		
 		PreparationQuiz quiz = new PreparationQuiz();

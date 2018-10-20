@@ -8,6 +8,7 @@ import java.util.ResourceBundle;
 import com.cas.sim.tis.Application;
 import com.cas.sim.tis.app.state.ElecCaseState.CaseMode;
 import com.cas.sim.tis.app.state.broken.BrokenCaseState;
+import com.cas.sim.tis.app.state.free.FreeCaseState;
 import com.cas.sim.tis.app.state.typical.TypicalCaseState;
 import com.cas.sim.tis.consts.MenuEnum;
 import com.cas.sim.tis.consts.RoleConst;
@@ -23,6 +24,8 @@ import com.cas.sim.tis.view.control.imp.broken.BrokenCaseBtnController;
 import com.cas.sim.tis.view.control.imp.broken.BrokenCaseMenu;
 import com.cas.sim.tis.view.control.imp.dialog.Dialog;
 import com.cas.sim.tis.view.control.imp.free.FreeCase3D;
+import com.cas.sim.tis.view.control.imp.free.FreeCaseBtnController;
+import com.cas.sim.tis.view.control.imp.free.FreeCaseMenu;
 import com.cas.sim.tis.view.control.imp.jme.Recongnize3D;
 import com.cas.sim.tis.view.control.imp.jme.RecongnizeMenu;
 import com.cas.sim.tis.view.control.imp.jme.TypicalCase3D;
@@ -158,7 +161,13 @@ public class HomeController implements Initializable {
 		Application.showView(PageView.class);
 		
 		PageController controller = SpringUtil.getBean(PageController.class);
-//		FreeCase3D content = new FreeCase3D(state, btnController);
+		FreeCase3D content = new FreeCase3D(new FreeCaseState(), new FreeCaseBtnController(CaseMode.EDIT_MODE));
+	
+		FreeCaseMenu menu = new FreeCaseMenu(content);
+		menu.setName(MsgUtil.getMessage("menu.item.free"));
+
+		controller.loadLeftMenu(menu);
+		controller.loadContent(content, PageLevel.Level1);
 	}
 
 	/**

@@ -69,7 +69,7 @@ public class BrokenCaseMenu extends ElecCaseMenu {
 				brokenCase.setArchivePath(typicalCase.getArchivePath());
 				((BrokenCase3D) elecCase3D).setupCase(brokenCase, CaseMode.EDIT_MODE);
 			} else {
-				AlertUtil.showConfirm(MsgUtil.getMessage("broken.case.not.be.clean"), resp -> {
+				AlertUtil.showConfirm(MsgUtil.getMessage("elec.case.not.be.clean"), resp -> {
 					if (resp == ButtonType.YES) {
 						BrokenCase brokenCase = new BrokenCase();
 						brokenCase.setTypicalId(id);
