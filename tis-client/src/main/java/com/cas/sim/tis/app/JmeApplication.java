@@ -51,11 +51,10 @@ public class JmeApplication extends JmeToJFXApplication {
 //		LOG.debug("注册资源路径:{}", assetPath); // http://192.168.x.x:port/***/assests/
 ////		注册资源路径
 //		assetManager.registerLocator(assetPath, UrlLocator.class);
-		assetManager.registerLocator("E:\\JME_SDKPROJ_HOME\\ESimulation3D\\assets", FileLocator.class);
-		
-		cam.setFrustumPerspective(45, (float) cam.getWidth() / cam.getHeight(), 0.01f, 100f);
-		
+//		assetManager.registerLocator("G:\\Workspace\\TeachingInSimulation\\TeachingInSimulation\\tis-client\\assets", FileLocator.class);
+		assetManager.registerLocator("assets", FileLocator.class);
 
+		cam.setFrustumPerspective(45, (float) cam.getWidth() / cam.getHeight(), 0.01f, 100f);
 ////		创建天空盒
 ////		Spatial sky = SkyFactory.createSky(assetManager, "Model/Sky/noon_grass_2k.hdr", SkyFactory.EnvMapType.EquirectMap);
 //		Spatial sky = SkyFactory.createSky(assetManager, "Model/Sky/Path.hdr", SkyFactory.EnvMapType.EquirectMap);

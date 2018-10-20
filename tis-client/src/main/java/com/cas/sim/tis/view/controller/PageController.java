@@ -70,16 +70,22 @@ public class PageController implements Initializable {
 	private Pane loadingLayer;
 	@FXML
 	private StackPane container;
-
-	private ILeftContent left;
 	/**
-	 * 上一层内容
+	 * 第一层菜单内容
 	 */
-	private IContent level2Content;
+	private ILeftContent level1Left;
 	/**
-	 * 当前层内容
+	 * 第二层菜单内容
+	 */
+	private ILeftContent level2Left;
+	/**
+	 * 第一层内容
 	 */
 	private IContent level1Content;
+	/**
+	 * 第二层内容
+	 */
+	private IContent level2Content;
 
 	private PageLevel level;
 
@@ -112,10 +118,22 @@ public class PageController implements Initializable {
 		// 返回上一个界面
 		if (this.level == PageLevel.Level2) {
 			this.level = PageLevel.Level1;
-			this.level1Content.distroy();
-			this.level1Content = level2Content;
+			this.level2Content.distroy();
 			this.level2Content = null;
 			this.content.getChildren().addAll(level1Content.getContent());
+
+			if (level2Left == null) {
+				return;
+			} else if (level2Left instanceof IDistory) {
+				((IDistory) level2Left).distroy();
+				level2Left = null;
+				this.leftContent.getChildren().clear();
+				this.leftContent.getChildren().addAll(level1Left.getLeftContent());
+			} else {
+				level2Left = null;
+				this.leftContent.getChildren().clear();
+				this.leftContent.getChildren().addAll(level1Left.getLeftContent());
+			}
 		} else {
 			clear();
 			Application.showView(HomeView.class);
@@ -134,13 +152,26 @@ public class PageController implements Initializable {
 	public void loadLeftMenu(ILeftContent leftMenu) {
 		this.leftContent.getChildren().clear();
 		if (leftMenu == null) {
+			this.level1Left = null;
+			this.level2Left = null;
 			return;
 		}
-		if (this.left instanceof IDistory) {
-			((IDistory) this.left).distroy();
+		if (PageLevel.Level1 == level || level == null) {
+			if (this.level1Left != null && level1Left instanceof IDistory) {
+				((IDistory) this.level1Left).distroy();
+			}
+			if (this.level2Left != null && level2Left instanceof IDistory) {
+				((IDistory) this.level2Left).distroy();
+			}
+			this.level1Left = leftMenu;
+			this.level2Left = null;
+		} else if (PageLevel.Level2 == level) {
+			if (this.level2Left != null && level2Left instanceof IDistory) {
+				((IDistory) this.level2Left).distroy();
+			}
+			this.level2Left = leftMenu;
 		}
 		this.leftContent.getChildren().add(leftMenu.getLeftContent());
-		this.left = leftMenu;
 	}
 
 	public void loadContent(IContent content, PageLevel level) {
@@ -165,11 +196,7 @@ public class PageController implements Initializable {
 				this.level2Content.distroy();
 			}
 			this.level = PageLevel.Level2;
-			if (this.level2Content != null) {
-				this.level2Content.distroy();
-			}
-			this.level2Content = this.level1Content;
-			this.level1Content = content;
+			this.level2Content = content;
 		}
 		this.content.getChildren().addAll(content.getContent());
 	}
@@ -256,7 +283,7 @@ public class PageController implements Initializable {
 	}
 
 	public ILeftContent getLeftMenu() {
-		return left;
+		return level1Left;
 	}
 
 	public IContent getIContent() {

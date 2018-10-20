@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 import com.alibaba.fastjson.JSON;
 import com.cas.circuit.util.JaxbUtil;
 import com.cas.circuit.vo.Archive;
+import com.cas.sim.tis.consts.ArchiveType;
 import com.cas.sim.tis.consts.Session;
 import com.cas.sim.tis.entity.ArchiveCase;
 import com.cas.sim.tis.services.ArchiveCaseService;
@@ -44,13 +45,14 @@ public class ArchiveCaseAction extends BaseAction {
 	/**
 	 * 根据创建人获得典型案例集合
 	 * @param creator 创建人编号
-	 * @param onlyPublished 学生可见 
+	 * @param onlyPublished 学生可见
 	 * @return List 典型案例集合
 	 */
-	public List<ArchiveCase> getArchiveCasesByCreator(Integer creator, boolean onlyPublished) {
+	public List<ArchiveCase> getArchiveCasesByCreator(Integer creator, boolean onlyPublished, int caseType) {
 		RequestEntity req = new RequestEntityBuilder()//
 				.set("creator", creator)//
 				.set("onlyPublished", onlyPublished)//
+				.set("type", caseType)//
 				.build();
 		ResponseEntity resp = service.findArchiveCasesByCreatorId(req);
 		return JSON.parseArray(resp.data, ArchiveCase.class);
@@ -61,7 +63,7 @@ public class ArchiveCaseAction extends BaseAction {
 	 * @param archiveCase 典型案例对象
 	 * @param archive 典型案例存档对象
 	 */
-	public void save(ArchiveCase archiveCase, Archive archive) {
+	public void save(ArchiveCase archiveCase, Archive archive, ArchiveType type) {
 		System.out.println(Thread.currentThread());
 //		1、 将存档对象转换为XML文件
 		String xmlContent = JaxbUtil.convertToXml(archive, "utf-8");
@@ -83,7 +85,7 @@ public class ArchiveCaseAction extends BaseAction {
 //		2、将文件上传到FTP服务器
 		// 服务器路径目录：/archives/登录者ID
 		Integer userId = Session.get(Session.KEY_LOGIN_ID);
-		String remotePath = String.format("/archives/archive/%s", String.valueOf(userId));
+		String remotePath = String.format("/archives/%s/%s", type.getFolder(), String.valueOf(userId));
 
 		try {
 			FTPUtils.connect().cd(remotePath).uploadFile(//
@@ -160,5 +162,4 @@ public class ArchiveCaseAction extends BaseAction {
 				.build();
 		service.updateArchiveCase(req);
 	}
-
 }

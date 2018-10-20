@@ -26,11 +26,14 @@ public class ArchiveCaseServiceImpl implements ArchiveCaseService {
 			condition.createCriteria()//
 					.andEqualTo("del", 0)//
 					.andEqualTo("creator", entity.getInt("creator"))//
-					.andEqualTo("publish", true);
+					.andEqualTo("publish", true)//
+					.andEqualTo("type", entity.getInt("type"));
+			
 		} else {
 			condition.createCriteria()//
 					.andEqualTo("del", 0)//
-					.andEqualTo("creator", entity.getInt("creator"));
+					.andEqualTo("creator", entity.getInt("creator"))//
+					.andEqualTo("type", entity.getInt("type"));
 		}
 		condition.orderBy("createDate").desc();
 		List<ArchiveCase> result = mapper.selectByCondition(condition);

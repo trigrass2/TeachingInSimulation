@@ -6,6 +6,7 @@ import com.cas.circuit.vo.Archive;
 import com.cas.sim.tis.action.ArchiveAction;
 import com.cas.sim.tis.action.ArchiveCaseAction;
 import com.cas.sim.tis.app.state.ElecCaseState;
+import com.cas.sim.tis.consts.ArchiveType;
 import com.cas.sim.tis.entity.ArchiveCase;
 import com.cas.sim.tis.util.SpringUtil;
 import com.cas.sim.tis.view.control.imp.jme.TypicalCase3D;
@@ -59,12 +60,13 @@ public class TypicalCaseState extends ElecCaseState<ArchiveCase> {
 		}
 		Archive archive = circuitState.getArchive();
 		archive.setName(archiveCase.getName());
-		SpringUtil.getBean(ArchiveCaseAction.class).save(archiveCase, archive);
+		SpringUtil.getBean(ArchiveCaseAction.class).save(archiveCase, archive, ArchiveType.TYPICAL);
 	}
 
 	public void newCase() {
 		ArchiveCase archiveCase = new ArchiveCase();
 		archiveCase.setName("新建案例 *");
+		archiveCase.setType(ArchiveType.TYPICAL.getIndex());
 		setupCase(archiveCase, CaseMode.EDIT_MODE);
 	}
 

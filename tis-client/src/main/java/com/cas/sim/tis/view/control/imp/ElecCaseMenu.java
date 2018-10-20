@@ -23,6 +23,8 @@ import javafx.scene.text.TextAlignment;
 
 public abstract class ElecCaseMenu implements ILeftContent {
 
+	protected HBox menu = new HBox(22);
+	
 	private Label name = new Label();
 	private ToggleGroup group = new ToggleGroup();
 
@@ -43,8 +45,6 @@ public abstract class ElecCaseMenu implements ILeftContent {
 
 		name.getStyleClass().add("left-menu-orange");
 		name.setWrapText(true);
-
-		HBox menu = new HBox(22);
 
 		Button open = createMenu(MsgUtil.getMessage("menu.button.open"), new SVGGlyph("iconfont.svg.open", Color.WHITE, 24));
 		open.setOnMouseClicked(e -> showCaseDialog());
@@ -91,5 +91,4 @@ public abstract class ElecCaseMenu implements ILeftContent {
 	protected abstract void newCase();
 
 	protected abstract void saveCase();
-
 }

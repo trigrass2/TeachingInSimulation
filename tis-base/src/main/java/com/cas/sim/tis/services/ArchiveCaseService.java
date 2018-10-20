@@ -10,7 +10,7 @@ import io.airlift.drift.annotations.ThriftService;
 public interface ArchiveCaseService {
 	/**
 	 * 根据创建人获得存档案例集合
-	 * @param entity （creator 创建人编号）
+	 * @param entity （creator 创建人编号；onlyPublished 是否只显示发布内容；caseType 查询存档类型）
 	 * @return List 存档案例集合
 	 */
 	@ThriftMethod
