@@ -4,8 +4,12 @@
 
 package com.cas.sim.tis.view.controller;
 
+import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
+
+import javax.imageio.ImageIO;
 
 import org.springframework.util.StringUtils;
 
@@ -21,11 +25,13 @@ import com.cas.sim.tis.view.control.imp.LoginDecoration;
 import com.jme3.network.message.SerializerRegistrationsMessage;
 
 import javafx.application.Platform;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.image.WritableImage;
 import javafx.scene.layout.Region;
 import lombok.extern.slf4j.Slf4j;
 
@@ -131,7 +137,7 @@ public class LoginController implements Initializable {
 //				}
 //			});
 //		} else {
-			setStatusMsgKey(messageKey);
+		setStatusMsgKey(messageKey);
 //		}
 		loginBtn.setDisable(false);
 	}

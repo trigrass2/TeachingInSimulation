@@ -49,7 +49,7 @@ public class SceneCameraState extends BaseState implements ActionListener, Analo
 
 //	在3D切换到2D时的相机位置，
 
-	private Vector3f camLocation3D = new Vector3f(0.0023542233f, 0.3672351f, 0.47397044f), //
+	private Vector3f camLocation3D = new Vector3f(0f, 30f, 30f), //
 			camLocation2D = new Vector3f(0.02355165f, 0.8038877f, 0.001963116f);
 	private Quaternion camRotation3D = new Quaternion(2.240995E-9f, -0.9319663f, 0.36255902f, 1.3504177E-8f), //
 			camRotation2D = new Quaternion(0.0f, -0.70710677f, 0.70710677f, 0.0f);
@@ -363,7 +363,7 @@ public class SceneCameraState extends BaseState implements ActionListener, Analo
 //			h = FastMath.tan(45 * FastMath.DEG_TO_RAD * .5f) * dist;
 //			float w = h * aspect;
 //			cam.setFrustum(-1000, 1000, -w, w, h, -h);
-			cam.setFrustumPerspective(45f, aspect, 0.001f, 1000);
+//			cam.setFrustumPerspective(45f, aspect, 0.001f, 1000);
 		} else if (mode == Mode.Persp) {
 //			记录相机的位置
 			camLocation2D = cam.getLocation().clone();
@@ -376,7 +376,7 @@ public class SceneCameraState extends BaseState implements ActionListener, Analo
 			}
 
 //			cam.setParallelProjection(false);
-			cam.setFrustumPerspective(45f, aspect, 0.001f, 1000);
+//			cam.setFrustumPerspective(45f, aspect, 0.001f, 1000);
 		}
 	}
 

@@ -82,6 +82,9 @@ public abstract class ElecCaseState<T>extends BaseState {
 		this.holdState = new HoldState(root, compPlane, cameraState);
 		stateManager.attach(holdState);
 
+		stateManager.attach(new MultimeterState());
+		
+		
 		// 结束加载界面
 		Platform.runLater(() -> SpringUtil.getBean(PageController.class).hideLoading());
 	}
