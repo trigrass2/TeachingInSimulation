@@ -841,6 +841,14 @@
  	-fx-background-color:#ffffff;
  	-fx-shape: "M0,4H2L3,6L6,0H8L4,8H2Z";
  }
+ .recognize-label{
+ 	-fx-pref-height: 40.0;
+ 	-fx-background-color: #2c70a2;
+ 	-fx-background-radius: 0.0px;
+ 	-fx-padding: 10.0,5.0;
+ 	-fx-text-fill:#ffffff;
+ 	-fx-font-size:14.0px;
+ }
  /*******************************************************************************
  *                                                                             *
  * 试题列表样式                                                          *

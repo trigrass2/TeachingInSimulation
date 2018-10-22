@@ -1,14 +1,44 @@
 package com.cas.sim.tis.view.control.imp.typical;
 
+import java.util.List;
+
 import com.cas.sim.tis.view.control.imp.ElecFlowItem;
 import com.cas.sim.tis.view.control.imp.typical.StepItem.State;
 import com.jme3.scene.Spatial.CullHint;
 
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.ReadOnlyObjectWrapper;
+import javafx.collections.ListChangeListener;
+import javafx.scene.Node;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.text.Text;
 
 public class TypicalFlowItem extends ElecFlowItem {
+
+	@Override
+	protected void bindListener() {
+		getChildren().addListener(new ListChangeListener<Node>() {
+
+			@Override
+			public void onChanged(Change<? extends Node> c) {
+				while (c.next()) {
+					final List<? extends Node> added = c.getAddedSubList();
+					final List<? extends Node> removed = c.getRemoved();
+					if (c.wasRemoved()) {
+						for (Node node : removed) {
+							items.remove(node);
+						}
+					}
+					if (c.wasAdded()) {
+						for (Node node : added) {
+							items.add((Text) node);
+						}
+					}
+				}
+				index = -1;
+			}
+		});
+	}
 
 	private final ReadOnlyObjectWrapper<StepItem> selected = new ReadOnlyObjectWrapper<StepItem>() {
 		@Override

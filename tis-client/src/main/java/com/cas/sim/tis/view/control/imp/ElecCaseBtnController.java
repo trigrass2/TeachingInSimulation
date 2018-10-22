@@ -332,6 +332,11 @@ public abstract class ElecCaseBtnController implements Initializable, IDistory {
 		this.elecCaseState = elecCaseState;
 	}
 
+	@FXML
+	protected void submit() {
+		
+	}
+	
 	@Override
 	public void distroy() {
 		clean();

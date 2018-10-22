@@ -11,17 +11,10 @@ import com.cas.sim.tis.view.control.IContent;
 import com.cas.sim.tis.view.control.imp.ElecCase3D;
 import com.cas.sim.tis.view.control.imp.ElecCaseBtnController;
 
-import javafx.scene.Node;
-
 public class TypicalCase3D extends ElecCase3D<ArchiveCase> implements IContent {
 
 	public TypicalCase3D(ElecCaseState<ArchiveCase> state, ElecCaseBtnController btnController) {
 		super(state, btnController);
-	}
-
-	@Override
-	public Node[] getContent() {
-		return new Node[] { canvas, pane, btns };
 	}
 
 	public void setupCase(ArchiveCase typicalCase, CaseMode mode) {

@@ -16,8 +16,10 @@ import com.cas.sim.tis.app.JmeApplication;
 import com.cas.sim.tis.app.state.ElecCaseState;
 import com.cas.sim.tis.app.state.typical.CircuitState;
 import com.cas.sim.tis.entity.ElecComp;
+import com.cas.sim.tis.util.AlertUtil;
 import com.cas.sim.tis.util.MsgUtil;
 import com.cas.sim.tis.view.control.IDistory;
+import com.cas.sim.tis.view.control.imp.dialog.Tip.TipType;
 import com.jme3x.jfx.injfx.JmeToJFXIntegrator;
 import com.jme3x.jfx.injfx.input.JFXMouseInput;
 
@@ -25,6 +27,7 @@ import de.felixroske.jfxsupport.GUIState;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.ContextMenu;
@@ -54,8 +57,8 @@ public abstract class ElecCase3D<T> implements IDistory {
 	protected ElecCaseState<T> state;
 	protected ElecCaseBtnController btnController;
 
-	protected ContextMenu menuWire = new ContextMenu();
-	protected ContextMenu menuComp = new ContextMenu();
+	protected ContextMenu wireMenu = new ContextMenu();
+	protected ContextMenu compMenu = new ContextMenu();
 
 	protected ElecCompDef compDef;
 	protected Wire wire;
@@ -119,6 +122,10 @@ public abstract class ElecCase3D<T> implements IDistory {
 		btnController.setElecCase3D(this);
 	}
 
+	public Node[] getContent() {
+		return new Node[] { canvas, pane, btns };
+	}
+	
 	public void selectedElecComp(ElecComp elecComp) {
 //		找到典型案例的状态机
 		jmeApp.enqueue(() -> {
@@ -146,10 +153,17 @@ public abstract class ElecCase3D<T> implements IDistory {
 	}
 
 	protected void createCompPopupMenu() {
-		MenuItem tag = new MenuItem(MsgUtil.getMessage("button.tag"));
-		MenuItem del = new MenuItem(MsgUtil.getMessage("button.delete"));
-		this.menuComp.getItems().addAll(tag, del);
+		createCompTagMenu();
+		createCompDelMenu();
+		createCompResetMenu();
+	}
 
+	protected void createWirePopupMenu() {
+		createWireTagMenu();
+		createWireDelMenu();
+	}
+	
+	protected void createCompTagMenu() {
 		TextInputDialog steamIdDialog = new TextInputDialog();
 		steamIdDialog.setTitle(MsgUtil.getMessage("button.tag"));
 		steamIdDialog.setHeaderText(null);
@@ -165,35 +179,39 @@ public abstract class ElecCase3D<T> implements IDistory {
 			}
 		});
 
+		MenuItem tag = new MenuItem(MsgUtil.getMessage("button.tag"));
 		tag.setOnAction(e -> {
 			steamIdDialog.getEditor().setText(compDef.getProxy().getTagName());
 			steamIdDialog.showAndWait().ifPresent(tagName -> {
 				compDef.getProxy().setTagName(tagName);
 			});
 		});
-
+		compMenu.getItems().add(tag);
+	}
+	
+	protected void createCompDelMenu() {
+		MenuItem del = new MenuItem(MsgUtil.getMessage("button.delete"));
 		del.setOnAction(e -> {
 			CircuitState state = jmeApp.getStateManager().getState(CircuitState.class);
 			if (state == null) {
 				return;
 			}
-			state.detachFromCircuit(compDef);
-//			if (!enable) {
-//				AlertUtil.showAlert(AlertType.WARNING, MsgUtil.getMessage("alert.warning.wiring"));
-//			}
+			boolean enable = state.detachFromCircuit(compDef);
+			if (!enable) {
+				AlertUtil.showTip(TipType.WARN, MsgUtil.getMessage("alert.warning.wiring"));
+			}
 		});
-
+		compMenu.getItems().add(del);
+	}
+	
+	protected void createCompResetMenu() {
 		reset = new MenuItem(MsgUtil.getMessage("button.reset"));
 		reset.setOnAction(e -> {
 			compDef.reset();
 		});
 	}
-
-	protected void createWirePopupMenu() {
-		MenuItem tag = new MenuItem(MsgUtil.getMessage("elec.case.wires.num"));
-		MenuItem del = new MenuItem(MsgUtil.getMessage("button.delete"));
-		menuWire.getItems().addAll(tag, del);
-
+	
+	protected void createWireTagMenu() {
 		TextInputDialog steamIdDialog = new TextInputDialog();
 		steamIdDialog.setTitle(MsgUtil.getMessage("elec.case.wires.num"));
 		steamIdDialog.setHeaderText(null);
@@ -208,20 +226,27 @@ public abstract class ElecCase3D<T> implements IDistory {
 				steamIdDialog.getEditor().setText(o);
 			}
 		});
-
+		
+		MenuItem tag = new MenuItem(MsgUtil.getMessage("elec.case.wires.num"));
 		tag.setOnAction(e -> {
 			steamIdDialog.getEditor().setText(wire.getProxy().getNumber());
 			steamIdDialog.showAndWait().ifPresent(number -> {
 				wire.getProxy().setNumber(number);
 			});
 		});
+		wireMenu.getItems().add(tag);
+	}
+	
+	protected void createWireDelMenu() {
+		MenuItem del = new MenuItem(MsgUtil.getMessage("button.delete"));
 		del.setOnAction(e -> {
 			CircuitState state = jmeApp.getStateManager().getState(CircuitState.class);
-			state.detachFromCircuit(wire);
-//			if (!enable) {
-//				AlertUtil.showAlert(AlertType.WARNING, MsgUtil.getMessage("alert.warning.power.on"));
-//			}
+			boolean enable = state.detachFromCircuit(wire);
+			if (!enable) {
+				AlertUtil.showTip(TipType.WARN, MsgUtil.getMessage("alert.warning.power.on"));
+			}
 		});
+		wireMenu.getItems().add(del);
 	}
 	
 	/**
@@ -257,14 +282,14 @@ public abstract class ElecCase3D<T> implements IDistory {
 		String reset = compDef.getParam("reset", "0");
 		Optional.ofNullable(reset).ifPresent(t -> {
 			if ("1".equals(t)) {
-				menuComp.getItems().add(0, this.reset);
+				compMenu.getItems().add(0, this.reset);
 			} else {
-				menuComp.getItems().remove(this.reset);
+				compMenu.getItems().remove(this.reset);
 			}
 		});
 
 		Point anchor = MouseInfo.getPointerInfo().getLocation();
-		menuComp.show(GUIState.getStage(), anchor.x, anchor.y);
+		compMenu.show(GUIState.getStage(), anchor.x, anchor.y);
 	}
 
 	/**
@@ -277,7 +302,7 @@ public abstract class ElecCase3D<T> implements IDistory {
 		}
 		this.wire = wire;
 		Point anchor = MouseInfo.getPointerInfo().getLocation();
-		menuWire.show(GUIState.getStage(), anchor.x, anchor.y);
+		wireMenu.show(GUIState.getStage(), anchor.x, anchor.y);
 	}
 
 

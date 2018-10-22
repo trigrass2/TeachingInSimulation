@@ -300,4 +300,8 @@ public class PageController implements Initializable {
 			decoration.maximize();
 		}
 	}
+	
+	public void setBackEnable(boolean enable) {
+		this.back.setVisible(enable);
+	}
 }

@@ -45,13 +45,15 @@ public abstract class ElecCaseState<T>extends BaseState {
 	@Getter
 	@AllArgsConstructor
 	public enum CaseMode {
-		VIEW_MODE(MsgUtil.getMessage("elec.case.mode.view"), true), // 查看模式（控制一步步显示元器件，导线）
-		TYPICAL_TRAIN_MODE(MsgUtil.getMessage("elec.case.mode.train"), true), // 练习模式（教师、学生根据案例自由摆放元器件导线）
-		BROKEN_TRAIN_MODE(MsgUtil.getMessage("elec.case.mode.train"), false), // 练习模式（教师、学生根据案例检测故障）
-		EDIT_MODE(MsgUtil.getMessage("elec.case.mode.edit"), false);// 编辑模式（教师编辑案例）
+		VIEW_MODE(MsgUtil.getMessage("elec.case.mode.view"), true, false), // 查看模式（控制一步步显示元器件，导线）
+		TYPICAL_TRAIN_MODE(MsgUtil.getMessage("elec.case.mode.train"), true, true), // 练习模式（教师、学生根据案例自由摆放元器件导线）
+		BROKEN_TRAIN_MODE(MsgUtil.getMessage("elec.case.mode.train"), false, false), // 练习模式（教师、学生根据案例检测故障）
+		BROKEN_EXAM_MODE(MsgUtil.getMessage("elec.case.mode.exam"), false, false), // 考核模式（学生根据案例检测故障）
+		EDIT_MODE(MsgUtil.getMessage("elec.case.mode.edit"), false, true);// 编辑模式（教师编辑案例）
 
 		private String name;
-		private boolean hideCircuit;
+		private boolean hideCircuit;// 是否在初始化时隐藏电路
+		private boolean holdEnable;// 模式下是否允许拿去元器件
 		
 		@Override
 		public String toString() {
@@ -134,7 +136,7 @@ public abstract class ElecCaseState<T>extends BaseState {
 		addListener(compPlane, new MouseEventAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				if (CaseMode.TYPICAL_TRAIN_MODE != mode || CaseMode.BROKEN_TRAIN_MODE != mode) {
+				if (mode.isHoldEnable()) {
 					holdState.putDown(circuitState);
 				}
 			}
@@ -147,7 +149,7 @@ public abstract class ElecCaseState<T>extends BaseState {
 	}
 
 	public void hold(ElecComp elecComp) {
-		if (CaseMode.VIEW_MODE != mode) {
+		if (mode.isHoldEnable()) {
 			holdState.hold(elecComp);
 		}
 	}

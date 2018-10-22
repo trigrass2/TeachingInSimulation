@@ -42,7 +42,11 @@ public class BrokenCaseMenu extends ElecCaseMenu {
 			}
 			BrokenCaseAction action = SpringUtil.getBean(BrokenCaseAction.class);
 			BrokenCase brokenCase = action.findBrokenCaseById(id);
-			((BrokenCase3D) elecCase3D).setupCase(brokenCase, CaseMode.BROKEN_TRAIN_MODE);
+			if (RoleConst.STUDENT == role) {
+				((BrokenCase3D) elecCase3D).setupCase(brokenCase, CaseMode.BROKEN_TRAIN_MODE);
+			} else if (RoleConst.ADMIN == role || RoleConst.TEACHER == role) {
+				((BrokenCase3D) elecCase3D).setupCase(brokenCase, CaseMode.EDIT_MODE);
+			}
 		});
 	}
 
@@ -59,7 +63,7 @@ public class BrokenCaseMenu extends ElecCaseMenu {
 			}
 			ArchiveCaseAction action = SpringUtil.getBean(ArchiveCaseAction.class);
 			ArchiveCase typicalCase = action.findArchiveCaseById(id);
-			
+
 			SpringUtil.getBean(PageController.class).showLoading();
 			// 0、判断当前是否有接线存在
 			if (((BrokenCase3D) elecCase3D).isClean()) {

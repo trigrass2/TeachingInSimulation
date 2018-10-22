@@ -17,6 +17,7 @@
 <?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.control.ScrollPane?>
+<?import java.lang.String?>
 <VBox fx:id="pane" pickOnBounds="false" visible="false" xmlns:fx="http://javafx.com/fxml/1">
 	<HBox pickOnBounds="false" mouseTransparent="false">
 		<Title fx:id="title" />
@@ -78,6 +79,31 @@
 					<SVGGlyph name="iconfont.svg.wire" size="20" fill="WHITE" />
 				</graphic>
 			</Button>
+		</HBox>
+		<HBox fx:id="broken" spacing="10" visible="false" pickOnBounds="false" mouseTransparent="false" alignment="BOTTOM_LEFT">
+			<HBox styleClass="recognize-label" spacing="5">
+				<Label text="%exam.broken.number" styleClass="font14" textFill="WHITE" />
+				<Label fx:id="number" text="3">
+					<styleClass>
+						<String fx:value="font14" />
+						<String fx:value="red" />
+						<String fx:value="bold" />
+					</styleClass>
+				</Label>
+				<Label text="%exam.broken.number.unit" styleClass="font14" textFill="WHITE" />
+			</HBox>
+			<HBox styleClass="recognize-label" spacing="5">
+				<Label text="%exam.broken.chance" styleClass="font14" textFill="WHITE" />
+				<Label fx:id="chance" text="5">
+					<styleClass>
+						<String fx:value="font14" />
+						<String fx:value="orange" />
+						<String fx:value="bold" />
+					</styleClass>
+				</Label>
+				<Label text="%exam.broken.chance.unit" styleClass="font14" textFill="WHITE" />
+			</HBox>
+			<Button text="%button.submit" styleClass="recognize-btn" onAction="#submit" pickOnBounds="true" />
 		</HBox>
 		<padding>
 			<Insets left="10" bottom="10" />

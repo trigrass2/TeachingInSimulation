@@ -499,7 +499,7 @@ public class CircuitState extends BaseState implements ICircuitEffect {
 		Geometry realWire = JmeUtil.createCylinderLine(assetManager, pointList, radius.getRadiusWidth(), color.getColorRGBA());
 		attachToCircuit(realWire, wire);
 
-		if (CaseMode.TYPICAL_TRAIN_MODE == mode || CaseMode.BROKEN_TRAIN_MODE == mode) {
+		if (CaseMode.TYPICAL_TRAIN_MODE == mode) {
 			TrainState trainState = stateManager.getState(TrainState.class);
 			if (trainState.checkWire(wire)) {
 				trainState.next();
@@ -1151,11 +1151,7 @@ public class CircuitState extends BaseState implements ICircuitEffect {
 		return steps;
 	}
 
-	public void setWireBroken(Wire wire, boolean broken) {
-		if (wire == null) {
-			return;
-		}
-		wire.setBroken(broken);
+	public void analyze() {
 		cirSim.needAnalyze();
 	}
 }

@@ -21,18 +21,12 @@ public class FreeCaseBtnController extends ElecCaseBtnController {
 		super.initialize(location, resources);
 		scroll.setContent(flow = new FreeFlowItem());
 	}
-	
+
 	@Override
 	protected void switchCaseMode(CaseMode mode) {
 //		FreeCase3D freeCase3D = (FreeCase3D) elecCase3D;
 		SpringUtil.getBean(PageController.class).showLoading();
-		if (CaseMode.BROKEN_TRAIN_MODE == mode) {
-			trainOrEdit.toFront();
-			trainOrEdit.setVisible(false);
-			view.setVisible(false);
-			steps.setVisible(false);
-			btns.setVisible(false);
-		} else if (CaseMode.EDIT_MODE == mode) {
+		if (CaseMode.EDIT_MODE == mode) {
 			trainOrEdit.toFront();
 			trainOrEdit.setVisible(true);
 			view.setVisible(false);
@@ -72,11 +66,11 @@ public class FreeCaseBtnController extends ElecCaseBtnController {
 
 	@Override
 	public void prev() {
-		
+
 	}
 
 	@Override
 	public void next() {
-		
+
 	}
 }
