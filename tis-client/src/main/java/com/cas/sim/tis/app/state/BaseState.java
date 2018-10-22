@@ -19,6 +19,7 @@ import com.jme3.input.InputManager;
 import com.jme3.input.controls.InputListener;
 import com.jme3.input.controls.Trigger;
 import com.jme3.renderer.Camera;
+import com.jme3.renderer.RenderManager;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.system.AppSettings;
@@ -35,6 +36,8 @@ public abstract class BaseState extends AbstractAppState {
 	protected AssetManager assetManager;
 
 	protected AppStateManager stateManager;
+	
+	protected RenderManager renderManager;
 
 	protected Camera cam;
 
@@ -93,14 +96,15 @@ public abstract class BaseState extends AbstractAppState {
 	@Override
 	public final void initialize(AppStateManager stateManager, Application app) {
 		this.app = (JmeApplication) app;
-		inputManager = app.getInputManager();
-		assetManager = app.getAssetManager();
-		cam = app.getCamera();
-		this.stateManager = this.app.getStateManager();
-		rootNode = this.app.getRootNode();
-		settings = app.getContext().getSettings();
+		this.inputManager = app.getInputManager();
+		this.assetManager = app.getAssetManager();
+		this.cam = app.getCamera();
+		this.stateManager = stateManager;
+		this.renderManager = app.getRenderManager();
+		this.rootNode = this.app.getRootNode();
+		this.settings = app.getContext().getSettings();
 
-		mouseEventState = stateManager.getState(MouseEventState.class);
+		this.mouseEventState = stateManager.getState(MouseEventState.class);
 
 		initializeLocal();
 

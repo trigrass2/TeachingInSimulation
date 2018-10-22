@@ -18,7 +18,7 @@ public class MyCameraState extends BaseState {
 	protected void initializeLocal() {
 		float aspect = (float) cam.getWidth() / cam.getHeight();
 		cam.setParallelProjection(false);
-		cam.setFrustumPerspective(45f, aspect, 0.01f, 1000);
+//		cam.setFrustumPerspective(45f, aspect, 0.01f, 1000);
 
 //		1、禁用飞行视角
 		app.getFlyByCamera().setEnabled(false);
