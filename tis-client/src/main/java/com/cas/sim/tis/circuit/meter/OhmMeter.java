@@ -15,8 +15,13 @@ public class OhmMeter extends AbstractMeter {
 		voltage = new VoltageElm(VoltageElm.WF_DC);
 	}
 
-	public OhmMeter(Range[] ranges, Mode[] modes) {
-		super(ranges, modes);
+	public OhmMeter(Function... modes) {
+		super(modes);
+	}
+
+	@Override
+	protected void initPen() {
+
 	}
 
 }

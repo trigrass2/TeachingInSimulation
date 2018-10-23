@@ -67,13 +67,13 @@ public class FLUKE_17B implements Multimeter {
 	 * （黄色按钮）切换模式
 	 */
 	@Override
-	public boolean mode() {
-		return rotary.mode();
+	public boolean function() {
+		return rotary.function();
 	}
 
 	@Override
-	public Mode getMode() {
-		return rotary.getMode();
+	public Function getFunction() {
+		return rotary.getFunction();
 	}
 
 	public String meaure(double input) {

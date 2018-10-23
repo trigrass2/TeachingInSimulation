@@ -12,8 +12,12 @@ public class CapacitanceMeter extends AbstractMeter {
 		super();
 	}
 
-	public CapacitanceMeter(Range[] ranges, Mode[] modes) {
-		super(ranges, modes);
+	public CapacitanceMeter(Function... modes) {
+		super(modes);
 	}
 
+	@Override
+	protected void initPen() {
+
+	}
 }

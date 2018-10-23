@@ -105,7 +105,7 @@ public class MultimeterState extends BaseState {
 			}
 		});
 		btnActions.put(mode, () -> {
-			boolean result = meter.mode();
+			boolean result = meter.function();
 			if (result) {
 				Platform.runLater(() -> monitor.mode());
 			}

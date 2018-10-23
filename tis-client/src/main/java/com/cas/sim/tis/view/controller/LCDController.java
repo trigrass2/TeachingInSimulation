@@ -6,7 +6,8 @@ import java.util.ResourceBundle;
 
 import com.cas.sim.tis.circuit.Multimeter;
 import com.cas.sim.tis.circuit.meter.Digit;
-import com.cas.sim.tis.circuit.meter.Mode;
+import com.cas.sim.tis.circuit.meter.Function;
+import com.cas.sim.tis.circuit.meter.ModeType;
 import com.cas.sim.tis.circuit.meter.Range;
 import com.cas.sim.tis.circuit.meter.Rotary;
 
@@ -16,6 +17,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.effect.InnerShadow;
+import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
@@ -58,6 +60,10 @@ public class LCDController implements Initializable {
 	private Label kilo;
 	@FXML
 	private Label ohm;
+	@FXML
+	private ImageView diode;
+	@FXML
+	private ImageView on_off;
 	@FXML
 	private Label hz;
 
@@ -106,8 +112,13 @@ public class LCDController implements Initializable {
 	public void update() {
 		Rotary rotary = multimeter.getRotary();
 
-		hide(hold, auto, nano, micro, milli, capacity, am, volt, dc, ac, ohm, kilo, million, hz);
+		hide(hold, auto, nano, micro, milli, kilo, million, ohm, am, volt, dc, ac, capacity, diode, on_off, hz);
+		hide(dots);
+		hide(digits);
+
 		switch (rotary) {
+		case OFF:
+			break;
 		case AV:
 			show(volt, ac, auto);
 			break;
@@ -199,10 +210,17 @@ public class LCDController implements Initializable {
 	}
 
 	public void mode() {
-		range();
+		hide(hold, auto, nano, micro, milli, kilo, million, ohm, am, volt, dc, ac, capacity, diode, on_off, hz);
+		hide(dots);
+		hide(digits);
 		
-		Mode mode = multimeter.getMode();
-		switch (mode) {
+		range();
+
+		hide(diode, on_off);
+
+		Function mode = multimeter.getFunction();
+		ModeType type = mode.getType();
+		switch (type) {
 		case AC:
 			hide(dc);
 			show(ac);
@@ -212,10 +230,15 @@ public class LCDController implements Initializable {
 			show(dc);
 			break;
 		case Diode:
+			show(diode, volt);
 			break;
 		case Ohm:
+			show(auto, ohm);
 			break;
-		default:
+		case Capacitance:
+			break;
+		case ON_Off:
+			show(on_off, ohm);
 			break;
 		}
 	}

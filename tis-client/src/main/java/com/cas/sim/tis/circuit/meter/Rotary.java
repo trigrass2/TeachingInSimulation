@@ -14,64 +14,82 @@ public enum Rotary implements Meter {
 	/* 关闭 */
 	OFF(null),
 	/* 交流电压 */
-	AV(new VoltMeter(new Range[] { //
-			new Range(0.001E0, 4.000E0, 3, 1, "V"), //
-			new Range(00.01E0, 40.00E0, 2, 1, "V"), //
-			new Range(000.1E0, 400.0E0, 1, 1, "V"), //
-			new Range(0001.E0, 1000.E0, 0, 1, "V"), //
-	}, null)),
+	AV(new VoltMeter(//
+			new Function(ModeType.AC, //
+					new Range(0.001E0, 4.000E0, 3, 1, "V"), //
+					new Range(00.01E0, 40.00E0, 2, 1, "V"), //
+					new Range(000.1E0, 400.0E0, 1, 1, "V"), //
+					new Range(0001.E0, 1000.E0, 0, 1, "V") //
+			))),
 	/* 直流电压 */
-	DV(new VoltMeter(new Range[] { //
-			new Range(0.001E0, 4.000E0, 3, 1, "V"), //
-			new Range(00.01E0, 40.00E0, 2, 1, "V"), //
-			new Range(000.1E0, 400.0E0, 1, 1, "V"), //
-			new Range(0001.E0, 1000.E0, 0, 1, "V"), //
-	}, null)),
+	DV(new VoltMeter(//
+			new Function(ModeType.DC, //
+					new Range(0.001E0, 4.000E0, 3, 1, "V"), //
+					new Range(00.01E0, 40.00E0, 2, 1, "V"), //
+					new Range(000.1E0, 400.0E0, 1, 1, "V"), //
+					new Range(0001.E0, 1000.E0, 0, 1, "V") //
+			))),
 	/* 直流电压 微伏 */
-	DmV(new VoltMeter(new Range[] { //
-			new Range(0001.E-3, 400.0E-3, 1, 1E-3, "mV"), // 400mV
-	}, null)),
+	DmV(new VoltMeter(//
+			new Function(ModeType.DC, //
+					new Range(0001.E-3, 400.0E-3, 1, 1E-3, "mV")//
+			))),
 	/* 欧姆档 */
-	Ohms(new OhmMeter(new Range[] { //
-			new Range(000.1E3, 400.0E0, 1, 1E0, " Ω"), // 400 Ω
-			new Range(0.001E3, 4.000E3, 3, 1E3, "KΩ"), // 1Ω - 4.000 KΩ
-			new Range(00.01E3, 40.00E3, 2, 1E3, "KΩ"), // 10Ω - 40.00 KΩ
-			new Range(000.1E3, 400.0E3, 1, 1E3, "KΩ"), // 400.0 KΩ
-			new Range(0.001E6, 4.000E6, 3, 1E6, "MΩ"), // 1KΩ - 4.000 MΩ
-			new Range(00.01E6, 40.00E6, 2, 1E6, "MΩ"), // 10KΩ - 40.00 MΩ
-	}, new Mode[] { //
-			Mode.Ohm, // 默认测电阻
-			Mode.Diode })),
+	Ohms(new OhmMeter(//
+			new Function(ModeType.Ohm, //
+					new Range(000.1E3, 400.0E0, 1, 1E0, "Ω"), // 400 Ω
+					new Range(0.001E3, 4.000E3, 3, 1E3, "KΩ"), // 1Ω - 4.000 KΩ
+					new Range(00.01E3, 40.00E3, 2, 1E3, "KΩ"), // 10Ω - 40.00 KΩ
+					new Range(000.1E3, 400.0E3, 1, 1E3, "KΩ"), // 400.0 KΩ
+					new Range(0.001E6, 4.000E6, 3, 1E6, "MΩ"), // 1KΩ - 4.000 MΩ
+					new Range(00.01E6, 40.00E6, 2, 1E6, "MΩ") // 10KΩ - 40.00 MΩ
+			), //
+			new Function(ModeType.ON_Off, //
+					new Range(000.1E3, 400.0E0, 1, 1E0, "Ω") // 400 Ω
+					), //
+			new Function(ModeType.Diode, //
+					new Range(0.001E0, 001.0E0, 3, 1E0, "V") // 400 Ω
+			))),
 	/* 电容 */
-	C(new CapacitanceMeter(new Range[] { //
-			new Range(00.01E-9, 40.00E-9, 2, 1E-9, "nF"), // 40.00 nF
-			new Range(000.1E-9, 400.0E-9, 1, 1E-9, "nF"), // 400.0 nF
-			new Range(0.001E-6, 4.000E-6, 3, 1E-6, "μF"), // 4.000 μF
-			new Range(00.01E-6, 40.00E-6, 2, 1E-6, "μF"), // 40.00 μF
-			new Range(000.1E-6, 400.0E-6, 1, 1E-6, "μF"), // 400.0 μF
-			new Range(0001.E-6, 1000.E-6, 0, 1E-6, "μF"), // 1000 μF
-	}, null)),
+	C(new CapacitanceMeter(//
+			new Function(ModeType.Capacitance, //
+					new Range(00.01E-9, 40.00E-9, 2, 1E-9, "nF"), // 40.00 nF
+					new Range(000.1E-9, 400.0E-9, 1, 1E-9, "nF"), // 400.0 nF
+					new Range(0.001E-6, 4.000E-6, 3, 1E-6, "μF"), // 4.000 μF
+					new Range(00.01E-6, 40.00E-6, 2, 1E-6, "μF"), // 40.00 μF
+					new Range(000.1E-6, 400.0E-6, 1, 1E-6, "μF"), // 400.0 μF
+					new Range(0001.E-6, 1000.E-6, 0, 1E-6, "μF") // 1000 μF
+			))),
 	/* 安培 */
-	A(new AmMeter(new Range[] { //
-			new Range(0.001E0, 4.000E0, 2, 1, "A"), //
-			new Range(00.01E0, 10.00E0, 1, 1, "A"), //
-	}, new Mode[] { //
-			Mode.DC, //
-			Mode.AC })),
+	A(new AmMeter(//
+			new Function(ModeType.DC, //
+					new Range(0.001E0, 4.000E0, 2, 1, "A"), //
+					new Range(00.01E0, 10.00E0, 1, 1, "A") //
+			), //
+			new Function(ModeType.AC, //
+					new Range(0.001E0, 4.000E0, 2, 1, "A"), //
+					new Range(00.01E0, 10.00E0, 1, 1, "A") //
+			))),
 	/* 毫安 */
-	mA(new AmMeter(new Range[] { //
-			new Range(00.01E-3, 40.00E-3, 2, 1E-3, "mA"), //
-			new Range(000.1E-3, 400.0E-3, 1, 1E-3, "mA"), //
-	}, new Mode[] { //
-			Mode.DC, //
-			Mode.AC })),
+	mA(new AmMeter(//
+			new Function(ModeType.DC, //
+					new Range(00.01E-3, 40.00E-3, 2, 1E-3, "mA"), //
+					new Range(000.1E-3, 400.0E-3, 1, 1E-3, "mA") //
+			), //
+			new Function(ModeType.AC, //
+					new Range(00.01E-3, 40.00E-3, 2, 1E-3, "mA"), //
+					new Range(000.1E-3, 400.0E-3, 1, 1E-3, "mA") //
+			))),
 	/* 微安 */
-	muA(new AmMeter(new Range[] { //
-			new Range(000.1E-6, 400.0E-6, 1, 1E-6, "μA"), //
-			new Range(0001.E-6, 4000.E-6, 0, 1E-6, "μA"), //
-	}, new Mode[] { //
-			Mode.DC, //
-			Mode.AC })),
+	muA(new AmMeter(//
+			new Function(ModeType.DC, //
+					new Range(000.1E-6, 400.0E-6, 1, 1E-6, "μA"), //
+					new Range(0001.E-6, 4000.E-6, 0, 1E-6, "μA") //
+			), //
+			new Function(ModeType.AC, //
+					new Range(000.1E-6, 400.0E-6, 1, 1E-6, "μA"), //
+					new Range(0001.E-6, 4000.E-6, 0, 1E-6, "μA") //
+			))),
 	/* 温度 */
 //	Temperature(new Range[] { //
 //			new Range(050.0E0, 400.0E0, 1, 1E0, "℃"), //
@@ -136,21 +154,21 @@ public enum Rotary implements Meter {
 	}
 
 	@Override
-	public boolean mode() {
+	public boolean function() {
 		if (meter == null) {
 			log.warn("档位没有对应的仪表");
 			return false;
 		}
-		return meter.mode();
+		return meter.function();
 	}
 
 	@Override
-	public Mode getMode() {
+	public Function getFunction() {
 		if (meter == null) {
 			log.warn("档位没有对应的仪表");
 			return null;
 		}
-		return meter.getMode();
+		return meter.getFunction();
 	}
 
 	@Override

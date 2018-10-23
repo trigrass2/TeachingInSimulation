@@ -15,8 +15,13 @@ public class VoltMeter extends AbstractMeter {
 		resistor = new ResistorElm(100E6); // 100MΩ
 	}
 
-	public VoltMeter(Range[] ranges, Mode[] modes) {
-		super(ranges, modes);
+	public VoltMeter(Function... modes) {
+		super(modes);
+	}
+
+	@Override
+	protected void initPen() {
+
 	}
 
 }

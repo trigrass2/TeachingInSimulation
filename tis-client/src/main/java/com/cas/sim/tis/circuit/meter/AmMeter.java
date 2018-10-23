@@ -15,8 +15,13 @@ public class AmMeter extends AbstractMeter {
 		wire = new WireElm();
 	}
 
-	public AmMeter(Range[] ranges, Mode[] modes) {
-		super(ranges, modes);
+	public AmMeter(Function... modes) {
+		super(modes);
+	}
+
+	@Override
+	protected void initPen() {
+
 	}
 
 }

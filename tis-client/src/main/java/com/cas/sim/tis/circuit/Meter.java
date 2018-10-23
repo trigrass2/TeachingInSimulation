@@ -1,6 +1,6 @@
 package com.cas.sim.tis.circuit;
 
-import com.cas.sim.tis.circuit.meter.Mode;
+import com.cas.sim.tis.circuit.meter.Function;
 import com.cas.sim.tis.circuit.meter.Range;
 
 public interface Meter {
@@ -35,12 +35,12 @@ public interface Meter {
 	 * 切换工作模式。 例如：电流档可以测交流和直流。
 	 * @return 
 	 */
-	boolean mode();
+	boolean function();
 
 	/**
 	 * @return 仪表功能模式
 	 */
-	Mode getMode();
+	Function getFunction();
 
 	/**
 	 * 测量结果格式化
@@ -48,5 +48,4 @@ public interface Meter {
 	String format(double input);
 
 	double getValue();
-
 }
