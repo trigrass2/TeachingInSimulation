@@ -5,10 +5,8 @@ import java.util.List;
 
 import javax.annotation.Nonnull;
 
-import com.cas.circuit.CirSim;
 import com.cas.circuit.component.ControlIO;
 import com.cas.circuit.component.ElecCompDef;
-import com.cas.circuit.element.CircuitElm;
 import com.cas.sim.tis.action.ElecCompAction;
 import com.cas.sim.tis.anno.JmeThread;
 import com.cas.sim.tis.app.control.ShowNameOnHoverControl;
@@ -91,9 +89,9 @@ public class ElecCompState extends BaseState {
 //			rootNode.addLight(probe);
 //		}));
 
-		CirSim sim = new CirSim(app, null);
-		CircuitElm.initClass(sim);
 //		说明：这里不启动电路线程
+//		CirSim.ins.setApp(app);
+//		CirSim.ins.setCircuit(this);
 
 //		加载结束
 		Platform.runLater(() -> SpringUtil.getBean(PageController.class).hideLoading());

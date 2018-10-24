@@ -21,8 +21,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.cas.circuit.CirSim;
 import com.cas.circuit.IBroken;
-import com.cas.circuit.ICircuitEffect;
 import com.cas.circuit.IBroken.BrokenState;
+import com.cas.circuit.ICircuitEffect;
 import com.cas.circuit.component.Base;
 import com.cas.circuit.component.ControlIO;
 import com.cas.circuit.component.ElecCompDef;
@@ -55,6 +55,7 @@ import com.cas.sim.tis.app.listener.WireListener;
 import com.cas.sim.tis.app.state.BaseState;
 import com.cas.sim.tis.app.state.ElecCaseState;
 import com.cas.sim.tis.app.state.ElecCaseState.CaseMode;
+import com.cas.sim.tis.app.state.MultimeterState;
 import com.cas.sim.tis.app.state.broken.BrokenCaseState;
 import com.cas.sim.tis.consts.Radius;
 import com.cas.sim.tis.consts.WireColor;
@@ -151,7 +152,6 @@ public class CircuitState extends BaseState implements ICircuitEffect {
 	private Node guiNode;
 	private BitmapFont tagFont;
 
-	private CirSim cirSim;
 	// Key:BASE UUID,Value: TOP UUID
 //	private Map<String, String> combineMap = new HashMap<String, String>();
 
@@ -237,11 +237,15 @@ public class CircuitState extends BaseState implements ICircuitEffect {
 		bindCircuitBoardEvents();
 		log.info("CircuitState完成初始化");
 
-		cirSim = new CirSim(app, this);
-		CircuitElm.initClass(cirSim);
+		CirSim.ins.setApp(app);
+		CirSim.ins.setCircuitEffect(this);
+
 		Optional.ofNullable(onInitialized).ifPresent(t -> t.accept(null));
 
-		CIRCUIT_SERVICE.scheduleAtFixedRate(cirSim, 0, (long) (1 / CirSim.TPF / 10), TimeUnit.NANOSECONDS);
+		CIRCUIT_SERVICE.scheduleAtFixedRate(CirSim.ins, 0, (long) (1 / CirSim.TPF / 10), TimeUnit.NANOSECONDS);
+
+//		FIXME 加入万用表
+//		stateManager.attach(new MultimeterState());
 	}
 
 	private void bindCircuitBoardEvents() {
@@ -866,8 +870,8 @@ public class CircuitState extends BaseState implements ICircuitEffect {
 		compList.add(elecCompDef);
 //		5、添加到电路逻辑中
 		Collection<CircuitElm> elms = elecCompDef.getCircuitElmMap().values();
-		elms.forEach(e -> cirSim.addCircuitElm(e));
-		cirSim.needAnalyze();
+		elms.forEach(e -> CirSim.ins.addCircuitElm(e));
+		CirSim.ins.needAnalyze();
 //		6、如果当前元器件需要底座，添加监听事件
 		if (elecCompDef.getBase() != null) {
 			BaseOnRelayHoverControl onRelayHoverControl = new BaseOnRelayHoverControl(new Consumer<ElecCompDef>() {
@@ -951,8 +955,8 @@ public class CircuitState extends BaseState implements ICircuitEffect {
 			baseDef.getSpatial().addControl(control);
 		}
 
-		elecCompDef.getCircuitExchangeList().forEach(ex -> cirSim.removeCircuitElm(ex.getCircuitElm()));
-		cirSim.needAnalyze();
+		elecCompDef.getCircuitExchangeList().forEach(ex -> CirSim.ins.removeCircuitElm(ex.getCircuitElm()));
+		CirSim.ins.needAnalyze();
 	}
 
 	@Autowired
@@ -1020,8 +1024,8 @@ public class CircuitState extends BaseState implements ICircuitEffect {
 
 //		7、添加到电路逻辑中
 		Collection<CircuitElm> elms = relyOnDef.getCircuitElmMap().values();
-		elms.forEach(e -> cirSim.addCircuitElm(e));
-		cirSim.needAnalyze();
+		elms.forEach(e -> CirSim.ins.addCircuitElm(e));
+		CirSim.ins.needAnalyze();
 
 //		8、移除底座监听Control
 		baseMdl.removeControl(BaseOnRelayHoverControl.class);
@@ -1055,7 +1059,7 @@ public class CircuitState extends BaseState implements ICircuitEffect {
 //		4、将导线加入列表中
 		wireList.add(wire);
 
-		cirSim.needAnalyze();
+		CirSim.ins.needAnalyze();
 	}
 
 	public boolean detachFromCircuit(Wire wire) {
@@ -1078,7 +1082,7 @@ public class CircuitState extends BaseState implements ICircuitEffect {
 //		4、解除连接头绑定
 		wire.unbind();
 
-		cirSim.needAnalyze();
+		CirSim.ins.needAnalyze();
 	}
 
 	public void setTagNameVisible(boolean tagVisible) {
@@ -1214,6 +1218,6 @@ public class CircuitState extends BaseState implements ICircuitEffect {
 	}
 
 	public void analyze() {
-		cirSim.needAnalyze();
+		CirSim.ins.needAnalyze();
 	}
 }
