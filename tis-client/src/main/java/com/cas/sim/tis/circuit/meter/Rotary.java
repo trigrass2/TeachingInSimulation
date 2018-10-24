@@ -1,5 +1,9 @@
 package com.cas.sim.tis.circuit.meter;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import com.cas.circuit.element.CircuitElm;
 import com.cas.sim.tis.circuit.Meter;
 
 import lombok.Getter;
@@ -46,7 +50,7 @@ public enum Rotary implements Meter {
 			), //
 			new Function(ModeType.ON_Off, //
 					new Range(000.1E3, 400.0E0, 1, 1E0, "Ω") // 400 Ω
-					), //
+			), //
 			new Function(ModeType.Diode, //
 					new Range(0.001E0, 001.0E0, 3, 1E0, "V") // 400 Ω
 			))),
@@ -172,12 +176,12 @@ public enum Rotary implements Meter {
 	}
 
 	@Override
-	public String format(double input) {
+	public double format() {
 		if (meter == null) {
 			log.warn("档位没有对应的仪表");
-			return "";
+			return 0.0;
 		}
-		return meter.format(input);
+		return meter.format();
 	}
 
 	@Override
@@ -187,6 +191,15 @@ public enum Rotary implements Meter {
 			return 0.0;
 		}
 		return meter.getValue();
+	}
+
+	@Override
+	public List<CircuitElm> getElmList() {
+		if (meter == null) {
+			log.warn("档位没有对应的仪表");
+			return new ArrayList<>();
+		}
+		return meter.getElmList();
 	}
 
 }

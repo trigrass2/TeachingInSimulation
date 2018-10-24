@@ -1,5 +1,9 @@
 package com.cas.sim.tis.circuit.meter;
 
+import java.util.List;
+
+import com.cas.circuit.CirSim;
+import com.cas.circuit.element.CircuitElm;
 import com.cas.sim.tis.circuit.Multimeter;
 
 import lombok.Getter;
@@ -12,6 +16,10 @@ public class FLUKE_17B implements Multimeter {
 	/* 当前万用表档位 */
 	@Getter
 	private Rotary rotary = Rotary.OFF; // 默认在OFF档位
+
+	public FLUKE_17B() {
+		super();
+	}
 
 	@Override
 	public boolean hasPreGear() {
@@ -30,6 +38,8 @@ public class FLUKE_17B implements Multimeter {
 	 */
 	@Override
 	public void rotary(int cw) {
+		rotary.getElmList().forEach(CirSim.ins::removeCircuitElm);
+
 		int len = Rotary.values().length;
 		int index = rotary.ordinal() + cw;
 		if (index < 0) {
@@ -38,6 +48,10 @@ public class FLUKE_17B implements Multimeter {
 			index = 0;
 		}
 		rotary = Rotary.values()[index];
+
+		rotary.getElmList().forEach(CirSim.ins::addCircuitElm);
+
+		CirSim.ins.needAnalyze();
 		rotary.reset();
 	}
 
@@ -76,18 +90,19 @@ public class FLUKE_17B implements Multimeter {
 		return rotary.getFunction();
 	}
 
-	public String meaure(double input) {
-		return rotary.format(input);
-	}
-
 	@Override
 	public void reset() {
 		rotary.reset();
 	}
 
 	@Override
-	public String format(double input) {
-		return rotary.format(input);
+	public double format() {
+		return rotary.format();
+	}
+
+	@Override
+	public List<CircuitElm> getElmList() {
+		return rotary.getElmList();
 	}
 
 	@Override
@@ -99,5 +114,4 @@ public class FLUKE_17B implements Multimeter {
 	public boolean isAutoRange() {
 		return rotary.isAutoRange();
 	}
-
 }

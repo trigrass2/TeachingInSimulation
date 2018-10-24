@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.cas.sim.tis.app.event.RawInputAdapter;
+import com.cas.sim.tis.app.state.typical.CircuitState;
 import com.cas.sim.tis.circuit.Multimeter;
 import com.cas.sim.tis.circuit.meter.FLUKE_17B;
 import com.cas.sim.tis.util.SpringUtil;
@@ -65,6 +66,12 @@ public class MultimeterState extends BaseState {
 	private LCDController monitor;
 
 	private Map<Spatial, BtnAction> btnActions = new HashMap<>();
+
+	private CircuitState circuitState;
+
+	public MultimeterState(CircuitState circuitState) {
+		this.circuitState = circuitState;
+	}
 
 	@FunctionalInterface
 	interface BtnAction {

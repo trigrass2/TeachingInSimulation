@@ -1,9 +1,19 @@
 package com.cas.sim.tis.circuit;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import com.cas.circuit.component.Terminal;
+import com.cas.circuit.element.CircuitElm;
 import com.cas.sim.tis.circuit.meter.Function;
 import com.cas.sim.tis.circuit.meter.Range;
 
+import lombok.Getter;
+
 public abstract class AbstractMeter implements Meter {
+//	
+	@Getter
+	protected List<CircuitElm> elmList = new ArrayList<>();
 //	仪表工作模式
 	private Function[] functions;
 //	当前量程(记录索引)
@@ -12,25 +22,36 @@ public abstract class AbstractMeter implements Meter {
 //	锁定示数（锁定后，测量数据不会再发生变化）
 	private boolean hold;
 
-	private MeterPen blackPen; // 默认接在com
-	private MeterPen redPen; //
+//	private MeterPen blackPen = MeterPen.BLACK; // 黑表笔
+//	private MeterPen redPen = MeterPen.RED; // 红表笔
 
 	public AbstractMeter(Function... functions) {
 		this.functions = functions;
-
-		blackPen = new MeterPen();
-		redPen = new MeterPen();
-
-		initPen();
 	}
-
-	protected abstract void initPen();
 
 	@Override
 	public void reset() {
 		functionIndex = 0;
 		functions[functionIndex].reset();
 		hold = false;
+
+		MeterPen.BLACK.setTerminal_in_meter(getBlackTerminal());
+		MeterPen.RED.setTerminal_in_meter(getRedTerminal());
+	}
+
+	protected Terminal getBlackTerminal() {
+		if (elmList.size() == 0) {
+			return null;
+		}
+		return elmList.get(0).getPostPoint(0);
+	}
+
+	protected Terminal getRedTerminal() {
+		if (elmList.size() == 0) {
+			return null;
+		}
+
+		return elmList.get(0).getPostPoint(1);
 	}
 
 	@Override
@@ -78,8 +99,8 @@ public abstract class AbstractMeter implements Meter {
 	}
 
 	@Override
-	public String format(double input) {
-		return functions[functionIndex].getValue(input);
+	public double format() {
+		return functions[functionIndex].format(this.getValue());
 	}
 
 	@Override

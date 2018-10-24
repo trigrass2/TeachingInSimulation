@@ -1,5 +1,8 @@
 package com.cas.sim.tis.circuit;
 
+import java.util.List;
+
+import com.cas.circuit.element.CircuitElm;
 import com.cas.sim.tis.circuit.meter.Function;
 import com.cas.sim.tis.circuit.meter.Range;
 
@@ -33,7 +36,7 @@ public interface Meter {
 
 	/**
 	 * 切换工作模式。 例如：电流档可以测交流和直流。
-	 * @return 
+	 * @return
 	 */
 	boolean function();
 
@@ -42,10 +45,12 @@ public interface Meter {
 	 */
 	Function getFunction();
 
+	List<CircuitElm> getElmList();
+	
 	/**
 	 * 测量结果格式化
 	 */
-	String format(double input);
+	double format(); // 格式化后的值
 
-	double getValue();
+	double getValue(); // 真实值
 }

@@ -46,8 +46,8 @@ public class Function {
 		return auto;
 	}
 
-	public String getValue(double input) {
-		return ranges[rangeIndex].getValue(input);
+	public double format(double input) {
+		return ranges[rangeIndex].formatValue(input);
 	}
 
 }

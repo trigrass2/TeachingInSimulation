@@ -11,6 +11,8 @@ import com.cas.sim.tis.circuit.meter.ModeType;
 import com.cas.sim.tis.circuit.meter.Range;
 import com.cas.sim.tis.circuit.meter.Rotary;
 
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -22,6 +24,7 @@ import javafx.scene.image.WritableImage;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.util.Duration;
 import lombok.Setter;
 
 public class LCDController implements Initializable {
@@ -72,6 +75,7 @@ public class LCDController implements Initializable {
 
 	private Digit[] digits;
 	private Rectangle[] dots;
+	private Timeline secondTimeline;
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
@@ -99,6 +103,104 @@ public class LCDController implements Initializable {
 			dot.setLayoutY(135.0f);
 			dots[i] = dot;
 			content.getChildren().add(dot);
+		}
+
+		play();
+	}
+
+	public void play() {
+		if (secondTimeline != null) {
+			secondTimeline.stop();
+		}
+		secondTimeline = new Timeline();
+		secondTimeline.setCycleCount(Timeline.INDEFINITE);
+		secondTimeline.getKeyFrames().add(new KeyFrame(Duration.millis(40), e -> { // 25F
+			updateValue();
+		}));
+		secondTimeline.play();
+	}
+
+	public void stop() {
+		if (secondTimeline != null) {
+			secondTimeline.stop();
+		}
+	}
+
+	private void updateValue() {
+		if (multimeter.getRotary() == Rotary.OFF) {
+			return;
+		}
+		Range range = multimeter.getRange();
+		if (range == null) {
+			return;
+		}
+		int resolution = range.getResolution(); // 小数点后的有效位数
+//		获取格式化之后的数值。
+		double value = multimeter.format();
+
+		int[] beforeDot = new int[4];// 万用表显示4个数字
+		int[] afterDot = new int[3];// 小数点后最多有3位数
+
+		Double d = new Double(value);
+//		整数部分
+		int one = d.intValue() % 10;
+		int ten = (d.intValue() - one) % 100 / 10;
+		int hundred = (d.intValue() - ten * 10 - one) % 1000 / 100;
+		int thousand = (d.intValue() - hundred * 100 - ten * 10 - one) / 1000;
+
+		beforeDot[0] = one;
+		beforeDot[1] = ten;
+		beforeDot[2] = hundred;
+		beforeDot[3] = thousand;
+
+//		小数部分
+		value = d.doubleValue() - d.intValue();
+		d = new Double(value * Math.pow(10, resolution));
+		int decile = (int) (d.intValue() / Math.pow(10, resolution - 1));
+		int percentile = (d.intValue() - decile) % 100 / 10;
+		int quantile = (d.intValue() - percentile * 10 - decile * 100);
+
+		afterDot[0] = decile;
+		afterDot[1] = percentile;
+		afterDot[2] = quantile;
+
+		int finalShow[] = new int[4];
+		for (int i = 0; i < finalShow.length - resolution; i++) {
+			finalShow[i] = beforeDot[beforeDot.length - 1 - resolution - i];
+		}
+		for (int i = 0; i < resolution; i++) {
+			finalShow[finalShow.length - resolution + i] = afterDot[i];
+		}
+//		System.out.println(resolution);
+//		System.out.println(String.format("%s%s%s%s", finalShow[0], finalShow[1], finalShow[2], finalShow[3]));
+//		从低位 往 高位 写数字
+//		隐藏数字
+		hide(digits);
+		for (int i = digits.length - 1; i >= digits.length - 1 - resolution; i--) {
+			digits[i].showNumber(finalShow[i]);
+			show(digits[i]);
+		}
+//		小数点
+		hide(dots);
+		if (resolution > 0) {
+			show(dots[dots.length - resolution]);
+		}
+
+//		数量级
+		double magnitude = range.getMagnitude();
+		Double num = new Double(magnitude);
+
+		hide(nano, micro, milli, kilo, million);
+		if (num.equals(1E3)) {
+			show(kilo);
+		} else if (num.equals(1E6)) {
+			show(million);
+		} else if (num.equals(1E-3)) {
+			show(milli);
+		} else if (num.equals(1E-6)) {
+			show(micro);
+		} else if (num.equals(1E-9)) {
+			show(nano);
 		}
 	}
 
@@ -167,53 +269,15 @@ public class LCDController implements Initializable {
 	}
 
 	public void range() {
-		Range range = multimeter.getRange();
-		if (range == null) {
-			return;
-		}
-
 		auto.setVisible(multimeter.isAutoRange());
-
-		int resolution = range.getResolution(); // 小数点后的有效位数
-
-//		FIXME
-		double value = multimeter.getValue();
-
-//		数字
-		hide(digits);
-		for (int i = digits.length - 1; i >= digits.length - 1 - resolution; i--) {
-			digits[i].showNumber(0);
-			show(digits[i]);
-		}
-//		小数点
-		hide(dots);
-		if (resolution > 0) {
-			show(dots[dots.length - resolution]);
-		}
-
-//		数量级
-		double magnitude = range.getMagnitude();
-		Double num = new Double(magnitude);
-
-		hide(nano, micro, milli, kilo, million);
-		if (num.equals(1E3)) {
-			show(kilo);
-		} else if (num.equals(1E6)) {
-			show(million);
-		} else if (num.equals(1E-3)) {
-			show(milli);
-		} else if (num.equals(1E-6)) {
-			show(micro);
-		} else if (num.equals(1E-9)) {
-			show(nano);
-		}
+		updateValue();
 	}
 
 	public void mode() {
 		hide(hold, auto, nano, micro, milli, kilo, million, ohm, am, volt, dc, ac, capacity, diode, on_off, hz);
 		hide(dots);
 		hide(digits);
-		
+
 		range();
 
 		hide(diode, on_off);
