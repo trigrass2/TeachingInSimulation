@@ -15,6 +15,7 @@ import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Label;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -23,7 +24,8 @@ import javafx.scene.text.TextAlignment;
 
 public abstract class ElecCaseMenu implements ILeftContent {
 
-	protected HBox menu = new HBox(22);
+	protected VBox menu = new VBox(10);
+	protected HBox options = new HBox(22);
 	
 	private Label name = new Label();
 	private ToggleGroup group = new ToggleGroup();
@@ -41,8 +43,6 @@ public abstract class ElecCaseMenu implements ILeftContent {
 
 	@Override
 	public Region getLeftContent() {
-		VBox vb = new VBox(10);
-
 		name.getStyleClass().add("left-menu-orange");
 		name.setWrapText(true);
 
@@ -51,25 +51,25 @@ public abstract class ElecCaseMenu implements ILeftContent {
 
 		int role = Session.get(Session.KEY_LOGIN_ROLE, RoleConst.STUDENT);
 		if (role == RoleConst.STUDENT) {
-			menu.setAlignment(Pos.CENTER_LEFT);
-			menu.getChildren().add(open);
+			options.setAlignment(Pos.CENTER_LEFT);
+			options.getChildren().add(open);
 		} else {
-			menu.setAlignment(Pos.CENTER);
+			options.setAlignment(Pos.CENTER);
 			Button create = createMenu(MsgUtil.getMessage("menu.button.new"), new SVGGlyph("iconfont.svg.new", Color.WHITE, 24));
 			create.setOnMouseClicked(e -> newCase());
 
 			Button save = createMenu(MsgUtil.getMessage("menu.button.save"), new SVGGlyph("iconfont.svg.save", Color.WHITE, 24));
 			save.setOnMouseClicked(e -> saveCase());
 
-			menu.getChildren().addAll(create, open, save);
+			options.getChildren().addAll(create, open, save);
 		}
 
 //		菜单
-		vb.getChildren().add(name);
-		vb.getChildren().add(menu);
-		vb.getChildren().add(new ElecCompTree(elecComp -> elecCase3D.selectedElecComp(elecComp), group));
-		vb.setPadding(new Insets(10, 0, 0, 0));
-		return vb;
+		menu.getChildren().add(name);
+		menu.getChildren().add(options);
+		menu.getChildren().add(new ElecCompTree(elecComp -> elecCase3D.selectedElecComp(elecComp), group));
+		menu.setPadding(new Insets(10, 0, 0, 0));
+		return menu;
 	}
 
 	public void setName(String name) {

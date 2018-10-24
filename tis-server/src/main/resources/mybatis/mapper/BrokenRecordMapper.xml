@@ -5,6 +5,9 @@
 		<id column="ID" jdbcType="INTEGER" property="id" />
 		<result column="PID" jdbcType="INTEGER" property="publishId" />
 		<result column="ARCHIVE_PATH" jdbcType="VARCHAR" property="archivePath" />
+		<result column="BROKEN_NUM" jdbcType="INTEGER" property="brokenNum" />
+		<result column="CORRECTED_NUM" jdbcType="INTEGER" property="correctedNum" />
+		<result column="MISTAKE_NUM" jdbcType="INTEGER" property="mistakeNum" />
 		<result column="CREATOR" jdbcType="INTEGER" property="creator" />
 		<result column="CREATE_DATE" jdbcType="TIMESTAMP" property="createDate" />
 	</resultMap>

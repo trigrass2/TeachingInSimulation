@@ -5,9 +5,11 @@ import java.util.Optional;
 import com.cas.circuit.vo.Archive;
 import com.cas.sim.tis.action.ArchiveAction;
 import com.cas.sim.tis.action.BrokenCaseAction;
+import com.cas.sim.tis.action.BrokenRecordAction;
 import com.cas.sim.tis.app.state.ElecCaseState;
 import com.cas.sim.tis.app.state.typical.CircuitState;
 import com.cas.sim.tis.entity.BrokenCase;
+import com.cas.sim.tis.entity.BrokenRecord;
 import com.cas.sim.tis.util.SpringUtil;
 import com.cas.sim.tis.view.controller.PageController;
 
@@ -24,7 +26,7 @@ public class BrokenCaseState extends ElecCaseState<BrokenCase> {
 			stateManager.detach(circuitState);
 		}
 		// 检测模式时，不可拿去元器件
-		holdState.setEnabled(CaseMode.EDIT_MODE == mode);
+		holdState.setEnabled(mode.isHoldEnable());
 		// 创建新的circuitState
 		circuitState = new CircuitState(this, holdState, ui, root);
 		circuitState.setOnInitialized((n) -> {
@@ -38,6 +40,15 @@ public class BrokenCaseState extends ElecCaseState<BrokenCase> {
 		});
 		stateManager.attach(circuitState);
 		this.mode = mode;
+	}
+
+	public void submit(BrokenRecord record) {
+		if (circuitState == null) {
+			return;
+		}
+		Archive archive = circuitState.getArchive();
+		archive.setName(brokenCase.getName());
+		SpringUtil.getBean(BrokenRecordAction.class).save(record, archive);
 	}
 
 	@Override

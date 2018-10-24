@@ -9,24 +9,41 @@ import com.cas.sim.tis.consts.RoleConst;
 import com.cas.sim.tis.consts.Session;
 import com.cas.sim.tis.entity.ArchiveCase;
 import com.cas.sim.tis.entity.BrokenCase;
+import com.cas.sim.tis.message.ExamMessage;
 import com.cas.sim.tis.util.AlertUtil;
 import com.cas.sim.tis.util.MsgUtil;
 import com.cas.sim.tis.util.SpringUtil;
+import com.cas.sim.tis.view.control.IPublish;
 import com.cas.sim.tis.view.control.imp.ElecCase3D;
 import com.cas.sim.tis.view.control.imp.ElecCaseMenu;
 import com.cas.sim.tis.view.control.imp.dialog.Dialog;
 import com.cas.sim.tis.view.control.imp.dialog.Tip.TipType;
 import com.cas.sim.tis.view.control.imp.jme.TypicalCaseSelectDialog;
+import com.cas.sim.tis.view.control.imp.question.ExamingMenuItem;
 import com.cas.sim.tis.view.controller.PageController;
 
 import javafx.application.Platform;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.TextInputDialog;
+import javafx.scene.layout.Region;
 
-public class BrokenCaseMenu extends ElecCaseMenu {
+public class BrokenCaseMenu extends ElecCaseMenu implements IPublish {
+
+	private ExamingMenuItem item;
 
 	public BrokenCaseMenu(ElecCase3D<?> elecCase3D) {
 		super(elecCase3D);
+	}
+
+	@Override
+	public Region getLeftContent() {
+		super.getLeftContent();
+		Integer publishId = Session.get(Session.KEY_BROKEN_CASE_PUBLISH_ID);
+		int role = Session.get(Session.KEY_LOGIN_ROLE);
+		if (publishId != null && RoleConst.TEACHER == role) {
+			publish(publishId);
+		}
+		return menu;
 	}
 
 	@Override
@@ -112,6 +129,18 @@ public class BrokenCaseMenu extends ElecCaseMenu {
 		} finally {
 //			保存完成，关闭等待界面
 			Platform.runLater(() -> SpringUtil.getBean(PageController.class).hideLoading());
+		}
+	}
+
+	@Override
+	public void publish(int id) {
+		if (!menu.getChildren().contains(item)) {
+			item = new ExamingMenuItem(ExamMessage.EXAM_TYPE_BROKEN);
+			menu.getChildren().add(item);
+			menu.layout();
+		}
+		if (item != null) {
+			item.load(id);
 		}
 	}
 }

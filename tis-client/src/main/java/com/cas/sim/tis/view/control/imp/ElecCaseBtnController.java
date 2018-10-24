@@ -77,6 +77,12 @@ public abstract class ElecCaseBtnController implements Initializable, IDistory {
 	protected ScrollPane scroll;
 	@FXML
 	protected HBox btns;
+	@FXML
+	protected Button prev;
+	@FXML
+	protected Button next;
+	@FXML
+	protected Button submit;
 
 	protected ElecCase3D<?> elecCase3D;
 	protected ElecCaseState<?> elecCaseState;
@@ -124,7 +130,6 @@ public abstract class ElecCaseBtnController implements Initializable, IDistory {
 			}
 		});
 		modes.getSelectionModel().selectFirst();
-		System.out.println(modes.getSelectionModel().getSelectedItem());
 	}
 
 	protected abstract void switchCaseMode(CaseMode mode);
@@ -331,11 +336,6 @@ public abstract class ElecCaseBtnController implements Initializable, IDistory {
 	public void setState(ElecCaseState<?> elecCaseState) {
 		this.elecCaseState = elecCaseState;
 	}
-
-	@FXML
-	protected void submit() {
-		
-	}
 	
 	@Override
 	public void distroy() {
@@ -368,8 +368,4 @@ public abstract class ElecCaseBtnController implements Initializable, IDistory {
 	public void setElecCase3D(ElecCase3D<?> elecCase3D) {
 		this.elecCase3D = elecCase3D;
 	}
-	
-	public abstract void prev();
-
-	public abstract void next();
 }

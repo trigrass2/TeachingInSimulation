@@ -89,6 +89,12 @@ public class BrokenExamingDialog extends DialogPane<Boolean> {
 		name.setKey("name");
 		name.setText(MsgUtil.getMessage("student.name"));
 		name.setPrefWidth(100);
+		// 学生名称
+//		Column<String> corrected = new Column<>();
+//		corrected.setAlignment(Pos.CENTER);
+//		corrected.setKey("result");
+//		corrected.setText("");
+//		corrected.setPrefWidth(100);
 		// 提交状态
 		Column<Boolean> submit = new Column<>();
 		submit.setAlignment(Pos.CENTER);

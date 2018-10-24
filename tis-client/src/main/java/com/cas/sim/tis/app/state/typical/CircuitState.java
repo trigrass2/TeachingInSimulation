@@ -3,6 +3,7 @@ package com.cas.sim.tis.app.state.typical;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,7 +20,9 @@ import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.cas.circuit.CirSim;
+import com.cas.circuit.IBroken;
 import com.cas.circuit.ICircuitEffect;
+import com.cas.circuit.IBroken.BrokenState;
 import com.cas.circuit.component.Base;
 import com.cas.circuit.component.ControlIO;
 import com.cas.circuit.component.ElecCompDef;
@@ -33,6 +36,7 @@ import com.cas.circuit.element.CircuitElm;
 import com.cas.circuit.util.JaxbUtil;
 import com.cas.circuit.util.JmeUtil;
 import com.cas.circuit.vo.Archive;
+import com.cas.circuit.vo.Pair;
 import com.cas.sim.tis.action.ElecCompAction;
 import com.cas.sim.tis.anno.JmeThread;
 import com.cas.sim.tis.app.control.BaseOnRelayHoverControl;
@@ -51,6 +55,7 @@ import com.cas.sim.tis.app.listener.WireListener;
 import com.cas.sim.tis.app.state.BaseState;
 import com.cas.sim.tis.app.state.ElecCaseState;
 import com.cas.sim.tis.app.state.ElecCaseState.CaseMode;
+import com.cas.sim.tis.app.state.broken.BrokenCaseState;
 import com.cas.sim.tis.consts.Radius;
 import com.cas.sim.tis.consts.WireColor;
 import com.cas.sim.tis.entity.ElecComp;
@@ -61,6 +66,7 @@ import com.cas.sim.tis.util.HTTPUtils;
 import com.cas.sim.tis.util.MsgUtil;
 import com.cas.sim.tis.util.SpringUtil;
 import com.cas.sim.tis.view.control.imp.ElecCase3D;
+import com.cas.sim.tis.view.control.imp.broken.BrokenCase3D;
 import com.cas.sim.tis.view.control.imp.dialog.Tip.TipType;
 import com.cas.util.StringUtil;
 import com.jme3.asset.ModelKey;
@@ -621,6 +627,60 @@ public class CircuitState extends BaseState implements ICircuitEffect {
 		}
 		readEleccomps(archive.getCompList());
 		readWires(archive.getWireList());
+		if (caseState instanceof BrokenCaseState) {
+			readBroken();
+		}
+	}
+
+	private void readBroken() {
+		List<IBroken> brokens = new ArrayList<>();
+
+		for (ElecCompDef def : compList) {
+			List<Pair> contactors = def.getContactorList();
+			List<Pair> coils = def.getCoilList();
+			Map<String, String> brokenMap = def.getProxy().getBrokens();
+
+			for (Pair contactor : contactors) {
+				String key = contactor.getKey("Broken");
+				if (brokenMap.containsKey(key)) {
+					contactor.setState(BrokenState.getBrokenStateByKey(brokenMap.get(key)));
+					brokens.add(contactor);
+				}
+			}
+			for (Pair coil : coils) {
+				String key = coil.getKey("Broken");
+				if (brokenMap.containsKey(key)) {
+					coil.setState(BrokenState.getBrokenStateByKey(brokenMap.get(key)));
+					brokens.add(coil);
+				}
+			}
+		}
+
+		for (Wire wire : wireList) {
+			if (wire.getProxy().isBroken()) {
+				wire.setBroken(BrokenState.OPEN);
+				brokens.add(wire);
+			}
+		}
+		Platform.runLater(() -> {
+			// 如果是练习或考核则随机3个故障
+			if (mode == CaseMode.BROKEN_EXAM_MODE || mode == CaseMode.BROKEN_TRAIN_MODE) {
+				// 随机故障
+				Collections.shuffle(brokens);
+				List<IBroken> remains = brokens.subList(0, 3);
+				int num = remains.size();
+				((BrokenCase3D) ui).initBrokenNum(num);
+				// 除随机抽取的3个故障之外，状态设置为正常
+				brokens.removeAll(remains);
+				for (IBroken broken : brokens) {
+					broken.setBroken(BrokenState.NORMAL);
+				}
+			} else {
+				for (IBroken broken : brokens) {
+					((BrokenCase3D) ui).addBrokenItem(broken);
+				}
+			}
+		});
 	}
 
 	private void readEleccomps(@Nonnull List<ElecCompProxy> compProxyList) {
@@ -667,6 +727,7 @@ public class CircuitState extends BaseState implements ICircuitEffect {
 			step.setModel(compMdl);
 			steps.add(step);
 		});
+
 	}
 
 //	从存档中读取导线信息
@@ -697,6 +758,7 @@ public class CircuitState extends BaseState implements ICircuitEffect {
 
 				wire.bind(term1);
 				wire.bind(term2);
+
 				attachToCircuit(wireMdl, wire);
 			}
 

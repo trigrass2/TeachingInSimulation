@@ -63,14 +63,4 @@ public class FreeCaseBtnController extends ElecCaseBtnController {
 	public void removeFreeItem(FreeItem item) {
 		flow.getChildren().remove(item);
 	}
-
-	@Override
-	public void prev() {
-
-	}
-
-	@Override
-	public void next() {
-
-	}
 }

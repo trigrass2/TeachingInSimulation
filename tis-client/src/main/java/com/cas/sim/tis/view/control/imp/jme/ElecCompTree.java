@@ -16,6 +16,7 @@ import javafx.scene.control.TitledPane;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.Tooltip;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 
 public class ElecCompTree extends Accordion {
@@ -61,6 +62,7 @@ public class ElecCompTree extends Accordion {
 			t1.setContent(scrollPane);
 			
 		}
+		VBox.setVgrow(this, Priority.ALWAYS);
 	}
 
 	public ElecCompTree(Object object) {

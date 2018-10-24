@@ -4,6 +4,8 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.springframework.stereotype.Component;
+
 import com.alibaba.fastjson.JSON;
 import com.cas.sim.tis.consts.Session;
 import com.cas.sim.tis.entity.BrokenPublish;
@@ -13,6 +15,8 @@ import com.cas.sim.tis.thrift.RequestEntityBuilder;
 import com.cas.sim.tis.thrift.ResponseEntity;
 import com.cas.sim.tis.vo.SubmitInfo;
 
+
+@Component
 public class BrokenPublishAction extends BaseAction {
 	@Resource
 	private BrokenPublishService service;

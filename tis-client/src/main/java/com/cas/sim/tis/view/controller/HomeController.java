@@ -14,7 +14,9 @@ import com.cas.sim.tis.consts.MenuEnum;
 import com.cas.sim.tis.consts.RoleConst;
 import com.cas.sim.tis.consts.Session;
 import com.cas.sim.tis.entity.User;
+import com.cas.sim.tis.message.ExamMessage;
 import com.cas.sim.tis.util.MsgUtil;
+import com.cas.sim.tis.util.SocketUtil;
 import com.cas.sim.tis.util.SpringUtil;
 import com.cas.sim.tis.view.PageView;
 import com.cas.sim.tis.view.control.imp.Decoration;
@@ -96,7 +98,11 @@ public class HomeController implements Initializable {
 			xOffset = GUIState.getStage().getX() - e.getScreenX();
 			yOffset = GUIState.getStage().getY() - e.getScreenY();
 		});
-
+		
+		ExamMessage message = new ExamMessage();
+		message.setMessageType(ExamMessage.MESSAGE_TYPE_QUERY);
+		message.setSid(Session.get(Session.KEY_LOGIN_ID));
+		SocketUtil.INSTENCE.send(message);
 	}
 
 	private void buildMenu(MenuEnum... menuItems) {

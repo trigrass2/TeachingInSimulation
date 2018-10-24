@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.cas.sim.tis.action.CatalogAction;
+import com.cas.sim.tis.consts.RoleConst;
 import com.cas.sim.tis.consts.Session;
 import com.cas.sim.tis.entity.Catalog;
 import com.cas.sim.tis.message.ExamMessage;
@@ -101,7 +102,8 @@ public class PreparationMenu extends VBox implements ILeftContent, IPublish, IDi
 			this.projects.getPanes().add(pane);
 		}
 		Integer publishId = Session.get(Session.KEY_PREPARATION_PUBLISH_ID);
-		if (publishId != null) {
+		int role = Session.get(Session.KEY_LOGIN_ROLE);
+		if (publishId != null && RoleConst.TEACHER == role) {
 			publish(publishId);
 		}
 	}

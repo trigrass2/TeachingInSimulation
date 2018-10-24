@@ -76,7 +76,7 @@ public class ExamingMenuItem extends HBox implements IDistory {
 			} else if (ExamMessage.EXAM_TYPE_PREPARATION == examType) {
 				showPreparationLibrary();
 			} else if (ExamMessage.EXAM_TYPE_BROKEN == examType) {
-				showTypicalExamDialog();
+				showBrokenExamDialog();
 			}
 		});
 
@@ -154,7 +154,7 @@ public class ExamingMenuItem extends HBox implements IDistory {
 		dialog.showAndWait();
 	}
 
-	private void showTypicalExamDialog() {
+	private void showBrokenExamDialog() {
 		Dialog<Boolean> dialog = new Dialog<>();
 		dialog.setDialogPane(new BrokenExamingDialog(repairPublish));
 		dialog.setTitle(MsgUtil.getMessage("exam.dialog.progress"));
@@ -162,7 +162,7 @@ public class ExamingMenuItem extends HBox implements IDistory {
 		dialog.showAndWait().ifPresent(finish -> {
 			if (finish) {
 				ExamMessage message = new ExamMessage();
-				message.setPid(preparationPublish.getId());
+				message.setPid(repairPublish.getId());
 				message.setMessageType(ExamMessage.MESSAGE_TYPE_OVER);
 				message.setExamType(examType);
 

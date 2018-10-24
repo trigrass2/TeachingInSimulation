@@ -5,6 +5,7 @@ import java.awt.Point;
 import java.util.List;
 
 import com.cas.circuit.IBroken;
+import com.cas.circuit.IBroken.BrokenState;
 import com.cas.circuit.component.ElecCompDef;
 import com.cas.circuit.component.Wire;
 import com.cas.circuit.vo.Pair;
@@ -38,6 +39,8 @@ public class BrokenCase3D extends ElecCase3D<BrokenCase> implements IContent {
 	private ContextMenu compTrain;
 	private ContextMenu wireTrain;
 
+	private boolean finish;
+
 	public BrokenCase3D(ElecCaseState<BrokenCase> state, ElecCaseBtnController btnController) {
 		super(state, btnController);
 	}
@@ -47,6 +50,10 @@ public class BrokenCase3D extends ElecCase3D<BrokenCase> implements IContent {
 		state.setupCase(brokenCase, mode);
 		btnController.clean();
 		btnController.setMode(mode);
+	}
+
+	public void setFinish(boolean finish) {
+		this.finish = finish;
 	}
 
 	@Override
@@ -69,11 +76,12 @@ public class BrokenCase3D extends ElecCase3D<BrokenCase> implements IContent {
 		MenuItem unsetTrain = new MenuItem(MsgUtil.getMessage("broken.case.correct"));
 		unsetTrain.setOnAction(e -> {
 			if (wire.isBroken()) {
-				wire.setBroken(false);
-				addBrokenItem(wire);
+				wire.setCorrected(true);
+				decreaseBrokenNume();
 				state.getCircuitState().analyze();
 				AlertUtil.showTip(TipType.INFO, MsgUtil.getMessage("broken.case.right.pair"));
 			} else {
+				decreaseChanceNume();
 				AlertUtil.showTip(TipType.ERROR, MsgUtil.getMessage("broken.case.wrong.pair"));
 			}
 		});
@@ -97,7 +105,7 @@ public class BrokenCase3D extends ElecCase3D<BrokenCase> implements IContent {
 		});
 		compMenu.getItems().add(del);
 	}
-	
+
 	@Override
 	protected void createWireDelMenu() {
 		MenuItem del = new MenuItem(MsgUtil.getMessage("button.delete"));
@@ -114,9 +122,12 @@ public class BrokenCase3D extends ElecCase3D<BrokenCase> implements IContent {
 		});
 		wireMenu.getItems().add(del);
 	}
-	
+
 	@Override
 	public void showPopupMenu(ElecCompDef compDef) {
+		if (finish) {
+			return;
+		}
 		List<Pair> contactors = compDef.getContactorList();
 		List<Pair> coils = compDef.getCoilList();
 		if (CaseMode.EDIT_MODE == state.getMode()) {
@@ -125,24 +136,30 @@ public class BrokenCase3D extends ElecCase3D<BrokenCase> implements IContent {
 			for (Pair contactor : contactors) {
 				Menu menu = new Menu(contactor.getName());
 				ToggleGroup group = new ToggleGroup();
+				BrokenState state = contactor.getState();
 				RadioMenuItem normal = new RadioMenuItem(MsgUtil.getMessage("broken.case.normal"));
-				normal.setSelected(true);
+				normal.setSelected(state == BrokenState.NORMAL);
 				normal.setOnAction(e -> {
 					// TODO 设置状态
+					contactor.setBroken(BrokenState.NORMAL);
 					compDef.setBroken(contactor);
 					removeBrokenItem(contactor);
 				});
 				normal.setToggleGroup(group);
 				RadioMenuItem disconnect = new RadioMenuItem(MsgUtil.getMessage("broken.case.open"));
+				disconnect.setSelected(state == BrokenState.OPEN);
 				disconnect.setOnAction(e -> {
 					// TODO 设置状态
+					contactor.setBroken(BrokenState.OPEN);
 					compDef.setBroken(contactor);
 					addBrokenItem(contactor);
 				});
 				disconnect.setToggleGroup(group);
 				RadioMenuItem close = new RadioMenuItem(MsgUtil.getMessage("broken.case.close"));
+				close.setSelected(state == BrokenState.CLOSE);
 				close.setOnAction(e -> {
 					// TODO 设置状态
+					contactor.setBroken(BrokenState.CLOSE);
 					compDef.setBroken(contactor);
 					addBrokenItem(contactor);
 				});
@@ -157,6 +174,7 @@ public class BrokenCase3D extends ElecCase3D<BrokenCase> implements IContent {
 				normal.setSelected(true);
 				normal.setOnAction(e -> {
 					// TODO 设置状态
+					coil.setBroken(BrokenState.NORMAL);
 					compDef.setBroken(coil);
 					removeBrokenItem(coil);
 				});
@@ -164,6 +182,7 @@ public class BrokenCase3D extends ElecCase3D<BrokenCase> implements IContent {
 				RadioMenuItem disconnect = new RadioMenuItem(MsgUtil.getMessage("broken.case.open"));
 				disconnect.setOnAction(e -> {
 					// TODO 设置状态
+					coil.setBroken(BrokenState.OPEN);
 					compDef.setBroken(coil);
 					addBrokenItem(coil);
 				});
@@ -179,10 +198,30 @@ public class BrokenCase3D extends ElecCase3D<BrokenCase> implements IContent {
 				MenuItem disconnect = new MenuItem(MsgUtil.getMessage("broken.case.open"));
 				disconnect.setOnAction(e -> {
 					// TODO 判断线圈状态是否与用户选择结果相同，相同则纠正，不同则提示错误
+					if (contactor.getState() == BrokenState.OPEN) {
+						contactor.setBroken(BrokenState.NORMAL);
+						compDef.setCorrected(contactor);
+						decreaseBrokenNume();
+						state.getCircuitState().analyze();
+						AlertUtil.showTip(TipType.INFO, MsgUtil.getMessage("broken.case.right.pair"));
+					} else {
+						decreaseChanceNume();
+						AlertUtil.showTip(TipType.ERROR, MsgUtil.getMessage("broken.case.wrong.pair"));
+					}
 				});
 				MenuItem close = new MenuItem(MsgUtil.getMessage("broken.case.close"));
 				close.setOnAction(e -> {
 					// TODO 判断线圈状态是否与用户选择结果相同，相同则纠正，不同则提示错误
+					if (contactor.getState() == BrokenState.CLOSE) {
+						contactor.setBroken(BrokenState.NORMAL);
+						compDef.setCorrected(contactor);
+						decreaseBrokenNume();
+						state.getCircuitState().analyze();
+						AlertUtil.showTip(TipType.INFO, MsgUtil.getMessage("broken.case.right.pair"));
+					} else {
+						decreaseChanceNume();
+						AlertUtil.showTip(TipType.ERROR, MsgUtil.getMessage("broken.case.wrong.pair"));
+					}
 				});
 				menu.getItems().addAll(disconnect, close);
 				this.compUnset.getItems().add(menu);
@@ -192,6 +231,16 @@ public class BrokenCase3D extends ElecCase3D<BrokenCase> implements IContent {
 				MenuItem disconnect = new MenuItem(MsgUtil.getMessage("broken.case.open"));
 				disconnect.setOnAction(e -> {
 					// TODO 判断线圈状态是否与用户选择结果相同，相同则纠正，不同则提示错误
+					if (coil.getState() == BrokenState.OPEN) {
+						coil.setBroken(BrokenState.NORMAL);
+						compDef.setCorrected(coil);
+						decreaseBrokenNume();
+						state.getCircuitState().analyze();
+						AlertUtil.showTip(TipType.INFO, MsgUtil.getMessage("broken.case.right.pair"));
+					} else {
+						decreaseChanceNume();
+						AlertUtil.showTip(TipType.ERROR, MsgUtil.getMessage("broken.case.wrong.pair"));
+					}
 				});
 				menu.getItems().addAll(disconnect);
 				this.compUnset.getItems().add(menu);
@@ -204,11 +253,14 @@ public class BrokenCase3D extends ElecCase3D<BrokenCase> implements IContent {
 
 	@Override
 	public void showPopupMenu(Wire wire) {
+		if (finish) {
+			return;
+		}
 		if (CaseMode.EDIT_MODE == state.getMode()) {
 			if (wire.isBroken()) {
 				wireUnset = new MenuItem(MsgUtil.getMessage("broken.case.reset"));
 				wireUnset.setOnAction(e -> {
-					wire.setBroken(true);
+					wire.setBroken(BrokenState.NORMAL);
 					removeBrokenItem(wire);
 					state.getCircuitState().analyze();
 				});
@@ -217,7 +269,7 @@ public class BrokenCase3D extends ElecCase3D<BrokenCase> implements IContent {
 			} else {
 				wireSet = new MenuItem(MsgUtil.getMessage("broken.case.setup"));
 				wireSet.setOnAction(e -> {
-					wire.setBroken(false);
+					wire.setBroken(BrokenState.OPEN);
 					addBrokenItem(wire);
 					state.getCircuitState().analyze();
 				});
@@ -231,7 +283,7 @@ public class BrokenCase3D extends ElecCase3D<BrokenCase> implements IContent {
 			wireTrain.show(GUIState.getStage(), anchor.x, anchor.y);
 		}
 	}
-	
+
 	public BrokenCase getBrokenCase() {
 		return ((BrokenCaseState) state).getElecCase();
 	}
@@ -242,5 +294,17 @@ public class BrokenCase3D extends ElecCase3D<BrokenCase> implements IContent {
 
 	public void removeBrokenItem(IBroken broken) {
 		((BrokenCaseBtnController) btnController).removeBrokenItem(broken);
+	}
+
+	public void initBrokenNum(int num) {
+		((BrokenCaseBtnController) btnController).init(num);
+	}
+
+	public void decreaseBrokenNume() {
+		((BrokenCaseBtnController) btnController).decreaseBrokenNume();
+	}
+
+	public void decreaseChanceNume() {
+		((BrokenCaseBtnController) btnController).decreaseChanceNume();
 	}
 }

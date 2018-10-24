@@ -93,6 +93,6 @@ public class FreeCaseMenu extends ElecCaseMenu {
 	}
 	
 	public void setEditable(boolean editable){
-		this.menu.setVisible(editable);
+		this.options.setVisible(editable);
 	}
 }

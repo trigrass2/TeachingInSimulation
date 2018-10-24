@@ -64,6 +64,9 @@ public class PageController implements Initializable {
 	private StackPane content;
 
 	@FXML
+	private Button toggle;
+	
+	@FXML
 	private Region arrow;
 
 	@FXML
@@ -136,6 +139,8 @@ public class PageController implements Initializable {
 			}
 		} else {
 			clear();
+			setBackEnable(true);
+			setLeftMenuEnable(true);
 			Application.showView(HomeView.class);
 		}
 	}
@@ -300,8 +305,17 @@ public class PageController implements Initializable {
 			decoration.maximize();
 		}
 	}
-	
+
 	public void setBackEnable(boolean enable) {
 		this.back.setVisible(enable);
+	}
+
+	public void setLeftMenuEnable(boolean enable) {
+		if (enable) {
+			show();
+		} else {
+			hide();
+		}
+		this.toggle.setVisible(enable);
 	}
 }

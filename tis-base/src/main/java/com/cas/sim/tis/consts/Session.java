@@ -30,9 +30,9 @@ public enum Session {
 	 */
 	KEY_PREPARATION_PUBLISH_ID,
 	/**
-	 * 当前正在进行的典型案例考核记录编号
+	 * 当前正在进行的故障维修考核记录编号
 	 */
-	KEY_TYPICAL_CASE_PUBLISH_ID,
+	KEY_BROKEN_CASE_PUBLISH_ID,
 
 	KEY_OBJECT;
 

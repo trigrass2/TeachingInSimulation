@@ -13,6 +13,7 @@
 		<association property="brokenCase" javaType="com.cas.sim.tis.entity.BrokenCase">
 			<id column="BID" jdbcType="INTEGER" property="id" />
 			<result column="TCNAME" jdbcType="VARCHAR" property="name" />
+			<result column="ARCHIVE_PATH" jdbcType="VARCHAR" property="archivePath" />
 		</association>
 		<association property="clazz" javaType="com.cas.sim.tis.entity.Class">
 			<id column="CID" jdbcType="INTEGER" property="id" />
@@ -32,7 +33,8 @@
 		p.id,
 		p.bid,
 		p.cid,
-		bc.name AS tcname
+		bc.name AS tcname,
+		bc.archive_path
 		FROM
 		broken_publish p, broken_case bc
 		WHERE
@@ -43,7 +45,7 @@
 	</select>
 	<select id="findSubmitStateById" resultMap="SubmitStateMap">
 		SELECT
-		a.code, a.name, (r.archive_path is not null) as submited
+		a.code, a.name, (r.archive_path is not null) as submited, CONCAT(r.corrected_num, '/' ,r.broken_num) as result
 		FROM
 		(SELECT
 		p.id AS pid, u.id AS uid, u.code, u.name

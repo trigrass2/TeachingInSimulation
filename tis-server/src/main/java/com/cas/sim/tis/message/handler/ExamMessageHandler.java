@@ -32,10 +32,39 @@ public class ExamMessageHandler implements ServerHandler<ExamMessage> {
 	@Resource
 	private PreparationPublishService preparationPublishService;
 	@Resource
-	private BrokenPublishService typicalPublishService;
+	private BrokenPublishService brokenPublishService;
 
 	@Override
 	public void execute(HostedConnection source, ExamMessage m) throws Exception {
+		int messageType = m.getMessageType();
+		if (ExamMessage.MESSAGE_TYPE_QUERY == messageType) {
+			Integer publishId = Session.get(Session.KEY_LIBRARY_PUBLISH_ID);
+			Integer sid = m.getSid();
+			HostedConnection conn = serverConfig.getClients().stream().filter(c -> sid.equals(c.getAttribute(Session.KEY_LOGIN_ID.name()))).findAny().orElse(null);
+			if (publishId != null) {
+				m.setPid(publishId);
+				m.setExamType(ExamMessage.EXAM_TYPE_LIBRARY);
+				m.setMessageType(ExamMessage.MESSAGE_TYPE_START);
+				conn.send(m);
+				return;
+			}
+			publishId = Session.get(Session.KEY_PREPARATION_PUBLISH_ID);
+			if (publishId != null) {
+				m.setPid(publishId);
+				m.setExamType(ExamMessage.EXAM_TYPE_PREPARATION);
+				m.setMessageType(ExamMessage.MESSAGE_TYPE_START);
+				conn.send(m);
+				return;
+			}
+			publishId = Session.get(Session.KEY_BROKEN_CASE_PUBLISH_ID);
+			if (publishId != null) {
+				m.setPid(publishId);
+				m.setExamType(ExamMessage.EXAM_TYPE_BROKEN);
+				m.setMessageType(ExamMessage.MESSAGE_TYPE_START);
+				conn.send(m);
+				return;
+			}
+		}
 		int examType = m.getExamType();
 		if (ExamMessage.EXAM_TYPE_LIBRARY == examType) {
 			libraryExam(m);
@@ -62,6 +91,7 @@ public class ExamMessageHandler implements ServerHandler<ExamMessage> {
 				}
 			}
 			serverConfig.getServer().broadcast(Filters.in(collection), m);
+			Session.set(Session.KEY_LIBRARY_PUBLISH_ID, publish.getId());
 		}
 	}
 
@@ -81,6 +111,7 @@ public class ExamMessageHandler implements ServerHandler<ExamMessage> {
 				}
 			}
 			serverConfig.getServer().broadcast(Filters.in(collection), m);
+			Session.set(Session.KEY_PREPARATION_PUBLISH_ID, publish.getId());
 		}
 	}
 
@@ -90,7 +121,7 @@ public class ExamMessageHandler implements ServerHandler<ExamMessage> {
 			RequestEntity req = new RequestEntityBuilder()//
 					.set("id", m.getPid())//
 					.build();
-			ResponseEntity resp = typicalPublishService.updateBrokenPublish(req);
+			ResponseEntity resp = brokenPublishService.updateBrokenPublish(req);
 			BrokenPublish publish = JSON.parseObject(resp.data, BrokenPublish.class);
 //			通知当前考试学生考试结束
 			List<HostedConnection> collection = new ArrayList<>();
@@ -100,6 +131,7 @@ public class ExamMessageHandler implements ServerHandler<ExamMessage> {
 				}
 			}
 			serverConfig.getServer().broadcast(Filters.in(collection), m);
+			Session.set(Session.KEY_BROKEN_CASE_PUBLISH_ID, publish.getId());
 		}
 	}
 }

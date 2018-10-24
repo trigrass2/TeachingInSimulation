@@ -42,12 +42,12 @@
 				<content></content>
 			</ScrollPane>
 			<HBox fx:id="btns">
-				<Button styleClass="blue-btn" pickOnBounds="true" prefWidth="150" onAction="#prev">
+				<Button fx:id="prev" styleClass="blue-btn" pickOnBounds="true" prefWidth="150">
 					<graphic>
 						<SVGGlyph name="iconfont.svg.left" size="16" fill="WHITE" />
 					</graphic>
 				</Button>
-				<Button styleClass="blue-btn" pickOnBounds="true" prefWidth="150" onAction="#next">
+				<Button fx:id="next" styleClass="blue-btn" pickOnBounds="true" prefWidth="150">
 					<graphic>
 						<SVGGlyph name="iconfont.svg.right" size="16" fill="WHITE" />
 					</graphic>
@@ -103,7 +103,7 @@
 				</Label>
 				<Label text="%exam.broken.chance.unit" styleClass="font14" textFill="WHITE" />
 			</HBox>
-			<Button text="%button.submit" styleClass="recognize-btn" onAction="#submit" pickOnBounds="true" />
+			<Button fx:id="submit" text="%button.submit" styleClass="recognize-btn" pickOnBounds="true" />
 		</HBox>
 		<padding>
 			<Insets left="10" bottom="10" />

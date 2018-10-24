@@ -9,6 +9,7 @@ import com.cas.sim.tis.action.PreparationPublishAction;
 import com.cas.sim.tis.action.QuestionAction;
 import com.cas.sim.tis.app.state.ElecCaseState.CaseMode;
 import com.cas.sim.tis.app.state.broken.BrokenCaseState;
+import com.cas.sim.tis.consts.RoleConst;
 import com.cas.sim.tis.consts.Session;
 import com.cas.sim.tis.entity.BrokenPublish;
 import com.cas.sim.tis.entity.LibraryPublish;
@@ -17,6 +18,7 @@ import com.cas.sim.tis.entity.Question;
 import com.cas.sim.tis.message.ExamMessage;
 import com.cas.sim.tis.util.SpringUtil;
 import com.cas.sim.tis.view.ExamView;
+import com.cas.sim.tis.view.PageView;
 import com.cas.sim.tis.view.PreparationExamView;
 import com.cas.sim.tis.view.control.imp.broken.BrokenCase3D;
 import com.cas.sim.tis.view.control.imp.broken.BrokenCaseBtnController;
@@ -33,12 +35,25 @@ public class ExamMessageHandler implements ClientHandler<ExamMessage> {
 	@Override
 	public void execute(Client client, ExamMessage m) throws Exception {
 		int examType = m.getExamType();
+		int role = Session.get(Session.KEY_LOGIN_ROLE);
 		if (ExamMessage.EXAM_TYPE_LIBRARY == examType) {
-			libraryExam(m);
+			if (role == RoleConst.TEACHER) {
+				Session.set(Session.KEY_LIBRARY_PUBLISH_ID, m.getPid());
+			} else if (role == RoleConst.STUDENT) {
+				libraryExam(m);
+			}
 		} else if (ExamMessage.EXAM_TYPE_PREPARATION == examType) {
-			preparationExam(m);
+			if (role == RoleConst.TEACHER) {
+				Session.set(Session.KEY_PREPARATION_PUBLISH_ID, m.getPid());
+			} else if (role == RoleConst.STUDENT) {
+				preparationExam(m);
+			}
 		} else if (ExamMessage.EXAM_TYPE_BROKEN == examType) {
-			repairExam(m);
+			if (role == RoleConst.TEACHER) {
+				Session.set(Session.KEY_BROKEN_CASE_PUBLISH_ID, m.getPid());
+			} else if (role == RoleConst.STUDENT) {
+				repairExam(m);
+			}
 		}
 	}
 
@@ -83,26 +98,29 @@ public class ExamMessageHandler implements ClientHandler<ExamMessage> {
 			});
 		}
 	}
-	
+
 	private void repairExam(ExamMessage m) {
 		int messageType = m.getMessageType();
 		if (ExamMessage.MESSAGE_TYPE_START == messageType) {
 			BrokenPublish publish = SpringUtil.getBean(BrokenPublishAction.class).findPublishById(m.getPid());
 			// TODO 加载维修案例考核界面
 			Platform.runLater(() -> {
+				Application.showView(PageView.class);
 				PageController controller = SpringUtil.getBean(PageController.class);
 				BrokenCase3D content = new BrokenCase3D(new BrokenCaseState(), new BrokenCaseBtnController(CaseMode.BROKEN_EXAM_MODE));
 
-				controller.loadContent(content, PageLevel.Level2);
-				controller.setEndHideLoading((v) -> {
-					Session.get(Session.KEY_TYPICAL_CASE_PUBLISH_ID, publish.getId());
+				controller.loadContent(content, PageLevel.Level1);
+				controller.setLeftMenuEnable(false);
+				controller.setBackEnable(false);
+				controller.setEndHideLoading(c -> {
+					Session.set(Session.KEY_BROKEN_CASE_PUBLISH_ID, publish.getId());
 					content.setupCase(publish.getBrokenCase(), CaseMode.BROKEN_EXAM_MODE);
 				});
 			});
 		} else if (ExamMessage.MESSAGE_TYPE_OVER == messageType) {
 			// TODO 考核结束显示界面
 			Platform.runLater(() -> {
-					
+
 			});
 		}
 	}

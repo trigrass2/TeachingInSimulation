@@ -58,7 +58,7 @@
 									<StackPane fx:id="leftContent" VBox.vgrow="ALWAYS" alignment="TOP_CENTER" />
 								</children>
 							</VBox>
-							<Button mnemonicParsing="false" onAction="#toggle" styleClass="left-menu-btn">
+							<Button fx:id="toggle" mnemonicParsing="false" onAction="#toggle" styleClass="left-menu-btn">
 								<graphic>
 									<Region fx:id="arrow" styleClass="hide" />
 								</graphic>

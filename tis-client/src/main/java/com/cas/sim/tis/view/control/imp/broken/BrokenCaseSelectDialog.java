@@ -168,7 +168,7 @@ public class BrokenCaseSelectDialog extends DialogPane<Integer> {
 						try {
 							Integer publishId = SpringUtil.getBean(BrokenPublishAction.class).publishBroken((Integer) typicalId, classId);
 							// 记录当前考核发布编号
-							Session.set(Session.KEY_TYPICAL_CASE_PUBLISH_ID, publishId);
+							Session.set(Session.KEY_BROKEN_CASE_PUBLISH_ID, publishId);
 							// 添加考核进行时菜单
 							PageController controller = SpringUtil.getBean(PageController.class);
 							ILeftContent content = controller.getLeftMenu();

@@ -18,11 +18,11 @@ import com.cas.sim.tis.view.controller.PageController;
 public class TypicalCaseBtnController extends ElecCaseBtnController {
 
 	private TypicalFlowItem flow;
-	
-	public TypicalCaseBtnController(CaseMode ...enableModes) {
+
+	public TypicalCaseBtnController(CaseMode... enableModes) {
 		super(enableModes);
 	}
-	
+
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		super.initialize(location, resources);
@@ -45,7 +45,12 @@ public class TypicalCaseBtnController extends ElecCaseBtnController {
 			}
 			((TypicalCase3D) elecCase3D).autoWires(n);
 		});
-		
+		prev.setOnAction(e -> {
+			prev();
+		});
+		next.setOnAction(e -> {
+			next();
+		});
 	}
 
 	protected void switchCaseMode(CaseMode mode) {
@@ -91,7 +96,7 @@ public class TypicalCaseBtnController extends ElecCaseBtnController {
 
 	@Override
 	public String getDrawings() {
-		ArchiveCase archiveCase = ((TypicalCaseState)elecCaseState).getElecCase();
+		ArchiveCase archiveCase = ((TypicalCaseState) elecCaseState).getElecCase();
 		if (archiveCase == null) {
 			return null;
 		} else {
@@ -101,12 +106,12 @@ public class TypicalCaseBtnController extends ElecCaseBtnController {
 
 	@Override
 	public void setDrawings(String drawings) {
-		ArchiveCase archiveCase = ((TypicalCaseState)elecCaseState).getElecCase();
+		ArchiveCase archiveCase = ((TypicalCaseState) elecCaseState).getElecCase();
 		if (archiveCase != null) {
 			archiveCase.setDrawings(drawings);
 		}
 	}
-	
+
 	public void loadSteps(List<Step> steps) {
 		this.flow.getChildren().clear();
 
@@ -118,14 +123,12 @@ public class TypicalCaseBtnController extends ElecCaseBtnController {
 		next();
 	}
 
-	@Override
 	public void prev() {
 		flow.prev(scroll);
 	}
 
-	@Override
 	public void next() {
 		flow.next(scroll);
 	}
-	
+
 }

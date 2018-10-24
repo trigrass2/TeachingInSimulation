@@ -54,7 +54,7 @@ public abstract class ElecCaseState<T>extends BaseState {
 		private String name;
 		private boolean hideCircuit;// 是否在初始化时隐藏电路
 		private boolean holdEnable;// 模式下是否允许拿去元器件
-		
+
 		@Override
 		public String toString() {
 			return name;
@@ -84,9 +84,8 @@ public abstract class ElecCaseState<T>extends BaseState {
 		this.holdState = new HoldState(root, compPlane, cameraState);
 		stateManager.attach(holdState);
 
-		stateManager.attach(new MultimeterState());
-		
-		
+//		stateManager.attach(new MultimeterState());
+
 		// 结束加载界面
 		Platform.runLater(() -> SpringUtil.getBean(PageController.class).hideLoading());
 	}
@@ -152,6 +151,9 @@ public abstract class ElecCaseState<T>extends BaseState {
 	}
 
 	public void hold(ElecComp elecComp) {
+		if (mode == null) {
+			return;
+		}
 		if (mode.isHoldEnable()) {
 			holdState.hold(elecComp);
 		}

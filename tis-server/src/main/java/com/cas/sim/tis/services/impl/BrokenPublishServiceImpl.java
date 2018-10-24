@@ -48,6 +48,7 @@ public class BrokenPublishServiceImpl implements BrokenPublishService {
 		}
 		serverConfig.getServer().broadcast(Filters.in(collection), message);
 
+		Session.set(Session.KEY_BROKEN_CASE_PUBLISH_ID, publish.getId());
 		return ResponseEntity.success(publish.getId());
 	}
 
