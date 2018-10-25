@@ -2,7 +2,7 @@ package com.cas.sim.tis.app.listener;
 
 import com.cas.sim.tis.app.event.MouseEvent;
 import com.cas.sim.tis.app.event.MouseEventAdapter;
-import com.cas.sim.tis.app.state.typical.HoldState;
+import com.cas.sim.tis.app.hold.HoldStatePro;
 import com.cas.sim.tis.app.state.typical.TrainState;
 import com.cas.sim.tis.entity.ElecComp;
 import com.cas.sim.tis.flow.Step;
@@ -18,12 +18,12 @@ import lombok.extern.slf4j.Slf4j;
 public class ElecCompTrainListener extends MouseEventAdapter {
 
 	private TypicalCase3D ui;
-	
+
 	private Step step;
 	private TrainState train;
-	private HoldState hold;
+	private HoldStatePro hold;
 
-	public ElecCompTrainListener(TypicalCase3D ui, TrainState train, HoldState hold) {
+	public ElecCompTrainListener(TypicalCase3D ui, TrainState train, HoldStatePro hold) {
 		this.ui = ui;
 		this.train = train;
 		this.hold = hold;
@@ -39,7 +39,7 @@ public class ElecCompTrainListener extends MouseEventAdapter {
 			log.info("ElecCompTrainListener未指定步骤");
 			return;
 		}
-		ElecComp comp = hold.getHold();
+		ElecComp comp = hold.getHoldingSpatial().getUserData("entity");
 		if (comp == null) {
 			return;
 		}

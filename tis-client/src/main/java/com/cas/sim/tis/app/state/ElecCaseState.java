@@ -1,12 +1,12 @@
 package com.cas.sim.tis.app.state;
 
-import com.cas.circuit.component.ElecCompDef;
 import com.cas.sim.tis.app.event.MouseEvent;
 import com.cas.sim.tis.app.event.MouseEventAdapter;
+import com.cas.sim.tis.app.hold.ElecCompHoldHandler;
+import com.cas.sim.tis.app.hold.HoldStatePro;
 import com.cas.sim.tis.app.state.SceneCameraState.Mode;
 import com.cas.sim.tis.app.state.SceneCameraState.View;
 import com.cas.sim.tis.app.state.typical.CircuitState;
-import com.cas.sim.tis.app.state.typical.HoldState;
 import com.cas.sim.tis.entity.ElecComp;
 import com.cas.sim.tis.util.MsgUtil;
 import com.cas.sim.tis.util.SpringUtil;
@@ -20,8 +20,8 @@ import com.jme3.light.PointLight;
 import com.jme3.math.ColorRGBA;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
+import com.jme3x.jfx.util.JFXPlatform;
 
-import javafx.application.Platform;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -30,14 +30,15 @@ public abstract class ElecCaseState<T>extends BaseState {
 	private static final String CASE_ROOT_NODE = "CASE_ROOT_NODE";
 
 	protected Node root;
-	protected Spatial compPlane;
+	protected @Getter Spatial compPlane;
 
 	protected PointLight pointLight;
 
 	protected SceneCameraState cameraState;
 
 	protected ElecCase3D<T> ui;
-	protected HoldState holdState;
+//	protected HoldState holdState;
+	protected HoldStatePro holdState;
 	protected CircuitState circuitState;
 
 	protected CaseMode mode;
@@ -81,18 +82,26 @@ public abstract class ElecCaseState<T>extends BaseState {
 			}
 		}, "toggleView");
 
-		this.holdState = new HoldState(root, compPlane, cameraState);
-		stateManager.attach(holdState);
+		
+		HoldStatePro.ins.setRoot(root);
+		HoldStatePro.ins.registerWithInput(inputManager);
+//		stateManager.attach(holdState);
 
 //		stateManager.attach(new MultimeterState());
 
 		// 结束加载界面
-		Platform.runLater(() -> SpringUtil.getBean(PageController.class).hideLoading());
+		JFXPlatform.runInFXThread(() -> SpringUtil.getBean(PageController.class).hideLoading());
 	}
 
 	@Override
 	public void update(float tpf) {
 		pointLight.setPosition(cam.getLocation());
+
+		if (holdState != null) {
+//			手中无物品，相机才能缩放
+			cameraState.setZoomEnable(holdState.isIdle());
+		}
+
 		super.update(tpf);
 	}
 
@@ -103,7 +112,10 @@ public abstract class ElecCaseState<T>extends BaseState {
 		// 移除操作模式State
 		stateManager.detach(cameraState);
 		stateManager.detach(circuitState);
-		stateManager.detach(holdState);
+//		stateManager.detach(holdState);
+
+		holdState.unregisterInput();
+
 		super.cleanup();
 	}
 
@@ -138,9 +150,10 @@ public abstract class ElecCaseState<T>extends BaseState {
 		addListener(compPlane, new MouseEventAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				if (mode.isHoldEnable()) {
-					holdState.putDown(circuitState);
-				}
+				holdState.putDown();
+//				if (mode.isHoldEnable()) {
+//					holdState.putDown(circuitState);
+//				}
 			}
 
 			@Override
@@ -155,15 +168,26 @@ public abstract class ElecCaseState<T>extends BaseState {
 			return;
 		}
 		if (mode.isHoldEnable()) {
-			holdState.hold(elecComp);
+//			只要当前模式下允许拿东西，二话不说，先将元器件的模型加载出来
+			Spatial spatial = loadAsset(new ModelKey(elecComp.getMdlPath()));
+//			设置当前元器件的模型对象
+			elecComp.setSpatial(spatial);
+
+//			拿之前先检查一下手中是否有东西，如果有，则先丢弃
+			if (!holdState.isIdle()) {
+				holdState.discard();
+			}
+
+//			最后就能光明正大地拿元器件了
+			holdState.pickUp(spatial, new ElecCompHoldHandler(this, elecComp));
 		}
 	}
 
-	public void putDownOnBase(ElecCompDef def) {
+	public void putDownOnBase(Spatial def) {
 		if (CaseMode.VIEW_MODE == mode || circuitState == null) {
 			return;
 		}
-		holdState.putDownOnBase(def, circuitState);
+		holdState.putDownOn(def);
 	}
 
 	public boolean isClean() {

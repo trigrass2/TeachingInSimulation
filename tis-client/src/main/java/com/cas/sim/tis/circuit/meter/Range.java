@@ -35,7 +35,6 @@ public class Range {
 		input = (input > max) ? 0 : input;
 		input = (input < min) ? 0 : input;
 
-		System.out.println(input);
 		return new BigDecimal(input / magnitude).setScale(resolution, BigDecimal.ROUND_DOWN).doubleValue();
 	}
 

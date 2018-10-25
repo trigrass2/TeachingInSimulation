@@ -24,6 +24,7 @@ import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.system.AppSettings;
 
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -31,7 +32,7 @@ public abstract class BaseState extends AbstractAppState {
 
 	protected JmeApplication app;
 
-	protected InputManager inputManager;
+	protected @Getter InputManager inputManager;
 
 	protected AssetManager assetManager;
 
@@ -39,7 +40,7 @@ public abstract class BaseState extends AbstractAppState {
 	
 	protected RenderManager renderManager;
 
-	protected Camera cam;
+	protected @Getter Camera cam;
 
 	protected Node rootNode;
 

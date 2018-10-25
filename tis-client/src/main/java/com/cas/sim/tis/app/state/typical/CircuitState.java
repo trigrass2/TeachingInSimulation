@@ -39,12 +39,12 @@ import com.cas.circuit.vo.Archive;
 import com.cas.circuit.vo.Pair;
 import com.cas.sim.tis.action.ElecCompAction;
 import com.cas.sim.tis.anno.JmeThread;
-import com.cas.sim.tis.app.control.BaseOnRelayHoverControl;
 import com.cas.sim.tis.app.control.ShowNameOnHoverControl;
 import com.cas.sim.tis.app.control.TagNameControl;
 import com.cas.sim.tis.app.control.WireNumberControl;
 import com.cas.sim.tis.app.event.MouseEventListener;
 import com.cas.sim.tis.app.event.MouseEventState;
+import com.cas.sim.tis.app.hold.HoldStatePro;
 import com.cas.sim.tis.app.listener.ControlIOClickListener;
 import com.cas.sim.tis.app.listener.ControlIOPressListener;
 import com.cas.sim.tis.app.listener.ControlIOWheelListener;
@@ -91,8 +91,10 @@ import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.Spatial.CullHint;
 import com.jme3.scene.shape.Line;
+import com.jme3x.jfx.util.JFXPlatform;
 
 import javafx.application.Platform;
+import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -135,8 +137,9 @@ public class CircuitState extends BaseState implements ICircuitEffect {
 	private Vector3f midAxis;
 	Quaternion roll90 = new Quaternion().fromAngleNormalAxis(FastMath.HALF_PI, Vector3f.UNIT_Y);
 
-	private HoldState holdState;
-	private List<ElecCompDef> compList = new ArrayList<>();
+	private HoldStatePro holdState;
+
+	private @Getter List<ElecCompDef> compList = new ArrayList<>();
 
 	@Nullable
 	private CollisionResult collision;
@@ -179,7 +182,7 @@ public class CircuitState extends BaseState implements ICircuitEffect {
 
 	private ElecCaseState<?> caseState;
 
-	public CircuitState(ElecCaseState<?> caseState, HoldState holdState, ElecCase3D<?> ui, Node root) {
+	public CircuitState(ElecCaseState<?> caseState, HoldStatePro holdState, ElecCase3D<?> ui, Node root) {
 		this.caseState = caseState;
 		this.holdState = holdState;
 		this.ui = ui;
@@ -245,7 +248,7 @@ public class CircuitState extends BaseState implements ICircuitEffect {
 		CIRCUIT_SERVICE.scheduleAtFixedRate(CirSim.ins, 0, (long) (1 / CirSim.TPF / 10), TimeUnit.NANOSECONDS);
 
 //		FIXME 加入万用表
-//		stateManager.attach(new MultimeterState());
+		stateManager.attach(new MultimeterState());
 	}
 
 	private void bindCircuitBoardEvents() {
@@ -354,7 +357,7 @@ public class CircuitState extends BaseState implements ICircuitEffect {
 
 	public void onTernialClick(Terminal t) {
 		if (t.getWireSize() >= t.getLimit()) {
-			Platform.runLater(() -> AlertUtil.showTip(TipType.WARN, MsgUtil.getMessage("alert.warning.wire.max")));
+			JFXPlatform.runInFXThread(() -> AlertUtil.showTip(TipType.WARN, MsgUtil.getMessage("alert.warning.wire.max")));
 			return;
 		}
 
@@ -364,7 +367,7 @@ public class CircuitState extends BaseState implements ICircuitEffect {
 			state = State.Starting;
 		} else if (state == State.Mid) {
 			if (t.getWires().contains(wire)) {
-				Platform.runLater(() -> AlertUtil.showTip(TipType.WARN, MsgUtil.getMessage("alert.warning.terminal.self")));
+				JFXPlatform.runInFXThread(() -> AlertUtil.showTip(TipType.WARN, MsgUtil.getMessage("alert.warning.terminal.self")));
 				return;
 			}
 			connectEnding(t);
@@ -487,7 +490,7 @@ public class CircuitState extends BaseState implements ICircuitEffect {
 			tmpWireNode.attachChild(JmeUtil.createLineGeo(assetManager, new Line(last3, last2), color.getColorRGBA()));
 			tmpWireNode.attachChild(JmeUtil.createLineGeo(assetManager, new Line(last2, dest), color.getColorRGBA()));
 
-			Platform.runLater(() -> AlertUtil.showTip(TipType.WARN, MsgUtil.getMessage("alert.warning.wire.rule")));
+			JFXPlatform.runInFXThread(() -> AlertUtil.showTip(TipType.WARN, MsgUtil.getMessage("alert.warning.wire.rule")));
 		} else {
 			// 倒数第二个点是midLine1上任意一点在dir上的投影点，这里取startPoint
 			Vector3f last2 = dest.add(startPoint.subtract(dest).project(dir));
@@ -515,7 +518,7 @@ public class CircuitState extends BaseState implements ICircuitEffect {
 				trainState.next();
 				trainState.flowNext();
 			} else {
-				Platform.runLater(() -> AlertUtil.showTip(TipType.ERROR, MsgUtil.getMessage("alert.error.wire.unmatch")));
+				JFXPlatform.runInFXThread(() -> AlertUtil.showTip(TipType.ERROR, MsgUtil.getMessage("alert.error.wire.unmatch")));
 				detachFromCircuit(wire);
 			}
 		}
@@ -873,16 +876,15 @@ public class CircuitState extends BaseState implements ICircuitEffect {
 		elms.forEach(e -> CirSim.ins.addCircuitElm(e));
 		CirSim.ins.needAnalyze();
 //		6、如果当前元器件需要底座，添加监听事件
-		if (elecCompDef.getBase() != null) {
-			BaseOnRelayHoverControl onRelayHoverControl = new BaseOnRelayHoverControl(new Consumer<ElecCompDef>() {
-
-				@Override
-				public void accept(ElecCompDef base) {
-					holdState.relayOnBase(base);
-				}
-			}, inputManager, cam);
-			compModel.addControl(onRelayHoverControl);
-		}
+//		if (elecCompDef.getBase() != null) {
+//			BaseOnRelayHoverControl onRelayHoverControl = new BaseOnRelayHoverControl(new Consumer<Spatial>() {
+//				@Override
+//				public void accept(Spatial base) {
+//					holdState.relayOnBase(base);
+//				}
+//			}, inputManager, cam);
+//			compModel.addControl(onRelayHoverControl);
+//		}
 	}
 
 	@JmeThread
@@ -944,15 +946,15 @@ public class CircuitState extends BaseState implements ICircuitEffect {
 			}
 
 			elecCompDef.getRelyOn().setBaseDef(null);
-			// 给组合底座重新添加监听Control
-			BaseOnRelayHoverControl control = new BaseOnRelayHoverControl(new Consumer<ElecCompDef>() {
-
-				@Override
-				public void accept(ElecCompDef base) {
-					holdState.relayOnBase(base);
-				}
-			}, inputManager, cam);
-			baseDef.getSpatial().addControl(control);
+//			// 给组合底座重新添加监听Control
+//			BaseOnRelayHoverControl control = new BaseOnRelayHoverControl(new Consumer<Spatial>() {
+//
+//				@Override
+//				public void accept(Spatial base) {
+//					holdState.relayOnBase(base);
+//				}
+//			}, inputManager, cam);
+//			baseDef.getSpatial().addControl(control);
 		}
 
 		elecCompDef.getCircuitExchangeList().forEach(ex -> CirSim.ins.removeCircuitElm(ex.getCircuitElm()));
@@ -964,9 +966,6 @@ public class CircuitState extends BaseState implements ICircuitEffect {
 		RelyOn relyOn = relyOnDef.getRelyOn();
 		relyOn.setBaseDef(baseDef);
 
-		Node baseMdl = baseDef.getSpatial();
-		Vector3f loc = baseMdl.getLocalTranslation().add(relyOn.getTranslation());
-		holding.setLocalTranslation(loc);
 //		holding.setLocalRotation(relyOn.getRotation());
 		rootCompNode.attachChild(holding);
 //		2、绑定模型对象
@@ -1028,7 +1027,7 @@ public class CircuitState extends BaseState implements ICircuitEffect {
 		CirSim.ins.needAnalyze();
 
 //		8、移除底座监听Control
-		baseMdl.removeControl(BaseOnRelayHoverControl.class);
+//		baseMdl.removeControl(BaseOnRelayHoverControl.class);
 	}
 
 	@JmeThread

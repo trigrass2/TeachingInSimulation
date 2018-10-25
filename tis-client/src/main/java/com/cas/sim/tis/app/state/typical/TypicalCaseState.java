@@ -11,8 +11,7 @@ import com.cas.sim.tis.entity.ArchiveCase;
 import com.cas.sim.tis.util.SpringUtil;
 import com.cas.sim.tis.view.control.imp.jme.TypicalCase3D;
 import com.cas.sim.tis.view.controller.PageController;
-
-import javafx.application.Platform;
+import com.jme3x.jfx.util.JFXPlatform;
 
 /**
  * 典型案例模块
@@ -29,6 +28,8 @@ public class TypicalCaseState extends ElecCaseState<ArchiveCase> {
 		}
 		// 查看模式时，不可拿去元器件
 		holdState.setEnabled(CaseMode.VIEW_MODE != mode);
+		holdState.discard();
+		
 		// 创建新的circuitState
 		circuitState = new CircuitState(this, holdState, ui, root);
 		circuitState.setOnInitialized((n) -> {
@@ -37,18 +38,18 @@ public class TypicalCaseState extends ElecCaseState<ArchiveCase> {
 			circuitState.read(archive, mode);
 			Optional.ofNullable(archive).ifPresent(a -> {
 				if (CaseMode.TYPICAL_TRAIN_MODE == mode) {
-					TrainState trainState = new TrainState((TypicalCase3D) ui, circuitState.getSteps(), circuitState.getRootCompNode());
+					TrainState trainState = new TrainState((TypicalCase3D) ui, circuitState.getSteps(), circuitState.getRootCompNode(), holdState);
 					stateManager.attach(trainState);
-					Platform.runLater(() -> ((TypicalCase3D) ui).loadSteps(circuitState.getSteps()));
+					JFXPlatform.runInFXThread(() -> ((TypicalCase3D) ui).loadSteps(circuitState.getSteps()));
 				} else if (CaseMode.VIEW_MODE == mode) {
 					stateManager.detach(stateManager.getState(TrainState.class));
-					Platform.runLater(() -> ((TypicalCase3D) ui).loadSteps(circuitState.getSteps()));
+					JFXPlatform.runInFXThread(() -> ((TypicalCase3D) ui).loadSteps(circuitState.getSteps()));
 				} else if (CaseMode.EDIT_MODE == mode) {
 					stateManager.detach(stateManager.getState(TrainState.class));
 				}
 			});
 			// 结束加载界面
-			Platform.runLater(() -> SpringUtil.getBean(PageController.class).hideLoading());
+			JFXPlatform.runInFXThread(() -> SpringUtil.getBean(PageController.class).hideLoading());
 		});
 		stateManager.attach(circuitState);
 		this.mode = mode;
@@ -74,7 +75,7 @@ public class TypicalCaseState extends ElecCaseState<ArchiveCase> {
 	public void setupCase(ArchiveCase archiveCase, CaseMode mode) {
 		this.archiveCase = archiveCase;
 		setMode(mode);
-		Platform.runLater(() -> {
+		JFXPlatform.runInFXThread(() -> {
 			ui.setTitle(archiveCase.getName());
 			// 结束加载界面
 			SpringUtil.getBean(PageController.class).hideLoading();

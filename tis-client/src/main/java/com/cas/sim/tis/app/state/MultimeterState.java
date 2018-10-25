@@ -55,6 +55,7 @@ public class MultimeterState extends BaseState {
 	private Node scene;
 //	旋钮
 	private Node rotary, hold, range, mode, rel, hz;
+	private Spatial redPen, blackPen;
 	private Geometry pick;
 	private AWTLoader awtLoader;
 	public static final int FLAG_SNAPSHOT = 0x01;
@@ -92,6 +93,28 @@ public class MultimeterState extends BaseState {
 		initBtnActionListener();
 	}
 
+	private void setupMeterComponent() {
+		// hold按钮
+		hold = (Node) scene.getChild("FLUKE_17B_02");
+		// 旋钮
+		rotary = (Node) scene.getChild("FLUKE_17B_03");
+		// mode按钮
+		mode = (Node) scene.getChild("FLUKE_17B_04");
+		// range按钮
+		range = (Node) scene.getChild("FLUKE_17B_05");
+		// rel按钮
+		rel = (Node) scene.getChild("FLUKE_17B_06");
+		// hz按钮
+		hz = (Node) scene.getChild("FLUKE_17B_07");
+		// lcd显示屏
+		Node lcdNode = (Node) scene.getChild("FLUKE_17B_13");
+		lcd = (Geometry) lcdNode.getChild("LCD");
+//		
+		blackPen = scene.getChild("Black pen");
+//		
+		redPen = scene.getChild("Red pen");
+	}
+
 	private void initBtnActionListener() {
 		btnActions.put(hold, () -> {
 			boolean result = meter.hold();
@@ -113,24 +136,14 @@ public class MultimeterState extends BaseState {
 		btnActions.put(rel, () -> {
 //			monitor.rel();
 		});
-	}
 
-	private void setupMeterComponent() {
-		// 旋钮
-		rotary = (Node) scene.getChild("FLUKE_17B_03");
-		// hold按钮
-		hold = (Node) scene.getChild("FLUKE_17B_02");
-		// range按钮
-		range = (Node) scene.getChild("FLUKE_17B_05");
-		// rel按钮
-		rel = (Node) scene.getChild("FLUKE_17B_06");
-		// hz按钮
-		hz = (Node) scene.getChild("FLUKE_17B_07");
-		// mode按钮
-		mode = (Node) scene.getChild("FLUKE_17B_04");
-		// lcd显示屏
-		Node lcdNode = (Node) scene.getChild("FLUKE_17B_13");
-		lcd = (Geometry) lcdNode.getChild("LCD");
+		btnActions.put(blackPen, () -> {
+			
+		});
+
+		btnActions.put(redPen, () -> {
+
+		});
 	}
 
 	private void loadLcdUI() {
@@ -296,8 +309,8 @@ public class MultimeterState extends BaseState {
 			log.info("完成更新LCD");
 		}
 
-		camera.setLocation(new Vector3f(0f, 0f, 30));
-		camera.lookAtDirection(Vector3f.UNIT_Z.negate(), Vector3f.UNIT_Y);
+		camera.setLocation(new Vector3f(-1.3f, 0f, 30));
+//		camera.lookAtDirection(Vector3f.UNIT_Z.negate(), Vector3f.UNIT_Y);
 
 		scene.updateLogicalState(tpf);
 		scene.updateGeometricState();
