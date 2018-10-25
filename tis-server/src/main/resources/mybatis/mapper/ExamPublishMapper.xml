@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cas.sim.tis.mapper.LibraryPublishMapper">
+	<resultMap id="BaseResultMap" type="com.cas.sim.tis.entity.ExamPublish">
+		<id column="ID" jdbcType="INTEGER" property="id" />
+		<result column="LID" jdbcType="INTEGER" property="libraryId" />
+		<result column="CID" jdbcType="INTEGER" property="classId" />
+		<result column="TYPE" jdbcType="INTEGER" property="type" />
+		<result column="AVERAGE" jdbcType="FLOAT" property="average" />
+		<result column="CREATOR" jdbcType="VARCHAR" property="creator" />
+		<result column="CREATE_DATE" jdbcType="TIMESTAMP" property="createDate" />
+		<result column="STATE" jdbcType="INTEGER" property="state" />
+	</resultMap>
+</mapper>
