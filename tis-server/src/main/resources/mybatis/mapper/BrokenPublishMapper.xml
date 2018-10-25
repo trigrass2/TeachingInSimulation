@@ -24,6 +24,7 @@
 		<result column="CODE" jdbcType="VARCHAR" property="code" />
 		<result column="NAME" jdbcType="VARCHAR" property="name" />
 		<result column="SUBMITED" jdbcType="INTEGER" property="submited" />
+		<result column="RESULT" jdbcType="VARCHAR" property="result" />
 	</resultMap>
 	<select id="findPublishById" resultMap="BaseResultExtMap">
 		SELECT
@@ -45,7 +46,7 @@
 	</select>
 	<select id="findSubmitStateById" resultMap="SubmitStateMap">
 		SELECT
-		a.code, a.name, (r.archive_path is not null) as submited, CONCAT(r.corrected_num, '/' ,r.broken_num) as result
+		a.code, a.name, (r.archive_path is not null) as submited, CONCAT(r.corrected_num, '/' ,r.broken_num + r.corrected_num) as result
 		FROM
 		(SELECT
 		p.id AS pid, u.id AS uid, u.code, u.name
