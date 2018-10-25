@@ -4,9 +4,6 @@ import com.cas.sim.tis.action.BrokenPublishAction;
 import com.cas.sim.tis.action.LibraryPublishAction;
 import com.cas.sim.tis.action.PreparationPublishAction;
 import com.cas.sim.tis.consts.Session;
-import com.cas.sim.tis.entity.BrokenPublish;
-import com.cas.sim.tis.entity.LibraryPublish;
-import com.cas.sim.tis.entity.PreparationPublish;
 import com.cas.sim.tis.message.ExamMessage;
 import com.cas.sim.tis.svg.SVGGlyph;
 import com.cas.sim.tis.util.MsgUtil;
@@ -16,6 +13,9 @@ import com.cas.sim.tis.view.control.IDistory;
 import com.cas.sim.tis.view.control.imp.broken.BrokenExamingDialog;
 import com.cas.sim.tis.view.control.imp.dialog.Dialog;
 import com.cas.sim.tis.view.control.imp.preparation.PublishLibraryFeedback;
+import com.cas.sim.tis.vo.ExamBrokenPublish;
+import com.cas.sim.tis.vo.ExamLibraryPublish;
+import com.cas.sim.tis.vo.ExamPreparationPublish;
 
 import javafx.animation.RotateTransition;
 import javafx.geometry.Pos;
@@ -33,9 +33,9 @@ public class ExamingMenuItem extends HBox implements IDistory {
 	private Button examing;
 	private int examType;
 
-	private LibraryPublish libraryPublish;
-	private PreparationPublish preparationPublish;
-	private BrokenPublish repairPublish;
+	private ExamLibraryPublish libraryPublish;
+	private ExamPreparationPublish preparationPublish;
+	private ExamBrokenPublish repairPublish;
 
 	public ExamingMenuItem(int examType) {
 		this.examType = examType;
@@ -156,7 +156,7 @@ public class ExamingMenuItem extends HBox implements IDistory {
 
 	private void showBrokenExamDialog() {
 		Dialog<Boolean> dialog = new Dialog<>();
-		dialog.setDialogPane(new BrokenExamingDialog(repairPublish));
+		dialog.setDialogPane(new BrokenExamingDialog(repairPublish, false));
 		dialog.setTitle(MsgUtil.getMessage("exam.dialog.progress"));
 		dialog.setPrefSize(640, 380);
 		dialog.showAndWait().ifPresent(finish -> {
@@ -169,7 +169,13 @@ public class ExamingMenuItem extends HBox implements IDistory {
 				SocketUtil.INSTENCE.send(message);
 				ExamingMenuItem.this.setVisible(false);
 				rotateTransition.stop();
-				Session.set(Session.KEY_PREPARATION_PUBLISH_ID, null);
+				Session.set(Session.KEY_BROKEN_CASE_PUBLISH_ID, null);
+				
+				Dialog<Boolean> d = new Dialog<>();
+				d.setDialogPane(new BrokenExamingDialog(repairPublish, true));
+				d.setTitle(MsgUtil.getMessage("exam.dialog.progress"));
+				d.setPrefSize(640, 380);
+				d.showAndWait();
 			}
 		});
 	}

@@ -7,7 +7,7 @@ import io.airlift.drift.annotations.ThriftMethod;
 import io.airlift.drift.annotations.ThriftService;
 
 @ThriftService
-public interface BrokenPublishService {
+public interface ExamBrokenPublishService {
 	/**
 	 * 发布维修案例考核
 	 * @param entity （BrokenPublish 维修案例发布记录）

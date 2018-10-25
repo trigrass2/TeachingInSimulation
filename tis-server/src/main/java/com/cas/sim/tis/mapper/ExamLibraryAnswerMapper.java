@@ -6,17 +6,17 @@ import org.apache.ibatis.annotations.MapKey;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
-import com.cas.sim.tis.entity.LibraryAnswer;
+import com.cas.sim.tis.entity.ExamLibraryAnswer;
 
 @Mapper
-public interface LibraryAnswerMapper extends IMapper<LibraryAnswer> {
+public interface ExamLibraryAnswerMapper extends IMapper<ExamLibraryAnswer> {
 	/**
 	 * 根据条件查询试题答题结果
 	 * @param pid 试题库发布编号
 	 * @param onlyWrong 是否只查错题
 	 * @return 答题结果集合
 	 */
-	List<LibraryAnswer> findAnswersByPublish(@Param("pid") int pid, @Param("recordType") int recordType, @Param("onlyWrong") boolean onlyWrong);
+	List<ExamLibraryAnswer> findAnswersByPublish(@Param("pid") int pid, @Param("recordType") int recordType, @Param("onlyWrong") boolean onlyWrong);
 
 	/**
 	 * 考核统计指定考核pid中指定试题qid的对应答题状态type的人数

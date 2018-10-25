@@ -1,19 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.cas.sim.tis.mapper.PreparationPublishMapper">
-	<resultMap id="BaseResultMap" type="com.cas.sim.tis.entity.PreparationPublish">
+<mapper namespace="com.cas.sim.tis.mapper.ExamPreparationPublishMapper">
+	<resultMap id="BaseResultMap" type="com.cas.sim.tis.vo.ExamPreparationPublish">
 		<id column="ID" jdbcType="INTEGER" property="id" />
-		<result column="PQID" jdbcType="INTEGER" property="preparationQuizId" />
+		<result column="RID" jdbcType="INTEGER" property="relationId" />
 		<result column="CID" jdbcType="INTEGER" property="classId" />
-		<result column="PUBLISHER" jdbcType="INTEGER" property="publisher" />
-		<result column="PUBLISH_DATE" jdbcType="TIMESTAMP" property="publishDate" />
+		<result column="TYPE" jdbcType="INTEGER" property="type" />
+		<result column="AVERAGE" jdbcType="FLOAT" property="average" />
+		<result column="CREATOR" jdbcType="VARCHAR" property="creator" />
+		<result column="CREATE_DATE" jdbcType="TIMESTAMP" property="createDate" />
+		<result column="STATE" jdbcType="INTEGER" property="state" />
 	</resultMap>
-	<resultMap id="BaseResultExtMap" type="com.cas.sim.tis.entity.PreparationPublish" extends="BaseResultMap">
-		<id column="ID" jdbcType="INTEGER" property="id" />
-		<result column="PQID" jdbcType="INTEGER" property="preparationQuizId" />
-		<result column="CID" jdbcType="INTEGER" property="classId" />
-		<result column="PUBLISHER" jdbcType="INTEGER" property="publisher" />
-		<result column="PUBLISH_DATE" jdbcType="TIMESTAMP" property="publishDate" />
+	<resultMap id="BaseResultExtMap" type="com.cas.sim.tis.vo.ExamPreparationPublish" extends="BaseResultMap">
 		<association property="library" javaType="com.cas.sim.tis.entity.PreparationLibrary">
 			<id column="LID" jdbcType="INTEGER" property="id" />
 			<result column="LNAME" jdbcType="VARCHAR" property="name" />
@@ -41,7 +39,7 @@
 		l.name AS lname,
 		l.qids AS qids
 		FROM
-		preparation_publish p, preparation_library l
+		exam_publish p, exam_preparation_library l
 		WHERE
 		p.rid = l.id
 		AND p.id = #{id}) a
@@ -55,11 +53,11 @@
 		(SELECT
 		p.id AS pid, u.id AS uid, u.code, u.name
 		FROM
-		preparation_publish p, user u
+		exam_publish p, user u
 		WHERE
 		p.cid = u.cid AND p.id = #{id}) a
 		LEFT JOIN
-		library_record r ON a.pid = r.pid and r.creator=a.uid and r.type=1
+		exam_library_record r ON a.pid = r.pid and r.creator=a.uid and r.type=1
 		GROUP BY a.code , a.name;
 	</select>
 </mapper>

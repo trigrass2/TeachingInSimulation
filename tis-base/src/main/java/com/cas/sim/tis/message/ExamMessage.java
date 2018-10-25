@@ -33,7 +33,8 @@ public class ExamMessage extends AbstractMessage {
 	/**
 	 * 登录后查询当前是否有考试正在进行
 	 */
-	public static final int MESSAGE_TYPE_QUERY = 4;
+	public static final int MESSAGE_TYPE_QUERY_BY_TEACHER = 4;
+	public static final int MESSAGE_TYPE_QUERY_BY_STUDENT = 5;
 	/**
 	 * 试题发布
 	 */

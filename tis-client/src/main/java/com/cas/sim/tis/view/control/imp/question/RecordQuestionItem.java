@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.cas.sim.tis.consts.AnswerState;
 import com.cas.sim.tis.consts.QuestionType;
-import com.cas.sim.tis.entity.LibraryAnswer;
+import com.cas.sim.tis.entity.ExamLibraryAnswer;
 import com.cas.sim.tis.entity.Question;
 import com.cas.sim.tis.util.MsgUtil;
 import com.cas.util.StringUtil;
@@ -18,10 +18,10 @@ import javafx.scene.text.Text;
 public class RecordQuestionItem extends VBox {
 
 	private int index;
-	private LibraryAnswer answer;
+	private ExamLibraryAnswer answer;
 	private Question question;
 
-	public RecordQuestionItem(int index, LibraryAnswer answer) {
+	public RecordQuestionItem(int index, ExamLibraryAnswer answer) {
 		this.index = index;
 		this.answer = answer;
 		this.question = answer.getQuestion();

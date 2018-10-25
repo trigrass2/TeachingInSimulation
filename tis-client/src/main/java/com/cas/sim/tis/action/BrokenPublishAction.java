@@ -8,24 +8,26 @@ import org.springframework.stereotype.Component;
 
 import com.alibaba.fastjson.JSON;
 import com.cas.sim.tis.consts.Session;
-import com.cas.sim.tis.entity.BrokenPublish;
-import com.cas.sim.tis.services.BrokenPublishService;
+import com.cas.sim.tis.entity.ExamPublish.Type;
+import com.cas.sim.tis.services.ExamBrokenPublishService;
 import com.cas.sim.tis.thrift.RequestEntity;
 import com.cas.sim.tis.thrift.RequestEntityBuilder;
 import com.cas.sim.tis.thrift.ResponseEntity;
+import com.cas.sim.tis.vo.ExamBrokenPublish;
 import com.cas.sim.tis.vo.SubmitInfo;
 
 
 @Component
 public class BrokenPublishAction extends BaseAction {
 	@Resource
-	private BrokenPublishService service;
+	private ExamBrokenPublishService service;
 
 	public Integer publishBroken(Integer brokenId, Integer classId) {
-		BrokenPublish publish = new BrokenPublish();
-		publish.setBrokenId(brokenId);
+		ExamBrokenPublish publish = new ExamBrokenPublish();
+		publish.setType(Type.BROKEN_EXAM.getType());
+		publish.setRelationId(brokenId);
 		publish.setClassId(classId);
-		publish.setPublisher(Session.get(Session.KEY_LOGIN_ID));
+		publish.setCreator(Session.get(Session.KEY_LOGIN_ID));
 		RequestEntity req = new RequestEntityBuilder()//
 				.set("publish", publish)//
 				.build();
@@ -33,12 +35,12 @@ public class BrokenPublishAction extends BaseAction {
 		return JSON.parseObject(resp.data, Integer.class);
 	}
 
-	public BrokenPublish findPublishById(int id) {
+	public ExamBrokenPublish findPublishById(int id) {
 		RequestEntity req = new RequestEntityBuilder()//
 				.set("id", id)//
 				.build();
 		ResponseEntity resp = service.findBrokenPublishById(req);
-		return JSON.parseObject(resp.data, BrokenPublish.class);
+		return JSON.parseObject(resp.data, ExamBrokenPublish.class);
 	}
 
 	public List<SubmitInfo> findSubmitStateById(Integer id) {

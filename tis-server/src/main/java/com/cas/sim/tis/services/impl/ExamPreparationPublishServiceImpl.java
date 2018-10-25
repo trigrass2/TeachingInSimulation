@@ -9,27 +9,31 @@ import org.springframework.stereotype.Service;
 
 import com.cas.sim.tis.config.ServerConfig;
 import com.cas.sim.tis.consts.Session;
-import com.cas.sim.tis.entity.PreparationPublish;
-import com.cas.sim.tis.mapper.PreparationPublishMapper;
+import com.cas.sim.tis.entity.ExamPublish;
+import com.cas.sim.tis.mapper.ExamPublishMapper;
+import com.cas.sim.tis.mapper.ExamPreparationPublishMapper;
 import com.cas.sim.tis.message.ExamMessage;
-import com.cas.sim.tis.services.PreparationPublishService;
+import com.cas.sim.tis.services.ExamPreparationPublishService;
 import com.cas.sim.tis.thrift.RequestEntity;
 import com.cas.sim.tis.thrift.ResponseEntity;
+import com.cas.sim.tis.vo.ExamPreparationPublish;
 import com.cas.sim.tis.vo.SubmitInfo;
 import com.jme3.network.Filters;
 import com.jme3.network.HostedConnection;
 
 @Service
-public class PreparationPublishServiceImpl implements PreparationPublishService {
+public class ExamPreparationPublishServiceImpl implements ExamPreparationPublishService {
 
 	@Resource
-	private PreparationPublishMapper mapper;
+	private ExamPublishMapper mapper;
+	@Resource
+	private ExamPreparationPublishMapper preparationPublishMapper;
 	@Resource
 	private ServerConfig serverConfig;
 
 	@Override
 	public ResponseEntity publishPreparationLibrary(RequestEntity entity) {
-		PreparationPublish publish = entity.getObject("publish", PreparationPublish.class);
+		ExamPreparationPublish publish = entity.getObject("publish", ExamPreparationPublish.class);
 		// 记录考核发布记录
 		mapper.insertUseGeneratedKeys(publish);
 
@@ -54,19 +58,19 @@ public class PreparationPublishServiceImpl implements PreparationPublishService 
 
 	@Override
 	public ResponseEntity findPreparationPublishById(RequestEntity entity) {
-		PreparationPublish publish = mapper.findPublishById(entity.getInt("id"));
+		ExamPreparationPublish publish = preparationPublishMapper.findPublishById(entity.getInt("id"));
 		return ResponseEntity.success(publish);
 	}
 
 	@Override
 	public ResponseEntity findSubmitStateByPreparationPublishId(RequestEntity entity) {
-		List<SubmitInfo> infos = mapper.findSubmitStateById(entity.getInt("id"));
+		List<SubmitInfo> infos = preparationPublishMapper.findSubmitStateById(entity.getInt("id"));
 		return ResponseEntity.success(infos);
 	}
 
 	@Override
 	public ResponseEntity updatePreparationPublish(RequestEntity entity) {
-		PreparationPublish publish = new PreparationPublish();
+		ExamPublish publish = new ExamPreparationPublish();
 		publish.setId(entity.getInt("id"));
 		publish.setState(true);
 		// 记录考核发布记录

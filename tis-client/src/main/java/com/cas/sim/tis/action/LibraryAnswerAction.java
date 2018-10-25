@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
 import com.cas.sim.tis.consts.AnswerState;
-import com.cas.sim.tis.entity.LibraryAnswer;
+import com.cas.sim.tis.entity.ExamLibraryAnswer;
 import com.cas.sim.tis.services.LibraryAnswerService;
 import com.cas.sim.tis.thrift.RequestEntity;
 import com.cas.sim.tis.thrift.RequestEntityBuilder;
@@ -27,14 +27,14 @@ public class LibraryAnswerAction extends BaseAction {
 	 * @param onlyWrong 是否只查错题
 	 * @return 答题结果集合
 	 */
-	public List<LibraryAnswer> findAnswersByPublish(int pid, int recordType, boolean onlyWrong) {
+	public List<ExamLibraryAnswer> findAnswersByPublish(int pid, int recordType, boolean onlyWrong) {
 		RequestEntity req = new RequestEntityBuilder()//
 				.set("pid", pid)//
 				.set("recordType", recordType)//
 				.set("onlyWrong", onlyWrong)//
 				.build();
 		ResponseEntity resp = service.findAnswersByPublish(req);
-		return JSON.parseArray(resp.data, LibraryAnswer.class);
+		return JSON.parseArray(resp.data, ExamLibraryAnswer.class);
 	}
 
 	/**

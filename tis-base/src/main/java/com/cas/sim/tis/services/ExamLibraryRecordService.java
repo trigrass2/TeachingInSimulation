@@ -6,7 +6,7 @@ import io.airlift.drift.annotations.ThriftMethod;
 import io.airlift.drift.annotations.ThriftService;
 
 @ThriftService
-public interface LibraryRecordService {
+public interface ExamLibraryRecordService {
 
 	/**
 	 * 新增答题记录
@@ -14,5 +14,4 @@ public interface LibraryRecordService {
 	 */
 	@ThriftMethod
 	void addRecord(RequestEntity entity);
-
 }

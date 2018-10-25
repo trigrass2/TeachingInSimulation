@@ -8,55 +8,55 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.cas.sim.tis.consts.LibraryRecordType;
-import com.cas.sim.tis.entity.LibraryAnswer;
-import com.cas.sim.tis.entity.LibraryPublish;
-import com.cas.sim.tis.entity.LibraryRecord;
+import com.cas.sim.tis.entity.ExamLibraryAnswer;
+import com.cas.sim.tis.entity.ExamLibraryRecord;
 import com.cas.sim.tis.entity.User;
-import com.cas.sim.tis.mapper.LibraryAnswerMapper;
-import com.cas.sim.tis.mapper.LibraryPublishMapper;
-import com.cas.sim.tis.mapper.LibraryRecordMapper;
-import com.cas.sim.tis.mapper.PreparationPublishMapper;
+import com.cas.sim.tis.mapper.ExamLibraryAnswerMapper;
+import com.cas.sim.tis.mapper.ExamLibraryPublishMapper;
+import com.cas.sim.tis.mapper.ExamLibraryRecordMapper;
+import com.cas.sim.tis.mapper.ExamPreparationPublishMapper;
 import com.cas.sim.tis.mapper.UserMapper;
-import com.cas.sim.tis.services.LibraryRecordService;
+import com.cas.sim.tis.services.ExamLibraryRecordService;
 import com.cas.sim.tis.thrift.RequestEntity;
+import com.cas.sim.tis.vo.ExamLibraryPublish;
 import com.cas.util.MathUtil;
 
 import tk.mybatis.mapper.entity.Condition;
 import tk.mybatis.mapper.entity.Example.Criteria;
 
 @Service
-public class LibraryRecordServiceImpl implements LibraryRecordService {
+public class ExamLibraryRecordServiceImpl implements ExamLibraryRecordService {
 
 	@Resource
-	private LibraryRecordMapper mapper;
+	private ExamLibraryRecordMapper mapper;
 
 	@Resource
 	private UserMapper userMapper;
 	@Resource
-	private LibraryPublishMapper publishMapper;
+	private ExamLibraryPublishMapper publishMapper;
 	@Resource
-	private LibraryAnswerMapper answerMapper;
+	private ExamLibraryAnswerMapper answerMapper;
 	@Resource
-	private PreparationPublishMapper preparationPublishMapper;
+	private ExamPreparationPublishMapper preparationPublishMapper;
 
 	@Override
 	@Transactional
 	public void addRecord(RequestEntity entity) {
-		LibraryRecord record = entity.getObject("record", LibraryRecord.class);
+		ExamLibraryRecord record = entity.getObject("record", ExamLibraryRecord.class);
 		mapper.insertUseGeneratedKeys(record);
 
 		int recordId = record.getId();
 
-		List<LibraryAnswer> answers = entity.getList("answers", LibraryAnswer.class);
+		List<ExamLibraryAnswer> answers = entity.getList("answers", ExamLibraryAnswer.class);
 
-		for (LibraryAnswer answer : answers) {
+		for (ExamLibraryAnswer answer : answers) {
 			answer.setRecordId(recordId);
 		}
 		answerMapper.insertList(answers);
 
 		int type = record.getType();
 		if (LibraryRecordType.LIBRARY.getType() == type) {
-			LibraryPublish publish = publishMapper.selectByPrimaryKey(record.getPublishId());
+			ExamLibraryPublish publish = publishMapper.selectByPrimaryKey(record.getPublishId());
 
 			// 获得班级总人数
 			if (publish.getClassId() == null) {
@@ -68,7 +68,7 @@ public class LibraryRecordServiceImpl implements LibraryRecordService {
 				criteria.andEqualTo("del", 0);
 				int total = userMapper.selectCountByCondition(userCon);
 				// 获得已交卷成绩总和
-				LibraryRecordMapper recordMapper = (LibraryRecordMapper) mapper;
+				ExamLibraryRecordMapper recordMapper = (ExamLibraryRecordMapper) mapper;
 				float sum = recordMapper.getRecordScoresSumByPublishId(publish.getId(), LibraryRecordType.LIBRARY.getType());
 				publish.setAverage(MathUtil.round(2, sum / total));
 			}
@@ -76,5 +76,4 @@ public class LibraryRecordServiceImpl implements LibraryRecordService {
 			publishMapper.updateByPrimaryKeySelective(publish);
 		}
 	}
-
 }

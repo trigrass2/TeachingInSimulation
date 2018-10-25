@@ -1,7 +1,7 @@
 package com.cas.sim.tis.view.control.imp.exam;
 
 import com.cas.sim.tis.consts.AnswerState;
-import com.cas.sim.tis.entity.LibraryAnswer;
+import com.cas.sim.tis.entity.ExamLibraryAnswer;
 import com.cas.sim.tis.entity.Question;
 import com.cas.sim.tis.util.MsgUtil;
 
@@ -18,11 +18,11 @@ public class JudgmentOption extends VBox implements IOption {
 	private static final String RIGHT = "正确";
 	private static final String WRONG = "错误";
 
-	private LibraryAnswer libraryAnswer;
+	private ExamLibraryAnswer libraryAnswer;
 
 	private ToggleGroup group = new ToggleGroup();
 
-	public JudgmentOption(int index, LibraryAnswer libraryAnswer, boolean showRefrence) {
+	public JudgmentOption(int index, ExamLibraryAnswer libraryAnswer, boolean showRefrence) {
 		this.setSpacing(20);
 		this.libraryAnswer = libraryAnswer;
 
@@ -78,7 +78,7 @@ public class JudgmentOption extends VBox implements IOption {
 	}
 
 	@Override
-	public LibraryAnswer getAnswer() {
+	public ExamLibraryAnswer getAnswer() {
 		return libraryAnswer;
 	}
 

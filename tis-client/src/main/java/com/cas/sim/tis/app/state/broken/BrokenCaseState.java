@@ -9,7 +9,7 @@ import com.cas.sim.tis.action.BrokenRecordAction;
 import com.cas.sim.tis.app.state.ElecCaseState;
 import com.cas.sim.tis.app.state.typical.CircuitState;
 import com.cas.sim.tis.entity.BrokenCase;
-import com.cas.sim.tis.entity.BrokenRecord;
+import com.cas.sim.tis.entity.ExamBrokenRecord;
 import com.cas.sim.tis.util.SpringUtil;
 import com.cas.sim.tis.view.controller.PageController;
 
@@ -42,7 +42,7 @@ public class BrokenCaseState extends ElecCaseState<BrokenCase> {
 		this.mode = mode;
 	}
 
-	public void submit(BrokenRecord record) {
+	public void submit(ExamBrokenRecord record) {
 		if (circuitState == null) {
 			return;
 		}

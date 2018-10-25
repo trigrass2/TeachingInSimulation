@@ -7,7 +7,7 @@ import io.airlift.drift.annotations.ThriftMethod;
 import io.airlift.drift.annotations.ThriftService;
 
 @ThriftService
-public interface LibraryPublishService {
+public interface ExamLibraryPublishService {
 	/**
 	 * 根据试题考核发布编号查询试题考核发布对象
 	 * @param entity （id 试题考核发布编号）

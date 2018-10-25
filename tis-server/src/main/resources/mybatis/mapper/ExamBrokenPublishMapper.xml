@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.cas.sim.tis.mapper.BrokenPublishMapper">
-	<resultMap id="BaseResultMap" type="com.cas.sim.tis.entity.BrokenPublish">
+<mapper namespace="com.cas.sim.tis.mapper.ExamBrokenPublishMapper">
+	<resultMap id="BaseResultMap" type="com.cas.sim.tis.vo.ExamBrokenPublish">
 		<id column="ID" jdbcType="INTEGER" property="id" />
 		<result column="BID" jdbcType="VARCHAR" property="brokenId" />
 		<result column="CID" jdbcType="VARCHAR" property="classId" />
@@ -9,7 +9,7 @@
 		<result column="PUBLISH_DATE" jdbcType="TIMESTAMP" property="publishDate" />
 		<result column="STATE" jdbcType="INTEGER" property="state" />
 	</resultMap>
-	<resultMap id="BaseResultExtMap" type="com.cas.sim.tis.entity.BrokenPublish" extends="BaseResultMap">
+	<resultMap id="BaseResultExtMap" type="com.cas.sim.tis.vo.ExamBrokenPublish" extends="BaseResultMap">
 		<association property="brokenCase" javaType="com.cas.sim.tis.entity.BrokenCase">
 			<id column="BID" jdbcType="INTEGER" property="id" />
 			<result column="TCNAME" jdbcType="VARCHAR" property="name" />
@@ -32,14 +32,14 @@
 		FROM
 		(SELECT
 		p.id,
-		p.bid,
+		p.rid,
 		p.cid,
 		bc.name AS tcname,
 		bc.archive_path
 		FROM
-		broken_publish p, broken_case bc
+		exam_publish p, broken_case bc
 		WHERE
-		p.bid = bc.id
+		p.rid = bc.id
 		AND p.id = #{id}) a
 		LEFT JOIN
 		class c ON a.cid = c.id
@@ -51,11 +51,11 @@
 		(SELECT
 		p.id AS pid, u.id AS uid, u.code, u.name
 		FROM
-		broken_publish p, user u
+		exam_publish p, user u
 		WHERE
 		p.cid = u.cid AND p.id = #{id}) a
 		LEFT JOIN
-		broken_record r ON a.pid = r.pid and r.creator=a.uid
+		exam_broken_record r ON a.pid = r.pid and r.creator=a.uid
 		GROUP BY a.code , a.name;
 	</select>
 </mapper>

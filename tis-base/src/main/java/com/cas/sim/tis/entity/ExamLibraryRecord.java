@@ -20,7 +20,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class LibraryRecord implements Serializable {
+public class ExamLibraryRecord implements Serializable {
 	/**
 	 * 
 	 */

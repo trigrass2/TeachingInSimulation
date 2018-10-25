@@ -15,15 +15,15 @@ import com.alibaba.druid.util.StringUtils;
 import com.alibaba.fastjson.JSON;
 import com.cas.sim.tis.consts.LibraryRecordType;
 import com.cas.sim.tis.entity.Library;
-import com.cas.sim.tis.entity.PreparationPublish;
 import com.cas.sim.tis.entity.Question;
 import com.cas.sim.tis.mapper.LibraryMapper;
-import com.cas.sim.tis.mapper.PreparationPublishMapper;
+import com.cas.sim.tis.mapper.ExamPreparationPublishMapper;
 import com.cas.sim.tis.mapper.QuestionMapper;
 import com.cas.sim.tis.services.QuestionService;
 import com.cas.sim.tis.thrift.RequestEntity;
 import com.cas.sim.tis.thrift.ResponseEntity;
 import com.cas.sim.tis.util.SpringUtil;
+import com.cas.sim.tis.vo.ExamPreparationPublish;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 
@@ -40,7 +40,7 @@ public class QuestionServiceImpl implements QuestionService {
 	@Resource
 	private LibraryMapper libraryMapper;
 	@Resource
-	private PreparationPublishMapper preparationPublishMapper;
+	private ExamPreparationPublishMapper preparationPublishMapper;
 
 	@Override
 	public ResponseEntity findQuestionsByLibrary(RequestEntity entity) {
@@ -81,7 +81,7 @@ public class QuestionServiceImpl implements QuestionService {
 		if (LibraryRecordType.LIBRARY.getType() == type) {
 			return ResponseEntity.success(mapper.findQuestionsByLibraryPublish(pid, mostWrong));
 		} else if (LibraryRecordType.PREPARATION.getType() == type) {
-			PreparationPublish publish = preparationPublishMapper.findPublishById(pid);
+			ExamPreparationPublish publish = preparationPublishMapper.findPublishById(pid);
 			String questionIdsStr = publish.getLibrary().getQuestionIds();
 			if (StringUtils.isEmpty(questionIdsStr)) {
 				return ResponseEntity.success(new ArrayList<>());

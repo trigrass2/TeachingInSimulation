@@ -9,7 +9,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import com.cas.sim.tis.services.ArchiveCaseService;
 import com.cas.sim.tis.services.BrokenCaseService;
+import com.cas.sim.tis.services.ExamBrokenPublishService;
+import com.cas.sim.tis.services.ExamBrokenRecordService;
 import com.cas.sim.tis.services.BrowseHistoryService;
 import com.cas.sim.tis.services.CatalogService;
 import com.cas.sim.tis.services.ClassService;
@@ -20,19 +23,16 @@ import com.cas.sim.tis.services.GoalCoverageService;
 import com.cas.sim.tis.services.GoalRelationshipService;
 import com.cas.sim.tis.services.GoalService;
 import com.cas.sim.tis.services.LibraryAnswerService;
-import com.cas.sim.tis.services.LibraryPublishService;
-import com.cas.sim.tis.services.LibraryRecordService;
+import com.cas.sim.tis.services.ExamLibraryPublishService;
+import com.cas.sim.tis.services.ExamLibraryRecordService;
 import com.cas.sim.tis.services.LibraryService;
 import com.cas.sim.tis.services.PreparationLibraryService;
-import com.cas.sim.tis.services.PreparationPublishService;
+import com.cas.sim.tis.services.ExamPreparationPublishService;
 import com.cas.sim.tis.services.PreparationQuizService;
 import com.cas.sim.tis.services.PreparationResourceService;
 import com.cas.sim.tis.services.PreparationService;
 import com.cas.sim.tis.services.QuestionService;
-import com.cas.sim.tis.services.BrokenPublishService;
-import com.cas.sim.tis.services.BrokenRecordService;
 import com.cas.sim.tis.services.ResourceService;
-import com.cas.sim.tis.services.ArchiveCaseService;
 import com.cas.sim.tis.services.UserService;
 import com.google.common.collect.ImmutableSet;
 
@@ -66,17 +66,17 @@ public class SwiftConfig {
 	@Resource
 	private BrokenCaseService brokenCaseService;
 	@Resource
-	private BrokenPublishService brokenPublishService;
+	private ExamBrokenPublishService brokenPublishService;
 	@Resource
-	private BrokenRecordService brokenRecordService;
+	private ExamBrokenRecordService brokenRecordService;
 	@Resource
 	private LibraryService libraryService;
 	@Resource
 	private QuestionService questionService;
 	@Resource
-	private LibraryPublishService libraryPublishService;
+	private ExamLibraryPublishService libraryPublishService;
 	@Resource
-	private LibraryRecordService libraryRecordService;
+	private ExamLibraryRecordService libraryRecordService;
 	@Resource
 	private LibraryAnswerService libraryAnswerService;
 	@Resource
@@ -90,7 +90,7 @@ public class SwiftConfig {
 	@Resource
 	private PreparationLibraryService preparationLibraryService;
 	@Resource
-	private PreparationPublishService preparationPublishService;
+	private ExamPreparationPublishService preparationPublishService;
 	@Resource
 	private GoalService goalService;
 	@Resource

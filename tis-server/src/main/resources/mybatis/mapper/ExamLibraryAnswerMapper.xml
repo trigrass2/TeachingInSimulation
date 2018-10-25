@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.cas.sim.tis.mapper.LibraryAnswerMapper">
-	<resultMap id="BaseResultMap" type="com.cas.sim.tis.entity.LibraryAnswer">
+<mapper namespace="com.cas.sim.tis.mapper.ExamLibraryAnswerMapper">
+	<resultMap id="BaseResultMap" type="com.cas.sim.tis.entity.ExamLibraryAnswer">
 		<id column="ID" jdbcType="INTEGER" property="id" />
 		<result column="INDEX" jdbcType="INTEGER" property="index" />
 		<result column="ANSWER" jdbcType="INTEGER" property="answer" />
@@ -11,7 +11,7 @@
 		<result column="CORRECTED" jdbcType="INTEGER" property="corrected" />
 		<result column="CORRECT_ANSWER" jdbcType="VARCHAR" property="correctAnswer" />
 	</resultMap>
-	<resultMap id="BaseResultExtMap" type="com.cas.sim.tis.entity.LibraryAnswer">
+	<resultMap id="BaseResultExtMap" type="com.cas.sim.tis.entity.ExamLibraryAnswer">
 		<id column="ID" jdbcType="INTEGER" property="id" />
 		<result column="ANSWER" jdbcType="INTEGER" property="answer" />
 		<result column="QID" jdbcType="INTEGER" property="questionId" />
@@ -37,8 +37,8 @@
 		q.analysis,
 		q.type
 		FROM
-		library_record r,
-		library_answer a,
+		exam_library_record r,
+		exam_library_answer a,
 		question q
 		WHERE
 		r.id = a.lrid AND r.pid = #{pid} AND r.type = #{recordType}
@@ -50,21 +50,16 @@
 	</select>
 	<select id="statisticsByQuestionId" resultType="int">
 		SELECT
-		COUNT(*) 
+		COUNT(*)
 		<!-- 包括未参加考试的人员记为未答题 -->
 		<if test="type==0">
-		+ (SELECT COUNT(*) FROM user u WHERE u.cid=p.cid AND u.id NOT IN (SELECT creator FROM library_record WHERE pid=#{pid}))
+			+ (SELECT COUNT(*) FROM user u WHERE u.cid=p.cid AND u.id NOT IN (SELECT creator FROM exam_library_record WHERE pid=#{pid}))
 		</if>
 		AS num
 		FROM
-		<if test="recordType==0">
-			library_publish p,
-		</if>
-		<if test="recordType==1">
-			preparation_publish p,
-		</if>
-		library_record r,
-		library_answer a
+		exam_publish p,
+		exam_library_record r,
+		exam_library_answer a
 		WHERE
 		p.id = r.pid AND r.id = a.lrid
 		AND a.qid = #{qid}

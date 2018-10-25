@@ -5,19 +5,19 @@ import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
-import com.cas.sim.tis.entity.LibraryPublish;
+import com.cas.sim.tis.vo.ExamLibraryPublish;
 import com.cas.sim.tis.vo.LibraryPublishForStudent;
 import com.cas.sim.tis.vo.LibraryPublishForTeacher;
 import com.cas.sim.tis.vo.SubmitInfo;
 
 @Mapper
-public interface LibraryPublishMapper extends IMapper<LibraryPublish> {
+public interface ExamLibraryPublishMapper extends IMapper<ExamLibraryPublish> {
 	/**
 	 * 根据试题考核发布编号查询试题考核发布对象
 	 * @param id 试题考核发布编号
 	 * @return 试题考核发布对象
 	 */
-	LibraryPublish findPublishById(int id);
+	ExamLibraryPublish findPublishById(int id);
 
 	/**
 	 * 根据教师编号获得该用户发布的试题考核

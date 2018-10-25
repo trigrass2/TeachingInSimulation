@@ -5,7 +5,6 @@ import java.util.List;
 import com.alibaba.fastjson.JSONArray;
 import com.cas.sim.tis.action.BrokenPublishAction;
 import com.cas.sim.tis.entity.BrokenCase;
-import com.cas.sim.tis.entity.BrokenPublish;
 import com.cas.sim.tis.entity.Class;
 import com.cas.sim.tis.svg.SVGGlyph;
 import com.cas.sim.tis.util.MsgUtil;
@@ -14,6 +13,7 @@ import com.cas.sim.tis.view.control.imp.dialog.DialogPane;
 import com.cas.sim.tis.view.control.imp.table.Cell;
 import com.cas.sim.tis.view.control.imp.table.Column;
 import com.cas.sim.tis.view.control.imp.table.Table;
+import com.cas.sim.tis.vo.ExamBrokenPublish;
 import com.cas.sim.tis.vo.SubmitInfo;
 
 import javafx.animation.RotateTransition;
@@ -34,7 +34,7 @@ public class BrokenExamingDialog extends DialogPane<Boolean> {
 
 	private Table table = new Table("table-row", "table-row-hover", "table-row-selected");
 
-	public BrokenExamingDialog(BrokenPublish publish) {
+	public BrokenExamingDialog(ExamBrokenPublish publish, boolean finished) {
 		Class clazz = publish.getClazz();
 
 		Label className = new Label(clazz.getName());
@@ -141,15 +141,18 @@ public class BrokenExamingDialog extends DialogPane<Boolean> {
 		scroll.setContent(table);
 		VBox.setVgrow(scroll, Priority.ALWAYS);
 
-		Button finish = new Button(MsgUtil.getMessage("exam.to.finish"));
-		finish.getStyleClass().add("blue-btn");
-		finish.setPrefSize(100, 40);
-		finish.setOnAction(e -> {
-			setResult(true);
-		});
-
 		VBox content = new VBox(20);
-		content.getChildren().addAll(box, scroll, finish);
+		content.getChildren().addAll(box, scroll);
+		if (!finished) {
+			Button finish = new Button(MsgUtil.getMessage("exam.to.finish"));
+			finish.getStyleClass().add("blue-btn");
+			finish.setPrefSize(100, 40);
+			finish.setOnAction(e -> {
+				setResult(true);
+			});
+			content.getChildren().add(finish);
+		}
+
 		content.setAlignment(Pos.CENTER);
 		content.setPadding(new Insets(20));
 

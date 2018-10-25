@@ -11,21 +11,22 @@ import com.cas.sim.tis.app.state.ElecCaseState.CaseMode;
 import com.cas.sim.tis.app.state.broken.BrokenCaseState;
 import com.cas.sim.tis.consts.RoleConst;
 import com.cas.sim.tis.consts.Session;
-import com.cas.sim.tis.entity.BrokenPublish;
-import com.cas.sim.tis.entity.LibraryPublish;
-import com.cas.sim.tis.entity.PreparationPublish;
 import com.cas.sim.tis.entity.Question;
 import com.cas.sim.tis.message.ExamMessage;
 import com.cas.sim.tis.util.SpringUtil;
 import com.cas.sim.tis.view.ExamView;
 import com.cas.sim.tis.view.PageView;
 import com.cas.sim.tis.view.PreparationExamView;
+import com.cas.sim.tis.view.control.IContent;
 import com.cas.sim.tis.view.control.imp.broken.BrokenCase3D;
 import com.cas.sim.tis.view.control.imp.broken.BrokenCaseBtnController;
 import com.cas.sim.tis.view.controller.ExamController;
 import com.cas.sim.tis.view.controller.PageController;
-import com.cas.sim.tis.view.controller.PreparationExamController;
 import com.cas.sim.tis.view.controller.PageController.PageLevel;
+import com.cas.sim.tis.view.controller.PreparationExamController;
+import com.cas.sim.tis.vo.ExamBrokenPublish;
+import com.cas.sim.tis.vo.ExamLibraryPublish;
+import com.cas.sim.tis.vo.ExamPreparationPublish;
 import com.jme3.network.Client;
 
 import javafx.application.Platform;
@@ -60,7 +61,7 @@ public class ExamMessageHandler implements ClientHandler<ExamMessage> {
 	private void libraryExam(ExamMessage m) {
 		int messageType = m.getMessageType();
 		if (ExamMessage.MESSAGE_TYPE_START == messageType) {
-			LibraryPublish publish = SpringUtil.getBean(LibraryPublishAction.class).findPublishById(m.getPid());
+			ExamLibraryPublish publish = SpringUtil.getBean(LibraryPublishAction.class).findPublishById(m.getPid());
 			Platform.runLater(() -> {
 				Application.showView(ExamView.class);
 
@@ -80,7 +81,7 @@ public class ExamMessageHandler implements ClientHandler<ExamMessage> {
 	private void preparationExam(ExamMessage m) {
 		int messageType = m.getMessageType();
 		if (ExamMessage.MESSAGE_TYPE_START == messageType) {
-			PreparationPublish publish = SpringUtil.getBean(PreparationPublishAction.class).findPublishById(m.getPid());
+			ExamPreparationPublish publish = SpringUtil.getBean(PreparationPublishAction.class).findPublishById(m.getPid());
 			List<Question> questions = SpringUtil.getBean(QuestionAction.class).findQuestionsByQuestionIds(publish.getLibrary().getQuestionIds());
 
 			Platform.runLater(() -> {
@@ -102,7 +103,7 @@ public class ExamMessageHandler implements ClientHandler<ExamMessage> {
 	private void repairExam(ExamMessage m) {
 		int messageType = m.getMessageType();
 		if (ExamMessage.MESSAGE_TYPE_START == messageType) {
-			BrokenPublish publish = SpringUtil.getBean(BrokenPublishAction.class).findPublishById(m.getPid());
+			ExamBrokenPublish publish = SpringUtil.getBean(BrokenPublishAction.class).findPublishById(m.getPid());
 			// TODO 加载维修案例考核界面
 			Platform.runLater(() -> {
 				Application.showView(PageView.class);
@@ -120,7 +121,11 @@ public class ExamMessageHandler implements ClientHandler<ExamMessage> {
 		} else if (ExamMessage.MESSAGE_TYPE_OVER == messageType) {
 			// TODO 考核结束显示界面
 			Platform.runLater(() -> {
-
+				PageController controller = SpringUtil.getBean(PageController.class);
+				IContent content = controller.getIContent();
+				if (content instanceof BrokenCase3D) {
+					((BrokenCase3D)content).submit();
+				}
 			});
 		}
 	}

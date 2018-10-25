@@ -9,7 +9,7 @@ import com.cas.circuit.IBroken;
 import com.cas.sim.tis.app.state.ElecCaseState.CaseMode;
 import com.cas.sim.tis.app.state.broken.BrokenCaseState;
 import com.cas.sim.tis.consts.Session;
-import com.cas.sim.tis.entity.BrokenRecord;
+import com.cas.sim.tis.entity.ExamBrokenRecord;
 import com.cas.sim.tis.util.AlertUtil;
 import com.cas.sim.tis.util.MsgUtil;
 import com.cas.sim.tis.util.SpringUtil;
@@ -39,6 +39,8 @@ public class BrokenCaseBtnController extends ElecCaseBtnController {
 	private int brokenNum;
 	private int chanceNum;
 
+	private Integer publishId;
+
 	public BrokenCaseBtnController(CaseMode... enableModes) {
 		super(enableModes);
 	}
@@ -48,34 +50,28 @@ public class BrokenCaseBtnController extends ElecCaseBtnController {
 		super.initialize(location, resources);
 		scroll.setContent(flow = new BrokenFlowItem());
 		submit.setOnAction(e -> {
-			submit();
+			submit(false);
 		});
 	}
 
 	@Override
 	protected void switchCaseMode(CaseMode mode) {
 		SpringUtil.getBean(PageController.class).showLoading();
+		trainOrEdit.toFront();
+		view.setVisible(false);
+		btns.setVisible(false);
 		if (CaseMode.BROKEN_TRAIN_MODE == mode) {
-			trainOrEdit.toFront();
 			trainOrEdit.setVisible(false);
 			broken.setVisible(true);
-			view.setVisible(false);
 			steps.setVisible(false);
-			btns.setVisible(false);
 		} else if (CaseMode.BROKEN_EXAM_MODE == mode) {
-			trainOrEdit.toFront();
 			trainOrEdit.setVisible(false);
 			broken.setVisible(true);
-			view.setVisible(false);
 			steps.setVisible(false);
-			btns.setVisible(false);
 		} else if (CaseMode.EDIT_MODE == mode) {
-			trainOrEdit.toFront();
 			trainOrEdit.setVisible(true);
 			broken.setVisible(false);
-			view.setVisible(false);
 			steps.setVisible(true);
-			btns.setVisible(false);
 		}
 		if (flow != null) {
 			flow.getChildren().clear();
@@ -117,22 +113,23 @@ public class BrokenCaseBtnController extends ElecCaseBtnController {
 		flow.getChildren().remove(item);
 	}
 
-	private void submit() {
-		Integer publishId = Session.get(Session.KEY_BROKEN_CASE_PUBLISH_ID);
+	public void submit(boolean forced) {
 		if (publishId == null) {
 			if (brokenNum == 0) {
 				AlertUtil.showAlert(AlertType.INFORMATION, "大吉大利，今晚吃鸡！");
 			}
-		} else if (brokenNum > 0) {
+		} else if (brokenNum == 0) {
+			finish(publishId);
+			AlertUtil.showAlert(AlertType.INFORMATION, "大吉大利，今晚吃鸡！");
+		} else if (forced) {
+			finish(publishId);
+		} else {
 			AlertUtil.showConfirm(MsgUtil.getMessage("alert.confirmation.broken.nonzero"), c -> {
 				if (ButtonType.YES == c) {
 					finish(publishId);
 					AlertUtil.showAlert(AlertType.INFORMATION, "提交完成！");
 				}
 			});
-		} else {
-			finish(publishId);
-			AlertUtil.showAlert(AlertType.INFORMATION, "大吉大利，今晚吃鸡！");
 		}
 	}
 
@@ -147,7 +144,7 @@ public class BrokenCaseBtnController extends ElecCaseBtnController {
 		correctedNum++;
 		number.setText(String.valueOf(brokenNum));
 		if (brokenNum == 0) {
-			submit();
+			submit(false);
 		}
 	}
 
@@ -156,7 +153,6 @@ public class BrokenCaseBtnController extends ElecCaseBtnController {
 		chance.setText(String.valueOf(chanceNum));
 		if (chanceNum == 0) {
 			AlertUtil.showAlert(AlertType.ERROR, "您的机会已经用完，排故失败！");
-			Integer publishId = Session.get(Session.KEY_BROKEN_CASE_PUBLISH_ID);
 			if (publishId != null) {
 				finish(publishId);
 			}
@@ -171,20 +167,25 @@ public class BrokenCaseBtnController extends ElecCaseBtnController {
 		number.setText(String.valueOf(brokenNum));
 		chanceNum = 5;
 		chance.setText(String.valueOf(chanceNum));
+
+		publishId = Session.get(Session.KEY_BROKEN_CASE_PUBLISH_ID);
+		submit.setVisible(publishId != null);
 	}
 
 	public void finish(Integer publishId) {
 		submit.setDisable(true);
-		BrokenRecord record = new BrokenRecord();
+		ExamBrokenRecord record = new ExamBrokenRecord();
 		record.setCorrectedNum(correctedNum);
 		record.setMistakeNum(5 - chanceNum);
 		record.setBrokenNum(brokenNum);
-		record.setPulishId(publishId);
+		record.setPublishId(publishId);
 		((BrokenCaseState) elecCaseState).submit(record);
 
 		PageController controller = SpringUtil.getBean(PageController.class);
 		controller.setBackEnable(true);
 
 		((BrokenCase3D) elecCase3D).setFinish(true);
+
+		Session.set(Session.KEY_BROKEN_CASE_PUBLISH_ID, null);
 	}
 }

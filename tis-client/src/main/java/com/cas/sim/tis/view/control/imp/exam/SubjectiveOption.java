@@ -1,6 +1,6 @@
 package com.cas.sim.tis.view.control.imp.exam;
 
-import com.cas.sim.tis.entity.LibraryAnswer;
+import com.cas.sim.tis.entity.ExamLibraryAnswer;
 import com.cas.sim.tis.entity.Question;
 import com.cas.sim.tis.util.MsgUtil;
 
@@ -10,9 +10,9 @@ import javafx.scene.text.Text;
 
 public class SubjectiveOption extends VBox implements IOption {
 
-	private LibraryAnswer libraryAnswer;
+	private ExamLibraryAnswer libraryAnswer;
 
-	public SubjectiveOption(int index, LibraryAnswer libraryAnswer, boolean showRefrence) {
+	public SubjectiveOption(int index, ExamLibraryAnswer libraryAnswer, boolean showRefrence) {
 		this.setSpacing(20);
 		this.libraryAnswer = libraryAnswer;
 
@@ -40,7 +40,7 @@ public class SubjectiveOption extends VBox implements IOption {
 	}
 
 	@Override
-	public LibraryAnswer getAnswer() {
+	public ExamLibraryAnswer getAnswer() {
 		return libraryAnswer;
 	}
 

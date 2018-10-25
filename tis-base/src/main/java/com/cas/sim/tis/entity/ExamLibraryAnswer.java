@@ -11,7 +11,7 @@ import lombok.Getter;
 import lombok.Setter;
 @Getter
 @Setter
-public class LibraryAnswer implements Serializable {
+public class ExamLibraryAnswer implements Serializable {
 	/**
 	 * 
 	 */

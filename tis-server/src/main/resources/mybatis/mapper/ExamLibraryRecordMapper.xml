@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.cas.sim.tis.mapper.LibraryRecordMapper">
-	<resultMap id="BaseResultMap" type="com.cas.sim.tis.entity.LibraryRecord">
+<mapper namespace="com.cas.sim.tis.mapper.ExamLibraryRecordMapper">
+	<resultMap id="BaseResultMap" type="com.cas.sim.tis.entity.ExamLibraryRecord">
 		<id column="ID" jdbcType="INTEGER" property="id" />
 		<result column="PID" jdbcType="INTEGER" property="publishId" />
 		<result column="SCORE" jdbcType="FLOAT" property="score" />
@@ -19,7 +19,7 @@
 		select 
 			r.id,u.name,r.score,r.cost
 		from 
-			library_record r,user u
+			exam_library_record r,user u
 		where 
 			r.creator=u.id and r.pid=#{pid} and r.type=#{type}
 		order by u.code asc
@@ -28,7 +28,7 @@
 		SELECT 
 		    IFNULL(SUM(r.score), 0)
 		FROM
-		    library_record r
+		    exam_library_record r
 		WHERE
 		    r.pid = #{pid} and r.type=#{type}
 	</select>

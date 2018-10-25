@@ -12,11 +12,11 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class BrokenRecord {
+public class ExamBrokenRecord {
 	@Id
 	private Integer id;
 	@Column(name = "PID")
-	private Integer pulishId;
+	private Integer publishId;
 	private String archivePath;
 	private Integer brokenNum;
 	private Integer correctedNum;

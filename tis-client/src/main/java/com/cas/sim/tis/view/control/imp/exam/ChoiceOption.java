@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.cas.sim.tis.consts.AnswerState;
-import com.cas.sim.tis.entity.LibraryAnswer;
+import com.cas.sim.tis.entity.ExamLibraryAnswer;
 import com.cas.sim.tis.entity.Question;
 import com.cas.sim.tis.util.MsgUtil;
 import com.cas.util.StringUtil;
@@ -18,13 +18,13 @@ import javafx.scene.text.Text;
 
 public class ChoiceOption extends VBox implements IOption {
 
-	private LibraryAnswer libraryAnswer;
+	private ExamLibraryAnswer libraryAnswer;
 
 	private Question question;
 
 	private List<CheckBox> boxs = new ArrayList<>();
 
-	public ChoiceOption(int index, LibraryAnswer libraryAnswer, boolean showRefrence) {
+	public ChoiceOption(int index, ExamLibraryAnswer libraryAnswer, boolean showRefrence) {
 		this.setSpacing(20);
 		this.libraryAnswer = libraryAnswer;
 		this.question = libraryAnswer.getQuestion();
@@ -77,7 +77,7 @@ public class ChoiceOption extends VBox implements IOption {
 	}
 
 	@Override
-	public LibraryAnswer getAnswer() {
+	public ExamLibraryAnswer getAnswer() {
 		return libraryAnswer;
 	}
 

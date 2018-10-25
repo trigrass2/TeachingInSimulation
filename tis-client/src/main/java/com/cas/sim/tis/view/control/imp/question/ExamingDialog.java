@@ -6,7 +6,6 @@ import com.alibaba.fastjson.JSONArray;
 import com.cas.sim.tis.action.LibraryPublishAction;
 import com.cas.sim.tis.entity.Class;
 import com.cas.sim.tis.entity.Library;
-import com.cas.sim.tis.entity.LibraryPublish;
 import com.cas.sim.tis.svg.SVGGlyph;
 import com.cas.sim.tis.util.MsgUtil;
 import com.cas.sim.tis.util.SpringUtil;
@@ -14,6 +13,7 @@ import com.cas.sim.tis.view.control.imp.dialog.DialogPane;
 import com.cas.sim.tis.view.control.imp.table.Cell;
 import com.cas.sim.tis.view.control.imp.table.Column;
 import com.cas.sim.tis.view.control.imp.table.Table;
+import com.cas.sim.tis.vo.ExamLibraryPublish;
 import com.cas.sim.tis.vo.SubmitInfo;
 
 import javafx.animation.RotateTransition;
@@ -34,7 +34,7 @@ public class ExamingDialog extends DialogPane<Boolean> {
 
 	private Table table = new Table("table-row", "table-row-hover", "table-row-selected");
 
-	public ExamingDialog(LibraryPublish publish) {
+	public ExamingDialog(ExamLibraryPublish publish) {
 		Class clazz = publish.getClazz();
 
 		Label className = new Label(clazz.getName());

@@ -25,7 +25,6 @@ import com.cas.sim.tis.consts.Session;
 import com.cas.sim.tis.consts.TemplateConsts;
 import com.cas.sim.tis.entity.Class;
 import com.cas.sim.tis.entity.Library;
-import com.cas.sim.tis.entity.LibraryPublish;
 import com.cas.sim.tis.entity.Question;
 import com.cas.sim.tis.util.AlertUtil;
 import com.cas.sim.tis.util.ExcelUtil;
@@ -39,6 +38,7 @@ import com.cas.sim.tis.view.control.imp.classes.ClassSelectDialog;
 import com.cas.sim.tis.view.control.imp.dialog.Dialog;
 import com.cas.sim.tis.view.controller.ExamController;
 import com.cas.sim.tis.view.controller.PageController;
+import com.cas.sim.tis.vo.ExamLibraryPublish;
 import com.cas.util.FileUtil;
 import com.cas.util.Util;
 
@@ -311,7 +311,7 @@ public class PreviewQuestionPaper extends HBox implements IContent {
 	@FXML
 	private void practice() {
 		int id = SpringUtil.getBean(LibraryPublishAction.class).practiceLibraryByStudent(rid);
-		LibraryPublish publish = SpringUtil.getBean(LibraryPublishAction.class).findPublishById(id);
+		ExamLibraryPublish publish = SpringUtil.getBean(LibraryPublishAction.class).findPublishById(id);
 
 		Application.showView(ExamView.class);
 

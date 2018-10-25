@@ -5,7 +5,7 @@ import java.util.List;
 import org.springframework.util.StringUtils;
 
 import com.cas.sim.tis.consts.AnswerState;
-import com.cas.sim.tis.entity.LibraryAnswer;
+import com.cas.sim.tis.entity.ExamLibraryAnswer;
 import com.cas.sim.tis.entity.Question;
 import com.cas.sim.tis.util.MsgUtil;
 import com.cas.util.MathUtil;
@@ -22,7 +22,7 @@ import javafx.scene.text.Text;
 
 public class BlankOption extends VBox implements IOption {
 
-	private LibraryAnswer libraryAnswer;
+	private ExamLibraryAnswer libraryAnswer;
 
 	private Question question;
 
@@ -30,7 +30,7 @@ public class BlankOption extends VBox implements IOption {
 
 	private List<String> references;
 
-	public BlankOption(int index, LibraryAnswer libraryAnswer, boolean showRefrence) {
+	public BlankOption(int index, ExamLibraryAnswer libraryAnswer, boolean showRefrence) {
 		this.setSpacing(20);
 		this.libraryAnswer = libraryAnswer;
 
@@ -101,7 +101,7 @@ public class BlankOption extends VBox implements IOption {
 	}
 
 	@Override
-	public LibraryAnswer getAnswer() {
+	public ExamLibraryAnswer getAnswer() {
 		String answer = "";
 		boolean corrected = true;
 		float score = 0f;
