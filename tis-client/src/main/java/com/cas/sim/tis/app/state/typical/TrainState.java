@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.cas.circuit.component.Wire;
 import com.cas.circuit.component.WireProxy;
+import com.cas.sim.tis.app.hold.HoldStatePro;
 import com.cas.sim.tis.app.listener.ElecCompTrainListener;
 import com.cas.sim.tis.app.state.BaseState;
 import com.cas.sim.tis.flow.Step;
@@ -31,10 +32,11 @@ public class TrainState extends BaseState {
 	private Step curr;
 	private List<Step> steps = new ArrayList<Step>();
 	private ElecCompTrainListener listener;
+	private HoldStatePro holdState;
 
 	private TypicalCase3D ui;
 
-	public TrainState(TypicalCase3D ui, List<Step> steps, Node rootCompNode) {
+	public TrainState(TypicalCase3D ui, List<Step> steps, Node rootCompNode, HoldStatePro holdState) {
 		this.ui = ui;
 		this.steps = steps;
 		this.rootCompNode = rootCompNode;
@@ -42,7 +44,6 @@ public class TrainState extends BaseState {
 
 	@Override
 	protected void initializeLocal() {
-		HoldState hold = stateManager.getState(HoldState.class);
 
 		Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
 		mat.setColor("Color", ColorRGBA.Cyan);
@@ -51,7 +52,7 @@ public class TrainState extends BaseState {
 		elecCompBox = new Geometry("ElecCompBox", mesh);
 		elecCompBox.setMaterial(mat);
 		elecCompBox.setCullHint(CullHint.Always);
-		mouseEventState.addCandidate(elecCompBox, listener = new ElecCompTrainListener(ui, this, hold));
+		mouseEventState.addCandidate(elecCompBox, listener = new ElecCompTrainListener(ui, this, holdState));
 
 		rootCompNode.attachChild(elecCompBox);
 
@@ -100,8 +101,7 @@ public class TrainState extends BaseState {
 	}
 
 	public void next() {
-		HoldState hold = stateManager.getState(HoldState.class);
-		hold.discard();
+		holdState.discard();
 		int index = steps.indexOf(curr);
 		if (index >= steps.size() - 1) {
 			Platform.runLater(() -> {
