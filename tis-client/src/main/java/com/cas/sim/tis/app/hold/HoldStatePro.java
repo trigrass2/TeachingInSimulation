@@ -16,7 +16,9 @@ import lombok.extern.slf4j.Slf4j;
  * @author zzy
  */
 @Slf4j
-public class HoldStatePro {
+public enum HoldStatePro {
+	ins;
+
 	private static final String UDK_HANDLER = "HoldHandler";
 
 	private static final String TYPICAL_MOVE = "TYPICAL_MOVE";
@@ -24,7 +26,7 @@ public class HoldStatePro {
 	private static final String TYPICAL_RIGHT_ROTATE = "TYPICAL_RIGHT_ROTATE";
 
 //	手持节点模型
-	private Node root;
+	private @Setter Node root;
 
 	private @Getter Spatial holdingSpatial; // 当前拿取的物体
 
@@ -45,14 +47,15 @@ public class HoldStatePro {
 		}
 	};
 
-	public HoldStatePro(Node root, InputManager inputManager) {
-		this.root = root;
+//	private HoldStatePro(Node root, InputManager inputManager) {
+//		this.root = root;
+//		this.inputManager = inputManager;
+//
+//		registerWithInput(inputManager);
+//	}
+
+	public void registerWithInput(InputManager inputManager) {
 		this.inputManager = inputManager;
-
-		registerWithInput(inputManager);
-	}
-
-	private void registerWithInput(InputManager inputManager) {
 		// 鼠标移动监听
 		inputManager.addMapping(TYPICAL_MOVE, //
 				new MouseAxisTrigger(MouseInput.AXIS_X, true), //

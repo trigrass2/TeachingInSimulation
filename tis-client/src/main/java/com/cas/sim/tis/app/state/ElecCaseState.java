@@ -82,7 +82,9 @@ public abstract class ElecCaseState<T>extends BaseState {
 			}
 		}, "toggleView");
 
-		holdState = new HoldStatePro(root, inputManager);
+		
+		HoldStatePro.ins.setRoot(root);
+		HoldStatePro.ins.registerWithInput(inputManager);
 //		stateManager.attach(holdState);
 
 //		stateManager.attach(new MultimeterState());
