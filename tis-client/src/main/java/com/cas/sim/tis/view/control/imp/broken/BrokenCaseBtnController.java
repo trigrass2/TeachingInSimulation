@@ -50,7 +50,7 @@ public class BrokenCaseBtnController extends ElecCaseBtnController {
 		super.initialize(location, resources);
 		scroll.setContent(flow = new BrokenFlowItem());
 		submit.setOnAction(e -> {
-			submit(false);
+			checkSubmit(false);
 		});
 	}
 
@@ -113,20 +113,32 @@ public class BrokenCaseBtnController extends ElecCaseBtnController {
 		flow.getChildren().remove(item);
 	}
 
-	public void submit(boolean forced) {
+	public void checkSubmit(boolean forced) {
 		if (publishId == null) {
-			if (brokenNum == 0) {
+			if (chanceNum == 0) {
+				((BrokenCase3D) elecCase3D).setFinish(true);
+				AlertUtil.showConfirm("您的机会已经用完，是否重新开始？", e -> {
+					if (ButtonType.YES == e) {
+						((BrokenCase3D) elecCase3D).resetTrainCase();
+					}
+				});
+			} else if (brokenNum == 0) {
 				AlertUtil.showAlert(AlertType.INFORMATION, "大吉大利，今晚吃鸡！");
+				((BrokenCase3D) elecCase3D).setFinish(true);
 			}
+		} else if (chanceNum == 0) {
+			submit(publishId);
+			AlertUtil.showAlert(AlertType.ERROR, "您的机会已经用完，排故失败！");
 		} else if (brokenNum == 0) {
-			finish(publishId);
+			submit(publishId);
 			AlertUtil.showAlert(AlertType.INFORMATION, "大吉大利，今晚吃鸡！");
 		} else if (forced) {
-			finish(publishId);
+			submit(publishId);
+			AlertUtil.showAlert(AlertType.INFORMATION, "考试结束！");
 		} else {
 			AlertUtil.showConfirm(MsgUtil.getMessage("alert.confirmation.broken.nonzero"), c -> {
 				if (ButtonType.YES == c) {
-					finish(publishId);
+					submit(publishId);
 					AlertUtil.showAlert(AlertType.INFORMATION, "提交完成！");
 				}
 			});
@@ -143,20 +155,13 @@ public class BrokenCaseBtnController extends ElecCaseBtnController {
 		brokenNum--;
 		correctedNum++;
 		number.setText(String.valueOf(brokenNum));
-		if (brokenNum == 0) {
-			submit(false);
-		}
+		checkSubmit(false);
 	}
 
 	public void decreaseChanceNume() {
 		chanceNum--;
 		chance.setText(String.valueOf(chanceNum));
-		if (chanceNum == 0) {
-			AlertUtil.showAlert(AlertType.ERROR, "您的机会已经用完，排故失败！");
-			if (publishId != null) {
-				finish(publishId);
-			}
-		}
+		checkSubmit(false);
 	}
 
 	public void init(int num) {
@@ -172,7 +177,7 @@ public class BrokenCaseBtnController extends ElecCaseBtnController {
 		submit.setVisible(publishId != null);
 	}
 
-	public void finish(Integer publishId) {
+	public void submit(Integer publishId) {
 		submit.setDisable(true);
 		ExamBrokenRecord record = new ExamBrokenRecord();
 		record.setCorrectedNum(correctedNum);

@@ -51,4 +51,6 @@ public interface HoldHandler extends Savable {
 //		nothing to read
 	}
 
+	<T> T getData();
+
 }

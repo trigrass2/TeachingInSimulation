@@ -21,12 +21,10 @@ public class ElecCompTrainListener extends MouseEventAdapter {
 
 	private Step step;
 	private TrainState train;
-	private HoldStatePro hold;
 
-	public ElecCompTrainListener(TypicalCase3D ui, TrainState train, HoldStatePro hold) {
+	public ElecCompTrainListener(TypicalCase3D ui, TrainState train) {
 		this.ui = ui;
 		this.train = train;
-		this.hold = hold;
 	}
 
 	public void setStep(Step step) {
@@ -39,7 +37,7 @@ public class ElecCompTrainListener extends MouseEventAdapter {
 			log.info("ElecCompTrainListener未指定步骤");
 			return;
 		}
-		ElecComp comp = hold.getHoldingSpatial().getUserData("entity");
+		ElecComp comp = HoldStatePro.ins.getData();
 		if (comp == null) {
 			return;
 		}

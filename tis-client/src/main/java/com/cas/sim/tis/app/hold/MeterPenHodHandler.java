@@ -96,5 +96,10 @@ public class MeterPenHodHandler implements HoldHandler {
 		spatial.setLocalTranslation(spatial.getUserData("ORIG_LOC"));
 		spatial.setLocalRotation(new Quaternion());
 	}
-
+	
+	@Override
+	public <T> T getData() {
+//		FIXME
+		return null;
+	}
 }

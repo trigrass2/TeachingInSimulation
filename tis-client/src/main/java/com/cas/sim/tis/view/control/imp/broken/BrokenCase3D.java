@@ -58,7 +58,7 @@ public class BrokenCase3D extends ElecCase3D<BrokenCase> implements IContent {
 
 	@Override
 	protected void createCompPopupMenu() {
-		super.createCompPopupMenu();
+		createCompTagMenu();
 		// 编辑模式下的元器件菜单
 		compSet = new Menu(MsgUtil.getMessage("broken.case.setup"));
 		compMenu.getItems().add(0, compSet);
@@ -71,7 +71,7 @@ public class BrokenCase3D extends ElecCase3D<BrokenCase> implements IContent {
 	@Override
 	protected void createWirePopupMenu() {
 		// 编辑模式导线菜单
-		super.createWirePopupMenu();
+		createWireTagMenu();
 		// 练习模式导线菜单
 		MenuItem unsetTrain = new MenuItem(MsgUtil.getMessage("broken.case.correct"));
 		unsetTrain.setOnAction(e -> {
@@ -130,9 +130,10 @@ public class BrokenCase3D extends ElecCase3D<BrokenCase> implements IContent {
 		}
 		List<Pair> contactors = compDef.getContactorList();
 		List<Pair> coils = compDef.getCoilList();
+
 		if (CaseMode.EDIT_MODE == state.getMode()) {
 			this.compSet.getItems().clear();
-			// TODO 根据元器件配置添加菜单
+			// 根据元器件配置添加菜单
 			for (Pair contactor : contactors) {
 				Menu menu = new Menu(contactor.getName());
 				ToggleGroup group = new ToggleGroup();
@@ -190,6 +191,11 @@ public class BrokenCase3D extends ElecCase3D<BrokenCase> implements IContent {
 				menu.getItems().addAll(normal, disconnect);
 				this.compSet.getItems().add(menu);
 			}
+			if (contactors.size() == 0 && coils.size() == 0) {
+				compMenu.getItems().remove(compSet);
+			} else {
+				compMenu.getItems().add(0, compSet);
+			}
 			super.showPopupMenu(compDef);
 		} else {
 			this.compUnset.getItems().clear();
@@ -244,6 +250,11 @@ public class BrokenCase3D extends ElecCase3D<BrokenCase> implements IContent {
 				});
 				menu.getItems().addAll(disconnect);
 				this.compUnset.getItems().add(menu);
+			}
+			if (contactors.size() == 0 && coils.size() == 0) {
+				compTrain.getItems().remove(compUnset);
+			} else {
+				compTrain.getItems().add(0, compUnset);
 			}
 			this.compDef = compDef;
 			Point anchor = MouseInfo.getPointerInfo().getLocation();
@@ -309,6 +320,13 @@ public class BrokenCase3D extends ElecCase3D<BrokenCase> implements IContent {
 	}
 
 	public void submit() {
-		((BrokenCaseBtnController) btnController).submit(true);
+		((BrokenCaseBtnController) btnController).checkSubmit(true);
+	}
+
+	public void resetTrainCase() {
+		state.setupCase(state.getElecCase(), CaseMode.BROKEN_TRAIN_MODE);
+		btnController.clean();
+		btnController.setMode(CaseMode.BROKEN_TRAIN_MODE);
+		setFinish(false);
 	}
 }

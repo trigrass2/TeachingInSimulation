@@ -137,4 +137,11 @@ public class ElecCompHoldHandler implements HoldHandler {
 		}
 		return suitable;
 	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public ElecComp getData() {
+		return elecComp;
+	}
+	
 }

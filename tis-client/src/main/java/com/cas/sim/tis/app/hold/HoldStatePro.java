@@ -165,4 +165,9 @@ public enum HoldStatePro {
 		return handler;
 	}
 
+	@SuppressWarnings("unchecked")
+	public <T> T  getData() {
+		return (T) getHoldHandler().getData();
+	}
+	
 }

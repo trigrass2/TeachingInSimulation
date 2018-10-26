@@ -31,15 +31,14 @@ public class TypicalCaseState extends ElecCaseState<ArchiveCase> {
 		holdState.discard();
 		
 		// 创建新的circuitState
-		circuitState = new CircuitState(this, holdState, ui, root);
+		circuitState = new CircuitState(this, ui, root);
 		circuitState.setOnInitialized((n) -> {
 			// 尝试解析出存档对象
 			Archive archive = SpringUtil.getBean(ArchiveAction.class).parse(archiveCase.getArchivePath());
 			circuitState.read(archive, mode);
 			Optional.ofNullable(archive).ifPresent(a -> {
 				if (CaseMode.TYPICAL_TRAIN_MODE == mode) {
-					TrainState trainState = new TrainState((TypicalCase3D) ui, circuitState.getSteps(), circuitState.getRootCompNode(), holdState);
-					stateManager.attach(trainState);
+					stateManager.attach(new TrainState((TypicalCase3D) ui, circuitState.getSteps(), circuitState.getRootCompNode()));
 					JFXPlatform.runInFXThread(() -> ((TypicalCase3D) ui).loadSteps(circuitState.getSteps()));
 				} else if (CaseMode.VIEW_MODE == mode) {
 					stateManager.detach(stateManager.getState(TrainState.class));

@@ -32,11 +32,10 @@ public class TrainState extends BaseState {
 	private Step curr;
 	private List<Step> steps = new ArrayList<Step>();
 	private ElecCompTrainListener listener;
-	private HoldStatePro holdState;
 
 	private TypicalCase3D ui;
 
-	public TrainState(TypicalCase3D ui, List<Step> steps, Node rootCompNode, HoldStatePro holdState) {
+	public TrainState(TypicalCase3D ui, List<Step> steps, Node rootCompNode) {
 		this.ui = ui;
 		this.steps = steps;
 		this.rootCompNode = rootCompNode;
@@ -52,7 +51,7 @@ public class TrainState extends BaseState {
 		elecCompBox = new Geometry("ElecCompBox", mesh);
 		elecCompBox.setMaterial(mat);
 		elecCompBox.setCullHint(CullHint.Always);
-		mouseEventState.addCandidate(elecCompBox, listener = new ElecCompTrainListener(ui, this, holdState));
+		mouseEventState.addCandidate(elecCompBox, listener = new ElecCompTrainListener(ui, this));
 
 		rootCompNode.attachChild(elecCompBox);
 
@@ -101,7 +100,7 @@ public class TrainState extends BaseState {
 	}
 
 	public void next() {
-		holdState.discard();
+		HoldStatePro.ins.discard();
 		int index = steps.indexOf(curr);
 		if (index >= steps.size() - 1) {
 			Platform.runLater(() -> {

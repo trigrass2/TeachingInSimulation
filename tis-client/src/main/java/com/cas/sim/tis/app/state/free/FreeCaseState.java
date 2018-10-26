@@ -28,7 +28,7 @@ public class FreeCaseState extends ElecCaseState<ArchiveCase> {
 		// 查看模式时，不可拿去元器件
 		holdState.setEnabled(CaseMode.VIEW_MODE != mode);
 		// 创建新的circuitState
-		circuitState = new CircuitState(this, holdState, ui, root);
+		circuitState = new CircuitState(this, ui, root);
 		circuitState.setOnInitialized((n) -> {
 			// 尝试解析出存档对象
 			Archive archive = SpringUtil.getBean(ArchiveAction.class).parse(archiveCase.getArchivePath());

@@ -137,8 +137,6 @@ public class CircuitState extends BaseState implements ICircuitEffect {
 	private Vector3f midAxis;
 	Quaternion roll90 = new Quaternion().fromAngleNormalAxis(FastMath.HALF_PI, Vector3f.UNIT_Y);
 
-	private HoldStatePro holdState;
-
 	private @Getter List<ElecCompDef> compList = new ArrayList<>();
 
 	@Nullable
@@ -184,9 +182,8 @@ public class CircuitState extends BaseState implements ICircuitEffect {
 
 	private MultimeterState multiMeterState;
 
-	public CircuitState(ElecCaseState<?> caseState, HoldStatePro holdState, ElecCase3D<?> ui, Node root) {
+	public CircuitState(ElecCaseState<?> caseState, ElecCase3D<?> ui, Node root) {
 		this.caseState = caseState;
-		this.holdState = holdState;
 		this.ui = ui;
 		this.root = root;
 	}
@@ -250,10 +247,10 @@ public class CircuitState extends BaseState implements ICircuitEffect {
 		CIRCUIT_SERVICE.scheduleAtFixedRate(CirSim.ins, 0, (long) (1 / CirSim.TPF / 10), TimeUnit.NANOSECONDS);
 
 //		FIXME 加入万用表
-		multiMeterState = stateManager.getState(MultimeterState.class);
-		if (multiMeterState == null) {
-			stateManager.attach(multiMeterState = new MultimeterState());
-		}
+//		multiMeterState = stateManager.getState(MultimeterState.class);
+//		if (multiMeterState == null) {
+//			stateManager.attach(multiMeterState = new MultimeterState());
+//		}
 	}
 
 	private void bindCircuitBoardEvents() {
@@ -1169,7 +1166,7 @@ public class CircuitState extends BaseState implements ICircuitEffect {
 		// 取消当前选中的导线
 		clearWireSelect();
 		// 取消手中元器件
-		holdState.discard();
+		HoldStatePro.ins.discard();
 		// 取消选中的元器件
 		clearElecCompSelect();
 	}
