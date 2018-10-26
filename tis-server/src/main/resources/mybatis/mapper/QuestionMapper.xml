@@ -24,14 +24,14 @@
 		    (SELECT 
 		        q.*
 		    FROM
-		        library_publish p, question q
+		        exam_publish p, question q
 		    WHERE
 		        p.lid = q.rid AND q.del = 0 AND p.id = #{pid}) a
 		        LEFT JOIN
 		    (SELECT 
 		        COUNT(*) AS num, a.qid
 		    FROM
-		        library_record r, library_answer a
+		        exam_library_record r, exam_library_answer a
 		    WHERE
 		        r.id = a.LRID AND r.pid = #{pid}
 		            AND a.CORRECTED IN (1 , 2)
@@ -65,7 +65,7 @@
 		    (SELECT 
 		        COUNT(*) AS num, a.qid
 		    FROM
-		        library_record r, library_answer a
+		        exam_library_record r, exam_library_answer a
 		    WHERE
 		        r.id = a.LRID AND r.pid = #{pid}
 		            AND a.CORRECTED IN (1 , 2)

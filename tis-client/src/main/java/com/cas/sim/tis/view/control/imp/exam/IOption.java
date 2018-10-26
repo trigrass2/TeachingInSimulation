@@ -1,7 +1,7 @@
 package com.cas.sim.tis.view.control.imp.exam;
 
-import com.cas.sim.tis.entity.LibraryAnswer;
+import com.cas.sim.tis.entity.ExamLibraryAnswer;
 
 public interface IOption {
-	LibraryAnswer getAnswer();
+	ExamLibraryAnswer getAnswer();
 }

@@ -67,6 +67,8 @@ public class HomeController implements Initializable {
 
 		info.setText(user.getName() + "\r\n" + user.getCode());
 
+		ExamMessage message = new ExamMessage();
+		message.setSid(Session.get(Session.KEY_LOGIN_ID));
 		if (RoleConst.ADMIN == role) {
 //			管理员的菜单
 			buildMenu(MenuEnum.Information, //
@@ -79,12 +81,14 @@ public class HomeController implements Initializable {
 					MenuEnum.Questions, //
 					MenuEnum.Preparation //
 			);
+			message.setMessageType(ExamMessage.MESSAGE_TYPE_QUERY_BY_TEACHER);
 		} else if (RoleConst.STUDENT == role) {
 //			学生的菜单
 			buildMenu(MenuEnum.Resource, //
 					MenuEnum.Questions, //
 					MenuEnum.Lessones //
 			);
+			message.setMessageType(ExamMessage.MESSAGE_TYPE_QUERY_BY_STUDENT);
 		}
 
 		menu.getChildren().addAll(homeMenus);
@@ -99,9 +103,6 @@ public class HomeController implements Initializable {
 			yOffset = GUIState.getStage().getY() - e.getScreenY();
 		});
 		
-		ExamMessage message = new ExamMessage();
-		message.setMessageType(ExamMessage.MESSAGE_TYPE_QUERY);
-		message.setSid(Session.get(Session.KEY_LOGIN_ID));
 		SocketUtil.INSTENCE.send(message);
 	}
 

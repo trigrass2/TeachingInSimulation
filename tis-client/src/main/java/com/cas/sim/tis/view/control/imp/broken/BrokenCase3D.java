@@ -307,4 +307,8 @@ public class BrokenCase3D extends ElecCase3D<BrokenCase> implements IContent {
 	public void decreaseChanceNume() {
 		((BrokenCaseBtnController) btnController).decreaseChanceNume();
 	}
+
+	public void submit() {
+		((BrokenCaseBtnController) btnController).submit(true);
+	}
 }

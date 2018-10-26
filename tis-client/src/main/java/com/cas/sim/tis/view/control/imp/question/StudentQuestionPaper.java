@@ -12,12 +12,12 @@ import com.cas.sim.tis.action.LibraryAnswerAction;
 import com.cas.sim.tis.action.LibraryPublishAction;
 import com.cas.sim.tis.consts.LibraryRecordType;
 import com.cas.sim.tis.consts.PublishType;
-import com.cas.sim.tis.entity.LibraryAnswer;
-import com.cas.sim.tis.entity.LibraryPublish;
+import com.cas.sim.tis.entity.ExamLibraryAnswer;
 import com.cas.sim.tis.entity.Question;
 import com.cas.sim.tis.util.SpringUtil;
 import com.cas.sim.tis.view.control.IContent;
 import com.cas.sim.tis.view.control.imp.Title;
+import com.cas.sim.tis.vo.ExamLibraryPublish;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -90,7 +90,7 @@ public class StudentQuestionPaper extends HBox implements IContent {
 	private void initialize() {
 		this.title.setTitle(type.getDetailTitle());
 
-		LibraryPublish publish = SpringUtil.getBean(LibraryPublishAction.class).findPublishById(pid);
+		ExamLibraryPublish publish = SpringUtil.getBean(LibraryPublishAction.class).findPublishById(pid);
 		this.libName.setText(publish.getLibrary().getName());
 
 		filter.selectedToggleProperty().addListener((b, o, n) -> {
@@ -102,10 +102,10 @@ public class StudentQuestionPaper extends HBox implements IContent {
 	private void loadQuestions() {
 		this.paper.getChildren().clear();
 		boolean onlyWrong = filter.getSelectedToggle() != null;
-		List<LibraryAnswer> answers = SpringUtil.getBean(LibraryAnswerAction.class).findAnswersByPublish(pid, LibraryRecordType.LIBRARY.getType(), onlyWrong);
+		List<ExamLibraryAnswer> answers = SpringUtil.getBean(LibraryAnswerAction.class).findAnswersByPublish(pid, LibraryRecordType.LIBRARY.getType(), onlyWrong);
 		for (int i = 0; i < answers.size(); i++) {
 			int index = i + 1;
-			LibraryAnswer answer = answers.get(i);
+			ExamLibraryAnswer answer = answers.get(i);
 			Question question = answer.getQuestion();
 			RecordQuestionItem item = new RecordQuestionItem(index, answer);
 			item.setOnMouseClicked(e -> {

@@ -15,8 +15,8 @@ import com.cas.circuit.util.JaxbUtil;
 import com.cas.circuit.vo.Archive;
 import com.cas.sim.tis.consts.Session;
 import com.cas.sim.tis.entity.ArchiveCase;
-import com.cas.sim.tis.entity.BrokenRecord;
-import com.cas.sim.tis.services.BrokenRecordService;
+import com.cas.sim.tis.entity.ExamBrokenRecord;
+import com.cas.sim.tis.services.ExamBrokenRecordService;
 import com.cas.sim.tis.services.exception.ServiceException;
 import com.cas.sim.tis.thrift.RequestEntity;
 import com.cas.sim.tis.thrift.RequestEntityBuilder;
@@ -30,9 +30,9 @@ import lombok.extern.slf4j.Slf4j;
 public class BrokenRecordAction {
 
 	@Resource
-	private BrokenRecordService service;
+	private ExamBrokenRecordService service;
 
-	public void save(BrokenRecord record, Archive archive) {
+	public void save(ExamBrokenRecord record, Archive archive) {
 //		1、 将存档对象转换为XML文件
 		String xmlContent = JaxbUtil.convertToXml(archive, "utf-8");
 		log.debug("用户的案例存档内容：{}", xmlContent);

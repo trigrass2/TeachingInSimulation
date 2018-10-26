@@ -9,12 +9,12 @@ import org.springframework.stereotype.Component;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
 import com.cas.sim.tis.consts.Session;
-import com.cas.sim.tis.entity.LibraryPublish;
-import com.cas.sim.tis.entity.LibraryPublish.LibraryPublishType;
-import com.cas.sim.tis.services.LibraryPublishService;
+import com.cas.sim.tis.entity.ExamPublish.Type;
+import com.cas.sim.tis.services.ExamLibraryPublishService;
 import com.cas.sim.tis.thrift.RequestEntity;
 import com.cas.sim.tis.thrift.RequestEntityBuilder;
 import com.cas.sim.tis.thrift.ResponseEntity;
+import com.cas.sim.tis.vo.ExamLibraryPublish;
 import com.cas.sim.tis.vo.LibraryPublishForStudent;
 import com.cas.sim.tis.vo.LibraryPublishForTeacher;
 import com.cas.sim.tis.vo.SubmitInfo;
@@ -23,7 +23,7 @@ import com.github.pagehelper.PageInfo;
 @Component
 public class LibraryPublishAction extends BaseAction {
 	@Resource
-	private LibraryPublishService service;
+	private ExamLibraryPublishService service;
 
 	/**
 	 * 根据教师编号获得该用户发布的试题考核
@@ -66,12 +66,12 @@ public class LibraryPublishAction extends BaseAction {
 	 * @param id 试题考核发布编号
 	 * @return 试题考核发布对象
 	 */
-	public LibraryPublish findPublishById(int id) {
+	public ExamLibraryPublish findPublishById(int id) {
 		RequestEntity req = new RequestEntityBuilder()//
 				.set("id", id)//
 				.build();
 		ResponseEntity resp = service.findPublishById(req);
-		return JSON.parseObject(resp.data, LibraryPublish.class);
+		return JSON.parseObject(resp.data, ExamLibraryPublish.class);
 	}
 
 	/**
@@ -94,11 +94,11 @@ public class LibraryPublishAction extends BaseAction {
 	 * @return
 	 */
 	public Integer publishLibraryToClass(Integer rid, Integer cid) {
-		LibraryPublish publish = new LibraryPublish();
-		publish.setLibraryId(rid);
+		ExamLibraryPublish publish = new ExamLibraryPublish();
+		publish.setRelationId(rid);
 		publish.setClassId(cid);
 		publish.setCreator(Session.get(Session.KEY_LOGIN_ID));
-		publish.setType(LibraryPublishType.EXAM.getType());
+		publish.setType(Type.LIBRARY_EXAM.getType());
 
 		RequestEntity req = new RequestEntityBuilder()//
 				.set("publish", publish)//
@@ -115,10 +115,10 @@ public class LibraryPublishAction extends BaseAction {
 	 */
 	public int practiceLibraryByStudent(int rid) {
 
-		LibraryPublish publish = new LibraryPublish();
-		publish.setLibraryId(rid);
+		ExamLibraryPublish publish = new ExamLibraryPublish();
+		publish.setRelationId(rid);
 		publish.setCreator(Session.get(Session.KEY_LOGIN_ID));
-		publish.setType(LibraryPublishType.PRACTICE.getType());
+		publish.setType(Type.LIBRARY_PRACTICE.getType());
 
 		RequestEntity req = new RequestEntityBuilder()//
 				.set("publish", publish)//

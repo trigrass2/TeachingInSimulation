@@ -17,10 +17,9 @@ import com.cas.sim.tis.consts.LibraryRecordType;
 import com.cas.sim.tis.consts.QuestionType;
 import com.cas.sim.tis.consts.Session;
 import com.cas.sim.tis.entity.Goal;
-import com.cas.sim.tis.entity.LibraryAnswer;
-import com.cas.sim.tis.entity.LibraryRecord;
+import com.cas.sim.tis.entity.ExamLibraryAnswer;
+import com.cas.sim.tis.entity.ExamLibraryRecord;
 import com.cas.sim.tis.entity.PreparationLibrary;
-import com.cas.sim.tis.entity.PreparationPublish;
 import com.cas.sim.tis.entity.Question;
 import com.cas.sim.tis.util.AlertUtil;
 import com.cas.sim.tis.util.MsgUtil;
@@ -33,6 +32,7 @@ import com.cas.sim.tis.view.control.imp.exam.ChoiceOption;
 import com.cas.sim.tis.view.control.imp.exam.IOption;
 import com.cas.sim.tis.view.control.imp.exam.JudgmentOption;
 import com.cas.sim.tis.view.control.imp.exam.SubjectiveOption;
+import com.cas.sim.tis.vo.ExamPreparationPublish;
 import com.cas.util.MathUtil;
 
 import de.felixroske.jfxsupport.FXMLController;
@@ -88,7 +88,7 @@ public class PreparationExamController {
 
 	private ToggleGroup group = new ToggleGroup();
 
-	private PreparationPublish publish;
+	private ExamPreparationPublish publish;
 
 	private PreparationLibrary library;
 
@@ -101,12 +101,12 @@ public class PreparationExamController {
 	 * Key:题号<br>
 	 * Value:答题结果<br>
 	 */
-	private Map<Integer, LibraryAnswer> answers = new HashMap<>();
+	private Map<Integer, ExamLibraryAnswer> answers = new HashMap<>();
 
 	private boolean submited;
 	private ChangeListener<Toggle> groupListener;
 
-	public void initialize(PreparationPublish publish, List<Question> questions) {
+	public void initialize(ExamPreparationPublish publish, List<Question> questions) {
 		clear();
 
 		this.publish = publish;
@@ -126,7 +126,7 @@ public class PreparationExamController {
 			group.getToggles().add(toggle);
 
 			Question question = questions.get(i);
-			LibraryAnswer libraryAnswer = new LibraryAnswer();
+			ExamLibraryAnswer libraryAnswer = new ExamLibraryAnswer();
 			libraryAnswer.setIndex(i);
 			libraryAnswer.setQuestion(question);
 			libraryAnswer.setQuestionId(question.getId());
@@ -172,7 +172,7 @@ public class PreparationExamController {
 		if (current == null) {
 			return;
 		}
-		LibraryAnswer answer = current.getAnswer();
+		ExamLibraryAnswer answer = current.getAnswer();
 		if (answer == null) {
 			return;
 		}
@@ -211,7 +211,7 @@ public class PreparationExamController {
 	 */
 	private void loadQuestion() {
 		// 获得答题结果对象
-		LibraryAnswer libraryAnswer = answers.get(currIndex);
+		ExamLibraryAnswer libraryAnswer = answers.get(currIndex);
 //		// 加载题目
 //		this.question.setText(question.getTitle());
 		// 根据题目类型处理
@@ -327,7 +327,7 @@ public class PreparationExamController {
 		// 计算得分
 		float score = 0;
 		for (int i = 0; i < answers.size(); i++) {
-			LibraryAnswer libraryAnswer = answers.get(i);
+			ExamLibraryAnswer libraryAnswer = answers.get(i);
 			Question question = libraryAnswer.getQuestion();
 			int type = question.getType();
 			if (QuestionType.SUBJECTIVE.getType() == type) {
@@ -347,13 +347,13 @@ public class PreparationExamController {
 
 		int pid = publish.getId();
 
-		LibraryRecord record = new LibraryRecord();
+		ExamLibraryRecord record = new ExamLibraryRecord();
 		record.setScore(score);
 		record.setPublishId(pid);
 		record.setCreator(Session.get(Session.KEY_LOGIN_ID));
 		record.setType(LibraryRecordType.PREPARATION.getType());
 
-		List<LibraryAnswer> libraryAnswers = new ArrayList<>(this.answers.values());
+		List<ExamLibraryAnswer> libraryAnswers = new ArrayList<>(this.answers.values());
 
 		SpringUtil.getBean(LibraryRecordAction.class).addRecord(record, libraryAnswers);
 
@@ -362,9 +362,11 @@ public class PreparationExamController {
 		group.selectToggle(group.getToggles().get(0));
 
 		showASKDetail();
+		
+		Session.set(Session.KEY_PREPARATION_PUBLISH_ID, null);
 	}
 
-	public PreparationPublish getPreparationPublish() {
+	public ExamPreparationPublish getPreparationPublish() {
 		return publish;
 	}
 
@@ -395,8 +397,8 @@ public class PreparationExamController {
 
 	private void showASKDetail() {
 		List<Integer> uncorrectQuestionIds = new ArrayList<>();
-		List<LibraryAnswer> libraryAnswers = new ArrayList<>(this.answers.values());
-		for (LibraryAnswer libraryAnswer : libraryAnswers) {
+		List<ExamLibraryAnswer> libraryAnswers = new ArrayList<>(this.answers.values());
+		for (ExamLibraryAnswer libraryAnswer : libraryAnswers) {
 			if (libraryAnswer.getCorrected() == AnswerState.ANSWER_STATE_RIGHT.getType()) {
 				continue;
 			}

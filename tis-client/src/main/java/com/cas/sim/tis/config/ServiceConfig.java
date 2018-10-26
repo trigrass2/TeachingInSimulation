@@ -6,8 +6,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import com.cas.sim.tis.services.BrokenCaseService;
-import com.cas.sim.tis.services.BrokenPublishService;
-import com.cas.sim.tis.services.BrokenRecordService;
+import com.cas.sim.tis.services.ExamBrokenPublishService;
+import com.cas.sim.tis.services.ExamBrokenRecordService;
 import com.cas.sim.tis.services.BrowseHistoryService;
 import com.cas.sim.tis.services.CatalogService;
 import com.cas.sim.tis.services.ClassService;
@@ -18,11 +18,11 @@ import com.cas.sim.tis.services.GoalCoverageService;
 import com.cas.sim.tis.services.GoalRelationshipService;
 import com.cas.sim.tis.services.GoalService;
 import com.cas.sim.tis.services.LibraryAnswerService;
-import com.cas.sim.tis.services.LibraryPublishService;
-import com.cas.sim.tis.services.LibraryRecordService;
+import com.cas.sim.tis.services.ExamLibraryPublishService;
+import com.cas.sim.tis.services.ExamLibraryRecordService;
 import com.cas.sim.tis.services.LibraryService;
 import com.cas.sim.tis.services.PreparationLibraryService;
-import com.cas.sim.tis.services.PreparationPublishService;
+import com.cas.sim.tis.services.ExamPreparationPublishService;
 import com.cas.sim.tis.services.PreparationQuizService;
 import com.cas.sim.tis.services.PreparationResourceService;
 import com.cas.sim.tis.services.PreparationService;
@@ -83,14 +83,14 @@ public class ServiceConfig {
 	}
 
 	@Bean
-	public LibraryPublishService libraryPublishService() {
-		DriftClient<LibraryPublishService> service = clientFactory.createDriftClient(LibraryPublishService.class);
+	public ExamLibraryPublishService libraryPublishService() {
+		DriftClient<ExamLibraryPublishService> service = clientFactory.createDriftClient(ExamLibraryPublishService.class);
 		return service.get();
 	}
 
 	@Bean
-	public LibraryRecordService libraryRecordService() {
-		DriftClient<LibraryRecordService> service = clientFactory.createDriftClient(LibraryRecordService.class);
+	public ExamLibraryRecordService libraryRecordService() {
+		DriftClient<ExamLibraryRecordService> service = clientFactory.createDriftClient(ExamLibraryRecordService.class);
 		return service.get();
 	}
 
@@ -113,14 +113,14 @@ public class ServiceConfig {
 	}
 
 	@Bean
-	public BrokenPublishService brokenPublishService() {
-		DriftClient<BrokenPublishService> service = clientFactory.createDriftClient(BrokenPublishService.class);
+	public ExamBrokenPublishService brokenPublishService() {
+		DriftClient<ExamBrokenPublishService> service = clientFactory.createDriftClient(ExamBrokenPublishService.class);
 		return service.get();
 	}
 
 	@Bean
-	public BrokenRecordService brokenRecordService() {
-		DriftClient<BrokenRecordService> service = clientFactory.createDriftClient(BrokenRecordService.class);
+	public ExamBrokenRecordService brokenRecordService() {
+		DriftClient<ExamBrokenRecordService> service = clientFactory.createDriftClient(ExamBrokenRecordService.class);
 		return service.get();
 	}
 
@@ -167,8 +167,8 @@ public class ServiceConfig {
 	}
 
 	@Bean
-	public PreparationPublishService preparationPublishService() {
-		DriftClient<PreparationPublishService> service = clientFactory.createDriftClient(PreparationPublishService.class);
+	public ExamPreparationPublishService preparationPublishService() {
+		DriftClient<ExamPreparationPublishService> service = clientFactory.createDriftClient(ExamPreparationPublishService.class);
 		return service.get();
 	}
 

@@ -19,13 +19,13 @@ import com.cas.sim.tis.consts.GoalType;
 import com.cas.sim.tis.consts.LibraryRecordType;
 import com.cas.sim.tis.consts.QuestionType;
 import com.cas.sim.tis.entity.Goal;
-import com.cas.sim.tis.entity.LibraryPublish;
-import com.cas.sim.tis.entity.PreparationPublish;
 import com.cas.sim.tis.entity.Question;
 import com.cas.sim.tis.util.MsgUtil;
 import com.cas.sim.tis.util.SpringUtil;
 import com.cas.sim.tis.view.control.IContent;
 import com.cas.sim.tis.view.control.imp.Title;
+import com.cas.sim.tis.vo.ExamLibraryPublish;
+import com.cas.sim.tis.vo.ExamPreparationPublish;
 import com.cas.util.MathUtil;
 
 import javafx.collections.FXCollections;
@@ -128,10 +128,10 @@ public class TeacherQuestionPaper extends HBox implements IContent {
 	 */
 	private void initialize() {
 		if (LibraryRecordType.LIBRARY == type) {
-			LibraryPublish publish = SpringUtil.getBean(LibraryPublishAction.class).findPublishById(publishId);
+			ExamLibraryPublish publish = SpringUtil.getBean(LibraryPublishAction.class).findPublishById(publishId);
 			this.libName.setText(publish.getLibrary().getName());
 		}else {
-			PreparationPublish publish = SpringUtil.getBean(PreparationPublishAction.class).findPublishById(publishId);
+			ExamPreparationPublish publish = SpringUtil.getBean(PreparationPublishAction.class).findPublishById(publishId);
 			this.libName.setText(publish.getLibrary().getName());
 		}
 
