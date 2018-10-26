@@ -120,7 +120,7 @@ public class PreparationLibraryItem extends VBox {
 	@FXML
 	private void publish() {
 		// 判断当前是否有考核正在进行
-		if (Session.get(Session.KEY_LIBRARY_PUBLISH_ID) != null || Session.get(Session.KEY_PREPARATION_PUBLISH_ID) != null) {
+		if (Session.get(Session.KEY_LIBRARY_PUBLISH_ID) != null || Session.get(Session.KEY_PREPARATION_PUBLISH_ID) != null || Session.get(Session.KEY_BROKEN_CASE_PUBLISH_ID) != null) {
 			AlertUtil.showAlert(AlertType.WARNING, MsgUtil.getMessage("alert.warning.examing"));
 			return;
 		}
@@ -182,10 +182,10 @@ public class PreparationLibraryItem extends VBox {
 			PreparationQuestionItem item = new PreparationQuestionItem(index, QuestionType.getQuestionType(question.getType()), question, id -> {
 //				AlertUtil.showConfirm(MsgUtil.getMessage("alert.confirmation.data.delete"), e -> {
 //					if (e == ButtonType.YES) {
-						List<Integer> ids = JSON.parseArray(library.getQuestionIds(), Integer.class);
-						ids.remove(id);
-						library.setQuestionIds(JSON.toJSONString(ids));
-						updateQuestions();
+				List<Integer> ids = JSON.parseArray(library.getQuestionIds(), Integer.class);
+				ids.remove(id);
+				library.setQuestionIds(JSON.toJSONString(ids));
+				updateQuestions();
 //					}
 //				});
 			});

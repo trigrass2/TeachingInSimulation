@@ -165,6 +165,10 @@ public class BrokenCaseSelectDialog extends DialogPane<Integer> {
 					dialog.setTitle(MsgUtil.getMessage("class.dialog.select"));
 					dialog.setPrefSize(652, 420);
 					dialog.showAndWait().ifPresent(classId -> {
+						if (Session.get(Session.KEY_LIBRARY_PUBLISH_ID) != null || Session.get(Session.KEY_PREPARATION_PUBLISH_ID) != null || Session.get(Session.KEY_BROKEN_CASE_PUBLISH_ID) != null) {
+							AlertUtil.showAlert(AlertType.WARNING, MsgUtil.getMessage("alert.warning.examing"));
+							return;
+						}
 						try {
 							Integer publishId = SpringUtil.getBean(BrokenPublishAction.class).publishBroken((Integer) typicalId, classId);
 							// 记录当前考核发布编号

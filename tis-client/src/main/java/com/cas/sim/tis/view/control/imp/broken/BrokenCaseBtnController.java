@@ -35,9 +35,9 @@ public class BrokenCaseBtnController extends ElecCaseBtnController {
 
 	private Map<IBroken, BrokenItem> itemMap = new HashMap<>();
 
-	private int correctedNum;
-	private int brokenNum;
-	private int chanceNum;
+	private int correctedNum;// 正确纠正次数
+	private int brokenNum;// 练习、考核故障次数随机3个故障，故障案例不满3个故障则按全部故障进行测试
+	private int chanceNum;// 错误机会次数
 
 	private Integer publishId;
 
@@ -50,7 +50,12 @@ public class BrokenCaseBtnController extends ElecCaseBtnController {
 		super.initialize(location, resources);
 		scroll.setContent(flow = new BrokenFlowItem());
 		submit.setOnAction(e -> {
-			checkSubmit(false);
+			AlertUtil.showConfirm(MsgUtil.getMessage("alert.confirmation.broken.nonzero"), c -> {
+				if (ButtonType.YES == c) {
+					submit(publishId);
+					AlertUtil.showAlert(AlertType.INFORMATION, "提交完成！");
+				}
+			});
 		});
 	}
 
@@ -135,13 +140,6 @@ public class BrokenCaseBtnController extends ElecCaseBtnController {
 		} else if (forced) {
 			submit(publishId);
 			AlertUtil.showAlert(AlertType.INFORMATION, "考试结束！");
-		} else {
-			AlertUtil.showConfirm(MsgUtil.getMessage("alert.confirmation.broken.nonzero"), c -> {
-				if (ButtonType.YES == c) {
-					submit(publishId);
-					AlertUtil.showAlert(AlertType.INFORMATION, "提交完成！");
-				}
-			});
 		}
 	}
 

@@ -134,7 +134,6 @@ public class ExamMessageHandler implements ServerHandler<ExamMessage> {
 				}
 			}
 			serverConfig.getServer().broadcast(Filters.in(collection), m);
-			Session.set(Session.KEY_LIBRARY_PUBLISH_ID, null);
 		}
 	}
 
@@ -154,7 +153,6 @@ public class ExamMessageHandler implements ServerHandler<ExamMessage> {
 				}
 			}
 			serverConfig.getServer().broadcast(Filters.in(collection), m);
-			Session.set(Session.KEY_PREPARATION_PUBLISH_ID, null);
 		}
 	}
 
@@ -174,7 +172,6 @@ public class ExamMessageHandler implements ServerHandler<ExamMessage> {
 				}
 			}
 			serverConfig.getServer().broadcast(Filters.in(collection), m);
-			Session.set(Session.KEY_BROKEN_CASE_PUBLISH_ID, null);
 		}
 	}
 }

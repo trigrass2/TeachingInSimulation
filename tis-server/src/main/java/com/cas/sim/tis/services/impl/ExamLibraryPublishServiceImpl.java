@@ -89,10 +89,8 @@ public class ExamLibraryPublishServiceImpl implements ExamLibraryPublishService 
 				collection.add(hostedConnection);
 			}
 		}
-		Session.set(Session.KEY_LIBRARY_PUBLISH_ID, publish.getId());
 		serverConfig.getServer().broadcast(Filters.in(collection), message);
 
-		Session.set(Session.KEY_LIBRARY_PUBLISH_ID, publish.getId());
 		return ResponseEntity.success(publish.getId());
 	}
 

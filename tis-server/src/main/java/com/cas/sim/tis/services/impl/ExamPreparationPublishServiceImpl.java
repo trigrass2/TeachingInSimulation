@@ -51,8 +51,6 @@ public class ExamPreparationPublishServiceImpl implements ExamPreparationPublish
 			}
 		}
 		serverConfig.getServer().broadcast(Filters.in(collection), message);
-
-		Session.set(Session.KEY_PREPARATION_PUBLISH_ID, publish.getId());
 		return ResponseEntity.success(publish.getId());
 	}
 

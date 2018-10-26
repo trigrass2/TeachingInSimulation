@@ -51,7 +51,6 @@ public class ExamBrokenPublishServiceImpl implements ExamBrokenPublishService {
 		}
 		serverConfig.getServer().broadcast(Filters.in(collection), message);
 
-		Session.set(Session.KEY_BROKEN_CASE_PUBLISH_ID, publish.getId());
 		return ResponseEntity.success(publish.getId());
 	}
 
