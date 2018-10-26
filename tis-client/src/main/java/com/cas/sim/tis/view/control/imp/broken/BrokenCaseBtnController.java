@@ -33,7 +33,7 @@ public class BrokenCaseBtnController extends ElecCaseBtnController {
 
 	private BrokenFlowItem flow;
 
-	private Map<IBroken, BrokenItem> itemMap = new HashMap<>();
+	private Map<String, BrokenItem> itemMap = new HashMap<>();
 
 	private int correctedNum;// 正确纠正次数
 	private int brokenNum;// 练习、考核故障次数随机3个故障，故障案例不满3个故障则按全部故障进行测试
@@ -108,14 +108,17 @@ public class BrokenCaseBtnController extends ElecCaseBtnController {
 	}
 
 	public void addBrokenItem(IBroken broken) {
+		removeBrokenItem(broken);
 		BrokenItem item = new BrokenItem(broken.getDesc());
-		itemMap.put(broken, item);
+		itemMap.put(broken.getKey(), item);
 		flow.getChildren().add(item);
 	}
 
 	public void removeBrokenItem(IBroken broken) {
-		BrokenItem item = itemMap.get(broken);
-		flow.getChildren().remove(item);
+		BrokenItem item = itemMap.get(broken.getKey());
+		if (item != null) {
+			flow.getChildren().remove(item);
+		}
 	}
 
 	public void checkSubmit(boolean forced) {
