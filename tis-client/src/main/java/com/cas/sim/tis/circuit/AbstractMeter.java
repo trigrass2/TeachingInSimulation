@@ -21,6 +21,7 @@ public abstract class AbstractMeter implements Meter {
 
 //	锁定示数（锁定后，测量数据不会再发生变化）
 	private boolean hold;
+	protected double value;
 
 //	private MeterPen blackPen = MeterPen.BLACK; // 黑表笔
 //	private MeterPen redPen = MeterPen.RED; // 红表笔
@@ -57,6 +58,11 @@ public abstract class AbstractMeter implements Meter {
 	@Override
 	public boolean hold() {
 		hold = !hold;
+		return isHold();
+	}
+
+	@Override
+	public boolean isHold() {
 		return hold;
 	}
 
@@ -100,11 +106,28 @@ public abstract class AbstractMeter implements Meter {
 
 	@Override
 	public double format() {
-		return functions[functionIndex].format(this.getValue());
+		double result = 0;
+		if (isAutoRange()) {
+			Range[] ranges = functions[functionIndex].getRanges();
+			int i = 0;
+			for (; i < ranges.length; i++) {
+				result = ranges[i].formatValue(this.getValue());
+				if (result != 0) {
+					break;
+				}
+			}
+			if (i == ranges.length) {
+				i = ranges.length - 1;
+			}
+			functions[functionIndex].setRangeIndex(i);
+		} else {
+			result = functions[functionIndex].format(this.getValue());
+		}
+		return result;
 	}
 
 	@Override
 	public double getValue() {
-		return 0;
+		return value;
 	}
 }

@@ -4,10 +4,12 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.cas.circuit.CirSim;
 import com.cas.sim.tis.app.event.RawInputAdapter;
 import com.cas.sim.tis.app.hold.HoldStatePro;
 import com.cas.sim.tis.app.hold.MeterPenHodHandler;
-import com.cas.sim.tis.app.state.typical.CircuitState;
+import com.cas.sim.tis.app.listener.MeterPenClickListener;
+import com.cas.sim.tis.circuit.MeterPen;
 import com.cas.sim.tis.circuit.Multimeter;
 import com.cas.sim.tis.circuit.meter.FLUKE_17B;
 import com.cas.sim.tis.util.SpringUtil;
@@ -72,6 +74,8 @@ public class MultimeterState extends BaseState {
 
 	private ElecCaseState caseState;
 
+	private double value; // 监控万用表测量的结果， 一旦结果发生变化，则立即更新显示屏
+
 	@FunctionalInterface
 	interface BtnAction {
 		void invoke();
@@ -98,6 +102,9 @@ public class MultimeterState extends BaseState {
 		initListener();
 
 		initBtnActionListener();
+
+//		
+		CirSim.ins.addAnalyzelistener(() -> lcdRefreshFlags |= FLAG_SNAPSHOT);
 	}
 
 	private void setupMeterComponent() {
@@ -125,19 +132,20 @@ public class MultimeterState extends BaseState {
 	private void initBtnActionListener() {
 		btnActions.put(hold, () -> {
 			boolean result = meter.hold();
-
-			Platform.runLater(() -> monitor.hold(result));
+			if (result) {
+				lcdRefreshFlags |= FLAG_SNAPSHOT;
+			}
 		});
 		btnActions.put(range, () -> {
 			boolean result = meter.range();
 			if (result) {
-				Platform.runLater(() -> monitor.range());
+				lcdRefreshFlags |= FLAG_SNAPSHOT;
 			}
 		});
 		btnActions.put(mode, () -> {
 			boolean result = meter.function();
 			if (result) {
-				Platform.runLater(() -> monitor.mode());
+				lcdRefreshFlags |= FLAG_SNAPSHOT;
 			}
 		});
 		btnActions.put(rel, () -> {
@@ -147,14 +155,14 @@ public class MultimeterState extends BaseState {
 			if (!HoldStatePro.ins.isIdle()) {
 				HoldStatePro.ins.discard();
 			}
-			HoldStatePro.ins.pickUp(blackPen, new MeterPenHodHandler(caseState, scene));
+			HoldStatePro.ins.pickUp(blackPen, new MeterPenHodHandler(MeterPen.BLACK, caseState, scene));
 		});
 
 		btnActions.put(redPen, () -> {
 			if (!HoldStatePro.ins.isIdle()) {
 				HoldStatePro.ins.discard();
 			}
-			HoldStatePro.ins.pickUp(redPen, new MeterPenHodHandler(caseState, scene));
+			HoldStatePro.ins.pickUp(redPen, new MeterPenHodHandler(MeterPen.RED, caseState, scene));
 		});
 	}
 
@@ -184,11 +192,12 @@ public class MultimeterState extends BaseState {
 		camera = cam.clone();
 //		左、右、下、上的顺序
 		camera.setViewPort(0.8f, 1f, 0f, 0.5f);
+		camera.setLocation(new Vector3f(-1.3f, 0f, 30));
 //		平视
 //		camera.setLocation(new Vector3f(0f, 0f, 28));
 //		camera.lookAtDirection(Vector3f.UNIT_Z.negate(), Vector3f.UNIT_Y);
 //		平视偏上
-		camera.setLocation(new Vector3f(0f, 3f, 24.5f));
+//		camera.setLocation(new Vector3f(0f, 3f, 24.5f));
 		camera.lookAtDirection(Vector3f.UNIT_Z.negate(), Vector3f.UNIT_Y);
 //		camera.setLocation(new Vector3f(0f, -7f, 27));
 //		camera.lookAtDirection(Vector3f.UNIT_Z.negate().add(0, FastMath.DEG_TO_RAD * 15, 0), Vector3f.UNIT_Y);
@@ -223,6 +232,9 @@ public class MultimeterState extends BaseState {
 				onMouseButtonEvent0(evt);
 			}
 		});
+
+		addListener(redPen, new MeterPenClickListener(MeterPen.RED));
+		addListener(blackPen, new MeterPenClickListener(MeterPen.BLACK));
 	}
 
 	protected void onMouseButtonEvent0(MouseButtonEvent evt) {
@@ -276,14 +288,14 @@ public class MultimeterState extends BaseState {
 				rotary.rotate(0, -PER, 0);
 //				屏幕上显示对应内容
 
-				Platform.runLater(() -> monitor.update());
+//				Platform.runLater(() -> monitor.update());
 //				标记此时需要更新lcd内容
 				lcdRefreshFlags |= FLAG_SNAPSHOT;
 			} else if (evt.getDeltaWheel() < 0 && meter.hasPreGear()) {
 //			鼠标滚轮向下滑动， 旋钮逆时针旋转，万用表切换至上一档位
 				meter.rotary(-1);
 				rotary.rotate(0, PER, 0);
-				Platform.runLater(() -> monitor.update());
+//				Platform.runLater(() -> monitor.update());
 				lcdRefreshFlags |= FLAG_SNAPSHOT;
 			}
 		}
@@ -311,22 +323,29 @@ public class MultimeterState extends BaseState {
 		}
 	}
 
+	
+	
 	@Override
 	public void update(float tpf) {
+		double d = meter.format();
+		if (d != value) {
+			value = d;
+			lcdRefreshFlags |= FLAG_SNAPSHOT;
+		}else {
+//			System.out.println(d);
+		}
+
 		if ((lcdRefreshFlags & FLAG_SNAPSHOT) != 0) {
-			updateLCD();
 			lcdRefreshFlags &= ~FLAG_SNAPSHOT;
+			updateLCD();
 			log.debug("需要更新LCD");
 		}
 
 		if ((lcdRefreshFlags & FLAG_DONE) != 0) {
-			lcd.getMaterial().getTextureParam("DiffuseMap").getTextureValue().setImage(jmeImage);
 			lcdRefreshFlags &= ~FLAG_DONE;
-			log.info("完成更新LCD");
+			lcd.getMaterial().getTextureParam("DiffuseMap").getTextureValue().setImage(jmeImage);
+			log.debug("完成更新LCD");
 		}
-
-		camera.setLocation(new Vector3f(-1.3f, 0f, 30));
-//		camera.lookAtDirection(Vector3f.UNIT_Z.negate(), Vector3f.UNIT_Y);
 
 		scene.updateLogicalState(tpf);
 		scene.updateGeometricState();

@@ -77,6 +77,11 @@ public class FLUKE_17B implements Multimeter {
 		return rotary.hold();
 	}
 
+	@Override
+	public boolean isHold() {
+		return rotary.isHold();
+	}
+
 	/**
 	 * （黄色按钮）切换模式
 	 */

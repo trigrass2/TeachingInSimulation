@@ -10,7 +10,6 @@ import com.cas.sim.tis.circuit.AbstractMeter;
  */
 public class VoltMeter extends AbstractMeter {
 	private ResistorElm resistor;
-	private double value;
 
 	public VoltMeter(Function... modes) {
 		super(modes);
@@ -26,6 +25,9 @@ public class VoltMeter extends AbstractMeter {
 	 */
 	@Override
 	public double getValue() {
+		if (isHold()) {
+			return value;
+		}
 //		System.out.println(resistor.getVoltageDiff());
 		double diff = resistor.getVoltageDiff();
 		value = Math.max(Math.abs(diff), value);

@@ -6,5 +6,8 @@ public enum ModeType {
 	Ohm, // 欧姆
 	ON_Off, // 电容
 	Capacitance, // 电容
-	Diode // 二极管
+	Diode, // 二极管
+	Fahrenheit, // 华氏度
+	Centigrade // 摄氏度
+	;
 }

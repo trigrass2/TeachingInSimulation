@@ -1,8 +1,10 @@
 package com.cas.sim.tis.app.hold;
 
+import com.cas.circuit.component.Terminal;
 import com.cas.circuit.util.JmeUtil;
 import com.cas.sim.tis.app.event.MouseEventState;
 import com.cas.sim.tis.app.state.ElecCaseState;
+import com.cas.sim.tis.circuit.MeterPen;
 import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
@@ -10,11 +12,11 @@ import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 
 public class MeterPenHodHandler implements HoldHandler {
-
+	private static final String UDK_LOC = "METER_PEN_ORIG_LOC";
+	
+	private MeterPen pen;
 	private Node parentNode;
-
 	private Spatial spatial;
-
 	private ElecCaseState<?> caseState;
 
 	private Vector3f[] dir = new Vector3f[] { //
@@ -26,7 +28,8 @@ public class MeterPenHodHandler implements HoldHandler {
 	};
 	private int index = 0;
 
-	public MeterPenHodHandler(ElecCaseState<?> caseState, Node parentNode) {
+	public MeterPenHodHandler(MeterPen pen, ElecCaseState<?> caseState, Node parentNode) {
+		this.pen = pen;
 		this.parentNode = parentNode;
 		this.caseState = caseState;
 	}
@@ -41,10 +44,12 @@ public class MeterPenHodHandler implements HoldHandler {
 //		设置Holding的模型对鼠标不可见
 		MouseEventState.setMouseVisible(spatial, false);
 
-		spatial.setUserData("ORIG_LOC", spatial.getLocalTranslation().clone());
+		if (spatial.getUserData(UDK_LOC) == null) {
+			spatial.setUserData(UDK_LOC, spatial.getLocalTranslation().clone());
+		}
 
 //		默认垂直摆放
-		spatial.setLocalRotation(new Quaternion().fromAngles(dir[0].x, dir[0].y, dir[0].z));
+		spatial.setLocalRotation(new Quaternion().fromAngles(dir[index].x, dir[index].y, dir[index].z));
 	}
 
 	@Override
@@ -65,9 +70,15 @@ public class MeterPenHodHandler implements HoldHandler {
 	@Override
 	public void move() {
 		Vector3f contactPoint = JmeUtil.getContactPointFromCursor(//
-				caseState.getRootNode(), //
+				caseState.getCircuitState().getRootCompNode(), //
 				caseState.getCam(), //
 				caseState.getInputManager().getCursorPosition());
+		if (contactPoint == null) {
+			contactPoint = JmeUtil.getContactPointFromCursor(//
+					caseState.getCompPlane(), //
+					caseState.getCam(), //
+					caseState.getInputManager().getCursorPosition());
+		}
 		if (contactPoint == null) {
 			return;
 		}
@@ -79,12 +90,19 @@ public class MeterPenHodHandler implements HoldHandler {
 
 	@Override
 	public boolean putDown() {
-		return true;
+		return false;
 	}
 
 	@Override
 	public boolean putDownOn(Spatial base) {
-		return false;
+		Object entity = base.getUserData("entity");
+		if (entity instanceof Terminal) {
+			pen.connect((Terminal) entity);
+			MouseEventState.setMouseVisible(spatial, true);
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	@Override
@@ -93,13 +111,12 @@ public class MeterPenHodHandler implements HoldHandler {
 		spatial.removeFromParent();
 
 		parentNode.attachChild(spatial);
-		spatial.setLocalTranslation(spatial.getUserData("ORIG_LOC"));
+		spatial.setLocalTranslation(spatial.getUserData(UDK_LOC));
 		spatial.setLocalRotation(new Quaternion());
 	}
-	
+
 	@Override
 	public <T> T getData() {
-//		FIXME
-		return null;
+		throw new UnsupportedOperationException("nothing to get");
 	}
 }

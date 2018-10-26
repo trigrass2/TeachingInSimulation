@@ -44,7 +44,6 @@ public class OhmMeter extends AbstractMeter {
 
 		elmList.add(power);
 		elmList.add(resistor);
-
 	}
 
 	/*
@@ -52,8 +51,16 @@ public class OhmMeter extends AbstractMeter {
 	 */
 	@Override
 	public double getValue() {
+		if (isHold()) {
+			return value;
+		}
 		double current = power.getCurrent();
-		double voltDiff = power.getVoltageDiff();
-		return voltDiff / current - resistor.resistance;
+		if (current == 0) {
+			value = 0;
+		} else {
+			double voltDiff = power.getVoltageDiff();
+			value = voltDiff / current - resistor.resistance;
+		}
+		return value;
 	}
 }

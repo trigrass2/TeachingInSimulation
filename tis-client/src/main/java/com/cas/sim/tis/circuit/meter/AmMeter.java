@@ -1,7 +1,7 @@
 package com.cas.sim.tis.circuit.meter;
 
 import com.cas.circuit.component.Terminal;
-import com.cas.circuit.element.WireElm;
+import com.cas.circuit.element.ResistorElm;
 import com.cas.sim.tis.circuit.AbstractMeter;
 
 /**
@@ -9,15 +9,15 @@ import com.cas.sim.tis.circuit.AbstractMeter;
  * @author zzy
  */
 public class AmMeter extends AbstractMeter {
-	private WireElm wire;
+	private ResistorElm resistor;
 
 	public AmMeter(Function... modes) {
 		super(modes);
-		wire = new WireElm();
-		wire.setPostPoint(0, new Terminal("Meter_Current_0"));
-		wire.setPostPoint(1, new Terminal("Meter_Current_1"));
+		resistor = new ResistorElm(1E-3);
+		resistor.setPostPoint(0, new Terminal("Meter_Current_0"));
+		resistor.setPostPoint(1, new Terminal("Meter_Current_1"));
 
-		elmList.add(wire);
+		elmList.add(resistor);
 
 	}
 
@@ -26,6 +26,6 @@ public class AmMeter extends AbstractMeter {
 	 */
 	@Override
 	public double getValue() {
-		return wire.getCurrent();
+		return resistor.getCurrent();
 	}
 }

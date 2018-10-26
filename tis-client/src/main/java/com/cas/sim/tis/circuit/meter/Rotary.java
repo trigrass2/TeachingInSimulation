@@ -95,12 +95,16 @@ public enum Rotary implements Meter {
 					new Range(0001.E-6, 4000.E-6, 0, 1E-6, "μA") //
 			))),
 	/* 温度 */
-//	Temperature(new Range[] { //
-//			new Range(050.0E0, 400.0E0, 1, 1E0, "℃"), //
-//			new Range(0000.E0, 050.0E0, 1, 1E0, "℃"), //
-//			new Range(-055.0E0, 0000.E0, 1, 1E0, "℃"), //
-//	}, null);
-	Temperature(null);
+	Temperature(new ThermoMeter(//
+			new Function(ModeType.Centigrade, //
+					new Range(050.0E0, 400.0E0, 1, 1E0, "℃"), //
+					new Range(0000.E0, 050.0E0, 1, 1E0, "℃"), //
+					new Range(-055.0E0, 0000.E0, 1, 1E0, "℃") //
+//			), new Function(ModeType.Fahrenheit, //
+//					new Range(050.0E0, 400.0E0, 1, 1E0, "℃"), //
+//					new Range(0000.E0, 050.0E0, 1, 1E0, "℃"), //
+//					new Range(-055.0E0, 0000.E0, 1, 1E0, "℃") //
+			)));
 
 	/**
 	 * 每一个档位对应一种万用表
@@ -158,6 +162,15 @@ public enum Rotary implements Meter {
 	}
 
 	@Override
+	public boolean isHold() {
+		if (meter == null) {
+			log.warn("档位没有对应的仪表");
+			return false;
+		}
+		return meter.isHold();
+	}
+
+	@Override
 	public boolean function() {
 		if (meter == null) {
 			log.warn("档位没有对应的仪表");
@@ -186,6 +199,9 @@ public enum Rotary implements Meter {
 
 	@Override
 	public double getValue() {
+		if (this == OFF) {
+			return 0;
+		}
 		if (meter == null) {
 			log.warn("档位没有对应的仪表");
 			return 0.0;

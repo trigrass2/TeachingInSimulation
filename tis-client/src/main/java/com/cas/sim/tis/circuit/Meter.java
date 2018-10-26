@@ -34,6 +34,8 @@ public interface Meter {
 	 */
 	boolean hold();
 
+	boolean isHold();
+	
 	/**
 	 * 切换工作模式。 例如：电流档可以测交流和直流。
 	 * @return

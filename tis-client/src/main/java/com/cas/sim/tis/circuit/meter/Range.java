@@ -3,11 +3,13 @@ package com.cas.sim.tis.circuit.meter;
 import java.math.BigDecimal;
 
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * 量程
  * @author zzy
  */
+@Slf4j
 @Getter
 public class Range {
 	private double max; // 最大值
@@ -34,8 +36,14 @@ public class Range {
 //		确定单位
 		input = (input > max) ? 0 : input;
 		input = (input < min) ? 0 : input;
+		double result = 0;
+		try {
+			result = new BigDecimal(input / magnitude).setScale(resolution, BigDecimal.ROUND_DOWN).doubleValue();
+		} catch (NumberFormatException e) {
+			log.error("for input {}/{}", input, magnitude);
+		}
 
-		return new BigDecimal(input / magnitude).setScale(resolution, BigDecimal.ROUND_DOWN).doubleValue();
+		return result;
 	}
 
 	public String formatString(double input) {

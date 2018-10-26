@@ -45,13 +45,13 @@ public enum MeterPen implements Savable {
 	 */
 	public void connect(Terminal terminal) {
 		if (detected != null) {
-			disconnect(detected);
+			disconnect();
 		}
 		if (terminal == null) {
 			return;
 		}
 		detected = terminal;
-		log.info(this.name() + "-连接到-" + terminal);
+		log.debug(this.name() + "-连接到-" + terminal);
 		wire.bind(terminal);
 		CirSim.ins.needAnalyze();
 	}
@@ -59,10 +59,10 @@ public enum MeterPen implements Savable {
 	/**
 	 * 将表笔连接到用电器侧的连接头上
 	 */
-	public void disconnect(Terminal terminal) {
-		wire.unbind(terminal);
+	public void disconnect() {
+		wire.unbind(detected);
 		CirSim.ins.needAnalyze();
-		log.info(this.name() + "-拔出-" + terminal);
+		log.debug(this.name() + "-拔出-" + detected);
 	}
 
 	public void setTerminal_in_meter(Terminal terminal) {
@@ -71,7 +71,7 @@ public enum MeterPen implements Savable {
 		}
 
 		if (terminal_in_meter != null) {
-			log.info(this.name() + "-拔出-" + terminal);
+			log.debug(this.name() + "-拔出-" + terminal);
 			wire.unbind(terminal_in_meter);
 		}
 
@@ -79,7 +79,7 @@ public enum MeterPen implements Savable {
 		wire.bind(terminal);
 		CirSim.ins.needAnalyze();
 
-		log.info(this.name() + "-连接到-" + terminal);
+		log.debug(this.name() + "-连接到-" + terminal);
 	}
 
 	@Override

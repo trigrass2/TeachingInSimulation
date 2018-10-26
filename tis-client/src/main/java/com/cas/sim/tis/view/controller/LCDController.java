@@ -11,8 +11,6 @@ import com.cas.sim.tis.circuit.meter.ModeType;
 import com.cas.sim.tis.circuit.meter.Range;
 import com.cas.sim.tis.circuit.meter.Rotary;
 
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -24,7 +22,6 @@ import javafx.scene.image.WritableImage;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
-import javafx.util.Duration;
 import lombok.Setter;
 
 public class LCDController implements Initializable {
@@ -75,17 +72,9 @@ public class LCDController implements Initializable {
 
 	private Digit[] digits;
 	private Rectangle[] dots;
-	private Timeline secondTimeline;
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		// create effect for on LEDs
-//		Glow onEffect = new Glow(1.7f);
-//		onEffect.setInput(new InnerShadow());
-//		// create effect for on dot LEDs
-//		Glow onDotEffect = new Glow(1.7f);
-//		onDotEffect.setInput(new InnerShadow(5, Color.BLACK));
-		// create effect for off LEDs
 		InnerShadow offEffect = new InnerShadow();
 		digits = new Digit[4];
 		for (int i = 0; i < 4; i++) {
@@ -105,25 +94,21 @@ public class LCDController implements Initializable {
 			content.getChildren().add(dot);
 		}
 
-		play();
+//		hide(hold, auto, nano, micro, milli, kilo, million, ohm, am, volt, dc, ac, capacity, diode, on_off, hz);
+//		hide(digits);
+//		hide(dots);
 	}
 
-	public void play() {
-		if (secondTimeline != null) {
-			secondTimeline.stop();
-		}
-		secondTimeline = new Timeline();
-		secondTimeline.setCycleCount(Timeline.INDEFINITE);
-		secondTimeline.getKeyFrames().add(new KeyFrame(Duration.millis(40), e -> { // 25F
-			updateValue();
-		}));
-		secondTimeline.play();
-	}
+	public void update() {
+		hide(hold, auto, nano, micro, milli, kilo, million, ohm, am, volt, dc, ac, capacity, diode, on_off, hz);
+		hide(dots);
+		hide(digits);
 
-	public void stop() {
-		if (secondTimeline != null) {
-			secondTimeline.stop();
-		}
+		updateMode();
+		updateHold();
+		updateRotary();
+		updateRange();
+		updateValue();
 	}
 
 	private void updateValue() {
@@ -137,7 +122,6 @@ public class LCDController implements Initializable {
 		int resolution = range.getResolution(); // 小数点后的有效位数
 //		获取格式化之后的数值。
 		double value = multimeter.format();
-
 		int[] beforeDot = new int[4];// 万用表显示4个数字
 		int[] afterDot = new int[3];// 小数点后最多有3位数
 
@@ -173,15 +157,22 @@ public class LCDController implements Initializable {
 		}
 //		System.out.println(resolution);
 //		System.out.println(String.format("%s%s%s%s", finalShow[0], finalShow[1], finalShow[2], finalShow[3]));
+
 //		从低位 往 高位 写数字
 //		隐藏数字
-		hide(digits);
-		for (int i = digits.length - 1; i >= digits.length - 1 - resolution; i--) {
-			digits[i].showNumber(finalShow[i]);
-			show(digits[i]);
+//		hide(digits);
+
+		for (int i = 0; i < 4; i++) {
+			Digit digit = digits[i];
+			if (finalShow[i] == 0 && i < 4 - resolution - 1) { // 小数点前 有 前导零 的， 要把0 去掉（不显示）
+				continue;
+			}
+			digit.showNumber(finalShow[i]);
+			show(digit);
 		}
+
 //		小数点
-		hide(dots);
+//		hide(dots);
 		if (resolution > 0) {
 			show(dots[dots.length - resolution]);
 		}
@@ -190,7 +181,7 @@ public class LCDController implements Initializable {
 		double magnitude = range.getMagnitude();
 		Double num = new Double(magnitude);
 
-		hide(nano, micro, milli, kilo, million);
+//		hide(nano, micro, milli, kilo, million);
 		if (num.equals(1E3)) {
 			show(kilo);
 		} else if (num.equals(1E6)) {
@@ -205,19 +196,22 @@ public class LCDController implements Initializable {
 	}
 
 	public BufferedImage snapshot() {
-		lcdView.layout();
+		update();
+
 		WritableImage image = lcdView.snapshot(null, null);
 		BufferedImage bufferedImage = SwingFXUtils.fromFXImage(image, null);
+
+//		try {
+//			ImageIO.write(bufferedImage, "png", new java.io.File("D://image.png"));
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
+
 		return bufferedImage;
 	}
 
-	public void update() {
+	private void updateRotary() {
 		Rotary rotary = multimeter.getRotary();
-
-		hide(hold, auto, nano, micro, milli, kilo, million, ohm, am, volt, dc, ac, capacity, diode, on_off, hz);
-		hide(dots);
-		hide(digits);
-
 		switch (rotary) {
 		case OFF:
 			break;
@@ -248,41 +242,21 @@ public class LCDController implements Initializable {
 		case Temperature:
 			break;
 		}
-
-		range();
 	}
 
-	void show(Node... nodes) {
-		for (Node node : nodes) {
-			node.setVisible(true);
-		}
+	private void updateHold() {
+		hold.setVisible(multimeter.isHold());
 	}
 
-	void hide(Node... nodes) {
-		for (Node node : nodes) {
-			node.setVisible(false);
-		}
-	}
-
-	public void hold(boolean result) {
-		hold.setVisible(result);
-	}
-
-	public void range() {
+	private void updateRange() {
 		auto.setVisible(multimeter.isAutoRange());
-		updateValue();
 	}
 
-	public void mode() {
-		hide(hold, auto, nano, micro, milli, kilo, million, ohm, am, volt, dc, ac, capacity, diode, on_off, hz);
-		hide(dots);
-		hide(digits);
-
-		range();
-
-		hide(diode, on_off);
-
+	private void updateMode() {
 		Function mode = multimeter.getFunction();
+		if (mode == null) {
+			return;
+		}
 		ModeType type = mode.getType();
 		switch (type) {
 		case AC:
@@ -304,6 +278,24 @@ public class LCDController implements Initializable {
 		case ON_Off:
 			show(on_off, ohm);
 			break;
+		case Centigrade:
+			break;
+		case Fahrenheit:
+			break;
+		default:
+			break;
+		}
+	}
+
+	void show(Node... nodes) {
+		for (Node node : nodes) {
+			node.setVisible(true);
+		}
+	}
+
+	void hide(Node... nodes) {
+		for (Node node : nodes) {
+			node.setVisible(false);
 		}
 	}
 }

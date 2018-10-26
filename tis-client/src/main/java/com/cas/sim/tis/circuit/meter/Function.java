@@ -29,7 +29,6 @@ public class Function {
 			auto = false;
 			return true;
 		}
-
 		int currentIndex = rangeIndex;
 		rangeIndex++;
 		if (rangeIndex > ranges.length - 1) {
@@ -48,6 +47,10 @@ public class Function {
 
 	public double format(double input) {
 		return ranges[rangeIndex].formatValue(input);
+	}
+
+	public void setRangeIndex(int i) {
+		rangeIndex = i;
 	}
 
 }

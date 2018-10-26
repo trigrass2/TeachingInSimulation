@@ -89,6 +89,14 @@ public enum HoldStatePro {
 		return holdingSpatial == null;
 	}
 
+	public boolean pickUp(Spatial spatial) {
+		HoldHandler handler = spatial.getUserData(UDK_HANDLER);
+		if (handler == null) {
+			throw new RuntimeException("模型没有对应的处理类");
+		}
+		return pickUp(spatial, handler);
+	}
+
 	/**
 	 * 拿在手中
 	 * @param spatial
@@ -166,8 +174,8 @@ public enum HoldStatePro {
 	}
 
 	@SuppressWarnings("unchecked")
-	public <T> T  getData() {
+	public <T> T getData() {
 		return (T) getHoldHandler().getData();
 	}
-	
+
 }
