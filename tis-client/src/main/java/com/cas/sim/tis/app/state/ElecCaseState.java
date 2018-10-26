@@ -43,6 +43,8 @@ public abstract class ElecCaseState<T>extends BaseState {
 
 	protected CaseMode mode;
 
+	private MultimeterState multiMeterState;
+
 	@Getter
 	@AllArgsConstructor
 	public enum CaseMode {
@@ -87,8 +89,6 @@ public abstract class ElecCaseState<T>extends BaseState {
 		HoldStatePro.ins.registerWithInput(inputManager);
 //		stateManager.attach(holdState);
 
-//		stateManager.attach(new MultimeterState());
-
 		// 结束加载界面
 		JFXPlatform.runInFXThread(() -> SpringUtil.getBean(PageController.class).hideLoading());
 	}
@@ -102,6 +102,9 @@ public abstract class ElecCaseState<T>extends BaseState {
 			cameraState.setZoomEnable(holdState.isIdle());
 		}
 
+//		XXX test
+//		stateManager.getState(MultimeterState.class).setEnabled(true);
+		
 		super.update(tpf);
 	}
 
@@ -112,6 +115,7 @@ public abstract class ElecCaseState<T>extends BaseState {
 		// 移除操作模式State
 		stateManager.detach(cameraState);
 		stateManager.detach(circuitState);
+		stateManager.detach(multiMeterState);
 //		stateManager.detach(holdState);
 
 		holdState.unregisterInput();

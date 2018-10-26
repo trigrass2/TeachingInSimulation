@@ -182,6 +182,8 @@ public class CircuitState extends BaseState implements ICircuitEffect {
 
 	private ElecCaseState<?> caseState;
 
+	private MultimeterState multiMeterState;
+
 	public CircuitState(ElecCaseState<?> caseState, HoldStatePro holdState, ElecCase3D<?> ui, Node root) {
 		this.caseState = caseState;
 		this.holdState = holdState;
@@ -248,7 +250,10 @@ public class CircuitState extends BaseState implements ICircuitEffect {
 		CIRCUIT_SERVICE.scheduleAtFixedRate(CirSim.ins, 0, (long) (1 / CirSim.TPF / 10), TimeUnit.NANOSECONDS);
 
 //		FIXME 加入万用表
-		stateManager.attach(new MultimeterState());
+		multiMeterState = stateManager.getState(MultimeterState.class);
+		if (multiMeterState == null) {
+			stateManager.attach(multiMeterState = new MultimeterState());
+		}
 	}
 
 	private void bindCircuitBoardEvents() {
