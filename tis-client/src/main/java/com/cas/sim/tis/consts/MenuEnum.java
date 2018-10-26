@@ -65,7 +65,22 @@ public enum MenuEnum implements EventHandler<MouseEvent> {
 	Lessones("main.menu.lessones", "static/images/menu/preparation.png") {
 		@Override
 		public void handle(MouseEvent event) {
+			List<Catalog> catalogs = SpringUtil.getBean(CatalogAction.class).findCatalogsByParentId(0);
 
+			Dialog<Catalog> dialog = new Dialog<>();
+			dialog.setDialogPane(new CatalogSelectDialog(catalogs));
+			dialog.setTitle(MsgUtil.getMessage("preparation.dialog.select"));
+			dialog.setPrefSize(652, 420);
+			dialog.showAndWait().ifPresent(subject -> {
+				if (subject == null) {
+					return;
+				}
+				Application.showView(PageView.class);
+				PageController controller = SpringUtil.getBean(PageController.class);
+				PreparationMenu menu = new PreparationMenu(subject);
+				controller.loadLeftMenu(menu);
+				controller.loadContent(null, null);
+			});
 		}
 	},
 	Information("main.menu.info", "static/images/menu/class.png") {
