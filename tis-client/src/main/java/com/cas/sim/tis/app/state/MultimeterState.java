@@ -5,6 +5,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.cas.sim.tis.app.event.RawInputAdapter;
+import com.cas.sim.tis.app.hold.HoldStatePro;
+import com.cas.sim.tis.app.hold.MeterPenHodHandler;
+import com.cas.sim.tis.app.state.typical.CircuitState;
 import com.cas.sim.tis.circuit.Multimeter;
 import com.cas.sim.tis.circuit.meter.FLUKE_17B;
 import com.cas.sim.tis.util.SpringUtil;
@@ -55,7 +58,7 @@ public class MultimeterState extends BaseState {
 	private Node scene;
 //	旋钮
 	private Node rotary, hold, range, mode, rel, hz;
-	private Spatial redPen, blackPen;
+	private Node redPen, blackPen;
 	private Geometry pick;
 	private AWTLoader awtLoader;
 	public static final int FLAG_SNAPSHOT = 0x01;
@@ -67,6 +70,8 @@ public class MultimeterState extends BaseState {
 
 	private Map<Spatial, BtnAction> btnActions = new HashMap<>();
 
+	private ElecCaseState caseState;
+
 	@FunctionalInterface
 	interface BtnAction {
 		void invoke();
@@ -74,6 +79,8 @@ public class MultimeterState extends BaseState {
 
 	@Override
 	protected void initializeLocal() {
+		caseState = stateManager.getState(ElecCaseState.class);
+
 //		加载万用表模型
 		scene = (Node) assetManager.loadModel("Model/FLUKE-17B/FLUKE-17B.j3o");
 //		设置万用表视口
@@ -110,9 +117,9 @@ public class MultimeterState extends BaseState {
 		Node lcdNode = (Node) scene.getChild("FLUKE_17B_13");
 		lcd = (Geometry) lcdNode.getChild("LCD");
 //		
-		blackPen = scene.getChild("Black pen");
+		blackPen = (Node) scene.getChild("Black pen");
 //		
-		redPen = scene.getChild("Red pen");
+		redPen = (Node) scene.getChild("Red pen");
 	}
 
 	private void initBtnActionListener() {
@@ -134,15 +141,20 @@ public class MultimeterState extends BaseState {
 			}
 		});
 		btnActions.put(rel, () -> {
-//			monitor.rel();
 		});
 
 		btnActions.put(blackPen, () -> {
-			
+			if (!HoldStatePro.ins.isIdle()) {
+				HoldStatePro.ins.discard();
+			}
+			HoldStatePro.ins.pickUp(blackPen, new MeterPenHodHandler(caseState, scene));
 		});
 
 		btnActions.put(redPen, () -> {
-
+			if (!HoldStatePro.ins.isIdle()) {
+				HoldStatePro.ins.discard();
+			}
+			HoldStatePro.ins.pickUp(redPen, new MeterPenHodHandler(caseState, scene));
 		});
 	}
 
@@ -225,6 +237,10 @@ public class MultimeterState extends BaseState {
 			button = hz;
 		} else if (pick.hasAncestor(mode)) {
 			button = mode;
+		} else if (pick.hasAncestor(redPen)) {
+			button = redPen;
+		} else if (pick.hasAncestor(blackPen)) {
+			button = blackPen;
 		}
 		if (button != null) {
 			if (evt.isPressed()) {

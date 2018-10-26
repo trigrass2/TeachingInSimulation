@@ -30,7 +30,7 @@ public enum HoldStatePro {
 
 	private @Getter Spatial holdingSpatial; // 当前拿取的物体
 
-	private @Setter boolean enabled;
+	private @Setter boolean enabled = true;
 
 	private InputManager inputManager;
 
@@ -127,7 +127,6 @@ public enum HoldStatePro {
 //		放置物品时候的一些业务处理
 		boolean result = getHoldHandler().putDown();
 		if (result) {
-//			holdingSpatial.removeFromParent();
 			holdingSpatial = null;
 		}
 	}
@@ -142,7 +141,6 @@ public enum HoldStatePro {
 //		放置物品时候的一些业务处理
 		boolean result = getHoldHandler().putDownOn(spatial);
 		if (result) {
-//			holdingSpatial.removeFromParent();
 			holdingSpatial = null;
 		}
 	}
@@ -156,8 +154,6 @@ public enum HoldStatePro {
 		}
 //		丢弃物品时候的一些业务处理
 		getHoldHandler().discard();
-//		最终将模型从手中丢掉
-		holdingSpatial.removeFromParent();
 		holdingSpatial = null;
 	}
 

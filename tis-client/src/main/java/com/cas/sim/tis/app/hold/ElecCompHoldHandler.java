@@ -95,11 +95,11 @@ public class ElecCompHoldHandler implements HoldHandler {
 		/*
 		 * 在x-z平面上，每次移动一个单位
 		 */
-		spatial.setLocalTranslation(new Vector3f(//
+		spatial.setLocalTranslation(//
 				(int) contactPoint.x, //
 				contactPoint.y, //
 				(int) contactPoint.z//
-		));
+		);
 	}
 
 	@Override
@@ -119,6 +119,8 @@ public class ElecCompHoldHandler implements HoldHandler {
 	@Override
 	public void discard() {
 //		nothing to do
+//		最终将模型从手中丢掉
+		spatial.removeFromParent();
 	}
 
 	@Override

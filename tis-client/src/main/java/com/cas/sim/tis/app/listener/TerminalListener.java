@@ -3,8 +3,10 @@ package com.cas.sim.tis.app.listener;
 import com.cas.circuit.component.Terminal;
 import com.cas.sim.tis.app.event.MouseEvent;
 import com.cas.sim.tis.app.event.MouseEventAdapter;
+import com.cas.sim.tis.app.hold.HoldStatePro;
 import com.cas.sim.tis.app.state.typical.CircuitState;
 import com.cas.sim.tis.circuit.MeterPen;
+import com.jme3.scene.Spatial;
 
 public class TerminalListener extends MouseEventAdapter {
 	private CircuitState circuit;
@@ -15,17 +17,13 @@ public class TerminalListener extends MouseEventAdapter {
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		Terminal terminal = e.getSpatial().getUserData("entity");
-//		if(MeterPen.BLACK.getDetected() == null) {
-//			MeterPen.BLACK.connect(terminal);
-//		}else {
-//			MeterPen.RED.connect(terminal);
-//		}
-		if (MeterPen.RED.getDetected() == null) {
-			MeterPen.RED.connect(terminal);
+
+		Spatial spatial = HoldStatePro.ins.getHoldingSpatial();
+		if (spatial != null) {
+			HoldStatePro.ins.putDownOn(e.getSpatial());
 		} else {
-			MeterPen.BLACK.connect(terminal);
+			Terminal terminal = e.getSpatial().getUserData("entity");
+			circuit.onTernialClick(terminal);
 		}
-//		circuit.onTernialClick(terminal);
 	}
 }
