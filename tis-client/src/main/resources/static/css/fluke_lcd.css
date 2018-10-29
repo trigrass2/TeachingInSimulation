@@ -1,0 +1,13 @@
+.font_Corbel{
+	-fx-font-family: 'Corbel';
+	-fx-font-size: 12.0px;
+	-fx-font-weight: bold;
+	-fx-text-fill: #003333;
+}
+
+.font_Roboto{
+	-fx-font-family: 'Roboto Condensed';
+	-fx-font-size: 22.0px;
+	-fx-font-weight: bold;
+	-fx-text-fill: #003333;
+}

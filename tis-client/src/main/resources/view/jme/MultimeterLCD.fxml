@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.text.Font?>
+
+<StackPane fx:id="lcdView"
+	xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1"
+	fx:controller="com.cas.sim.tis.view.controller.LCDController"
+	stylesheets="/static/css/fluke_lcd.css"
+	style="-fx-background-color:#669966" pickOnBounds="false" mouseTransparent="true">
+   <children>
+  	 <AnchorPane fx:id="content">
+         <children>
+            <Label fx:id="hold" styleClass="font_Roboto" layoutX="125.0" layoutY="5.0" style="-fx-background-color: #003333;-fx-text-fill: #ffffff;" text=" HOLD " textFill="WHITE" />
+            <Label fx:id="auto" styleClass="font_Roboto" layoutX="120.0" layoutY="155.0" text="Auto Range" />
+            <ImageView fx:id="diode" layoutX="332.0" layoutY="15.0" fitWidth="45.0" fitHeight="23.3" >
+            	<image>
+            		<Image url="/static/images/diode.png" />
+            	</image>
+            </ImageView>
+            <ImageView fx:id="on_off" layoutX="5.0" layoutY="15.0" >
+            	<image>
+            		<Image url="/static/images/on-off.png" />
+            	</image>
+            </ImageView>
+
+            <Label fx:id="nano" styleClass="font_Roboto" layoutX="320.0" layoutY="55.0" text="n"/>
+            <Label fx:id="micro" styleClass="font_Roboto" layoutX="335.0" layoutY="55.0" text="μ"/>
+            <Label fx:id="milli" styleClass="font_Roboto" layoutX="330.0" layoutY="75.0" text="m"/>
+
+            <Label fx:id="capacity" styleClass="font_Roboto" layoutX="355.0" layoutY="55.0" text="F" />
+            <Label fx:id="am" styleClass="font_Roboto" layoutX="355.0" layoutY="75.0" text="A" />
+            <Label fx:id="volt" styleClass="font_Roboto"  layoutX="370.0" layoutY="75.0" text="V" />
+
+            <Label fx:id="ac" styleClass="font_Roboto" layoutX="355.0" layoutY="100.0" text="AC"/>
+            <Label fx:id="dc" styleClass="font_Roboto" layoutX="320.0" layoutY="100.0" text="DC"/>
+
+            <Label fx:id="million" styleClass="font_Roboto" layoutX="310.0" layoutY="125.0" text="M" />
+            <Label fx:id="kilo" styleClass="font_Roboto" layoutX="332.0" layoutY="125.0" text="k" />
+            <Label fx:id="ohm" styleClass="font_Roboto" layoutX="345.0" layoutY="125.0" text="Ω" />
+            <Label fx:id="hz" styleClass="font_Roboto" layoutX="362.0" layoutY="125.0" text="Hz" />
+         </children>
+      </AnchorPane>
+   </children>
+</StackPane>
