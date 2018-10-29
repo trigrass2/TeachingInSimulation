@@ -68,12 +68,19 @@
 				</graphic>
 			</Button>
 		</HBox>
-		<HBox fx:id="trainOrEdit" spacing="10" visible="false" pickOnBounds="false" mouseTransparent="false" alignment="BOTTOM_LEFT">
+		<HBox fx:id="typical" spacing="10" visible="false" pickOnBounds="false" mouseTransparent="false" alignment="BOTTOM_LEFT">
 			<Button text="%elec.case.drawings" styleClass="recognize-btn" onAction="#showDrawingWin" pickOnBounds="true"><!-- 电路图 -->
 				<graphic>
 					<SVGGlyph name="iconfont.svg.drawing" size="20" fill="WHITE" />
 				</graphic>
 			</Button>
+			<Button text="%elec.case.wires" styleClass="recognize-btn" onAction="#showWirePicker" pickOnBounds="true"><!-- 导线 -->
+				<graphic>
+					<SVGGlyph name="iconfont.svg.wire" size="20" fill="WHITE" />
+				</graphic>
+			</Button>
+		</HBox>
+		<HBox fx:id="free" spacing="10" visible="false" pickOnBounds="false" mouseTransparent="false" alignment="BOTTOM_LEFT">
 			<Button text="%elec.case.wires" styleClass="recognize-btn" onAction="#showWirePicker" pickOnBounds="true"><!-- 导线 -->
 				<graphic>
 					<SVGGlyph name="iconfont.svg.wire" size="20" fill="WHITE" />

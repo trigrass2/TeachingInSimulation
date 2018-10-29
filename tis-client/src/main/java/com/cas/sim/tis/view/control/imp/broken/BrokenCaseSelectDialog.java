@@ -179,6 +179,8 @@ public class BrokenCaseSelectDialog extends DialogPane<Integer> {
 							if (content instanceof IPublish) {
 								((IPublish) content).publish(publishId);
 							}
+							// 同时关闭故障案例选择界面
+							this.dialog.close();
 						} catch (Exception e) {
 							e.printStackTrace();
 							AlertUtil.showAlert(AlertType.ERROR, e.getMessage());

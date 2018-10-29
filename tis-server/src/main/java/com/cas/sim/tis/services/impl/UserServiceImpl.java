@@ -70,7 +70,7 @@ public class UserServiceImpl implements UserService {
 				.andEqualTo("role", RoleConst.STUDENT)//
 				.andEqualTo("classId", entity.getInt("classId"))//
 				.andEqualTo("del", 0);
-		condition.orderBy("createDate").desc();
+		condition.orderBy("code").asc();
 
 		if (entity.pageNum != -1) {
 			PageHelper.startPage(entity.pageNum, entity.pageSize);

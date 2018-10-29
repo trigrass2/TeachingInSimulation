@@ -20,12 +20,9 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
-import javafx.scene.layout.HBox;
 
 public class BrokenCaseBtnController extends ElecCaseBtnController {
 
-	@FXML
-	private HBox broken;
 	@FXML
 	private Label number;
 	@FXML
@@ -53,7 +50,6 @@ public class BrokenCaseBtnController extends ElecCaseBtnController {
 			AlertUtil.showConfirm(MsgUtil.getMessage("alert.confirmation.broken.nonzero"), c -> {
 				if (ButtonType.YES == c) {
 					submit(publishId);
-					AlertUtil.showAlert(AlertType.INFORMATION, "提交完成！");
 				}
 			});
 		});
@@ -62,19 +58,21 @@ public class BrokenCaseBtnController extends ElecCaseBtnController {
 	@Override
 	protected void switchCaseMode(CaseMode mode) {
 		SpringUtil.getBean(PageController.class).showLoading();
-		trainOrEdit.toFront();
 		view.setVisible(false);
 		btns.setVisible(false);
 		if (CaseMode.BROKEN_TRAIN_MODE == mode) {
-			trainOrEdit.setVisible(false);
+			broken.toFront();
+			free.setVisible(false);
 			broken.setVisible(true);
 			steps.setVisible(false);
 		} else if (CaseMode.BROKEN_EXAM_MODE == mode) {
-			trainOrEdit.setVisible(false);
+			broken.toFront();
+			free.setVisible(false);
 			broken.setVisible(true);
 			steps.setVisible(false);
 		} else if (CaseMode.EDIT_MODE == mode) {
-			trainOrEdit.setVisible(true);
+			free.toFront();
+			free.setVisible(true);
 			broken.setVisible(false);
 			steps.setVisible(true);
 		}
@@ -125,7 +123,7 @@ public class BrokenCaseBtnController extends ElecCaseBtnController {
 		if (publishId == null) {
 			if (chanceNum == 0) {
 				((BrokenCase3D) elecCase3D).setFinish(true);
-				AlertUtil.showConfirm("您的机会已经用完，是否重新开始？", e -> {
+				AlertUtil.showConfirm(MsgUtil.getMessage("alert.confirmation.chance.zero"), e -> {
 					if (ButtonType.YES == e) {
 						((BrokenCase3D) elecCase3D).resetTrainCase();
 					}
@@ -134,15 +132,17 @@ public class BrokenCaseBtnController extends ElecCaseBtnController {
 				AlertUtil.showAlert(AlertType.INFORMATION, "大吉大利，今晚吃鸡！");
 				((BrokenCase3D) elecCase3D).setFinish(true);
 			}
+		} else if (submit.isDisabled()) {
+			return;// 考核时提交按钮Disable，则说明用户已经提交结果，无需再次提交
 		} else if (chanceNum == 0) {
 			submit(publishId);
-			AlertUtil.showAlert(AlertType.ERROR, "您的机会已经用完，排故失败！");
+			AlertUtil.showAlert(AlertType.ERROR, MsgUtil.getMessage("alert.error.fail.to.fix"));
 		} else if (brokenNum == 0) {
 			submit(publishId);
 			AlertUtil.showAlert(AlertType.INFORMATION, "大吉大利，今晚吃鸡！");
 		} else if (forced) {
 			submit(publishId);
-			AlertUtil.showAlert(AlertType.INFORMATION, "考试结束！");
+			AlertUtil.showAlert(AlertType.INFORMATION, MsgUtil.getMessage("alert.information.exam.over"));
 		}
 	}
 

@@ -203,7 +203,7 @@ public class BrokenCase3D extends ElecCase3D<BrokenCase> implements IContent {
 				Menu menu = new Menu(contactor.getName());
 				MenuItem disconnect = new MenuItem(MsgUtil.getMessage("broken.case.open"));
 				disconnect.setOnAction(e -> {
-					// TODO 判断线圈状态是否与用户选择结果相同，相同则纠正，不同则提示错误
+					// 判断线圈状态是否与用户选择结果相同，相同则纠正，不同则提示错误
 					if (contactor.getState() == BrokenState.OPEN) {
 						contactor.setBroken(BrokenState.NORMAL);
 						compDef.setCorrected(contactor);
@@ -217,7 +217,7 @@ public class BrokenCase3D extends ElecCase3D<BrokenCase> implements IContent {
 				});
 				MenuItem close = new MenuItem(MsgUtil.getMessage("broken.case.close"));
 				close.setOnAction(e -> {
-					// TODO 判断线圈状态是否与用户选择结果相同，相同则纠正，不同则提示错误
+					// 判断线圈状态是否与用户选择结果相同，相同则纠正，不同则提示错误
 					if (contactor.getState() == BrokenState.CLOSE) {
 						contactor.setBroken(BrokenState.NORMAL);
 						compDef.setCorrected(contactor);
@@ -236,7 +236,7 @@ public class BrokenCase3D extends ElecCase3D<BrokenCase> implements IContent {
 				Menu menu = new Menu(coil.getName());
 				MenuItem disconnect = new MenuItem(MsgUtil.getMessage("broken.case.open"));
 				disconnect.setOnAction(e -> {
-					// TODO 判断线圈状态是否与用户选择结果相同，相同则纠正，不同则提示错误
+					// 判断线圈状态是否与用户选择结果相同，相同则纠正，不同则提示错误
 					if (coil.getState() == BrokenState.OPEN) {
 						coil.setBroken(BrokenState.NORMAL);
 						compDef.setCorrected(coil);

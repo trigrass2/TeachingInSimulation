@@ -49,8 +49,8 @@ public class ExamMessageHandler implements ServerHandler<ExamMessage> {
 	public void execute(HostedConnection source, ExamMessage m) throws Exception {
 		int messageType = m.getMessageType();
 		Integer sid = m.getSid();
+		HostedConnection conn = serverConfig.getClients().stream().filter(c -> sid.equals(c.getAttribute(Session.KEY_LOGIN_ID.name()))).findAny().orElse(null);
 		if (ExamMessage.MESSAGE_TYPE_QUERY_BY_TEACHER == messageType) {
-			HostedConnection conn = serverConfig.getClients().stream().filter(c -> sid.equals(c.getAttribute(Session.KEY_LOGIN_ID.name()))).findAny().orElse(null);
 			// 根据班级查询当前是否有正在考核的项目
 			ExamPublish publish = examPublishService.findExamingByCreator(sid);
 			if (publish == null) {
@@ -72,7 +72,6 @@ public class ExamMessageHandler implements ServerHandler<ExamMessage> {
 			}
 			return;
 		} else if (ExamMessage.MESSAGE_TYPE_QUERY_BY_STUDENT == messageType) {
-			HostedConnection conn = serverConfig.getClients().stream().filter(c -> sid.equals(c.getAttribute(Session.KEY_LOGIN_ID.name()))).findAny().orElse(null);
 			Integer classId = conn.getAttribute(Session.KEY_LOGIN_CLASSID.name());
 			// 根据班级查询当前是否有正在考核的项目
 			ExamPublish publish = examPublishService.findExamingByClassId(classId);

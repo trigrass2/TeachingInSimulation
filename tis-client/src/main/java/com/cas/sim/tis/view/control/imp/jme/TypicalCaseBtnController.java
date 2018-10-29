@@ -56,38 +56,33 @@ public class TypicalCaseBtnController extends ElecCaseBtnController {
 	protected void switchCaseMode(CaseMode mode) {
 		TypicalCase3D typicalCase3D = (TypicalCase3D) elecCase3D;
 		SpringUtil.getBean(PageController.class).showLoading();
+		boolean auto = typicalCase3D != null;
 		if (CaseMode.VIEW_MODE == mode) {
 			view.toFront();
 			view.setVisible(true);
-			trainOrEdit.setVisible(false);
+			typical.setVisible(false);
 			steps.setVisible(true);
 			btns.setVisible(true);
 			autoComps.setSelected(false);
 			autoWires.setSelected(false);
-			if (typicalCase3D != null) {
-				typicalCase3D.autoComps(false);
-				typicalCase3D.autoWires(false);
-			}
+			typicalCase3D.autoComps(auto);
+			typicalCase3D.autoWires(auto);
 		} else if (CaseMode.TYPICAL_TRAIN_MODE == mode) {
-			trainOrEdit.toFront();
-			trainOrEdit.setVisible(true);
+			typical.toFront();
+			typical.setVisible(true);
 			view.setVisible(false);
 			steps.setVisible(true);
 			btns.setVisible(false);
-			if (typicalCase3D != null) {
-				typicalCase3D.autoWires(false);
-				typicalCase3D.autoComps(false);
-			}
+			typicalCase3D.autoWires(auto);
+			typicalCase3D.autoComps(auto);
 		} else if (CaseMode.EDIT_MODE == mode) {
-			trainOrEdit.toFront();
-			trainOrEdit.setVisible(true);
+			typical.toFront();
+			typical.setVisible(true);
 			view.setVisible(false);
 			steps.setVisible(false);
 			btns.setVisible(false);
-			if (typicalCase3D != null) {
-				typicalCase3D.autoComps(true);
-				typicalCase3D.autoWires(true);
-			}
+			typicalCase3D.autoComps(auto);
+			typicalCase3D.autoWires(auto);
 		}
 		if (elecCaseState != null) {
 			elecCaseState.setMode(mode);

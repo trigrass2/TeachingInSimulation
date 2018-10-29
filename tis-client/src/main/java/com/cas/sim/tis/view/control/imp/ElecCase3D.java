@@ -299,7 +299,7 @@ public abstract class ElecCase3D<T> implements IDistory {
 	public void showPopupMenu(Wire wire) {
 		if (state.getMode().isHideCircuit()) {
 			return;
-		}
+		} 
 		this.wire = wire;
 		Point anchor = MouseInfo.getPointerInfo().getLocation();
 		wireMenu.show(GUIState.getStage(), anchor.x, anchor.y);

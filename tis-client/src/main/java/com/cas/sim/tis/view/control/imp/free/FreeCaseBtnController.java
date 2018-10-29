@@ -27,8 +27,8 @@ public class FreeCaseBtnController extends ElecCaseBtnController {
 //		FreeCase3D freeCase3D = (FreeCase3D) elecCase3D;
 		SpringUtil.getBean(PageController.class).showLoading();
 		if (CaseMode.EDIT_MODE == mode) {
-			trainOrEdit.toFront();
-			trainOrEdit.setVisible(true);
+			free.toFront();
+			free.setVisible(true);
 			view.setVisible(false);
 			steps.setVisible(false);
 			btns.setVisible(false);

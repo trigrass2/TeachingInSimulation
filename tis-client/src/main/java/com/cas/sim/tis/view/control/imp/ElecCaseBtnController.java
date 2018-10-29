@@ -66,7 +66,11 @@ public abstract class ElecCaseBtnController implements Initializable, IDistory {
 	@FXML
 	protected HBox view;
 	@FXML
-	protected HBox trainOrEdit;
+	protected HBox typical;
+	@FXML
+	protected HBox free;
+	@FXML
+	protected HBox broken;
 	@FXML
 	protected ToggleButton autoComps;
 	@FXML
@@ -150,6 +154,7 @@ public abstract class ElecCaseBtnController implements Initializable, IDistory {
 	private void toggleDimension(MouseEvent event) {
 		ToggleButton source = (ToggleButton) event.getSource();
 		if (!source.isSelected()) {
+			source.setSelected(true);
 			return;
 		}
 
@@ -336,7 +341,7 @@ public abstract class ElecCaseBtnController implements Initializable, IDistory {
 	public void setState(ElecCaseState<?> elecCaseState) {
 		this.elecCaseState = elecCaseState;
 	}
-	
+
 	@Override
 	public void distroy() {
 		clean();
