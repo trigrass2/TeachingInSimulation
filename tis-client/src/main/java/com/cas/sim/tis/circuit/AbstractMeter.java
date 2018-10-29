@@ -10,7 +10,7 @@ import com.cas.sim.tis.circuit.meter.Range;
 
 import lombok.Getter;
 
-public abstract class AbstractMeter implements Meter {
+public abstract class AbstractMeter implements Meter, IResultListener{
 //	
 	@Getter
 	protected List<CircuitElm> elmList = new ArrayList<>();
@@ -112,7 +112,7 @@ public abstract class AbstractMeter implements Meter {
 			int i = 0;
 			for (; i < ranges.length; i++) {
 				result = ranges[i].formatValue(this.getValue());
-				if (result != 0) {
+				if (result != Double.MAX_VALUE) {
 					break;
 				}
 			}
@@ -129,5 +129,9 @@ public abstract class AbstractMeter implements Meter {
 	@Override
 	public double getValue() {
 		return value;
+	}
+
+	public double getRealValue() {
+		return 0;
 	}
 }

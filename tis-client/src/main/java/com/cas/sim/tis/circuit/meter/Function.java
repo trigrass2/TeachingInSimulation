@@ -9,11 +9,11 @@ public class Function {
 //	当前量程(记录索引)
 	private int rangeIndex;
 	@Getter
-	private ModeType type;
+	private FuncType type;
 
 	private boolean auto;
 
-	public Function(ModeType type, Range... ranges) {
+	public Function(FuncType type, Range... ranges) {
 		this.type = type;
 		this.ranges = ranges;
 	}
@@ -21,7 +21,7 @@ public class Function {
 	public void reset() {
 		rangeIndex = 0;
 //		如果有多个量程， 则默认在自动档位
-		auto = ranges.length > 0;
+		auto = ranges.length > 1;
 	}
 
 	public boolean range() {

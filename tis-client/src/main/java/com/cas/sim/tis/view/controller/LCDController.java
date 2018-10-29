@@ -6,8 +6,8 @@ import java.util.ResourceBundle;
 
 import com.cas.sim.tis.circuit.Multimeter;
 import com.cas.sim.tis.circuit.meter.Digit;
+import com.cas.sim.tis.circuit.meter.FuncType;
 import com.cas.sim.tis.circuit.meter.Function;
-import com.cas.sim.tis.circuit.meter.ModeType;
 import com.cas.sim.tis.circuit.meter.Range;
 import com.cas.sim.tis.circuit.meter.Rotary;
 
@@ -76,14 +76,16 @@ public class LCDController implements Initializable {
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		InnerShadow offEffect = new InnerShadow();
-		digits = new Digit[4];
-		for (int i = 0; i < 4; i++) {
+		digits = new Digit[5];
+		for (int i = 0; i < 5; i++) {
 			Digit digit = new Digit(Color.web("#003333"), Color.rgb(0, 0, 0, 0), null, offEffect);
 			digit.setLayoutX(35 + i * 70);
 			digit.setLayoutY(42.0f);
 			digits[i] = digit;
 			content.getChildren().add(digit);
 		}
+
+		digits[4].setLayoutX(35 + 2 * 70);
 
 		dots = new Rectangle[3];
 		for (int i = 0; i < 3; i++) {
@@ -93,10 +95,6 @@ public class LCDController implements Initializable {
 			dots[i] = dot;
 			content.getChildren().add(dot);
 		}
-
-//		hide(hold, auto, nano, micro, milli, kilo, million, ohm, am, volt, dc, ac, capacity, diode, on_off, hz);
-//		hide(digits);
-//		hide(dots);
 	}
 
 	public void update() {
@@ -106,7 +104,6 @@ public class LCDController implements Initializable {
 
 		updateMode();
 		updateHold();
-		updateRotary();
 		updateRange();
 		updateValue();
 	}
@@ -119,9 +116,42 @@ public class LCDController implements Initializable {
 		if (range == null) {
 			return;
 		}
-		int resolution = range.getResolution(); // 小数点后的有效位数
 //		获取格式化之后的数值。
 		double value = multimeter.format();
+		int resolution = range.getResolution(); // 小数点后的有效位数
+
+		if (value == Double.MAX_VALUE) {
+			digits[1].showNumber(0);
+			digits[4].showCharacter(0);
+			show(digits[1], digits[4]);
+		} else {
+			writeNormalNumber(resolution, range, value);
+		}
+
+//		小数点
+		if (resolution > 0) {
+			show(dots[dots.length - resolution]);
+		}
+
+//		数量级
+		double magnitude = range.getMagnitude();
+		Double num = new Double(magnitude);
+
+//		hide(nano, micro, milli, kilo, million);
+		if (num.equals(1E3)) {
+			show(kilo);
+		} else if (num.equals(1E6)) {
+			show(million);
+		} else if (num.equals(1E-3)) {
+			show(milli);
+		} else if (num.equals(1E-6)) {
+			show(micro);
+		} else if (num.equals(1E-9)) {
+			show(nano);
+		}
+	}
+
+	private int writeNormalNumber(int resolution, Range range, double value) {
 		int[] beforeDot = new int[4];// 万用表显示4个数字
 		int[] afterDot = new int[3];// 小数点后最多有3位数
 
@@ -159,9 +189,6 @@ public class LCDController implements Initializable {
 //		System.out.println(String.format("%s%s%s%s", finalShow[0], finalShow[1], finalShow[2], finalShow[3]));
 
 //		从低位 往 高位 写数字
-//		隐藏数字
-//		hide(digits);
-
 		for (int i = 0; i < 4; i++) {
 			Digit digit = digits[i];
 			if (finalShow[i] == 0 && i < 4 - resolution - 1) { // 小数点前 有 前导零 的， 要把0 去掉（不显示）
@@ -170,29 +197,7 @@ public class LCDController implements Initializable {
 			digit.showNumber(finalShow[i]);
 			show(digit);
 		}
-
-//		小数点
-//		hide(dots);
-		if (resolution > 0) {
-			show(dots[dots.length - resolution]);
-		}
-
-//		数量级
-		double magnitude = range.getMagnitude();
-		Double num = new Double(magnitude);
-
-//		hide(nano, micro, milli, kilo, million);
-		if (num.equals(1E3)) {
-			show(kilo);
-		} else if (num.equals(1E6)) {
-			show(million);
-		} else if (num.equals(1E-3)) {
-			show(milli);
-		} else if (num.equals(1E-6)) {
-			show(micro);
-		} else if (num.equals(1E-9)) {
-			show(nano);
-		}
+		return resolution;
 	}
 
 	public BufferedImage snapshot() {
@@ -210,40 +215,6 @@ public class LCDController implements Initializable {
 		return bufferedImage;
 	}
 
-	private void updateRotary() {
-		Rotary rotary = multimeter.getRotary();
-		switch (rotary) {
-		case OFF:
-			break;
-		case AV:
-			show(volt, ac, auto);
-			break;
-		case DV:
-			show(volt, dc, auto);
-			break;
-		case DmV:
-			show(volt, milli, dc);
-			break;
-		case Ohms:
-			show(auto, ohm);
-			break;
-		case C:
-			show(auto, capacity, nano);
-			break;
-		case A:
-			show(auto, dc, am);
-			break;
-		case mA:
-			show(auto, dc, am, milli);
-			break;
-		case muA:
-			show(auto, dc, micro, am);
-			break;
-		case Temperature:
-			break;
-		}
-	}
-
 	private void updateHold() {
 		hold.setVisible(multimeter.isHold());
 	}
@@ -257,15 +228,23 @@ public class LCDController implements Initializable {
 		if (mode == null) {
 			return;
 		}
-		ModeType type = mode.getType();
+		FuncType type = mode.getType();
 		switch (type) {
-		case AC:
+		case AC_V:
 			hide(dc);
-			show(ac);
+			show(ac, volt);
 			break;
-		case DC:
+		case DC_V:
 			hide(ac);
-			show(dc);
+			show(dc, volt);
+			break;
+		case AC_A:
+			hide(dc);
+			show(ac, am);
+			break;
+		case DC_A:
+			hide(ac);
+			show(dc, am);
 			break;
 		case Diode:
 			show(diode, volt);
@@ -274,6 +253,7 @@ public class LCDController implements Initializable {
 			show(auto, ohm);
 			break;
 		case Capacitance:
+			show(capacity);
 			break;
 		case ON_Off:
 			show(on_off, ohm);

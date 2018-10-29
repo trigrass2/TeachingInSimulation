@@ -12,16 +12,23 @@ import javafx.scene.transform.Shear;
 public class Digit extends Parent {
 
 	private static final boolean[][] DIGIT_COMBINATIONS = new boolean[][] { //
-			new boolean[] { true, false, true, true, true, true, true }, //
-			new boolean[] { false, false, false, false, true, false, true }, //
-			new boolean[] { true, true, true, false, true, true, false }, //
-			new boolean[] { true, true, true, false, true, false, true }, //
-			new boolean[] { false, true, false, true, true, false, true }, //
-			new boolean[] { true, true, true, true, false, false, true }, //
-			new boolean[] { true, true, true, true, false, true, true }, //
-			new boolean[] { true, false, false, false, true, false, true }, //
-			new boolean[] { true, true, true, true, true, true, true }, //
-			new boolean[] { true, true, true, true, true, false, true } }; //
+			new boolean[] { true, false, true, true, true, true, true }, // 0
+			new boolean[] { false, false, false, false, true, false, true }, // 1
+			new boolean[] { true, true, true, false, true, true, false }, // 2
+			new boolean[] { true, true, true, false, true, false, true }, // 3
+			new boolean[] { false, true, false, true, true, false, true }, // 4
+			new boolean[] { true, true, true, true, false, false, true }, // 5
+			new boolean[] { true, true, true, true, false, true, true }, // 6
+			new boolean[] { true, false, false, false, true, false, true }, // 7
+			new boolean[] { true, true, true, true, true, true, true }, // 8
+			new boolean[] { true, true, true, true, true, false, true }, // 9
+			new boolean[] { false, false, true, true, false, true, false } // L
+	};
+
+	private static final boolean[][] CHARECTOR_COMBINATIONS = new boolean[][] { //
+			new boolean[] { false, false, true, true, false, true, false } // 0 - L
+	};
+
 	private final Polygon[] polygons = new Polygon[] { //
 			new Polygon(2, 0, 52, 0, 42, 10, 12, 10), //
 			new Polygon(12, 49, 42, 49, 52, 54, 42, 59, 12f, 59f, 2f, 54f), //
@@ -55,4 +62,16 @@ public class Digit extends Parent {
 			polygons[i].setEffect(DIGIT_COMBINATIONS[num][i] ? onEffect : offEffect);
 		}
 	}
+
+	/**
+	 * 0 - L<br/>
+	 * @param num
+	 */
+	public final void showCharacter(Integer num) {
+		for (int i = 0; i < 7; i++) {
+			polygons[i].setFill(CHARECTOR_COMBINATIONS[num][i] ? onColor : offColor);
+			polygons[i].setEffect(CHARECTOR_COMBINATIONS[num][i] ? onEffect : offEffect);
+		}
+	}
+
 }

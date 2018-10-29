@@ -1,5 +1,7 @@
 package com.cas.sim.tis.circuit.meter;
 
+import java.util.function.Consumer;
+
 import com.cas.circuit.component.Terminal;
 import com.cas.circuit.component.Wire;
 import com.cas.circuit.element.ResistorElm;
@@ -44,6 +46,8 @@ public class OhmMeter extends AbstractMeter {
 
 		elmList.add(power);
 		elmList.add(resistor);
+		
+		value = Double.MAX_VALUE;// 默认电阻无穷大
 	}
 
 	/*
@@ -51,16 +55,27 @@ public class OhmMeter extends AbstractMeter {
 	 */
 	@Override
 	public double getValue() {
-		if (isHold()) {
-			return value;
-		}
-		double current = power.getCurrent();
-		if (current == 0) {
-			value = 0;
-		} else {
-			double voltDiff = power.getVoltageDiff();
-			value = voltDiff / current - resistor.resistance;
+//		但是屏幕上显示什么值，需要看hold状态
+//		如果当前不是hold状态
+		if (!isHold()) {
+			value = getRealValue();
 		}
 		return value;
+	}
+
+	@Override
+	public double getRealValue() {
+		double result = Double.MAX_VALUE;
+//		无论如何 要计算一下当前电阻值
+		double current = power.getCurrent();
+		if (current != 0) {
+			double voltDiff = power.getVoltageDiff();
+			result = voltDiff / current - resistor.resistance;
+		}
+		return result;
+	}
+
+	public void ifContinuity(Consumer<Boolean> consumer) {
+		consumer.accept(getRealValue() != 0);
 	}
 }
