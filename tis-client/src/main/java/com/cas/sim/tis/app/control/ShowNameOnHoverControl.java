@@ -29,10 +29,18 @@ public class ShowNameOnHoverControl extends AbstractControl {
 	private Camera cam;
 	private Consumer<String> consumer;
 
+	// 是否显示认知信息
+	private boolean showRecongnize;
+
 	public ShowNameOnHoverControl(Consumer<String> consumer, InputManager inputManager, Camera cam) {
+		this(consumer, inputManager, cam, false);
+	}
+
+	public ShowNameOnHoverControl(Consumer<String> consumer, InputManager inputManager, Camera cam, boolean showRecongnize) {
 		this.inputManager = inputManager;
 		this.cam = cam;
 		this.consumer = consumer;
+		this.showRecongnize = showRecongnize;
 	}
 
 	@Override
@@ -63,8 +71,13 @@ public class ShowNameOnHoverControl extends AbstractControl {
 				consumer.accept(null);
 				return;
 			}
+			Object recongnize = findEntity(geo, "recongnize");
+			if (showRecongnize && recongnize != null) {
+				consumer.accept(String.valueOf(recongnize));
+				return;
+			}
 //			geo 或者是其parent节点，但不是spatial的模型，userdata中必有entity属性
-			Object entity = findEntity(geo);
+			Object entity = findEntity(geo, "entity");
 			if (entity == null) {
 				return;
 			}
@@ -79,17 +92,17 @@ public class ShowNameOnHoverControl extends AbstractControl {
 
 //	从实体中获取entity
 	@NotNull
-	private Object findEntity(Spatial geo) {
+	private Object findEntity(Spatial geo, String key) {
 		if (geo == spatial) {
 //			throw new RuntimeException("没有找到Entity");
 			return null;
 		}
 
-		Object entity = geo.getUserData("entity");
+		Object entity = geo.getUserData(key);
 		if (entity != null) {
 			return entity;
 		}
-		return findEntity(geo.getParent());
+		return findEntity(geo.getParent(), key);
 	}
 
 	@NotNull

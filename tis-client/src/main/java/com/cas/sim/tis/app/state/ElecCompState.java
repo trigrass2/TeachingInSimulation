@@ -65,7 +65,7 @@ public class ElecCompState extends BaseState {
 		root.addControl(new ShowNameOnHoverControl((name) -> {
 			Vector2f point = inputManager.getCursorPosition();
 			Platform.runLater(() -> ui.showName(name, point.getX(), point.getY()));
-		}, inputManager, cam));
+		}, inputManager, cam, true));
 		log.debug("创建元器件状态机的根节点{}", root.getName());
 		rootNode.attachChild(root);
 

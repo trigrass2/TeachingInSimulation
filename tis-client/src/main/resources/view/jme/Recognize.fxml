@@ -19,7 +19,7 @@
 			<CheckBox fx:id="intro" text="%rec.ckb.intro" styleClass="recognize-btn" />
 			<CheckBox fx:id="explode" text="%rec.ckb.explode" styleClass="recognize-btn" />
 			<CheckBox fx:id="transparent" text="%rec.ckb.transparent" styleClass="recognize-btn" />
-			<CheckBox fx:id="showName" text="%rec.ckb.showName" styleClass="recognize-btn" />
+<!-- 			<CheckBox fx:id="showName" text="%rec.ckb.showName" styleClass="recognize-btn" /> -->
 			<CheckBox fx:id="autoRoate" text="%rec.ckb.autoRoate" styleClass="recognize-btn" />
 		</HBox>
 		<HBox spacing="10">
