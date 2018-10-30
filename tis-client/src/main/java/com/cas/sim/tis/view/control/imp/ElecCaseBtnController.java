@@ -113,7 +113,7 @@ public abstract class ElecCaseBtnController implements Initializable, IDistory {
 	public void initialize(URL location, ResourceBundle resources) {
 		modes.getItems().addAll(enableModes);
 		modes.getSelectionModel().selectedItemProperty().addListener((b, o, n) -> {
-			if (n == null || o == n) {
+			if (n == null || o == n || elecCase3D == null) {
 				return;
 			}
 			if (o == null) {
