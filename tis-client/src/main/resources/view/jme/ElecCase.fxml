@@ -23,6 +23,7 @@
 		<Title fx:id="title" />
 		<HBox HBox.hgrow="ALWAYS" spacing="10" alignment="TOP_RIGHT">
 			<ChoiceBox fx:id="modes" pickOnBounds="true"></ChoiceBox>
+			<CheckBox fx:id="multimeter" text="%rec.ckb.multimeter" styleClass="recognize-btn" onAction="#toggleMultiMeter" pickOnBounds="true" />
 			<CheckBox fx:id="showName" text="%rec.ckb.showName" styleClass="recognize-btn" onAction="#toggleTagName" pickOnBounds="true" />
 			<CheckBox fx:id="transparent" text="%rec.ckb.transparent" styleClass="recognize-btn" onAction="#toggleTransparent" pickOnBounds="true" />
 			<SegmentedButton>
@@ -36,27 +37,24 @@
 			<Insets top="10" right="10" />
 		</padding>
 	</HBox>
-	<HBox VBox.vgrow="ALWAYS" pickOnBounds="false" mouseTransparent="false" alignment="CENTER_RIGHT">
-		<VBox fx:id="steps" visible="false" prefWidth="300" minWidth="300" maxWidth="300" prefHeight="400" minHeight="400" maxHeight="400">
+	<HBox VBox.vgrow="ALWAYS" pickOnBounds="false" mouseTransparent="false" alignment="BOTTOM_LEFT">
+		<VBox fx:id="steps" visible="false" prefWidth="400" minWidth="300" maxWidth="400" prefHeight="300" minHeight="400" maxHeight="300">
 			<ScrollPane fx:id="scroll" hbarPolicy="NEVER" styleClass="cover" VBox.vgrow="ALWAYS">
 				<content></content>
 			</ScrollPane>
 			<HBox fx:id="btns">
-				<Button fx:id="prev" styleClass="blue-btn" pickOnBounds="true" prefWidth="150">
+				<Button fx:id="prev" styleClass="blue-btn" pickOnBounds="true" prefWidth="200">
 					<graphic>
 						<SVGGlyph name="iconfont.svg.left" size="16" fill="WHITE" />
 					</graphic>
 				</Button>
-				<Button fx:id="next" styleClass="blue-btn" pickOnBounds="true" prefWidth="150">
+				<Button fx:id="next" styleClass="blue-btn" pickOnBounds="true" prefWidth="200">
 					<graphic>
 						<SVGGlyph name="iconfont.svg.right" size="16" fill="WHITE" />
 					</graphic>
 				</Button>
 			</HBox>
 		</VBox>
-		<padding>
-			<Insets top="50" bottom="50" />
-		</padding>
 	</HBox>
 	<StackPane pickOnBounds="false" mouseTransparent="false">
 		<HBox fx:id="view" spacing="10" visible="false" pickOnBounds="false" mouseTransparent="false" alignment="BOTTOM_LEFT">
@@ -116,40 +114,4 @@
 			<Insets left="10" bottom="10" />
 		</padding>
 	</StackPane>
-	<!-- <PopOver fx:id="wirePicker" title="导线选择" arrowSize="10" arrowLocation="BOTTOM_CENTER"> -->
-	<!-- <HBox> -->
-	<!-- <VBox> -->
-	<!-- <Label fx:id="draw" text="%rec.lbl.zoom.in" styleClass="recognize-btn">电路图 -->
-	<!-- <graphic> -->
-	<!-- <Circle fill="RED" radius="10"/> -->
-	<!-- </graphic> -->
-	<!-- </Label> -->
-	<!-- <Label fx:id="draw" text="%rec.lbl.zoom.in" styleClass="recognize-btn">电路图 -->
-	<!-- <graphic> -->
-	<!-- <Circle fill="RED" radius="10"/> -->
-	<!-- </graphic> -->
-	<!-- </Label> -->
-	<!-- <Label fx:id="draw" text="%rec.lbl.zoom.in" styleClass="recognize-btn">电路图 -->
-	<!-- <graphic> -->
-	<!-- <Circle fill="RED" radius="10"/> -->
-	<!-- </graphic> -->
-	<!-- </Label> -->
-	<!-- <Label fx:id="draw" text="%rec.lbl.zoom.in" styleClass="recognize-btn">电路图 -->
-	<!-- <graphic> -->
-	<!-- <Circle fill="RED" radius="10"/> -->
-	<!-- </graphic> -->
-	<!-- </Label> -->
-	<!-- <Label fx:id="draw" text="%rec.lbl.zoom.in" styleClass="recognize-btn">电路图 -->
-	<!-- <graphic> -->
-	<!-- <Circle fill="RED" radius="10"/> -->
-	<!-- </graphic> -->
-	<!-- </Label> -->
-	<!-- <Label fx:id="draw" text="%rec.lbl.zoom.in" styleClass="recognize-btn">电路图 -->
-	<!-- <graphic> -->
-	<!-- <Circle fill="RED" radius="10"/> -->
-	<!-- </graphic> -->
-	<!-- </Label> -->
-	<!-- </VBox> -->
-	<!-- </HBox> -->
-	<!-- </PopOver> -->
 </VBox>

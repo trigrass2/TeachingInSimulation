@@ -255,7 +255,7 @@ public class LCDController implements Initializable {
 		case Capacitance:
 			show(capacity);
 			break;
-		case ON_Off:
+		case On_Off:
 			show(on_off, ohm);
 			break;
 		case Centigrade:

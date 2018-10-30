@@ -14,10 +14,12 @@ import com.cas.circuit.component.Wire;
 import com.cas.sim.tis.anno.FxThread;
 import com.cas.sim.tis.app.JmeApplication;
 import com.cas.sim.tis.app.state.ElecCaseState;
+import com.cas.sim.tis.app.state.MultimeterState;
 import com.cas.sim.tis.app.state.typical.CircuitState;
 import com.cas.sim.tis.entity.ElecComp;
 import com.cas.sim.tis.util.AlertUtil;
 import com.cas.sim.tis.util.MsgUtil;
+import com.cas.sim.tis.view.control.IContent;
 import com.cas.sim.tis.view.control.IDistory;
 import com.cas.sim.tis.view.control.imp.dialog.Tip.TipType;
 import com.jme3x.jfx.injfx.JmeToJFXIntegrator;
@@ -43,7 +45,7 @@ import javafx.scene.paint.Color;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public abstract class ElecCase3D<T> implements IDistory {
+public abstract class ElecCase3D<T> implements IDistory, IContent {
 
 	protected static final String REGEX_CHINESE = "[\u4e00-\u9fa5·！￥……（）【】｛｝：；“”‘’？。，]";// 中文正则
 
@@ -67,6 +69,8 @@ public abstract class ElecCase3D<T> implements IDistory {
 	protected MenuItem reset;
 	protected Menu terms;
 
+	private MultimeterState multiMeterState;
+
 	public ElecCase3D(ElecCaseState<T> state, ElecCaseBtnController btnController) {
 		this.state = state;
 		this.btnController = btnController;
@@ -87,7 +91,7 @@ public abstract class ElecCase3D<T> implements IDistory {
 //		创建一个JME应用程序，并且和Canvas集成
 		jmeApp = new JmeApplication();
 
-		state.setUI(this);
+		state.setUi(this);
 		jmeApp.getStateManager().attach(state);
 		JmeToJFXIntegrator.startAndBind(jmeApp, canvas, Thread::new);
 
@@ -114,6 +118,12 @@ public abstract class ElecCase3D<T> implements IDistory {
 		pane.setPickOnBounds(false);
 		pane.setMouseTransparent(true);
 
+		
+//		FIXME 加入万用表
+		multiMeterState = new MultimeterState(pane);
+		multiMeterState.setEnabled(false);
+		jmeApp.getStateManager().attach(multiMeterState);
+		
 //		3、弹出菜单
 		createWirePopupMenu();
 
@@ -122,10 +132,11 @@ public abstract class ElecCase3D<T> implements IDistory {
 		btnController.setElecCase3D(this);
 	}
 
-	public Node[] getContent() {
+	@Override
+	public final Node[] getContent() {
 		return new Node[] { canvas, pane, btns };
 	}
-	
+
 	public void selectedElecComp(ElecComp elecComp) {
 //		找到典型案例的状态机
 		jmeApp.enqueue(() -> {
@@ -162,7 +173,7 @@ public abstract class ElecCase3D<T> implements IDistory {
 		createWireTagMenu();
 		createWireDelMenu();
 	}
-	
+
 	protected void createCompTagMenu() {
 		TextInputDialog steamIdDialog = new TextInputDialog();
 		steamIdDialog.setTitle(MsgUtil.getMessage("button.tag"));
@@ -188,7 +199,7 @@ public abstract class ElecCase3D<T> implements IDistory {
 		});
 		compMenu.getItems().add(tag);
 	}
-	
+
 	protected void createCompDelMenu() {
 		MenuItem del = new MenuItem(MsgUtil.getMessage("button.delete"));
 		del.setOnAction(e -> {
@@ -203,14 +214,14 @@ public abstract class ElecCase3D<T> implements IDistory {
 		});
 		compMenu.getItems().add(del);
 	}
-	
+
 	protected void createCompResetMenu() {
 		reset = new MenuItem(MsgUtil.getMessage("button.reset"));
 		reset.setOnAction(e -> {
 			compDef.reset();
 		});
 	}
-	
+
 	protected void createWireTagMenu() {
 		TextInputDialog steamIdDialog = new TextInputDialog();
 		steamIdDialog.setTitle(MsgUtil.getMessage("elec.case.wires.num"));
@@ -226,7 +237,7 @@ public abstract class ElecCase3D<T> implements IDistory {
 				steamIdDialog.getEditor().setText(o);
 			}
 		});
-		
+
 		MenuItem tag = new MenuItem(MsgUtil.getMessage("elec.case.wires.num"));
 		tag.setOnAction(e -> {
 			steamIdDialog.getEditor().setText(wire.getProxy().getNumber());
@@ -236,7 +247,7 @@ public abstract class ElecCase3D<T> implements IDistory {
 		});
 		wireMenu.getItems().add(tag);
 	}
-	
+
 	protected void createWireDelMenu() {
 		MenuItem del = new MenuItem(MsgUtil.getMessage("button.delete"));
 		del.setOnAction(e -> {
@@ -248,7 +259,7 @@ public abstract class ElecCase3D<T> implements IDistory {
 		});
 		wireMenu.getItems().add(del);
 	}
-	
+
 	/**
 	 * 界面上点击保存按钮
 	 */
@@ -272,6 +283,10 @@ public abstract class ElecCase3D<T> implements IDistory {
 		state.switchTo3D();
 	}
 
+	public void setMultimeterVisible(boolean visible) {
+		multiMeterState.setEnabled(visible);
+	}
+	
 	/**
 	 * 显示元器件弹出菜单
 	 * @param compDef 当前要操作的元器件对象
@@ -299,12 +314,11 @@ public abstract class ElecCase3D<T> implements IDistory {
 	public void showPopupMenu(Wire wire) {
 		if (state.getMode().isHideCircuit()) {
 			return;
-		} 
+		}
 		this.wire = wire;
 		Point anchor = MouseInfo.getPointerInfo().getLocation();
 		wireMenu.show(GUIState.getStage(), anchor.x, anchor.y);
 	}
-
 
 	@Override
 	public void distroy() {

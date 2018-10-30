@@ -54,5 +54,7 @@ public interface Meter {
 	 */
 	double format(); // 格式化后的值
 
-	double getValue(); // 真实值
+	double getValue(); // 测量值
+
+	double getRealValue(); // 真实值
 }

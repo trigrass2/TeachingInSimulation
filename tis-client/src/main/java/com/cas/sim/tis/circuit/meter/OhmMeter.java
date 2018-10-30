@@ -46,7 +46,7 @@ public class OhmMeter extends AbstractMeter {
 
 		elmList.add(power);
 		elmList.add(resistor);
-		
+
 		value = Double.MAX_VALUE;// 默认电阻无穷大
 	}
 
@@ -68,14 +68,13 @@ public class OhmMeter extends AbstractMeter {
 		double result = Double.MAX_VALUE;
 //		无论如何 要计算一下当前电阻值
 		double current = power.getCurrent();
-		if (current != 0) {
+
+		if (Double.max(current, 0) != 0) {
 			double voltDiff = power.getVoltageDiff();
 			result = voltDiff / current - resistor.resistance;
 		}
-		return result;
-	}
 
-	public void ifContinuity(Consumer<Boolean> consumer) {
-		consumer.accept(getRealValue() != 0);
+//		System.out.println(current);
+		return result;
 	}
 }

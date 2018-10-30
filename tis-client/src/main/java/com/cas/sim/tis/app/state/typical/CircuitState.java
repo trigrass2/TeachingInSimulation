@@ -245,12 +245,6 @@ public class CircuitState extends BaseState implements ICircuitEffect {
 		Optional.ofNullable(onInitialized).ifPresent(t -> t.accept(null));
 
 		CIRCUIT_SERVICE.scheduleAtFixedRate(CirSim.ins, 0, (long) (1 / CirSim.TPF / 10), TimeUnit.NANOSECONDS);
-
-//		FIXME 加入万用表
-//		multiMeterState = stateManager.getState(MultimeterState.class);
-//		if (multiMeterState == null) {
-//			stateManager.attach(multiMeterState = new MultimeterState());
-//		}
 	}
 
 	private void bindCircuitBoardEvents() {

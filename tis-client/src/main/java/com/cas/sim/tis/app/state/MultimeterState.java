@@ -12,10 +12,9 @@ import com.cas.sim.tis.app.listener.MeterPenClickListener;
 import com.cas.sim.tis.circuit.MeterPen;
 import com.cas.sim.tis.circuit.Multimeter;
 import com.cas.sim.tis.circuit.meter.FLUKE_17B;
-import com.cas.sim.tis.util.SpringUtil;
-import com.cas.sim.tis.view.control.IContent;
+import com.cas.sim.tis.circuit.meter.Rotary;
 import com.cas.sim.tis.view.controller.LCDController;
-import com.cas.sim.tis.view.controller.PageController;
+import com.jme3.app.state.AppStateManager;
 import com.jme3.collision.CollisionResults;
 import com.jme3.input.event.MouseButtonEvent;
 import com.jme3.input.event.MouseMotionEvent;
@@ -33,6 +32,7 @@ import com.jme3.texture.plugins.AWTLoader;
 
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import lombok.extern.slf4j.Slf4j;
 
@@ -51,6 +51,9 @@ public class MultimeterState extends BaseState {
 	 * 万用表对象
 	 */
 	private Multimeter meter;
+
+	private AnchorPane lcdParent;
+
 	/**
 	 * 万用表视口
 	 */
@@ -72,9 +75,15 @@ public class MultimeterState extends BaseState {
 
 	private Map<Spatial, BtnAction> btnActions = new HashMap<>();
 
-	private ElecCaseState caseState;
+	private ElecCaseState<?> caseState;
 
 	private double value; // 监控万用表测量的结果， 一旦结果发生变化，则立即更新显示屏
+
+	private AudioState audioState;
+
+	public MultimeterState(AnchorPane lcdParent) {
+		this.lcdParent = lcdParent;
+	}
 
 	@FunctionalInterface
 	interface BtnAction {
@@ -83,6 +92,9 @@ public class MultimeterState extends BaseState {
 
 	@Override
 	protected void initializeLocal() {
+		audioState = new AudioState();
+		stateManager.attach(audioState);
+
 		caseState = stateManager.getState(ElecCaseState.class);
 
 //		加载万用表模型
@@ -91,6 +103,8 @@ public class MultimeterState extends BaseState {
 		setupView(scene);
 //		初始化万用表对象
 		meter = new FLUKE_17B();
+		meter.setSpeaker(audioState);
+
 //		设置万用表各部分组件
 		setupMeterComponent();
 
@@ -103,7 +117,6 @@ public class MultimeterState extends BaseState {
 
 		initBtnActionListener();
 
-//		
 		CirSim.ins.addAnalyzelistener(() -> lcdRefreshFlags |= FLAG_SNAPSHOT);
 	}
 
@@ -150,14 +163,14 @@ public class MultimeterState extends BaseState {
 		});
 		btnActions.put(rel, () -> {
 		});
-
+		btnActions.put(hz, () -> {
+		});
 		btnActions.put(blackPen, () -> {
 			if (!HoldStatePro.ins.isIdle()) {
 				HoldStatePro.ins.discard();
 			}
 			HoldStatePro.ins.pickUp(blackPen, new MeterPenHodHandler(MeterPen.BLACK, caseState, scene));
 		});
-
 		btnActions.put(redPen, () -> {
 			if (!HoldStatePro.ins.isIdle()) {
 				HoldStatePro.ins.discard();
@@ -168,18 +181,14 @@ public class MultimeterState extends BaseState {
 
 	private void loadLcdUI() {
 		Platform.runLater(() -> {
-//			FIXME 这里是临时写法
-			IContent content = SpringUtil.getBean(PageController.class).getIContent();
-			Pane c = (Pane) content.getContent()[1];
-
 			FXMLLoader loader = new FXMLLoader();
 			try {
 				Pane lcdView = loader.load(getClass().getResourceAsStream("/view/jme/MultimeterLCD.fxml"));
 				monitor = loader.getController();
 				monitor.setMultimeter(meter);
-//				FIXME 设置lcdView界面不可见
-				lcdView.setTranslateX(c.getWidth() - 500);
-				c.getChildren().add(lcdView);
+//				设置lcdView界面不可见
+				lcdView.setTranslateX(lcdParent.getWidth() + 1024); // 如果你的屏幕足够大，就能发现这个隐藏的界面 : )
+				lcdParent.getChildren().add(lcdView);
 
 				lcdRefreshFlags |= FLAG_SNAPSHOT;
 			} catch (IOException e) {
@@ -212,6 +221,8 @@ public class MultimeterState extends BaseState {
 		view.setClearFlags(false, true, true);
 
 		view.attachScene(scene);
+		
+		view.setEnabled(isEnabled());
 	}
 
 	private void initListener() {
@@ -238,6 +249,12 @@ public class MultimeterState extends BaseState {
 	}
 
 	protected void onMouseButtonEvent0(MouseButtonEvent evt) {
+		evt.setConsumed();
+
+		if (meter.getRotary() == Rotary.OFF) {
+			return;
+		}
+
 		Node button = null;
 		if (pick.hasAncestor(hold)) {
 			button = hold;
@@ -254,23 +271,20 @@ public class MultimeterState extends BaseState {
 		} else if (pick.hasAncestor(blackPen)) {
 			button = blackPen;
 		}
-		if (button != null) {
-			if (evt.isPressed()) {
-				button.move(0, -0.3f, 0);
-				try {
-					BtnAction action = btnActions.get(button);
-					if (action != null) {
-						action.invoke();
-						lcdRefreshFlags |= FLAG_SNAPSHOT;
-					}
-				} catch (Exception e) {
-					log.error("万用表按钮{}按下时出现了异常{}", button, e);
-				}
-			} else if (evt.isReleased()) {
-				button.move(0, 0.3f, 0);
-			}
+		if (button == null) {
+			return;
 		}
-		evt.setConsumed();
+		if (evt.isPressed()) {
+			button.move(0, -0.3f, 0);
+			try {
+				btnActions.get(button).invoke();
+				lcdRefreshFlags |= FLAG_SNAPSHOT;
+			} catch (Exception e) {
+				log.error("万用表按钮{}按下时出现了异常{}", button, e);
+			}
+		} else if (evt.isReleased()) {
+			button.move(0, 0.3f, 0);
+		}
 	}
 
 	protected void onMouseMotionEvent0(MouseMotionEvent evt) {
@@ -281,21 +295,17 @@ public class MultimeterState extends BaseState {
 		}
 		if (pick.hasAncestor(rotary)) {
 //			鼠标滚轮向上滑动， 旋钮顺时针旋转，万用表切换至下一档位
-			if (evt.getDeltaWheel() > 0 && meter.hasNextGear()) {
+			if (evt.getDeltaWheel() < 0 && meter.hasNextGear()) {
 //				万用表播动档位
 				meter.rotary(1);
 //				旋钮模型旋转到对应位置
 				rotary.rotate(0, -PER, 0);
-//				屏幕上显示对应内容
-
-//				Platform.runLater(() -> monitor.update());
 //				标记此时需要更新lcd内容
 				lcdRefreshFlags |= FLAG_SNAPSHOT;
-			} else if (evt.getDeltaWheel() < 0 && meter.hasPreGear()) {
+			} else if (evt.getDeltaWheel() > 0 && meter.hasPreGear()) {
 //			鼠标滚轮向下滑动， 旋钮逆时针旋转，万用表切换至上一档位
 				meter.rotary(-1);
 				rotary.rotate(0, PER, 0);
-//				Platform.runLater(() -> monitor.update());
 				lcdRefreshFlags |= FLAG_SNAPSHOT;
 			}
 		}
@@ -323,16 +333,16 @@ public class MultimeterState extends BaseState {
 		}
 	}
 
-	
-	
 	@Override
 	public void update(float tpf) {
+//		if (meter.getRotary() != Rotary.OFF) {
+
+		meter.update();
+
 		double d = meter.format();
 		if (d != value) {
-			value = d;
 			lcdRefreshFlags |= FLAG_SNAPSHOT;
-		}else {
-//			System.out.println(d);
+			value = d;
 		}
 
 		if ((lcdRefreshFlags & FLAG_SNAPSHOT) != 0) {
@@ -346,6 +356,7 @@ public class MultimeterState extends BaseState {
 			lcd.getMaterial().getTextureParam("DiffuseMap").getTextureValue().setImage(jmeImage);
 			log.debug("完成更新LCD");
 		}
+//		}
 
 		scene.updateLogicalState(tpf);
 		scene.updateGeometricState();
@@ -364,8 +375,16 @@ public class MultimeterState extends BaseState {
 	}
 
 	@Override
+	public void stateDetached(AppStateManager stateManager) {
+		super.stateDetached(stateManager);
+		stateManager.detach(audioState);
+	}
+
+	@Override
 	public void setEnabled(boolean enabled) {
 		super.setEnabled(enabled);
-		view.setEnabled(enabled);
+		if (view != null) {
+			view.setEnabled(enabled);
+		}
 	}
 }

@@ -21,7 +21,7 @@ public class StepItem extends Text {
 		this.mdl = step.getModel();
 		setText(step.getName());
 		setFill(Color.WHITE);
-		setWrappingWidth(280);
+		setWrappingWidth(380);
 //		setStyle("-fx-font-size:14px;");
 	}
 

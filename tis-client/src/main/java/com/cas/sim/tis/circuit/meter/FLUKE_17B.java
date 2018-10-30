@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.cas.circuit.CirSim;
 import com.cas.circuit.element.CircuitElm;
+import com.cas.sim.tis.circuit.ISpeaker;
 import com.cas.sim.tis.circuit.Multimeter;
 
 import lombok.Getter;
@@ -12,10 +13,10 @@ import lombok.Getter;
  * 万用表(测量电压、电阻)
  */
 public class FLUKE_17B implements Multimeter {
-
 	/* 当前万用表档位 */
 	@Getter
 	private Rotary rotary = Rotary.OFF; // 默认在OFF档位
+	private ISpeaker speaker;
 
 	public FLUKE_17B() {
 		super();
@@ -60,7 +61,12 @@ public class FLUKE_17B implements Multimeter {
 	 */
 	@Override
 	public boolean range() {
-		return rotary.range();
+		speaker.buzzer_short();
+		boolean result = rotary.range();
+		if (!result) {
+			speaker.buzzer_shortDelay();
+		}
+		return result;
 	}
 
 	@Override
@@ -74,6 +80,7 @@ public class FLUKE_17B implements Multimeter {
 	 */
 	@Override
 	public boolean hold() {
+		speaker.buzzer_short();
 		return rotary.hold();
 	}
 
@@ -87,7 +94,12 @@ public class FLUKE_17B implements Multimeter {
 	 */
 	@Override
 	public boolean function() {
-		return rotary.function();
+		speaker.buzzer_short();
+		boolean result = rotary.function();
+		if (!result) {
+			speaker.buzzer_shortDelay();
+		}
+		return result;
 	}
 
 	@Override
@@ -116,7 +128,29 @@ public class FLUKE_17B implements Multimeter {
 	}
 
 	@Override
+	public double getRealValue() {
+		return rotary.getRealValue();
+	}
+
+	@Override
 	public boolean isAutoRange() {
 		return rotary.isAutoRange();
 	}
+
+	@Override
+	public void setSpeaker(ISpeaker speaker) {
+		this.speaker = speaker;
+	}
+
+	@Override
+	public void update() {
+//		System.out.println("FLUKE_17B.update()");
+//		System.out.println(rotary.getRealValue());
+		if (rotary == Rotary.Ohms && rotary.getFunction().getType() == FuncType.On_Off && getRealValue() < 50) {
+			speaker.buzzer_continuity();
+		} else {
+			speaker.buzzer_stop();
+		}
+	}
+
 }

@@ -25,4 +25,11 @@ public interface Multimeter extends Meter {
 	 * 获取当前档位
 	 */
 	Rotary getRotary();
+
+	/**
+	 * 万用表扬声器
+	 */
+	void setSpeaker(ISpeaker speaker);
+
+	void update();
 }

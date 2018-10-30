@@ -48,7 +48,7 @@ public enum Rotary implements Meter {
 					new Range(0.001E6, 4.000E6, 3, 1E6), // 1KΩ - 4.000 MΩ , "MΩ"
 					new Range(00.01E6, 40.00E6, 2, 1E6) // 10KΩ - 40.00 MΩ , "MΩ"
 			), //
-			new Function(FuncType.ON_Off, //
+			new Function(FuncType.On_Off, //
 					new Range(000.1E0, 50.00E0, 1, 1E0) // 050 Ω
 			), //
 			new Function(FuncType.Diode, //
@@ -198,13 +198,22 @@ public enum Rotary implements Meter {
 	@Override
 	public double getValue() {
 		if (this == OFF) {
-			return 0;
+			return Double.MAX_VALUE;
 		}
 		if (meter == null) {
 			log.warn("档位没有对应的仪表");
 			return 0.0;
 		}
 		return meter.getValue();
+	}
+
+	@Override
+	public double getRealValue() {
+		if (this == OFF) {
+			log.warn("档位没有对应的仪表");
+			return Double.MAX_VALUE;
+		}
+		return meter.getRealValue();
 	}
 
 	@Override
@@ -215,5 +224,4 @@ public enum Rotary implements Meter {
 		}
 		return meter.getElmList();
 	}
-
 }

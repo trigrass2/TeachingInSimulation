@@ -10,7 +10,7 @@ import com.cas.sim.tis.circuit.meter.Range;
 
 import lombok.Getter;
 
-public abstract class AbstractMeter implements Meter, IResultListener{
+public abstract class AbstractMeter implements Meter, IResultListener {
 //	
 	@Getter
 	protected List<CircuitElm> elmList = new ArrayList<>();

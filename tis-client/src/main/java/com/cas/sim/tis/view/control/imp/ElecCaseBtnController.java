@@ -62,6 +62,8 @@ public abstract class ElecCaseBtnController implements Initializable, IDistory {
 	@FXML
 	protected CheckBox showName;
 	@FXML
+	protected CheckBox multimeter;
+	@FXML
 	protected CheckBox transparent;
 	@FXML
 	protected HBox view;
@@ -144,10 +146,16 @@ public abstract class ElecCaseBtnController implements Initializable, IDistory {
 
 	@FXML
 	private void toggleTagName() {
-		boolean visiable = showName.isSelected();
+		boolean visible = showName.isSelected();
 		if (elecCaseState != null && elecCaseState.getCircuitState() != null) {
-			elecCaseState.getCircuitState().setTagNameVisible(visiable);
+			elecCaseState.getCircuitState().setTagNameVisible(visible);
 		}
+	}
+
+	@FXML
+	private void toggleMultiMeter() {
+		boolean visible = multimeter.isSelected();
+		elecCase3D.setMultimeterVisible(visible);
 	}
 
 	@FXML

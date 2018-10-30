@@ -7,10 +7,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.cas.sim.tis.app.JmeApplication;
 import com.cas.sim.tis.app.event.MouseEventListener;
 import com.cas.sim.tis.app.event.MouseEventState;
 import com.jme3.app.Application;
+import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.AbstractAppState;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.asset.AssetKey;
@@ -30,14 +30,14 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public abstract class BaseState extends AbstractAppState {
 
-	protected JmeApplication app;
+	protected SimpleApplication app;
 
 	protected @Getter InputManager inputManager;
 
 	protected AssetManager assetManager;
 
 	protected AppStateManager stateManager;
-	
+
 	protected RenderManager renderManager;
 
 	protected @Getter Camera cam;
@@ -96,7 +96,7 @@ public abstract class BaseState extends AbstractAppState {
 
 	@Override
 	public final void initialize(AppStateManager stateManager, Application app) {
-		this.app = (JmeApplication) app;
+		this.app = (SimpleApplication) app;
 		this.inputManager = app.getInputManager();
 		this.assetManager = app.getAssetManager();
 		this.cam = app.getCamera();

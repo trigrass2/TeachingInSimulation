@@ -24,6 +24,7 @@ import com.jme3x.jfx.util.JFXPlatform;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 
 public abstract class ElecCaseState<T>extends BaseState {
 //	每次打开新的案例，都会创建一个新的节点，存放与案例相关的模型
@@ -32,18 +33,18 @@ public abstract class ElecCaseState<T>extends BaseState {
 	protected Node root;
 	protected @Getter Spatial compPlane;
 
-	protected PointLight pointLight;
+	private PointLight pointLight;
 
-	protected SceneCameraState cameraState;
+	protected @Getter SceneCameraState cameraState;
 
-	protected ElecCase3D<T> ui;
+	protected @Getter @Setter ElecCase3D<T> ui;
 //	protected HoldState holdState;
-	protected HoldStatePro holdState;
-	protected CircuitState circuitState;
+	protected @Getter HoldStatePro holdState;
+	protected @Getter CircuitState circuitState;
 
-	protected CaseMode mode;
+	protected @Getter CaseMode mode;
 
-	private MultimeterState multiMeterState;
+	private MultimeterState multimeterState;
 
 	@Getter
 	@AllArgsConstructor
@@ -104,7 +105,7 @@ public abstract class ElecCaseState<T>extends BaseState {
 
 //		XXX test
 //		stateManager.getState(MultimeterState.class).setEnabled(true);
-		
+
 		super.update(tpf);
 	}
 
@@ -115,7 +116,7 @@ public abstract class ElecCaseState<T>extends BaseState {
 		// 移除操作模式State
 		stateManager.detach(cameraState);
 		stateManager.detach(circuitState);
-		stateManager.detach(multiMeterState);
+		stateManager.detach(multimeterState);
 //		stateManager.detach(holdState);
 
 		holdState.unregisterInput();
@@ -212,23 +213,7 @@ public abstract class ElecCaseState<T>extends BaseState {
 
 	public abstract T getElecCase();
 
-	public CircuitState getCircuitState() {
-		return circuitState;
-	}
-
-	public SceneCameraState getCameraState() {
-		return cameraState;
-	}
-
-	public void setUI(ElecCase3D<T> ui) {
-		this.ui = ui;
-	}
-
-	public ElecCase3D<T> getUI() {
-		return ui;
-	}
-
-	public CaseMode getMode() {
-		return mode;
+	public void setMultimeterVisible(boolean visible) {
+		
 	}
 }
