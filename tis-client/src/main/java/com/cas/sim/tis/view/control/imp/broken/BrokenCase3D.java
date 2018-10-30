@@ -58,7 +58,7 @@ public class BrokenCase3D extends ElecCase3D<BrokenCase> implements IContent {
 
 	@Override
 	protected void createCompPopupMenu() {
-		createCompTagMenu();
+		super.createCompPopupMenu();
 		// 编辑模式下的元器件菜单
 		compSet = new Menu(MsgUtil.getMessage("broken.case.setup"));
 		compMenu.getItems().add(0, compSet);
@@ -71,7 +71,7 @@ public class BrokenCase3D extends ElecCase3D<BrokenCase> implements IContent {
 	@Override
 	protected void createWirePopupMenu() {
 		// 编辑模式导线菜单
-		createWireTagMenu();
+		super.createWirePopupMenu();
 		// 练习模式导线菜单
 		MenuItem unsetTrain = new MenuItem(MsgUtil.getMessage("broken.case.correct"));
 		unsetTrain.setOnAction(e -> {
