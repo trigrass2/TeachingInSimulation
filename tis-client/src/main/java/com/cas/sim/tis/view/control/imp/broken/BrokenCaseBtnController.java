@@ -59,7 +59,9 @@ public class BrokenCaseBtnController extends ElecCaseBtnController {
 	protected void switchCaseMode(CaseMode mode) {
 		SpringUtil.getBean(PageController.class).showLoading();
 		view.setVisible(false);
-		btns.setVisible(false);
+//		btns.setVisible(false);
+		prev.setDisable(true);
+		next.setDisable(true);
 		if (CaseMode.BROKEN_TRAIN_MODE == mode) {
 			broken.toFront();
 			free.setVisible(false);

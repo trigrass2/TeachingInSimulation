@@ -86,7 +86,7 @@ public class TypicalFlowItem extends ElecFlowItem {
 			selected.set(null);
 		} else {
 			StepItem item = (StepItem) items.get(--index);
-			scroll.setVvalue((item.getLayoutY() + item.getBoundsInLocal().getHeight()) / getHeight());
+			scroll.setVvalue((item.getBoundsInParent().getMaxY() - item.getBoundsInLocal().getHeight()) / getHeight());
 			selected.set(item);
 		}
 	}
@@ -98,10 +98,9 @@ public class TypicalFlowItem extends ElecFlowItem {
 				item.getMdl().setCullHint(CullHint.Dynamic);
 				item.setState(State.DONE);
 			}
-			index = items.size();
 		} else {
 			StepItem item = (StepItem) items.get(++index);
-			scroll.setVvalue((item.getLayoutY() + item.getBoundsInLocal().getHeight()) / getHeight());
+			scroll.setVvalue((item.getBoundsInParent().getMaxY() + item.getBoundsInLocal().getHeight()) / getHeight());
 			selected.set(item);
 		}
 	}

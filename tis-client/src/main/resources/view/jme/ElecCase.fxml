@@ -22,7 +22,61 @@
 	<HBox pickOnBounds="false" mouseTransparent="false">
 		<Title fx:id="title" />
 		<HBox HBox.hgrow="ALWAYS" spacing="10" alignment="TOP_RIGHT">
-			<ChoiceBox fx:id="modes" pickOnBounds="true"></ChoiceBox>
+			<StackPane pickOnBounds="false" mouseTransparent="false">
+				<HBox fx:id="view" spacing="10" visible="false" pickOnBounds="false" mouseTransparent="false" alignment="CENTER_RIGHT">
+					<ToggleButton fx:id="autoComps" text="%typical.case.auto.comp" styleClass="recognize-btn" pickOnBounds="true" />
+					<ToggleButton fx:id="autoWires" text="%typical.case.auto.wire" styleClass="recognize-btn" pickOnBounds="true" />
+					<Button text="%elec.case.drawings" styleClass="recognize-btn" onAction="#showDrawingWin" pickOnBounds="true"><!-- 电路图 -->
+						<graphic>
+							<SVGGlyph name="iconfont.svg.drawing" size="20" fill="WHITE" />
+						</graphic>
+					</Button>
+				</HBox>
+				<HBox fx:id="typical" spacing="10" visible="false" pickOnBounds="false" mouseTransparent="false" alignment="CENTER_RIGHT">
+					<Button text="%elec.case.drawings" styleClass="recognize-btn" onAction="#showDrawingWin" pickOnBounds="true"><!-- 电路图 -->
+						<graphic>
+							<SVGGlyph name="iconfont.svg.drawing" size="20" fill="WHITE" />
+						</graphic>
+					</Button>
+					<Button text="%elec.case.wires" styleClass="recognize-btn" onAction="#showWirePicker" pickOnBounds="true"><!-- 导线 -->
+						<graphic>
+							<SVGGlyph name="iconfont.svg.wire" size="20" fill="WHITE" />
+						</graphic>
+					</Button>
+				</HBox>
+				<HBox fx:id="free" spacing="10" visible="false" pickOnBounds="false" mouseTransparent="false" alignment="CENTER_RIGHT">
+					<Button text="%elec.case.wires" styleClass="recognize-btn" onAction="#showWirePicker" pickOnBounds="true"><!-- 导线 -->
+						<graphic>
+							<SVGGlyph name="iconfont.svg.wire" size="20" fill="WHITE" />
+						</graphic>
+					</Button>
+				</HBox>
+				<HBox fx:id="broken" spacing="10" visible="false" pickOnBounds="false" mouseTransparent="false" alignment="CENTER_RIGHT">
+					<HBox styleClass="recognize-label" spacing="5">
+						<Label text="%exam.broken.number" styleClass="font14" textFill="WHITE" />
+						<Label fx:id="number" text="3">
+							<styleClass>
+								<String fx:value="font14" />
+								<String fx:value="red" />
+								<String fx:value="bold" />
+							</styleClass>
+						</Label>
+						<Label text="%exam.broken.number.unit" styleClass="font14" textFill="WHITE" />
+					</HBox>
+					<HBox styleClass="recognize-label" spacing="5">
+						<Label text="%exam.broken.chance" styleClass="font14" textFill="WHITE" />
+						<Label fx:id="chance" text="5">
+							<styleClass>
+								<String fx:value="font14" />
+								<String fx:value="orange" />
+								<String fx:value="bold" />
+							</styleClass>
+						</Label>
+						<Label text="%exam.broken.chance.unit" styleClass="font14" textFill="WHITE" />
+					</HBox>
+					<Button fx:id="submit" text="%button.submit" styleClass="recognize-btn" pickOnBounds="true" />
+				</HBox>
+			</StackPane>
 			<CheckBox fx:id="multimeter" text="%rec.ckb.multimeter" styleClass="recognize-btn" onAction="#toggleMultiMeter" pickOnBounds="true" />
 			<CheckBox fx:id="showName" text="%rec.ckb.showName" styleClass="recognize-btn" onAction="#toggleTagName" pickOnBounds="true" />
 			<CheckBox fx:id="transparent" text="%rec.ckb.transparent" styleClass="recognize-btn" onAction="#toggleTransparent" pickOnBounds="true" />
@@ -32,13 +86,14 @@
 					<ToggleButton text="3D" styleClass="recognize-btn" onMouseClicked="#toggleDimension" selected="true" />
 				</buttons>
 			</SegmentedButton>
+			<ChoiceBox fx:id="modes" pickOnBounds="true"></ChoiceBox>
 		</HBox>
 		<padding>
 			<Insets top="10" right="10" />
 		</padding>
 	</HBox>
 	<HBox VBox.vgrow="ALWAYS" pickOnBounds="false" mouseTransparent="false" alignment="BOTTOM_LEFT">
-		<VBox fx:id="steps" visible="false" prefWidth="400" minWidth="300" maxWidth="400" prefHeight="300" minHeight="400" maxHeight="300">
+		<VBox fx:id="steps" visible="false" prefWidth="400" minWidth="300" maxWidth="400" prefHeight="250" minHeight="250" maxHeight="150">
 			<ScrollPane fx:id="scroll" hbarPolicy="NEVER" styleClass="cover" VBox.vgrow="ALWAYS">
 				<content></content>
 			</ScrollPane>
@@ -56,62 +111,4 @@
 			</HBox>
 		</VBox>
 	</HBox>
-	<StackPane pickOnBounds="false" mouseTransparent="false">
-		<HBox fx:id="view" spacing="10" visible="false" pickOnBounds="false" mouseTransparent="false" alignment="BOTTOM_LEFT">
-			<ToggleButton fx:id="autoComps" text="%typical.case.auto.comp" styleClass="recognize-btn" pickOnBounds="true" />
-			<ToggleButton fx:id="autoWires" text="%typical.case.auto.wire" styleClass="recognize-btn" pickOnBounds="true" />
-			<Button text="%elec.case.drawings" styleClass="recognize-btn" onAction="#showDrawingWin" pickOnBounds="true"><!-- 电路图 -->
-				<graphic>
-					<SVGGlyph name="iconfont.svg.drawing" size="20" fill="WHITE" />
-				</graphic>
-			</Button>
-		</HBox>
-		<HBox fx:id="typical" spacing="10" visible="false" pickOnBounds="false" mouseTransparent="false" alignment="BOTTOM_LEFT">
-			<Button text="%elec.case.drawings" styleClass="recognize-btn" onAction="#showDrawingWin" pickOnBounds="true"><!-- 电路图 -->
-				<graphic>
-					<SVGGlyph name="iconfont.svg.drawing" size="20" fill="WHITE" />
-				</graphic>
-			</Button>
-			<Button text="%elec.case.wires" styleClass="recognize-btn" onAction="#showWirePicker" pickOnBounds="true"><!-- 导线 -->
-				<graphic>
-					<SVGGlyph name="iconfont.svg.wire" size="20" fill="WHITE" />
-				</graphic>
-			</Button>
-		</HBox>
-		<HBox fx:id="free" spacing="10" visible="false" pickOnBounds="false" mouseTransparent="false" alignment="BOTTOM_LEFT">
-			<Button text="%elec.case.wires" styleClass="recognize-btn" onAction="#showWirePicker" pickOnBounds="true"><!-- 导线 -->
-				<graphic>
-					<SVGGlyph name="iconfont.svg.wire" size="20" fill="WHITE" />
-				</graphic>
-			</Button>
-		</HBox>
-		<HBox fx:id="broken" spacing="10" visible="false" pickOnBounds="false" mouseTransparent="false" alignment="BOTTOM_LEFT">
-			<HBox styleClass="recognize-label" spacing="5">
-				<Label text="%exam.broken.number" styleClass="font14" textFill="WHITE" />
-				<Label fx:id="number" text="3">
-					<styleClass>
-						<String fx:value="font14" />
-						<String fx:value="red" />
-						<String fx:value="bold" />
-					</styleClass>
-				</Label>
-				<Label text="%exam.broken.number.unit" styleClass="font14" textFill="WHITE" />
-			</HBox>
-			<HBox styleClass="recognize-label" spacing="5">
-				<Label text="%exam.broken.chance" styleClass="font14" textFill="WHITE" />
-				<Label fx:id="chance" text="5">
-					<styleClass>
-						<String fx:value="font14" />
-						<String fx:value="orange" />
-						<String fx:value="bold" />
-					</styleClass>
-				</Label>
-				<Label text="%exam.broken.chance.unit" styleClass="font14" textFill="WHITE" />
-			</HBox>
-			<Button fx:id="submit" text="%button.submit" styleClass="recognize-btn" pickOnBounds="true" />
-		</HBox>
-		<padding>
-			<Insets left="10" bottom="10" />
-		</padding>
-	</StackPane>
 </VBox>

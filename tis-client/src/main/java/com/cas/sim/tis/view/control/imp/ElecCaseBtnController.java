@@ -332,12 +332,12 @@ public abstract class ElecCaseBtnController implements Initializable, IDistory {
 		Button wire = (Button) event.getSource();
 		if (wirePicker == null) {
 			wirePicker = new PopOver();
-			wirePicker.setArrowLocation(ArrowLocation.BOTTOM_CENTER);
+			wirePicker.setArrowLocation(ArrowLocation.TOP_CENTER);
 			wirePicker.setPrefSize(300, 400);
 			wirePicker.setTitle(MsgUtil.getMessage("elec.case.wires.pane"));
 			wirePicker.setContentNode(getWirePickContent());
 		}
-		Point2D point = wire.localToScreen(wire.getWidth() / 2, -10);
+		Point2D point = wire.localToScreen(wire.getWidth() / 2, 50);
 		wirePicker.show(wire, point.getX(), point.getY());
 	}
 

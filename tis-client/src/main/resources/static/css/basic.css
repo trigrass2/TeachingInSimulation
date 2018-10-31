@@ -1069,7 +1069,7 @@
     -fx-cursor: hand;
 }
 .menu-item >.label {
-	-fx-pref-width: 105.0px;
+	-fx-min-width: 105.0px;
 	-fx-alignment: center ;
 	-fx-text-alignment: center;
 	-fx-text-fill: #ffffff;

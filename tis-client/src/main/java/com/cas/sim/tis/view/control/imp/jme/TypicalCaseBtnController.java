@@ -62,7 +62,9 @@ public class TypicalCaseBtnController extends ElecCaseBtnController {
 			view.setVisible(true);
 			typical.setVisible(false);
 			steps.setVisible(true);
-			btns.setVisible(true);
+//			btns.setVisible(true);
+			prev.setDisable(false);
+			next.setDisable(false);
 			autoComps.setSelected(false);
 			autoWires.setSelected(false);
 			typicalCase3D.autoComps(auto);
@@ -72,7 +74,9 @@ public class TypicalCaseBtnController extends ElecCaseBtnController {
 			typical.setVisible(true);
 			view.setVisible(false);
 			steps.setVisible(true);
-			btns.setVisible(false);
+//			btns.setVisible(false);
+			prev.setDisable(true);
+			next.setDisable(true);
 			typicalCase3D.autoWires(auto);
 			typicalCase3D.autoComps(auto);
 		} else if (CaseMode.EDIT_MODE == mode) {
@@ -80,7 +84,9 @@ public class TypicalCaseBtnController extends ElecCaseBtnController {
 			typical.setVisible(true);
 			view.setVisible(false);
 			steps.setVisible(false);
-			btns.setVisible(false);
+//			btns.setVisible(false);
+			prev.setDisable(true);
+			next.setDisable(true);
 			typicalCase3D.autoComps(auto);
 			typicalCase3D.autoWires(auto);
 		}

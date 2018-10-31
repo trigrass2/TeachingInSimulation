@@ -31,7 +31,9 @@ public class FreeCaseBtnController extends ElecCaseBtnController {
 			free.setVisible(true);
 			view.setVisible(false);
 			steps.setVisible(false);
-			btns.setVisible(false);
+//			btns.setVisible(false);
+			prev.setDisable(true);
+			next.setDisable(true);
 		}
 		if (elecCaseState != null) {
 			elecCaseState.setMode(mode);
