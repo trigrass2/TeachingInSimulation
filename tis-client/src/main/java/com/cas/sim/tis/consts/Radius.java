@@ -27,6 +27,6 @@ public enum Radius {
 
 	public static float convert(int width) {
 //		考虑模型的显示比例。
-		return width * 2f / 20000;
+		return width * 2f / 200;
 	}
 }
