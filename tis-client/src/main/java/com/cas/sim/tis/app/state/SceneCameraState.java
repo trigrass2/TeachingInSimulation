@@ -50,7 +50,7 @@ public class SceneCameraState extends BaseState implements ActionListener, Analo
 //	在3D切换到2D时的相机位置，
 
 	private Vector3f camLocation3D = new Vector3f(0f, 30f, 30f), //
-			camLocation2D = new Vector3f(0.02355165f, 0.8038877f, 0.001963116f);
+			camLocation2D = new Vector3f(0, 64, 0);
 	private Quaternion camRotation3D = new Quaternion(2.240995E-9f, -0.9319663f, 0.36255902f, 1.3504177E-8f), //
 			camRotation2D = new Quaternion(0.0f, -0.70710677f, 0.70710677f, 0.0f);
 
@@ -91,7 +91,7 @@ public class SceneCameraState extends BaseState implements ActionListener, Analo
 //		默认3D视角
 //		如果是默认2D视角，则要替换下面的默认值
 		toggleOrthoPerspMode(Mode.Persp);
-		camLocation2D = new Vector3f(0.02355165f, 0.8038877f, 0.001963116f);
+		camLocation2D = new Vector3f(0, 64, 0);
 		camRotation2D = new Quaternion(0.0f, -0.70710677f, 0.70710677f, 0.0f);
 	}
 
