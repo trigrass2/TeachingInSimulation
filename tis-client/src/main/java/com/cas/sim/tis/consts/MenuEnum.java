@@ -17,12 +17,17 @@ import com.cas.sim.tis.view.control.imp.resource.ResourceMenu;
 import com.cas.sim.tis.view.controller.PageController;
 
 import javafx.event.EventHandler;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 
 public enum MenuEnum implements EventHandler<MouseEvent> {
 	Resource("main.menu.resource", "static/images/menu/resource.png") {
 		@Override
 		public void handle(MouseEvent event) {
+			if(event.getButton() != MouseButton.PRIMARY) {
+				return;
+			}
+			
 			// 跳转到资源库页面
 			Application.showView(PageView.class);
 			PageController controller = SpringUtil.getBean(PageController.class);
@@ -34,6 +39,9 @@ public enum MenuEnum implements EventHandler<MouseEvent> {
 	Questions("main.menu.library", "static/images/menu/library.png") {
 		@Override
 		public void handle(MouseEvent event) {
+			if(event.getButton() != MouseButton.PRIMARY) {
+				return;
+			}
 			Application.showView(PageView.class);
 			PageController controller = SpringUtil.getBean(PageController.class);
 			LibraryMenu menu = new LibraryMenu();
@@ -44,6 +52,9 @@ public enum MenuEnum implements EventHandler<MouseEvent> {
 	Preparation("main.menu.preparation", "static/images/menu/preparation.png") {
 		@Override
 		public void handle(MouseEvent event) {
+			if(event.getButton() != MouseButton.PRIMARY) {
+				return;
+			}
 			List<Catalog> catalogs = SpringUtil.getBean(CatalogAction.class).findCatalogsByParentId(0);
 
 			Dialog<Catalog> dialog = new Dialog<>();
@@ -65,6 +76,9 @@ public enum MenuEnum implements EventHandler<MouseEvent> {
 	Lessones("main.menu.lessones", "static/images/menu/preparation.png") {
 		@Override
 		public void handle(MouseEvent event) {
+			if(event.getButton() != MouseButton.PRIMARY) {
+				return;
+			}
 			List<Catalog> catalogs = SpringUtil.getBean(CatalogAction.class).findCatalogsByParentId(0);
 
 			Dialog<Catalog> dialog = new Dialog<>();
@@ -87,6 +101,9 @@ public enum MenuEnum implements EventHandler<MouseEvent> {
 
 		@Override
 		public void handle(MouseEvent event) {
+			if(event.getButton() != MouseButton.PRIMARY) {
+				return;
+			}
 			Application.showView(PageView.class);
 			PageController controller = SpringUtil.getBean(PageController.class);
 			InformationMenu menu = new InformationMenu();

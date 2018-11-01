@@ -4,6 +4,7 @@ import java.awt.MouseInfo;
 import java.awt.Point;
 import java.util.List;
 
+import com.cas.circuit.CirSim;
 import com.cas.circuit.IBroken;
 import com.cas.circuit.IBroken.BrokenState;
 import com.cas.circuit.component.ElecCompDef;
@@ -78,7 +79,7 @@ public class BrokenCase3D extends ElecCase3D<BrokenCase> implements IContent {
 			if (wire.isBroken()) {
 				wire.setCorrected(true);
 				decreaseBrokenNume();
-				state.getCircuitState().analyze();
+				CirSim.ins.needAnalyze();
 				AlertUtil.showTip(TipType.INFO, MsgUtil.getMessage("broken.case.right.pair"));
 			} else {
 				decreaseChanceNume();
@@ -208,7 +209,7 @@ public class BrokenCase3D extends ElecCase3D<BrokenCase> implements IContent {
 						contactor.setBroken(BrokenState.NORMAL);
 						compDef.setCorrected(contactor);
 						decreaseBrokenNume();
-						state.getCircuitState().analyze();
+						CirSim.ins.needAnalyze();
 						AlertUtil.showTip(TipType.INFO, MsgUtil.getMessage("broken.case.right.pair"));
 					} else {
 						decreaseChanceNume();
@@ -222,7 +223,7 @@ public class BrokenCase3D extends ElecCase3D<BrokenCase> implements IContent {
 						contactor.setBroken(BrokenState.NORMAL);
 						compDef.setCorrected(contactor);
 						decreaseBrokenNume();
-						state.getCircuitState().analyze();
+						CirSim.ins.needAnalyze();
 						AlertUtil.showTip(TipType.INFO, MsgUtil.getMessage("broken.case.right.pair"));
 					} else {
 						decreaseChanceNume();
@@ -241,7 +242,7 @@ public class BrokenCase3D extends ElecCase3D<BrokenCase> implements IContent {
 						coil.setBroken(BrokenState.NORMAL);
 						compDef.setCorrected(coil);
 						decreaseBrokenNume();
-						state.getCircuitState().analyze();
+						CirSim.ins.needAnalyze();
 						AlertUtil.showTip(TipType.INFO, MsgUtil.getMessage("broken.case.right.pair"));
 					} else {
 						decreaseChanceNume();
@@ -273,7 +274,7 @@ public class BrokenCase3D extends ElecCase3D<BrokenCase> implements IContent {
 				wireUnset.setOnAction(e -> {
 					wire.setBroken(BrokenState.NORMAL);
 					removeBrokenItem(wire);
-					state.getCircuitState().analyze();
+					CirSim.ins.needAnalyze();
 				});
 				wireMenu.getItems().remove(0);
 				wireMenu.getItems().add(0, wireUnset);
@@ -282,7 +283,7 @@ public class BrokenCase3D extends ElecCase3D<BrokenCase> implements IContent {
 				wireSet.setOnAction(e -> {
 					wire.setBroken(BrokenState.OPEN);
 					addBrokenItem(wire);
-					state.getCircuitState().analyze();
+					CirSim.ins.needAnalyze();
 				});
 				wireMenu.getItems().remove(0);
 				wireMenu.getItems().add(0, wireSet);

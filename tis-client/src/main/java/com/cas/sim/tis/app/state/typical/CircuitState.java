@@ -55,7 +55,6 @@ import com.cas.sim.tis.app.listener.WireListener;
 import com.cas.sim.tis.app.state.BaseState;
 import com.cas.sim.tis.app.state.ElecCaseState;
 import com.cas.sim.tis.app.state.ElecCaseState.CaseMode;
-import com.cas.sim.tis.app.state.MultimeterState;
 import com.cas.sim.tis.app.state.broken.BrokenCaseState;
 import com.cas.sim.tis.consts.Radius;
 import com.cas.sim.tis.consts.WireColor;
@@ -101,15 +100,13 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class CircuitState extends BaseState implements ICircuitEffect {
 //	导线工连接头接出的最小长度
-	private static final float minLen = 0.01f;
+	private static final float minLen = 1f;
 
 	private static final String COMP_ROOT = "comp_root_in_circuit_state";
 	private static final String WIRE_ROOT = "wire_root_in_circuit_state";
 //	导线颜色
-//	private static ColorRGBA color = ColorRGBA.Yellow;
 	private static WireColor color = WireColor.YELLOW;
 //	导线半径
-//	private static float width = 3f * 2 / 20000;
 	private static Radius radius = Radius.RADIUS1;
 
 	private final ScheduledExecutorService CIRCUIT_SERVICE = Executors.newSingleThreadScheduledExecutor();
@@ -147,8 +144,8 @@ public class CircuitState extends BaseState implements ICircuitEffect {
 	 */
 	private Spatial wirePlane;
 
-	private Node rootCompNode;
-	private Node rootWireNode;
+	private @Getter Node rootCompNode;
+	private @Getter Node rootWireNode;
 
 	private Node guiNode;
 	private BitmapFont tagFont;
@@ -172,15 +169,13 @@ public class CircuitState extends BaseState implements ICircuitEffect {
 
 	private Map<ElecCompDef, Spatial> brokenElecComp = new HashMap<>();
 
-	private List<Step> steps = new ArrayList<Step>();
+	private @Getter List<Step> steps = new ArrayList<Step>();
 
 	private CaseMode mode;
 
 	private ElecCase3D<?> ui;
 
 	private ElecCaseState<?> caseState;
-
-	private MultimeterState multiMeterState;
 
 	public CircuitState(ElecCaseState<?> caseState, ElecCase3D<?> ui, Node root) {
 		this.caseState = caseState;
@@ -319,7 +314,6 @@ public class CircuitState extends BaseState implements ICircuitEffect {
 			return;
 		}
 
-//		collision = JmeUtil.getCollisionFromCursor(root, cam, inputManager.getCursorPosition());
 		collision = JmeUtil.getCollisionFromCursor(root, cam, inputManager.getCursorPosition());
 		if (collision == null) {
 			return;
@@ -876,16 +870,6 @@ public class CircuitState extends BaseState implements ICircuitEffect {
 		Collection<CircuitElm> elms = elecCompDef.getCircuitElmMap().values();
 		elms.forEach(e -> CirSim.ins.addCircuitElm(e));
 		CirSim.ins.needAnalyze();
-//		6、如果当前元器件需要底座，添加监听事件
-//		if (elecCompDef.getBase() != null) {
-//			BaseOnRelayHoverControl onRelayHoverControl = new BaseOnRelayHoverControl(new Consumer<Spatial>() {
-//				@Override
-//				public void accept(Spatial base) {
-//					holdState.relayOnBase(base);
-//				}
-//			}, inputManager, cam);
-//			compModel.addControl(onRelayHoverControl);
-//		}
 	}
 
 	@JmeThread
@@ -947,15 +931,6 @@ public class CircuitState extends BaseState implements ICircuitEffect {
 			}
 
 			elecCompDef.getRelyOn().setBaseDef(null);
-//			// 给组合底座重新添加监听Control
-//			BaseOnRelayHoverControl control = new BaseOnRelayHoverControl(new Consumer<Spatial>() {
-//
-//				@Override
-//				public void accept(Spatial base) {
-//					holdState.relayOnBase(base);
-//				}
-//			}, inputManager, cam);
-//			baseDef.getSpatial().addControl(control);
 		}
 
 		elecCompDef.getCircuitExchangeList().forEach(ex -> CirSim.ins.removeCircuitElm(ex.getCircuitElm()));
@@ -1026,9 +1001,6 @@ public class CircuitState extends BaseState implements ICircuitEffect {
 		Collection<CircuitElm> elms = relyOnDef.getCircuitElmMap().values();
 		elms.forEach(e -> CirSim.ins.addCircuitElm(e));
 		CirSim.ins.needAnalyze();
-
-//		8、移除底座监听Control
-//		baseMdl.removeControl(BaseOnRelayHoverControl.class);
 	}
 
 	@JmeThread
@@ -1132,10 +1104,6 @@ public class CircuitState extends BaseState implements ICircuitEffect {
 		});
 	}
 
-	public Node getRootCompNode() {
-		return rootCompNode;
-	}
-
 	public void clearElecCompSelect() {
 		((ElecCompClickListener) elecCompRightClickListener).clearWireSelected();
 	}
@@ -1169,22 +1137,18 @@ public class CircuitState extends BaseState implements ICircuitEffect {
 	}
 
 	@Override
-	public void addElecCompEffect(CircuitElm elm, ParticleEffect effect) {
+	public void setElecCompParticleEffect(CircuitElm elm, ParticleEffect effect) {
 		ElecCompDef def = elm.getElecCompDef();
-		Node sp = def.getSpatial();
-		Spatial emitter = effect.getEmitter(assetManager);
-		String param = def.getParam("effectLoc");
-		Vector3f loc = com.cas.circuit.util.JmeUtil.parseVector3f(param);
-		emitter.getLocalTranslation().addLocal(sp.getLocalTranslation()).addLocal(loc);
-		sp.getParent().attachChild(emitter);
-
-		this.brokenElecComp.put(def, emitter);
-	}
-
-	@Override
-	public void removeElecCompEffect(CircuitElm elm) {
-		Spatial emitter = this.brokenElecComp.get(elm.getElecCompDef());
-		Optional.ofNullable(emitter).ifPresent(s -> s.removeFromParent());
+		if (effect != null) {
+			Node sp = def.getSpatial();
+			Spatial emitter = effect.getEmitter(assetManager);
+			Vector3f loc = JmeUtil.parseVector3f(def.getParam(ElecCompDef.PARAM_KEY_EFFECT_LOC, "0.0, 0.0, 0.0"));
+			emitter.getLocalTranslation().addLocal(sp.getLocalTranslation().add(loc));
+			sp.getParent().attachChild(emitter);
+			brokenElecComp.put(def, emitter);
+		} else {
+			brokenElecComp.remove(def);
+		}
 	}
 
 	public void autoComps(boolean layout) {
@@ -1209,13 +1173,5 @@ public class CircuitState extends BaseState implements ICircuitEffect {
 				wire.getSpatial().setCullHint(CullHint.Always);
 			}
 		}
-	}
-
-	public List<Step> getSteps() {
-		return steps;
-	}
-
-	public void analyze() {
-		CirSim.ins.needAnalyze();
 	}
 }
