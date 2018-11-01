@@ -28,6 +28,7 @@ import com.jme3.math.Vector2f;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.Spatial.CullHint;
+import com.jme3x.jfx.util.JFXPlatform;
 
 import javafx.application.Platform;
 import lombok.extern.slf4j.Slf4j;
@@ -64,7 +65,7 @@ public class ElecCompState extends BaseState {
 		root = new Node(ROOT_NAME);
 		root.addControl(new ShowNameOnHoverControl((name) -> {
 			Vector2f point = inputManager.getCursorPosition();
-			Platform.runLater(() -> ui.showName(name, point.getX(), point.getY()));
+			JFXPlatform.runInFXThread(() -> ui.showName(name, point.getX(), point.getY()));
 		}, inputManager, cam, true));
 		log.debug("创建元器件状态机的根节点{}", root.getName());
 		rootNode.attachChild(root);

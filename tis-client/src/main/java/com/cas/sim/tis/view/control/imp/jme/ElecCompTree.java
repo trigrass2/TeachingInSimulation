@@ -53,7 +53,7 @@ public class ElecCompTree extends Accordion {
 				lbl.getStyleClass().add("titled-content-btn");
 //				lbl.setStyle("-fx-padding: 0 5px 0 5px;");
 //				lbl.setPadding(new Insets(0, 5, 0, 5));
-				lbl.setOnMouseClicked(event -> {
+				lbl.setOnAction(e -> {
 					c.accept(elecComp);
 				});
 				content.getChildren().add(lbl);

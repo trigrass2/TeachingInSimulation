@@ -40,7 +40,8 @@ public class RecongnizeMenu implements ILeftContent {
 			ToggleButton lbl = new ToggleButton(elecComp.getName() + "(" + elecComp.getModel() + ")");
 			lbl.setTooltip(new Tooltip(lbl.getText()));
 			lbl.getStyleClass().add("titled-content-btn");
-			lbl.setOnMouseClicked(event -> {
+			
+			lbl.setOnAction(event -> {
 				recongnize3D.setElecComp(elecComp);
 			});
 			vb.getChildren().add(lbl);

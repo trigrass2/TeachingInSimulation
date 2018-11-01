@@ -47,7 +47,7 @@ public abstract class ElecCaseMenu implements ILeftContent {
 		name.setWrapText(true);
 
 		Button open = createMenu(MsgUtil.getMessage("menu.button.open"), new SVGGlyph("iconfont.svg.open", Color.WHITE, 24));
-		open.setOnMouseClicked(e -> showCaseDialog());
+		open.setOnAction(e -> showCaseDialog());
 
 		int role = Session.get(Session.KEY_LOGIN_ROLE, RoleConst.STUDENT);
 		if (role == RoleConst.STUDENT) {
@@ -56,10 +56,10 @@ public abstract class ElecCaseMenu implements ILeftContent {
 		} else {
 			options.setAlignment(Pos.CENTER);
 			Button create = createMenu(MsgUtil.getMessage("menu.button.new"), new SVGGlyph("iconfont.svg.new", Color.WHITE, 24));
-			create.setOnMouseClicked(e -> newCase());
+			create.setOnAction(e -> newCase());
 
 			Button save = createMenu(MsgUtil.getMessage("menu.button.save"), new SVGGlyph("iconfont.svg.save", Color.WHITE, 24));
-			save.setOnMouseClicked(e -> saveCase());
+			save.setOnAction(e -> saveCase());
 
 			options.getChildren().addAll(create, open, save);
 		}
