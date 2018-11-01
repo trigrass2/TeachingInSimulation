@@ -5,9 +5,9 @@
 	<groupId>com.cas.sim</groupId>
 	<artifactId>TeachingInSimulation</artifactId>
 	<packaging>pom</packaging>
-	<version>1.0.0-SNAPSHOT</version>
+	<version>1.1.0-SNAPSHOT</version>
 	<modules>
-<!-- 		<module>tis-base</module> -->
+		<module>tis-base</module>
 		<module>tis-server</module>
 		<module>tis-client</module>
 	</modules>
@@ -29,7 +29,7 @@
 		<!-- Spring版本 -->
 		<spring.version>5.0.1.RELEASE</spring.version>
 		<!-- SpringBoot集成JavaFX插件版本 -->
-		<springboot-javafx.version>2.1.5</springboot-javafx.version>
+		<springboot-javafx.version>2.1.6</springboot-javafx.version>
 		<!-- Spring分页插件版本 -->
 		<spring-pagehelper.version>1.2.3</spring-pagehelper.version>
 
@@ -281,6 +281,12 @@
 			<dependency>
 				<groupId>org.jmonkeyengine</groupId>
 				<artifactId>jme3-bullet</artifactId>
+				<version>${engine.version}</version>
+			</dependency>
+			<!-- https://mvnrepository.com/artifact/org.jmonkeyengine/jme3-bullet-native -->
+			<dependency>
+			    <groupId>org.jmonkeyengine</groupId>
+			    <artifactId>jme3-bullet-native</artifactId>
 				<version>${engine.version}</version>
 			</dependency>
 			<!-- https://mvnrepository.com/artifact/org.jmonkeyengine/jme3-networking -->
