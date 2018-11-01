@@ -628,7 +628,7 @@ public class CircuitState extends BaseState implements ICircuitEffect {
 		if (archive == null) {
 			return;
 		}
-		((ElecCompClickListener)elecCompRightClickListener).setRightClickDisable(mode.isHideCircuit());
+		((ElecCompClickListener) elecCompRightClickListener).setRightClickDisable(mode.isHideCircuit());
 		((WireListener) wireListener).setRightClickDisable(mode.isHideCircuit());
 		readEleccomps(archive.getCompList());
 		readWires(archive.getWireList());
@@ -672,7 +672,10 @@ public class CircuitState extends BaseState implements ICircuitEffect {
 			if (mode == CaseMode.BROKEN_EXAM_MODE || mode == CaseMode.BROKEN_TRAIN_MODE) {
 				// 随机故障
 				Collections.shuffle(brokens);
-				List<IBroken> remains = brokens.subList(0, 3);
+				List<IBroken> remains = brokens;
+				if (brokens.size() >= 3) {
+					remains = brokens.subList(0, 3);
+				}
 				int num = remains.size();
 				((BrokenCase3D) ui).initBrokenNum(num);
 				// 除随机抽取的3个故障之外，状态设置为正常
