@@ -292,6 +292,9 @@ public class CircuitState extends BaseState implements ICircuitEffect {
 			}
 //			取消（接线）
 		} else if ("DELETE_SELECTED_WIRE".equals(name)) {
+			if (!mode.isHoldEnable()) {
+				return;
+			}
 			WireListener listener = (WireListener) wireListener;
 			Spatial selectedWireToDelete = listener.getSelectedWire();
 			if (selectedWireToDelete == null) {
@@ -300,6 +303,9 @@ public class CircuitState extends BaseState implements ICircuitEffect {
 			Wire wire = selectedWireToDelete.getUserData("entity");
 			detachFromCircuit(wire);
 		} else if ("DELETE".equals(name)) {
+			if (!mode.isHoldEnable()) {
+				return;
+			}
 			deleteSelected();
 		} else if ("CANCEL".equals(name)) {
 			cancel();
