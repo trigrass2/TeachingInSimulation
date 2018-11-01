@@ -127,7 +127,7 @@
 }
 
 .scroll-pane:focused {
-    -fx-background-color: transparent;
+    /*-fx-background-color: transparent; */
     -fx-background-insets: 0.0;
 }
 .scroll-bar> .thumb {
