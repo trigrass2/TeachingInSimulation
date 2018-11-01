@@ -11,12 +11,16 @@ public class HintControl extends AbstractControl {
 	/**
 	 * 颜色提示
 	 */
-	private static final float COLOR_SPEED = 2f;
-	private static final ColorRGBA COLOR_BEGIN = ColorRGBA.Red;
+	private static final float COLOR_SPEED = 1f;
+	private ColorRGBA begin = ColorRGBA.Red;
 	private static final ColorRGBA COLOR_END = ColorRGBA.White;
 	private float changeAmnt;
 	private float operator = 1;
 
+	public HintControl(ColorRGBA color) {
+		this.begin = color;
+	}
+	
 	@Override
 	protected void controlUpdate(float tpf) {
 		if (changeAmnt < 0) {
@@ -25,7 +29,7 @@ public class HintControl extends AbstractControl {
 			operator = -1;
 		}
 		changeAmnt += tpf * operator * COLOR_SPEED;
-		JmeUtil.color(spatial, COLOR_BEGIN.clone().interpolateLocal(COLOR_END, changeAmnt), false);
+		JmeUtil.color(spatial, begin.clone().interpolateLocal(COLOR_END, changeAmnt), false);
 	}
 
 	@Override
@@ -39,7 +43,7 @@ public class HintControl extends AbstractControl {
 			throw new NullPointerException("请将control加入到spatial中，再调用该方法");
 		}
 		if (enabled) {
-			JmeUtil.color(spatial, COLOR_BEGIN, true);
+			JmeUtil.color(spatial, begin, true);
 		} else {
 			JmeUtil.uncolor(this.spatial);
 		}

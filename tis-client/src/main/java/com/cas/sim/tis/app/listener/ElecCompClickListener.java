@@ -26,6 +26,8 @@ public class ElecCompClickListener extends MouseEventAdapter {
 
 	private SceneCameraState camera;
 
+	private boolean rightClickDisable;
+
 	public ElecCompClickListener(CircuitState circuit, Geometry box, SceneCameraState camera) {
 		this.circuit = circuit;
 		this.box = box;
@@ -53,6 +55,9 @@ public class ElecCompClickListener extends MouseEventAdapter {
 
 	@Override
 	public void mouseRightClicked(MouseEvent e) {
+		if (rightClickDisable) {
+			return;
+		}
 		IContent content = SpringUtil.getBean(PageController.class).getIContent();
 		ElecCompDef def = e.getSpatial().getUserData("entity");
 		if (content instanceof ElecCase3D) {
@@ -60,6 +65,10 @@ public class ElecCompClickListener extends MouseEventAdapter {
 				((ElecCase3D<?>) content).showPopupMenu(def);
 			});
 		}
+	}
+
+	public void setRightClickDisable(boolean rightClickDisable) {
+		this.rightClickDisable = rightClickDisable;
 	}
 
 	public void clearWireSelected() {

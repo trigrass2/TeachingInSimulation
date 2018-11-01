@@ -599,13 +599,11 @@ public class CircuitState extends BaseState implements ICircuitEffect {
 				addListener(c.getSpatial(), controlIOClickListener);
 			}
 		}
-		if (!mode.isHideCircuit()) {
 //			4、元器件本身的监听事件
-			addListener(def.getSpatial(), elecCompRightClickListener);
+		addListener(def.getSpatial(), elecCompRightClickListener);
 //			5、若当前为底座添加监听事件
-			if (def.getBase() != null) {
-				addListener(def.getSpatial(), elecCompBaseClickListener);
-			}
+		if (def.getBase() != null) {
+			addListener(def.getSpatial(), elecCompBaseClickListener);
 		}
 	}
 
@@ -630,6 +628,8 @@ public class CircuitState extends BaseState implements ICircuitEffect {
 		if (archive == null) {
 			return;
 		}
+		((ElecCompClickListener)elecCompRightClickListener).setRightClickDisable(mode.isHideCircuit());
+		((WireListener) wireListener).setRightClickDisable(mode.isHideCircuit());
 		readEleccomps(archive.getCompList());
 		readWires(archive.getWireList());
 		if (caseState instanceof BrokenCaseState) {
@@ -1050,9 +1050,7 @@ public class CircuitState extends BaseState implements ICircuitEffect {
 // 		2、将模型与逻辑对象绑定
 		wire.setSpatial(wireMdl);
 //		3、绑定监听事件
-		if (!mode.isHideCircuit()) {
-			addListener(wireMdl, wireListener);
-		}
+		addListener(wireMdl, wireListener);
 //		4、将导线加入列表中
 		wireList.add(wire);
 

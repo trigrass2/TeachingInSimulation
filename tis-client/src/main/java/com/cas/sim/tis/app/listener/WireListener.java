@@ -5,10 +5,12 @@ import com.cas.sim.tis.app.control.HintControl;
 import com.cas.sim.tis.app.event.MouseEvent;
 import com.cas.sim.tis.app.event.MouseEventAdapter;
 import com.cas.sim.tis.app.state.typical.CircuitState;
+import com.cas.sim.tis.consts.WireColor;
 import com.cas.sim.tis.util.SpringUtil;
 import com.cas.sim.tis.view.control.IContent;
 import com.cas.sim.tis.view.control.imp.ElecCase3D;
 import com.cas.sim.tis.view.controller.PageController;
+import com.jme3.math.ColorRGBA;
 import com.jme3.scene.Spatial;
 
 import javafx.application.Platform;
@@ -18,6 +20,8 @@ public class WireListener extends MouseEventAdapter {
 	private Spatial selectedWire;
 
 	private CircuitState circuitState;
+
+	private boolean rightClickDisable;
 
 	public WireListener(CircuitState circuitState) {
 		this.circuitState = circuitState;
@@ -33,10 +37,13 @@ public class WireListener extends MouseEventAdapter {
 			selectedWire = null;
 			return;
 		}
+		
+		Wire wire = newWireNode.getUserData("entity");
 
 		HintControl control = newWireNode.getControl(HintControl.class);
 		if (control == null) {
-			control = new HintControl();
+			WireColor color = WireColor.getWireColorByKey(wire.getProxy().getColor());
+			control = new HintControl(color.getColorRGBA());
 			newWireNode.addControl(control);
 		}
 
@@ -47,6 +54,9 @@ public class WireListener extends MouseEventAdapter {
 
 	@Override
 	public void mouseRightClicked(MouseEvent e) {
+		if (rightClickDisable) {
+			return;
+		}
 		// 选中显示导线菜单
 		IContent content = SpringUtil.getBean(PageController.class).getIContent();
 		Wire wire = e.getSpatial().getUserData("entity");
@@ -57,6 +67,10 @@ public class WireListener extends MouseEventAdapter {
 		}
 	}
 
+	public void setRightClickDisable(boolean rightClickDisable) {
+		this.rightClickDisable = rightClickDisable;
+	}
+	
 	public Spatial getSelectedWire() {
 		return selectedWire;
 	}
