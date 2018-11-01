@@ -280,7 +280,7 @@ public class MultimeterState extends BaseState {
 				btnActions.get(button).invoke();
 				lcdRefreshFlags |= FLAG_SNAPSHOT;
 			} catch (Exception e) {
-				log.error("万用表按钮{}按下时出现了异常{}", button, e);
+				log.error("万用表按钮{}按下时出现了异常", button, e);
 			}
 		} else if (evt.isReleased()) {
 			button.move(0, 0.3f, 0);

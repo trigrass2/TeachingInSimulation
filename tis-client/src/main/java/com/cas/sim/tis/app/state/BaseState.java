@@ -107,9 +107,14 @@ public abstract class BaseState extends AbstractAppState {
 
 		this.mouseEventState = stateManager.getState(MouseEventState.class);
 
-		initializeLocal();
-
-		super.initialize(stateManager, app);
+		try {
+			initializeLocal();
+			super.initialize(stateManager, app);
+		} catch (Exception e) {
+			log.error("初始化失败", e);
+			stateManager.detach(this);
+			throw e;
+		}
 	}
 
 	/**

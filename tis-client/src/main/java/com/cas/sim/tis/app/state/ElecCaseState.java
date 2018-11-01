@@ -67,6 +67,8 @@ public abstract class ElecCaseState<T>extends BaseState {
 
 	@Override
 	protected void initializeLocal() {
+		holdState = HoldStatePro.ins;
+
 		arrangementScene();
 
 		bindEvents();
@@ -85,7 +87,7 @@ public abstract class ElecCaseState<T>extends BaseState {
 			}
 		}, "toggleView");
 
-		holdState = HoldStatePro.ins;
+		
 		HoldStatePro.ins.setRoot(root);
 		HoldStatePro.ins.registerWithInput(inputManager);
 //		stateManager.attach(holdState);
