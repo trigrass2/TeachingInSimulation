@@ -112,8 +112,8 @@ public class ResourceList extends HBox implements IContent {
 	}
 
 	// 我的资源列表
-	@FXML
-	private Title title;
+//	@FXML
+//	private Title title;
 	@FXML
 	private Table table;
 	@FXML
@@ -221,7 +221,7 @@ public class ResourceList extends HBox implements IContent {
 		if (!type.isEditable()) {
 			uploadPane.setVisible(false);
 		}
-		title.setTitle(type.getTitle());
+//		title.setTitle(type.getTitle());
 		createTable();
 		order.selectedToggleProperty().addListener((observe, oldVal, newVal) -> {
 			if (newVal == null) {
@@ -577,7 +577,7 @@ public class ResourceList extends HBox implements IContent {
 
 	@Override
 	public void onContentAttached(PageController pageController) {
-		pageController.setTitleName(type.title);
+		pageController.setTitleName(type.getTitle());
 	}
 
 	@Override

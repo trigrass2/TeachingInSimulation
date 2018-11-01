@@ -32,24 +32,21 @@
 	<children>
 		<VBox HBox.hgrow="ALWAYS" spacing="20">
 			<children>
-				<HBox>
-					<Title fx:id="title" title="%resource.title.mine" />
-					<HBox alignment="CENTER_RIGHT" HBox.hgrow="ALWAYS" spacing="10">
-						<SearchBox fx:id="search" />
-						<ToggleButton mnemonicParsing="false" prefHeight="40" prefWidth="110" text="%button.lasted.up" onAction="#orderBy">
-							<userData>
-								<String fx:value="CREATE_DATE DESC" />
-							</userData>
-							<toggleGroup>
-								<ToggleGroup fx:id="order" />
-							</toggleGroup>
-						</ToggleButton>
-						<ToggleButton mnemonicParsing="false" prefHeight="40" prefWidth="110" text="%button.browse.up" toggleGroup="$order" onAction="#orderBy">
-							<userData>
-								<String fx:value="BROWSED_TIMES DESC" />
-							</userData>
-						</ToggleButton>
-					</HBox>
+				<HBox alignment="CENTER_RIGHT" HBox.hgrow="ALWAYS" spacing="10">
+					<SearchBox fx:id="search" />
+					<ToggleButton mnemonicParsing="false" prefHeight="40" prefWidth="110" text="%button.lasted.up" onAction="#orderBy">
+						<userData>
+							<String fx:value="CREATE_DATE DESC" />
+						</userData>
+						<toggleGroup>
+							<ToggleGroup fx:id="order" />
+						</toggleGroup>
+					</ToggleButton>
+					<ToggleButton mnemonicParsing="false" prefHeight="40" prefWidth="110" text="%button.browse.up" toggleGroup="$order" onAction="#orderBy">
+						<userData>
+							<String fx:value="BROWSED_TIMES DESC" />
+						</userData>
+					</ToggleButton>
 				</HBox>
 				<HBox spacing="10.0">
 					<children>
