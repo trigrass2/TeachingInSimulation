@@ -48,8 +48,8 @@ public class PublishListForTeacher extends HBox implements IContent {
 
 	private static final Logger LOG = LoggerFactory.getLogger(PublishListForTeacher.class);
 
-	@FXML
-	private Title title;
+//	@FXML
+//	private Title title;
 	@FXML
 	private HBox option;
 	@FXML
@@ -85,7 +85,7 @@ public class PublishListForTeacher extends HBox implements IContent {
 	 * 界面初始化
 	 */
 	private void initialize() {
-		this.title.setTitle(PublishType.EXAM.getTitle());
+//		this.title.setTitle(PublishType.EXAM.getTitle());
 		this.pagination.setContent(pageIndex -> {
 			reload(pageIndex);
 		});
@@ -175,6 +175,11 @@ public class PublishListForTeacher extends HBox implements IContent {
 	public Node[] getContent() {
 		pagination.reload();
 		return new Region[] { this };
+	}
+
+	@Override
+	public void onContentAttached(PageController pageController) {
+		pageController.setTitleName(PublishType.EXAM.getTitle());
 	}
 
 }

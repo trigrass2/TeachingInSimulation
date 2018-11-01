@@ -59,4 +59,9 @@ public class ResourceMenu extends LeftMenu {
 			controller.loadContent(content, PageLevel.Level1);
 		});
 	}
+
+	@Override
+	public void onMenuAttached(PageController pageController) {
+		pageController.setModuleName("main.menu.resource");
+	}
 }

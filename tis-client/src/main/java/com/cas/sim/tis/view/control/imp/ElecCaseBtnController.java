@@ -53,8 +53,8 @@ import javafx.stage.StageStyle;
 public abstract class ElecCaseBtnController implements Initializable, IDistory {
 	@FXML
 	protected VBox pane;
-	@FXML
-	protected Title title;
+//	@FXML
+//	protected Title title;
 	@FXML
 	protected StackPane content;
 	@FXML
@@ -341,10 +341,10 @@ public abstract class ElecCaseBtnController implements Initializable, IDistory {
 		wirePicker.show(wire, point.getX(), point.getY());
 	}
 
-	public void setTitle(String title) {
-		this.title.setTitle(title);
-		this.title.setVisible(true);
-	}
+//	public void setTitle(String title) {
+//		this.title.setTitle(title);
+//		this.title.setVisible(true);
+//	}
 
 	public void setState(ElecCaseState<?> elecCaseState) {
 		this.elecCaseState = elecCaseState;

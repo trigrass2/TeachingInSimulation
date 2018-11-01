@@ -17,6 +17,7 @@ import com.cas.sim.tis.entity.Question;
 import com.cas.sim.tis.util.SpringUtil;
 import com.cas.sim.tis.view.control.IContent;
 import com.cas.sim.tis.view.control.imp.Title;
+import com.cas.sim.tis.view.controller.PageController;
 import com.cas.sim.tis.vo.ExamLibraryPublish;
 
 import javafx.fxml.FXML;
@@ -139,6 +140,12 @@ public class StudentQuestionPaper extends HBox implements IContent {
 	@Override
 	public Node[] getContent() {
 		return new Region[] { this };
+	}
+
+	@Override
+	public void onContentAttached(PageController pageController) {
+//		FIXME
+//		pageController.setModuleName("main.menu.preparation");
 	}
 
 }

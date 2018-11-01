@@ -20,7 +20,6 @@
 <?import java.lang.String?>
 <VBox fx:id="pane" pickOnBounds="false" visible="false" xmlns:fx="http://javafx.com/fxml/1">
 	<HBox pickOnBounds="false" mouseTransparent="false">
-		<Title fx:id="title" />
 		<HBox HBox.hgrow="ALWAYS" spacing="10" alignment="TOP_RIGHT">
 			<StackPane pickOnBounds="false" mouseTransparent="false">
 				<HBox fx:id="view" spacing="10" visible="false" pickOnBounds="false" mouseTransparent="false" alignment="CENTER_RIGHT">

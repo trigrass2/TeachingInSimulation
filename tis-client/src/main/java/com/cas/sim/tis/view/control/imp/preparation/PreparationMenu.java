@@ -188,4 +188,9 @@ public class PreparationMenu extends VBox implements ILeftContent, IPublish, IDi
 	public Region getLeftContent() {
 		return this;
 	}
+
+	@Override
+	public void onMenuAttached(PageController pageController) {
+		pageController.setModuleName("main.menu.preparation");
+	}
 }

@@ -17,7 +17,6 @@ import com.cas.sim.tis.app.state.typical.CircuitState;
 import com.cas.sim.tis.entity.BrokenCase;
 import com.cas.sim.tis.util.AlertUtil;
 import com.cas.sim.tis.util.MsgUtil;
-import com.cas.sim.tis.view.control.IContent;
 import com.cas.sim.tis.view.control.imp.ElecCase3D;
 import com.cas.sim.tis.view.control.imp.ElecCaseBtnController;
 import com.cas.sim.tis.view.control.imp.dialog.Tip.TipType;
@@ -29,7 +28,7 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.RadioMenuItem;
 import javafx.scene.control.ToggleGroup;
 
-public class BrokenCase3D extends ElecCase3D<BrokenCase> implements IContent {
+public class BrokenCase3D extends ElecCase3D<BrokenCase> {
 
 	private Menu compSet;
 	private Menu compUnset;
@@ -51,6 +50,7 @@ public class BrokenCase3D extends ElecCase3D<BrokenCase> implements IContent {
 		state.setupCase(brokenCase, mode);
 		btnController.clean();
 		btnController.setMode(mode);
+		pageController.setTitleName(brokenCase.getName());
 	}
 
 	public void setFinish(boolean finish) {

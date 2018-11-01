@@ -19,6 +19,7 @@ import com.cas.sim.tis.util.SpringUtil;
 import com.cas.sim.tis.view.control.IContent;
 import com.cas.sim.tis.view.control.IDistory;
 import com.cas.sim.tis.view.control.imp.vlc.VLCPlayer;
+import com.cas.sim.tis.view.controller.PageController;
 import com.cas.sim.tis.vo.ResourceInfo;
 import com.cas.util.DateUtil;
 import com.teamdev.jxbrowser.chromium.Browser;
@@ -328,5 +329,10 @@ public class ResourceViewer extends VBox implements IContent {
 				((BrowserView) child).getBrowser().dispose();
 			}
 		}
+	}
+
+	@Override
+	public void onContentAttached(PageController pageController) {
+		pageController.setTitleName(resource.getName());
 	}
 }

@@ -92,4 +92,10 @@ public class TypicalCaseMenu extends ElecCaseMenu implements ILeftContent {
 			Platform.runLater(() -> SpringUtil.getBean(PageController.class).hideLoading());
 		}
 	}
+
+	@Override
+	public void onMenuAttached(PageController pageController) {
+		pageController.setModuleName("menu.item.typical");
+	}
+
 }

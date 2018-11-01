@@ -57,7 +57,6 @@ import com.cas.sim.tis.util.MsgUtil;
 import com.cas.sim.tis.util.SpringUtil;
 import com.cas.sim.tis.view.control.IContent;
 import com.cas.sim.tis.view.control.imp.ResourceViewer;
-import com.cas.sim.tis.view.control.imp.Title;
 import com.cas.sim.tis.view.control.imp.broken.BrokenCase3D;
 import com.cas.sim.tis.view.control.imp.broken.BrokenCaseBtnController;
 import com.cas.sim.tis.view.control.imp.broken.BrokenCaseSelectDialog;
@@ -97,8 +96,8 @@ public class PreparationDetail extends HBox implements IContent {
 
 	private static final Logger LOG = LoggerFactory.getLogger(PreparationDetail.class);
 
-	@FXML
-	private Title title;
+//	@FXML
+//	private Title title;
 	@FXML
 	private FlowPane objectives;
 	@FXML
@@ -149,8 +148,6 @@ public class PreparationDetail extends HBox implements IContent {
 	}
 
 	private void initialize() {
-		this.title.setTitle(task.getName());
-
 		createResourceTable();
 		createQuizTable();
 
@@ -675,7 +672,7 @@ public class PreparationDetail extends HBox implements IContent {
 		FreeCase3D content = new FreeCase3D(new FreeCaseState(), new FreeCaseBtnController(CaseMode.EDIT_MODE));
 		
 		FreeCaseMenu menu = new FreeCaseMenu(content);
-		menu.setName(MsgUtil.getMessage("menu.item.free"));
+//		menu.setName(MsgUtil.getMessage("menu.item.free"));
 		menu.setEditable(false);
 		
 		controller.loadContent(content, PageLevel.Level2);
@@ -693,6 +690,11 @@ public class PreparationDetail extends HBox implements IContent {
 	@Override
 	public Node[] getContent() {
 		return new Region[] { this };
+	}
+
+	@Override
+	public void onContentAttached(PageController pageController) {
+		pageController.setTitleName(task.getName());		
 	}
 
 }

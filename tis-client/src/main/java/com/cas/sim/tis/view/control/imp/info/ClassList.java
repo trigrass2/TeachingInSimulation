@@ -49,8 +49,8 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class ClassList extends HBox implements IContent {
 
-	@FXML
-	private Title title;
+//	@FXML
+//	private Title title;
 	@FXML
 	private Title manage;
 	@FXML
@@ -60,7 +60,6 @@ public class ClassList extends HBox implements IContent {
 
 	public ClassList() {
 		loadFXML();
-
 		initialize();
 	}
 
@@ -87,7 +86,7 @@ public class ClassList extends HBox implements IContent {
 	 * 界面初始化
 	 */
 	private void initialize() {
-		title.setTitle(MsgUtil.getMessage("class.title.list"));
+//		title.setTitle(MsgUtil.getMessage("class.title.list"));
 		manage.setTitle(MsgUtil.getMessage("class.title.manage"));
 		this.pagination.setContent(pageIndex -> {
 			reload(pageIndex);
@@ -289,6 +288,11 @@ public class ClassList extends HBox implements IContent {
 	public Node[] getContent() {
 		pagination.reload();
 		return new Region[] { this };
+	}
+
+	@Override
+	public void onContentAttached(PageController pageController) {
+		pageController.setTitleName(MsgUtil.getMessage("class.title.list"));
 	}
 
 }

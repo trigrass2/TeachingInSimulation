@@ -28,20 +28,19 @@
 	<children>
 		<VBox HBox.hgrow="ALWAYS" spacing="20">
 			<children>
-				<Title title="%library.title.detail" />
-				<HBox alignment="CENTER_LEFT" HBox.hgrow="ALWAYS" style="-fx-background-color:#f6f6f6;">
-					<Label fx:id="libName" styleClass="font14">
-						<graphic>
-							<SVGGlyph name="iconfont.svg.triangle" fill="#bebebe" size="10" />
-						</graphic>
-					</Label>
-					<padding>
-						<Insets top="10" bottom="10" left="10" />
-					</padding>
-					<VBox.margin>
-						<Insets left="20" />
-					</VBox.margin>
-				</HBox>
+<!-- 				<HBox alignment="CENTER_LEFT" HBox.hgrow="ALWAYS" style="-fx-background-color:#f6f6f6;"> -->
+<!-- 					<Label fx:id="libName" styleClass="font14"> -->
+<!-- 						<graphic> -->
+<!-- 							<SVGGlyph name="iconfont.svg.triangle" fill="#bebebe" size="10" /> -->
+<!-- 						</graphic> -->
+<!-- 					</Label> -->
+<!-- 					<padding> -->
+<!-- 						<Insets top="10" bottom="10" left="10" /> -->
+<!-- 					</padding> -->
+<!-- 					<VBox.margin> -->
+<!-- 						<Insets left="20" /> -->
+<!-- 					</VBox.margin> -->
+<!-- 				</HBox> -->
 				<ScrollPane fitToWidth="true" hbarPolicy="NEVER">
 					<content>
 						<VBox fx:id="paper" spacing="20.0" VBox.vgrow="ALWAYS" />

@@ -11,6 +11,7 @@ import com.cas.sim.tis.app.JmeApplication;
 import com.cas.sim.tis.app.state.ElecCompState;
 import com.cas.sim.tis.entity.ElecComp;
 import com.cas.sim.tis.view.control.IContent;
+import com.cas.sim.tis.view.controller.PageController;
 import com.jme3x.jfx.injfx.JmeToJFXIntegrator;
 import com.jme3x.jfx.injfx.input.JFXMouseInput;
 
@@ -34,6 +35,7 @@ public class Recongnize3D implements IContent {
 	private Canvas canvas;
 	private Label nameLabel;
 	private RecongnizeBtnController btnController;
+	private PageController pageController;
 
 	public Recongnize3D() {
 //		创建一个Canvas层，用于显示JME
@@ -107,6 +109,8 @@ public class Recongnize3D implements IContent {
 			appState.setElecComp(eComp);
 		});
 		btnController.setElecComp(eComp);
+		
+		pageController.setTitleName(eComp.getName());
 	}
 
 	@FxThread
@@ -118,5 +122,10 @@ public class Recongnize3D implements IContent {
 ////	    private boolean useLocalCoords;
 ////		private boolean inverseYCoord;
 		nameLabel.setLayoutY(canvas.getHeight() - y + 20);
+	}
+	
+	@Override
+	public void onContentAttached(PageController pageController) {
+		this.pageController = pageController;
 	}
 }

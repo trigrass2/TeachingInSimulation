@@ -75,7 +75,7 @@ public class TypicalCaseState extends ElecCaseState<ArchiveCase> {
 		this.archiveCase = archiveCase;
 		setMode(mode);
 		JFXPlatform.runInFXThread(() -> {
-			ui.setTitle(archiveCase.getName());
+//			ui.setTitle(archiveCase.getName());
 			// 结束加载界面
 			SpringUtil.getBean(PageController.class).hideLoading();
 		});

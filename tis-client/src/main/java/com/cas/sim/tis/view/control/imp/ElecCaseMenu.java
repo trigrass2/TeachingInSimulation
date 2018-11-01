@@ -12,10 +12,8 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ContentDisplay;
-import javafx.scene.control.Label;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -27,7 +25,7 @@ public abstract class ElecCaseMenu implements ILeftContent {
 	protected VBox menu = new VBox(10);
 	protected HBox options = new HBox(22);
 	
-	private Label name = new Label();
+//	private Label name = new Label();
 	private ToggleGroup group = new ToggleGroup();
 
 	protected ElecCase3D<?> elecCase3D;
@@ -43,8 +41,8 @@ public abstract class ElecCaseMenu implements ILeftContent {
 
 	@Override
 	public Region getLeftContent() {
-		name.getStyleClass().add("left-menu-orange");
-		name.setWrapText(true);
+//		name.getStyleClass().add("left-menu-orange");
+//		name.setWrapText(true);
 
 		Button open = createMenu(MsgUtil.getMessage("menu.button.open"), new SVGGlyph("iconfont.svg.open", Color.WHITE, 24));
 		open.setOnAction(e -> showCaseDialog());
@@ -65,16 +63,16 @@ public abstract class ElecCaseMenu implements ILeftContent {
 		}
 
 //		菜单
-		menu.getChildren().add(name);
+//		menu.getChildren().add(name);
 		menu.getChildren().add(options);
 		menu.getChildren().add(new ElecCompTree(elecComp -> elecCase3D.selectedElecComp(elecComp), group));
 		menu.setPadding(new Insets(10, 0, 0, 0));
 		return menu;
 	}
 
-	public void setName(String name) {
-		this.name.setText(name);
-	}
+//	public void setName(String name) {
+//		this.name.setText(name);
+//	}
 
 	private Button createMenu(String text, Node graphic) {
 		Button btn = new Button(text, graphic);

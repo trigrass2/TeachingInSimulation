@@ -143,4 +143,9 @@ public class BrokenCaseMenu extends ElecCaseMenu implements IPublish {
 			item.load(id);
 		}
 	}
+
+	@Override
+	public void onMenuAttached(PageController pageController) {
+		pageController.setModuleName("menu.item.repair");
+	}
 }

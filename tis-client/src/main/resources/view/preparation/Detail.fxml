@@ -25,7 +25,6 @@
 			<children>
 				<HBox alignment="CENTER_LEFT" spacing="10">
 					<children>
-						<Title fx:id="title" HBox.hgrow="ALWAYS" />
 						<MenuBar>
 							<menus>
 								<Menu mnemonicParsing="false" text="%menu.button.add.resc">

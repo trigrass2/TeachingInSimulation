@@ -576,6 +576,11 @@ public class ResourceList extends HBox implements IContent {
 	}
 
 	@Override
+	public void onContentAttached(PageController pageController) {
+		pageController.setTitleName(type.title);
+	}
+
+	@Override
 	public void distroy() {
 
 	}

@@ -12,8 +12,17 @@
 <?import javafx.scene.control.ProgressIndicator?>
 <?import com.cas.sim.tis.svg.SVGGlyph?>
 <?import com.cas.sim.tis.view.control.imp.Decoration?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.shape.Circle?>
 
-<VBox prefHeight="768.0" prefWidth="1366.0" style="-fx-background-image: url(/static/images/basic/bg.png);-fx-background-size:stretch;" stylesheets="@../static/css/basic.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.cas.sim.tis.view.controller.PageController">
+<VBox 
+	prefHeight="768.0"
+	prefWidth="1366.0"
+	style="-fx-background-image: url(/static/images/basic/bg.png);-fx-background-size:stretch;"
+	stylesheets="@../static/css/basic.css"
+	xmlns="http://javafx.com/javafx/8.0.141"
+	xmlns:fx="http://javafx.com/fxml/1"
+	fx:controller="com.cas.sim.tis.view.controller.PageController">
 	<children>
 		<HBox fx:id="handle" alignment="CENTER_LEFT" prefHeight="75.0" minHeight="75.0" styleClass="top-cover">
 			<children>
@@ -25,12 +34,24 @@
 						<Insets left="40" right="40" />
 					</HBox.margin>
 				</ImageView>
-				<Button fx:id="back" mnemonicParsing="false" onAction="#back" styleClass="img-btn" text="返回" textFill="WHITE" focusTraversable="false">
+				<Button fx:id="back" styleClass="img-btn" mnemonicParsing="false" prefWidth="100" prefHeight="60" onAction="#back" text="返回" textFill="WHITE" focusTraversable="false" >
 					<graphic>
 						<SVGGlyph name="iconfont.svg.back" size="16" fill="WHITE" />
 					</graphic>
 				</Button>
-				<HBox alignment="TOP_RIGHT" HBox.hgrow="ALWAYS" >
+
+				<HBox alignment="CENTER_LEFT" spacing="5">
+					<Label style="-fx-font-size:26;" textFill="WHITE" text="模块名称" fx:id="moduleName">
+					</Label>
+					<Label style="-fx-font-size:26;" textFill="WHITE" text="·" >
+					</Label>
+					<Label style="-fx-font-size:16;" textFill="WHITE" text="子任务名称" fx:id="titleName"></Label>
+					<padding>
+						<Insets left="10"></Insets>
+					</padding>
+				</HBox>
+
+				<HBox alignment="TOP_RIGHT" HBox.hgrow="ALWAYS">
 					<children>
 						<Decoration fx:id="decoration"/>
 					</children>
@@ -38,8 +59,6 @@
 			</children>
 		</HBox>
 		<StackPane VBox.vgrow="ALWAYS">
-			
-
 			<StackPane fx:id="container">
 				<children>
 					<HBox>

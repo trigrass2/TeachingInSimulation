@@ -29,7 +29,6 @@
 		<VBox HBox.hgrow="ALWAYS" spacing="10">
 			<children>
 				<HBox>
-					<Title fx:id="title" />
 					<HBox fx:id="option" alignment="CENTER_RIGHT" HBox.hgrow="ALWAYS">
 						<Button text="%button.add" styleClass="blue-btn" onAction="#add" />
 					</HBox>

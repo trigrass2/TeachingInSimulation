@@ -12,6 +12,7 @@ import com.cas.sim.tis.entity.BrokenCase;
 import com.cas.sim.tis.entity.ExamBrokenRecord;
 import com.cas.sim.tis.util.SpringUtil;
 import com.cas.sim.tis.view.controller.PageController;
+import com.jme3x.jfx.util.JFXPlatform;
 
 import javafx.application.Platform;
 
@@ -72,8 +73,8 @@ public class BrokenCaseState extends ElecCaseState<BrokenCase> {
 	public void setupCase(BrokenCase brokenCase, CaseMode mode) {
 		this.brokenCase = brokenCase;
 		setMode(mode);
-		Platform.runLater(() -> {
-			ui.setTitle(brokenCase.getName());
+		JFXPlatform.runInFXThread(() -> {
+//			ui.setTitle(brokenCase.getName());
 			// 结束加载界面
 			SpringUtil.getBean(PageController.class).hideLoading();
 		});

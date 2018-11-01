@@ -12,6 +12,7 @@ import com.cas.sim.tis.consts.ArchiveType;
 import com.cas.sim.tis.entity.ArchiveCase;
 import com.cas.sim.tis.util.SpringUtil;
 import com.cas.sim.tis.view.controller.PageController;
+import com.jme3x.jfx.util.JFXPlatform;
 
 import javafx.application.Platform;
 
@@ -67,8 +68,8 @@ public class FreeCaseState extends ElecCaseState<ArchiveCase> {
 	public void setupCase(ArchiveCase archiveCase, CaseMode mode) {
 		this.archiveCase = archiveCase;
 		setMode(mode);
-		Platform.runLater(() -> {
-			ui.setTitle(archiveCase.getName());
+		JFXPlatform.runInFXThread(() -> {
+//			ui.setTitle(archiveCase.getName());
 			// 结束加载界面
 			SpringUtil.getBean(PageController.class).hideLoading();
 		});

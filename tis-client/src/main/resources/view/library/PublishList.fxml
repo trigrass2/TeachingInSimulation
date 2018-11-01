@@ -28,9 +28,6 @@
 	<children>
 		<VBox HBox.hgrow="ALWAYS" spacing="10">
 			<children>
-				<HBox>
-					<Title fx:id="title" />
-				</HBox>
 				<VBox spacing="10.0" VBox.vgrow="ALWAYS">
 					<VBox VBox.vgrow="ALWAYS">
 						<children>

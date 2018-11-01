@@ -30,6 +30,7 @@ import com.cas.sim.tis.view.control.imp.pagination.PaginationBar;
 import com.cas.sim.tis.view.control.imp.table.BtnCell;
 import com.cas.sim.tis.view.control.imp.table.Column;
 import com.cas.sim.tis.view.control.imp.table.Table;
+import com.cas.sim.tis.view.controller.PageController;
 import com.cas.util.FileUtil;
 import com.cas.util.Util;
 import com.github.pagehelper.PageInfo;
@@ -49,8 +50,8 @@ import javafx.stage.FileChooser;
 public class TeacherList extends HBox implements IContent {
 	private static final Logger LOG = LoggerFactory.getLogger(TeacherList.class);
 
-	@FXML
-	private Title title;
+//	@FXML
+//	private Title title;
 	@FXML
 	private Title manage;
 	@FXML
@@ -87,7 +88,7 @@ public class TeacherList extends HBox implements IContent {
 	 * 界面初始化
 	 */
 	private void initialize() {
-		title.setTitle(MsgUtil.getMessage("teacher.title.list"));
+//		title.setTitle(MsgUtil.getMessage("teacher.title.list"));
 		manage.setTitle(MsgUtil.getMessage("teacher.title.manage"));
 		this.pagination.setContent(pageIndex -> {
 			reload(pageIndex);
@@ -290,4 +291,8 @@ public class TeacherList extends HBox implements IContent {
 		return new Region[] { this };
 	}
 
+	@Override
+	public void onContentAttached(PageController pageController) {
+		pageController.setTitleName(MsgUtil.getMessage("teacher.title.list"));
+	}
 }

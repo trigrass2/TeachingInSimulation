@@ -16,7 +16,6 @@ public abstract class ElecFlowItem extends VBox {
 		setPadding(new Insets(10));
 		setPickOnBounds(false);
 		setMouseTransparent(false);
-		
 		bindListener();
 	}
 

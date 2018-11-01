@@ -93,4 +93,9 @@ public class LibraryMenu extends LeftMenu implements IPublish, IDistory {
 			item.distroy();
 		}
 	}
+
+	@Override
+	public void onMenuAttached(PageController pageController) {
+		pageController.setModuleName("main.menu.library");
+	}
 }

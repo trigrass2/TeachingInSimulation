@@ -96,9 +96,9 @@ public class ElecCompHoldHandler implements HoldHandler {
 		 * 在x-z平面上，每次移动一个单位
 		 */
 		spatial.setLocalTranslation(//
-				contactPoint.x, //
+				(int)contactPoint.x, //
 				contactPoint.y, //
-				contactPoint.z//
+				(int)contactPoint.z//
 		);
 	}
 

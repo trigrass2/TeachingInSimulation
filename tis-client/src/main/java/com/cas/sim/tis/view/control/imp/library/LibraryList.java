@@ -15,7 +15,6 @@ import com.cas.sim.tis.util.AlertUtil;
 import com.cas.sim.tis.util.MsgUtil;
 import com.cas.sim.tis.util.SpringUtil;
 import com.cas.sim.tis.view.control.IContent;
-import com.cas.sim.tis.view.control.imp.Title;
 import com.cas.sim.tis.view.control.imp.dialog.Dialog;
 import com.cas.sim.tis.view.control.imp.pagination.PaginationBar;
 import com.cas.sim.tis.view.control.imp.question.PreviewQuestionPaper;
@@ -71,8 +70,8 @@ public class LibraryList extends HBox implements IContent {
 
 	private LibraryMenuType menuType;
 
-	@FXML
-	private Title title;
+//	@FXML
+//	private Title title;
 	@FXML
 	private HBox option;
 	@FXML
@@ -111,7 +110,7 @@ public class LibraryList extends HBox implements IContent {
 	 * 界面初始化
 	 */
 	private void initialize() {
-		this.title.setTitle(menuType.getLibraryType().getKey());
+//		this.title.setTitle(menuType.getLibraryType().getKey());
 		this.option.setVisible(menuType.isEditable());
 		this.pagination.setContent(pageIndex -> {
 			reload(pageIndex);
@@ -238,6 +237,11 @@ public class LibraryList extends HBox implements IContent {
 	public Node[] getContent() {
 		pagination.reload();
 		return new Region[] { this };
+	}
+
+	@Override
+	public void onContentAttached(PageController pageController) {
+		pageController.setTitleName(menuType.libraryType.getKey());
 	}
 
 }

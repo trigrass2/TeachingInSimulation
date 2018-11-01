@@ -22,6 +22,7 @@ import com.cas.sim.tis.util.MsgUtil;
 import com.cas.sim.tis.view.control.IContent;
 import com.cas.sim.tis.view.control.IDistory;
 import com.cas.sim.tis.view.control.imp.dialog.Tip.TipType;
+import com.cas.sim.tis.view.controller.PageController;
 import com.jme3x.jfx.injfx.JmeToJFXIntegrator;
 import com.jme3x.jfx.injfx.input.JFXMouseInput;
 
@@ -70,6 +71,8 @@ public abstract class ElecCase3D<T> implements IDistory, IContent {
 	protected Menu terms;
 
 	private MultimeterState multiMeterState;
+
+	protected PageController pageController;
 
 	public ElecCase3D(ElecCaseState<T> state, ElecCaseBtnController btnController) {
 		this.state = state;
@@ -159,9 +162,9 @@ public abstract class ElecCase3D<T> implements IDistory, IContent {
 		nameLabel.setLayoutY(canvas.getHeight() - y + 20);
 	}
 
-	public void setTitle(String title) {
-		btnController.setTitle(title);
-	}
+//	public void setTitle(String title) {
+//		btnController.setTitle(title);
+//	}
 
 	protected void createCompPopupMenu() {
 		createCompTagMenu();
@@ -326,5 +329,10 @@ public abstract class ElecCase3D<T> implements IDistory, IContent {
 		jmeApp.stop(true);
 
 		btnController.distroy();
+	}
+
+	@Override
+	public void onContentAttached(PageController pageController) {
+		this.pageController = pageController;
 	}
 }

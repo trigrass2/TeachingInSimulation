@@ -6,6 +6,7 @@ import com.cas.sim.tis.action.ElecCompAction;
 import com.cas.sim.tis.entity.ElecComp;
 import com.cas.sim.tis.util.SpringUtil;
 import com.cas.sim.tis.view.control.ILeftContent;
+import com.cas.sim.tis.view.controller.PageController;
 
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
@@ -49,4 +50,10 @@ public class RecongnizeMenu implements ILeftContent {
 		});
 		return vb;
 	}
+
+	@Override
+	public void onMenuAttached(PageController pageController) {
+		pageController.setModuleName("menu.item.cognition");
+	}
+
 }

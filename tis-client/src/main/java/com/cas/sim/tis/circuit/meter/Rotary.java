@@ -117,8 +117,7 @@ public enum Rotary implements Meter {
 
 	@Override
 	public void reset() {
-		if (meter == null) {
-			log.warn("档位没有对应的仪表");
+		if (this == Rotary.OFF) {
 			return;
 		}
 		meter.reset();
@@ -126,8 +125,7 @@ public enum Rotary implements Meter {
 
 	@Override
 	public boolean range() {
-		if (meter == null) {
-			log.warn("档位没有对应的仪表");
+		if (this == Rotary.OFF) {
 			return false;
 		}
 		return meter.range();
@@ -135,8 +133,7 @@ public enum Rotary implements Meter {
 
 	@Override
 	public Range getRange() {
-		if (meter == null) {
-			log.warn("档位没有对应的仪表");
+		if (this == Rotary.OFF) {
 			return null;
 		}
 		return meter.getRange();
@@ -144,8 +141,7 @@ public enum Rotary implements Meter {
 
 	@Override
 	public boolean isAutoRange() {
-		if (meter == null) {
-			log.warn("档位没有对应的仪表");
+		if (this == Rotary.OFF) {
 			return false;
 		}
 		return meter.isAutoRange();
@@ -153,8 +149,7 @@ public enum Rotary implements Meter {
 
 	@Override
 	public boolean hold() {
-		if (meter == null) {
-			log.warn("档位没有对应的仪表");
+		if (this == Rotary.OFF) {
 			return false;
 		}
 		return meter.hold();
@@ -162,8 +157,7 @@ public enum Rotary implements Meter {
 
 	@Override
 	public boolean isHold() {
-		if (meter == null) {
-			log.warn("档位没有对应的仪表");
+		if (this == Rotary.OFF) {
 			return false;
 		}
 		return meter.isHold();
@@ -171,8 +165,7 @@ public enum Rotary implements Meter {
 
 	@Override
 	public boolean function() {
-		if (meter == null) {
-			log.warn("档位没有对应的仪表");
+		if (this == Rotary.OFF) {
 			return false;
 		}
 		return meter.function();
@@ -180,8 +173,7 @@ public enum Rotary implements Meter {
 
 	@Override
 	public Function getFunction() {
-		if (meter == null) {
-			log.warn("档位没有对应的仪表");
+		if (this == Rotary.OFF) {
 			return null;
 		}
 		return meter.getFunction();
@@ -200,8 +192,7 @@ public enum Rotary implements Meter {
 		if (this == OFF) {
 			return Double.MAX_VALUE;
 		}
-		if (meter == null) {
-			log.warn("档位没有对应的仪表");
+		if (this == Rotary.OFF) {
 			return 0.0;
 		}
 		return meter.getValue();
@@ -210,7 +201,6 @@ public enum Rotary implements Meter {
 	@Override
 	public double getRealValue() {
 		if (this == OFF) {
-			log.warn("档位没有对应的仪表");
 			return Double.MAX_VALUE;
 		}
 		return meter.getRealValue();
@@ -219,7 +209,6 @@ public enum Rotary implements Meter {
 	@Override
 	public List<CircuitElm> getElmList() {
 		if (this == OFF) {
-			log.warn("档位没有对应的仪表");
 			return new ArrayList<>();
 		}
 		return meter.getElmList();

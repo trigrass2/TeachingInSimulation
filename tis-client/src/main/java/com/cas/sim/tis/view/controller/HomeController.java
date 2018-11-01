@@ -152,7 +152,7 @@ public class HomeController implements Initializable {
 		}
 
 		TypicalCaseMenu menu = new TypicalCaseMenu(content);
-		menu.setName(MsgUtil.getMessage("menu.item.typical"));
+//		menu.setName(MsgUtil.getMessage("menu.item.typical"));
 
 		controller.loadLeftMenu(menu);
 		controller.loadContent(content, PageLevel.Level1);
@@ -171,7 +171,7 @@ public class HomeController implements Initializable {
 		FreeCase3D content = new FreeCase3D(new FreeCaseState(), new FreeCaseBtnController(CaseMode.EDIT_MODE));
 	
 		FreeCaseMenu menu = new FreeCaseMenu(content);
-		menu.setName(MsgUtil.getMessage("menu.item.free"));
+//		menu.setName(MsgUtil.getMessage("menu.item.free"));
 
 		controller.loadLeftMenu(menu);
 		controller.loadContent(content, PageLevel.Level1);
@@ -194,7 +194,7 @@ public class HomeController implements Initializable {
 		}
 
 		BrokenCaseMenu menu = new BrokenCaseMenu(content);
-		menu.setName(MsgUtil.getMessage("menu.item.repair"));
+//		menu.setName(MsgUtil.getMessage("menu.item.repair"));
 
 		controller.loadLeftMenu(menu);
 		controller.loadContent(content, PageLevel.Level1);

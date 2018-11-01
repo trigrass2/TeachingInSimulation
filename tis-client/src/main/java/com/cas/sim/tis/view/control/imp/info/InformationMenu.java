@@ -26,4 +26,8 @@ public class InformationMenu extends LeftMenu  {
 		});
 	}
 
+	@Override
+	public void onMenuAttached(PageController pageController) {
+		pageController.setModuleName("main.menu.info");
+	}
 }

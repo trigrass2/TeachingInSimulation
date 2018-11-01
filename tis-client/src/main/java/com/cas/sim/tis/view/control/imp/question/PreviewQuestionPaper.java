@@ -76,8 +76,8 @@ public class PreviewQuestionPaper extends HBox implements IContent {
 	private Button publishBtn;
 	@FXML
 	private Button practiceBtn;
-	@FXML
-	private Label libName;
+//	@FXML
+//	private Label libName;
 	@FXML
 	private VBox paper;
 	@FXML
@@ -89,6 +89,7 @@ public class PreviewQuestionPaper extends HBox implements IContent {
 	private boolean editable;
 	private boolean readonly;
 	private boolean showReference;
+	private Library library;
 
 	public PreviewQuestionPaper(Integer rid, boolean editable) {
 		this(rid, editable, false);
@@ -125,8 +126,8 @@ public class PreviewQuestionPaper extends HBox implements IContent {
 	 * 界面初始化
 	 */
 	private void initialize() {
-		Library library = SpringUtil.getBean(LibraryAction.class).findLibraryById(rid);
-		this.libName.setText(library.getName());
+		this.library = SpringUtil.getBean(LibraryAction.class).findLibraryById(rid);
+//		this.libName.setText(library.getName());
 
 		if (readonly) {
 			this.options.getChildren().removeAll(templateBtn, importBtn, exportBtn);
@@ -252,7 +253,7 @@ public class PreviewQuestionPaper extends HBox implements IContent {
 	private void exportExcel() {
 		FileChooser chooser = new FileChooser();
 		chooser.setInitialDirectory(FileSystemView.getFileSystemView().getHomeDirectory());
-		chooser.setInitialFileName(this.libName.getText() + ".xls");
+		chooser.setInitialFileName(library.getName() + ".xls");
 		chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter(MsgUtil.getMessage("resource.excel"), "*.xls"));
 		File target = chooser.showSaveDialog(GUIState.getStage());
 		if (target == null) {
@@ -598,6 +599,11 @@ public class PreviewQuestionPaper extends HBox implements IContent {
 	@Override
 	public Node[] getContent() {
 		return new Region[] { this };
+	}
+
+	@Override
+	public void onContentAttached(PageController pageController) {
+		pageController.setTitleName(library.getName());
 	}
 
 }

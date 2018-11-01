@@ -95,4 +95,9 @@ public class FreeCaseMenu extends ElecCaseMenu {
 	public void setEditable(boolean editable){
 		this.options.setVisible(editable);
 	}
+
+	@Override
+	public void onMenuAttached(PageController pageController) {
+		pageController.setModuleName("menu.item.repair");
+	}
 }

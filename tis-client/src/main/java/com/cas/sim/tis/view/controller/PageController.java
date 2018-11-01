@@ -18,6 +18,7 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
@@ -48,6 +49,12 @@ public class PageController implements Initializable {
 	@FXML
 	private Button back;
 
+	@FXML
+	private Label moduleName;
+
+	@FXML
+	private Label titleName;
+	
 	@FXML
 	private Pane handle;
 
@@ -98,12 +105,15 @@ public class PageController implements Initializable {
 
 	private ProgressIndicator progressIndicator;
 
+	private ResourceBundle resources;
+
 	public enum PageLevel {
 		Level1, Level2;
 	}
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
+		this.resources = resources;
 
 		handle.setOnMouseDragged(e -> {
 			GUIState.getStage().setX(e.getScreenX() + xOffset);
@@ -124,6 +134,7 @@ public class PageController implements Initializable {
 			this.level2Content.distroy();
 			this.level2Content = null;
 			this.content.getChildren().addAll(level1Content.getContent());
+			level1Content.onContentAttached(this);
 
 			if (level2Left == null) {
 				return;
@@ -132,10 +143,12 @@ public class PageController implements Initializable {
 				level2Left = null;
 				this.leftContent.getChildren().clear();
 				this.leftContent.getChildren().addAll(level1Left.getLeftContent());
+				level1Left.onMenuAttached(this);
 			} else {
 				level2Left = null;
 				this.leftContent.getChildren().clear();
 				this.leftContent.getChildren().addAll(level1Left.getLeftContent());
+				level1Left.onMenuAttached(this);
 			}
 		} else {
 			clear();
@@ -161,6 +174,8 @@ public class PageController implements Initializable {
 			this.level2Left = null;
 			return;
 		}
+		this.moduleName.setText("");
+		this.titleName.setText("");
 		if (PageLevel.Level1 == level || level == null) {
 			if (this.level1Left != null && level1Left instanceof IDistory) {
 				((IDistory) this.level1Left).distroy();
@@ -169,12 +184,14 @@ public class PageController implements Initializable {
 				((IDistory) this.level2Left).distroy();
 			}
 			this.level1Left = leftMenu;
+			this.level1Left.onMenuAttached(this);
 			this.level2Left = null;
 		} else if (PageLevel.Level2 == level) {
 			if (this.level2Left != null && level2Left instanceof IDistory) {
 				((IDistory) this.level2Left).distroy();
 			}
 			this.level2Left = leftMenu;
+			this.level2Left.onMenuAttached(this);
 		}
 		this.leftContent.getChildren().add(leftMenu.getLeftContent());
 	}
@@ -186,6 +203,7 @@ public class PageController implements Initializable {
 			this.level2Content = null;
 			return;
 		}
+		this.titleName.setText("");
 		if (PageLevel.Level1 == level || level == null) {
 			if (this.level1Content != null) {
 				this.level1Content.distroy();
@@ -195,6 +213,7 @@ public class PageController implements Initializable {
 			}
 			this.level = PageLevel.Level1;
 			this.level1Content = content;
+			this.level1Content.onContentAttached(this);
 			this.level2Content = null;
 		} else if (PageLevel.Level2 == level) {
 			if (this.level2Content != null) {
@@ -202,6 +221,7 @@ public class PageController implements Initializable {
 			}
 			this.level = PageLevel.Level2;
 			this.level2Content = content;
+			this.level2Content.onContentAttached(this);
 		}
 		this.content.getChildren().addAll(content.getContent());
 	}
@@ -318,4 +338,13 @@ public class PageController implements Initializable {
 		}
 		this.toggle.setVisible(enable);
 	}
+	
+	public void setModuleName(String key) {
+		this.moduleName.setText(resources.getString(key));
+	}
+	
+	public void setTitleName(String value) {
+		this.titleName.setText(value);
+	}
+	
 }

@@ -24,6 +24,7 @@ import com.cas.sim.tis.util.MsgUtil;
 import com.cas.sim.tis.util.SpringUtil;
 import com.cas.sim.tis.view.control.IContent;
 import com.cas.sim.tis.view.control.imp.Title;
+import com.cas.sim.tis.view.controller.PageController;
 import com.cas.sim.tis.vo.ExamLibraryPublish;
 import com.cas.sim.tis.vo.ExamPreparationPublish;
 import com.cas.util.MathUtil;
@@ -257,6 +258,12 @@ public class TeacherQuestionPaper extends HBox implements IContent {
 	@Override
 	public Node[] getContent() {
 		return new Region[] { this };
+	}
+
+	@Override
+	public void onContentAttached(PageController pageController) {
+//		FIXME
+//		pageController.setModuleName("main.menu.preparation");
 	}
 
 }

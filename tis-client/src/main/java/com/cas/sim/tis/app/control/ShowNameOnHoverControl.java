@@ -31,6 +31,8 @@ public class ShowNameOnHoverControl extends AbstractControl {
 
 	// 是否显示认知信息
 	private boolean showRecongnize;
+	
+	private Geometry wire;
 
 	public ShowNameOnHoverControl(Consumer<String> consumer, InputManager inputManager, Camera cam) {
 		this(consumer, inputManager, cam, false);
