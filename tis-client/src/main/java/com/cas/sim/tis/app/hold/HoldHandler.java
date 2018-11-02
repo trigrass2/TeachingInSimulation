@@ -41,6 +41,12 @@ public interface HoldHandler extends Savable {
 	 */
 	void discard();
 
+	/**
+	 * 
+	 * @return
+	 */
+	PickAllow getPickAllow();
+	
 	@Override
 	default void write(JmeExporter ex) {
 //		nothing to write

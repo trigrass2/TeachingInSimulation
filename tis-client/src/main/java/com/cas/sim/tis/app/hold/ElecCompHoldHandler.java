@@ -3,6 +3,7 @@ package com.cas.sim.tis.app.hold;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.cas.circuit.component.Base;
 import com.cas.circuit.component.ElecCompDef;
 import com.cas.circuit.component.ElecCompProxy;
 import com.cas.circuit.component.RelyOn;
@@ -125,15 +126,19 @@ public class ElecCompHoldHandler implements HoldHandler {
 
 	@Override
 	public boolean putDownOn(Spatial base) {
-		ElecCompDef e = base.getUserData("entity");
-		boolean suitable = e.getBase() != null // 是底座
-				&& e.getBase().checkMatched(elecCompDef) // 两个元器件可搭配使用
-				&& !e.getBase().isUsed(elecCompDef);// 底座没有被占用
+		Object e = base.getUserData("entity");
+		if (!(e instanceof ElecCompDef)) {
+			return false;
+		}
+		Base baseDef = ((ElecCompDef)e).getBase();
+		boolean suitable = baseDef != null // 是底座
+				&& baseDef.checkMatched(elecCompDef) // 两个元器件可搭配使用
+				&& !baseDef.isUsed(elecCompDef);// 底座没有被占用
 		if (suitable) {
 //			设置Holding的模型对鼠标可见
 			MouseEventState.setMouseVisible(spatial, true);
 //			将元器件模型与元器件对象一起加入电路板中
-			caseState.getCircuitState().attachToBase(elecComp.getSpatial(), elecCompDef, e);
+			caseState.getCircuitState().attachToBase(elecComp.getSpatial(), elecCompDef, (ElecCompDef)e);
 		}
 		return suitable;
 	}
@@ -142,6 +147,11 @@ public class ElecCompHoldHandler implements HoldHandler {
 	@Override
 	public ElecComp getData() {
 		return elecComp;
+	}
+
+	@Override
+	public PickAllow getPickAllow() {
+		return PickAllow.ALWAYS;
 	}
 	
 }

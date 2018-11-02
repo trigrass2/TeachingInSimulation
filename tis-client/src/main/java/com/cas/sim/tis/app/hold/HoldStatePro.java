@@ -104,7 +104,7 @@ public enum HoldStatePro {
 	 * @return true 拿取成功， false
 	 */
 	public boolean pickUp(Spatial spatial, HoldHandler handler) {
-		if (!enabled) {
+		if (handler.getPickAllow() == PickAllow.DYNASTY && !enabled) {
 			return false;
 		}
 		if (!isIdle()) {

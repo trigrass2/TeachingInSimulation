@@ -58,7 +58,7 @@ public class TypicalCaseBtnController extends ElecCaseBtnController {
 		SpringUtil.getBean(PageController.class).showLoading();
 		boolean auto = typicalCase3D != null;
 		if (CaseMode.VIEW_MODE == mode) {
-			view.toFront();
+//			view.toFront();
 			view.setVisible(true);
 			typical.setVisible(false);
 			steps.setVisible(true);
@@ -70,7 +70,7 @@ public class TypicalCaseBtnController extends ElecCaseBtnController {
 			typicalCase3D.autoComps(auto);
 			typicalCase3D.autoWires(auto);
 		} else if (CaseMode.TYPICAL_TRAIN_MODE == mode) {
-			typical.toFront();
+//			typical.toFront();
 			typical.setVisible(true);
 			view.setVisible(false);
 			steps.setVisible(true);
@@ -80,7 +80,7 @@ public class TypicalCaseBtnController extends ElecCaseBtnController {
 			typicalCase3D.autoWires(auto);
 			typicalCase3D.autoComps(auto);
 		} else if (CaseMode.EDIT_MODE == mode) {
-			typical.toFront();
+//			typical.toFront();
 			typical.setVisible(true);
 			view.setVisible(false);
 			steps.setVisible(false);

@@ -63,17 +63,17 @@ public class BrokenCaseBtnController extends ElecCaseBtnController {
 		prev.setDisable(true);
 		next.setDisable(true);
 		if (CaseMode.BROKEN_TRAIN_MODE == mode) {
-			broken.toFront();
+//			broken.toFront();
 			free.setVisible(false);
 			broken.setVisible(true);
 			steps.setVisible(false);
 		} else if (CaseMode.BROKEN_EXAM_MODE == mode) {
-			broken.toFront();
+//			broken.toFront();
 			free.setVisible(false);
 			broken.setVisible(true);
 			steps.setVisible(false);
 		} else if (CaseMode.EDIT_MODE == mode) {
-			free.toFront();
+//			free.toFront();
 			free.setVisible(true);
 			broken.setVisible(false);
 			steps.setVisible(true);

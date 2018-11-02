@@ -119,4 +119,11 @@ public class MeterPenHodHandler implements HoldHandler {
 	public <T> T getData() {
 		throw new UnsupportedOperationException("nothing to get");
 	}
+
+	@Override
+	public PickAllow getPickAllow() {
+		return PickAllow.ALWAYS;
+	}
+	
+	
 }

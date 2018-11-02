@@ -574,11 +574,11 @@ public class CircuitState extends BaseState implements ICircuitEffect {
 
 	private void bindElecCompEvent(ElecCompDef def) {
 		// 1、连接头监听事件
-		if (mode.isHoldEnable()) {
-			def.getTerminalMap().values().forEach(t -> {
-				addListener(t.getSpatial(), terminalLitener);
-			});
-		}
+//		if (mode.isHoldEnable()) {
+		def.getTerminalMap().values().forEach(t -> {
+			addListener(t.getSpatial(), terminalLitener);
+		});
+//		}
 //		// 2、插孔监听事件
 //		def.getJackList().forEach(j -> addListener(j.getSpatial(), new MouseEventAdapter() {
 //			@Override
@@ -628,6 +628,7 @@ public class CircuitState extends BaseState implements ICircuitEffect {
 		if (archive == null) {
 			return;
 		}
+		((TerminalListener)terminalLitener).setLinkEnable(mode.isHoldEnable());
 		((ElecCompClickListener) elecCompRightClickListener).setRightClickDisable(mode.isHideCircuit());
 		((WireListener) wireListener).setRightClickDisable(mode.isHideCircuit());
 		readEleccomps(archive.getCompList());
