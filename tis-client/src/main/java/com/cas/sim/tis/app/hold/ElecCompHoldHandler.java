@@ -79,6 +79,7 @@ public class ElecCompHoldHandler implements HoldHandler {
 					if (contactPoint != null) {
 						Node baseMdl = e.getSpatial();
 						contactPoint = baseMdl.getLocalTranslation().add(relay.getTranslation());
+						break;
 					}
 				}
 			}
@@ -89,6 +90,10 @@ public class ElecCompHoldHandler implements HoldHandler {
 					caseState.getCompPlane(), //
 					caseState.getCam(), //
 					caseState.getInputManager().getCursorPosition());
+			if (contactPoint != null) {
+				contactPoint.x = (int) contactPoint.x;
+				contactPoint.z = (int) contactPoint.z;
+			}
 		}
 		if (contactPoint == null) {
 			return;
@@ -96,11 +101,7 @@ public class ElecCompHoldHandler implements HoldHandler {
 		/*
 		 * 在x-z平面上，每次移动一个单位
 		 */
-		spatial.setLocalTranslation(//
-				(int)contactPoint.x, //
-				contactPoint.y, //
-				(int)contactPoint.z//
-		);
+		spatial.setLocalTranslation(contactPoint);
 	}
 
 	@Override
@@ -130,7 +131,7 @@ public class ElecCompHoldHandler implements HoldHandler {
 		if (!(e instanceof ElecCompDef)) {
 			return false;
 		}
-		Base baseDef = ((ElecCompDef)e).getBase();
+		Base baseDef = ((ElecCompDef) e).getBase();
 		boolean suitable = baseDef != null // 是底座
 				&& baseDef.checkMatched(elecCompDef) // 两个元器件可搭配使用
 				&& !baseDef.isUsed(elecCompDef);// 底座没有被占用
@@ -138,7 +139,7 @@ public class ElecCompHoldHandler implements HoldHandler {
 //			设置Holding的模型对鼠标可见
 			MouseEventState.setMouseVisible(spatial, true);
 //			将元器件模型与元器件对象一起加入电路板中
-			caseState.getCircuitState().attachToBase(elecComp.getSpatial(), elecCompDef, (ElecCompDef)e);
+			caseState.getCircuitState().attachToBase(elecComp.getSpatial(), elecCompDef, (ElecCompDef) e);
 		}
 		return suitable;
 	}
@@ -153,5 +154,5 @@ public class ElecCompHoldHandler implements HoldHandler {
 	public PickAllow getPickAllow() {
 		return PickAllow.ALWAYS;
 	}
-	
+
 }
