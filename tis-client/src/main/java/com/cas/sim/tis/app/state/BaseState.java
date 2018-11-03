@@ -164,7 +164,7 @@ public abstract class BaseState extends AbstractAppState {
 		} catch (Exception e) {
 			String errMsg = MessageFormat.format("加载{0}加载失败", key);
 			log.warn(errMsg, e);
-			throw new RuntimeException(MessageFormat.format("无法加载资源{0}", key));
+			throw e;
 		}
 	}
 
