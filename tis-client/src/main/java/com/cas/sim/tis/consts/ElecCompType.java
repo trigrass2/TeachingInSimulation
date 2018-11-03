@@ -6,8 +6,10 @@ public enum ElecCompType {
 	Switch(3, "开关"), //
 	Base(4, "底座"), //
 	Breaker(5, "断路器"), //
-	TerminalBlock(6, "端子排"),
-	Motor(7, "电动机");
+	TerminalBlock(6, "端子排"), //
+	Motor(7, "电动机"), //
+	Fu(8, "熔断器")//
+	;
 
 	private int type;
 	private String name;
