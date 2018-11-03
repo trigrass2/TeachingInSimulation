@@ -51,6 +51,7 @@
 					</Button>
 				</HBox>
 				<HBox fx:id="broken" spacing="10" visible="false" pickOnBounds="false" mouseTransparent="false" alignment="CENTER_RIGHT">
+					<Button fx:id="submit" text="%button.submit" styleClass="recognize-btn" pickOnBounds="true" />
 					<HBox styleClass="recognize-label" spacing="5">
 						<Label text="%exam.broken.number" styleClass="font14" textFill="WHITE" />
 						<Label fx:id="number" text="3">
@@ -73,7 +74,6 @@
 						</Label>
 						<Label text="%exam.broken.chance.unit" styleClass="font14" textFill="WHITE" />
 					</HBox>
-					<Button fx:id="submit" text="%button.submit" styleClass="recognize-btn" pickOnBounds="true" />
 				</HBox>
 			</StackPane>
 			<CheckBox fx:id="multimeter" text="%rec.ckb.multimeter" styleClass="recognize-btn" onAction="#toggleMultiMeter" pickOnBounds="true" />

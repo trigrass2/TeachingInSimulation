@@ -2,9 +2,13 @@ package com.cas.sim.tis.app.state;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.annotation.Nonnull;
 
+import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.TypeReference;
 import com.cas.circuit.component.ControlIO;
 import com.cas.circuit.component.ElecCompDef;
 import com.cas.sim.tis.action.ElecCompAction;
@@ -110,7 +114,7 @@ public class ElecCompState extends BaseState {
 //		clean up
 		cleanRoot();
 //		加载模型(认知模块使用AnimPath的model)
-		Spatial model = loadAsset(new ModelKey(elecComp.getAnimPath()));
+		Node model = (Node) loadAsset(new ModelKey(elecComp.getAnimPath()));
 
 //		PBR能在系统中被照亮
 //		MikktspaceTangentGenerator.generate(model);
@@ -123,6 +127,15 @@ public class ElecCompState extends BaseState {
 //		
 //		获取相应元器件
 		ElecCompDef elecCompDef = SpringUtil.getBean(ElecCompAction.class).parse(elecComp.getCfgPath());
+		// 模型绑定认知名称
+		Map<String, String> recongnizeMap = JSONObject.parseObject(elecCompDef.getParam(ElecCompDef.PARAM_KEY_NAME), new TypeReference<Map<String, String>>() {});
+		if (recongnizeMap == null) {
+			return;
+		}
+		for (Entry<String, String> recongnize : recongnizeMap.entrySet()) {
+			Spatial child = model.getChild(recongnize.getKey());
+			child.setUserData("recongnize", recongnize.getValue());
+		}
 
 //		找出元器件外壳模型名称
 		loadShell(elecCompDef.getParam(ElecCompDef.PARAM_KEY_SHELL));
