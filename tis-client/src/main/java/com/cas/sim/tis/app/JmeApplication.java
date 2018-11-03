@@ -54,7 +54,7 @@ public class JmeApplication extends JmeToJFXApplication {
 //		assetManager.registerLocator("G:\\Workspace\\TeachingInSimulation\\TeachingInSimulation\\tis-client\\assets", FileLocator.class);
 		assetManager.registerLocator("assets", FileLocator.class);
 
-		cam.setFrustumPerspective(45, (float) cam.getWidth() / cam.getHeight(), 0.01f, 100f);
+		cam.setFrustumPerspective(45, (float) cam.getWidth() / cam.getHeight(), 0.01f, 1000f);
 ////		创建天空盒
 ////		Spatial sky = SkyFactory.createSky(assetManager, "Model/Sky/noon_grass_2k.hdr", SkyFactory.EnvMapType.EquirectMap);
 //		Spatial sky = SkyFactory.createSky(assetManager, "Model/Sky/Path.hdr", SkyFactory.EnvMapType.EquirectMap);
