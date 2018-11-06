@@ -6,9 +6,10 @@ import java.util.Map;
 import java.util.ResourceBundle;
 
 import com.cas.circuit.IBroken;
-import com.cas.sim.tis.app.state.ElecCaseState.CaseMode;
 import com.cas.sim.tis.app.state.broken.BrokenCaseState;
+import com.cas.sim.tis.consts.CaseMode;
 import com.cas.sim.tis.consts.Session;
+import com.cas.sim.tis.entity.BrokenCase;
 import com.cas.sim.tis.entity.ExamBrokenRecord;
 import com.cas.sim.tis.util.AlertUtil;
 import com.cas.sim.tis.util.MsgUtil;
@@ -21,7 +22,7 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 
-public class BrokenCaseBtnController extends ElecCaseBtnController {
+public class BrokenCaseBtnController extends ElecCaseBtnController<BrokenCase> {
 
 	@FXML
 	private Label number;
@@ -81,12 +82,8 @@ public class BrokenCaseBtnController extends ElecCaseBtnController {
 		if (flow != null) {
 			flow.getChildren().clear();
 		}
-		if (elecCaseState != null) {
-			elecCaseState.setMode(mode);
-		}
-		if (elecCase3D != null) {
-			((BrokenCase3D) elecCase3D).setFinish(false);
-		}
+//		elecCaseState.setupCase(elecCaseState.getElecCase(), mode);
+		((BrokenCase3D) elecCase3D).setFinish(false);
 	}
 
 	@Override

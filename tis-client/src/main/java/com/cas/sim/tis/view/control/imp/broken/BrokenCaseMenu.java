@@ -4,7 +4,7 @@ import java.util.Optional;
 
 import com.cas.sim.tis.action.ArchiveCaseAction;
 import com.cas.sim.tis.action.BrokenCaseAction;
-import com.cas.sim.tis.app.state.ElecCaseState.CaseMode;
+import com.cas.sim.tis.consts.CaseMode;
 import com.cas.sim.tis.consts.RoleConst;
 import com.cas.sim.tis.consts.Session;
 import com.cas.sim.tis.entity.ArchiveCase;
@@ -18,8 +18,8 @@ import com.cas.sim.tis.view.control.imp.ElecCase3D;
 import com.cas.sim.tis.view.control.imp.ElecCaseMenu;
 import com.cas.sim.tis.view.control.imp.dialog.Dialog;
 import com.cas.sim.tis.view.control.imp.dialog.Tip.TipType;
-import com.cas.sim.tis.view.control.imp.jme.TypicalCaseSelectDialog;
 import com.cas.sim.tis.view.control.imp.question.ExamingMenuItem;
+import com.cas.sim.tis.view.control.imp.typical.TypicalCaseSelectDialog;
 import com.cas.sim.tis.view.controller.PageController;
 
 import javafx.application.Platform;
@@ -105,10 +105,13 @@ public class BrokenCaseMenu extends ElecCaseMenu implements IPublish {
 
 	@Override
 	protected void saveCase() {
+		BrokenCase brokenCase = ((BrokenCase3D) elecCase3D).getBrokenCase();
+		if (brokenCase == null) {
+			return;
+		}
 //		显示等待界面
 		SpringUtil.getBean(PageController.class).showLoading();
 		try {
-			BrokenCase brokenCase = ((BrokenCase3D) elecCase3D).getBrokenCase();
 //			如果该案例没有ID，则表明是新增的案例，此时需要用户提供一个案例名称
 			if (brokenCase.getId() == null) {
 //				创建一个输入对话框，让用户填写案例名称

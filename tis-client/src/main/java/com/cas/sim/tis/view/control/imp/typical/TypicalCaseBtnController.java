@@ -1,21 +1,19 @@
-package com.cas.sim.tis.view.control.imp.jme;
+package com.cas.sim.tis.view.control.imp.typical;
 
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
 
-import com.cas.sim.tis.app.state.ElecCaseState.CaseMode;
 import com.cas.sim.tis.app.state.typical.TypicalCaseState;
+import com.cas.sim.tis.consts.CaseMode;
 import com.cas.sim.tis.entity.ArchiveCase;
 import com.cas.sim.tis.flow.Step;
 import com.cas.sim.tis.util.MsgUtil;
 import com.cas.sim.tis.util.SpringUtil;
 import com.cas.sim.tis.view.control.imp.ElecCaseBtnController;
-import com.cas.sim.tis.view.control.imp.typical.StepItem;
-import com.cas.sim.tis.view.control.imp.typical.TypicalFlowItem;
 import com.cas.sim.tis.view.controller.PageController;
 
-public class TypicalCaseBtnController extends ElecCaseBtnController {
+public class TypicalCaseBtnController extends ElecCaseBtnController<ArchiveCase> {
 
 	private TypicalFlowItem flow;
 
@@ -91,9 +89,7 @@ public class TypicalCaseBtnController extends ElecCaseBtnController {
 			typicalCase3D.autoComps(auto);
 			typicalCase3D.autoWires(auto);
 		}
-		if (elecCaseState != null) {
-			elecCaseState.setMode(mode);
-		}
+//		elecCaseState.setupCase(elecCaseState.getElecCase(), mode);
 	}
 
 	@Override

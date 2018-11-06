@@ -11,7 +11,7 @@ import com.cas.sim.tis.app.state.BaseState;
 import com.cas.sim.tis.flow.Step;
 import com.cas.sim.tis.flow.Step.StepType;
 import com.cas.sim.tis.util.AlertUtil;
-import com.cas.sim.tis.view.control.imp.jme.TypicalCase3D;
+import com.cas.sim.tis.view.control.imp.typical.TypicalCase3D;
 import com.jme3.bounding.BoundingBox;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;

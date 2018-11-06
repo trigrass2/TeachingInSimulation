@@ -1,15 +1,15 @@
 package com.cas.sim.tis.view.control.imp.free;
 
 import com.cas.sim.tis.app.state.ElecCaseState;
-import com.cas.sim.tis.app.state.ElecCaseState.CaseMode;
 import com.cas.sim.tis.app.state.free.FreeCaseState;
+import com.cas.sim.tis.consts.CaseMode;
 import com.cas.sim.tis.entity.ArchiveCase;
 import com.cas.sim.tis.view.control.imp.ElecCase3D;
 import com.cas.sim.tis.view.control.imp.ElecCaseBtnController;
 
 public class FreeCase3D extends ElecCase3D<ArchiveCase>{
 
-	public FreeCase3D(ElecCaseState<ArchiveCase> state, ElecCaseBtnController btnController) {
+	public FreeCase3D(ElecCaseState<ArchiveCase> state, ElecCaseBtnController<ArchiveCase> btnController) {
 		super(state, btnController);
 	}
 

@@ -3,12 +3,13 @@ package com.cas.sim.tis.view.control.imp.free;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-import com.cas.sim.tis.app.state.ElecCaseState.CaseMode;
+import com.cas.sim.tis.consts.CaseMode;
+import com.cas.sim.tis.entity.ArchiveCase;
 import com.cas.sim.tis.util.SpringUtil;
 import com.cas.sim.tis.view.control.imp.ElecCaseBtnController;
 import com.cas.sim.tis.view.controller.PageController;
 
-public class FreeCaseBtnController extends ElecCaseBtnController {
+public class FreeCaseBtnController extends ElecCaseBtnController<ArchiveCase> {
 
 	private FreeFlowItem flow;
 
@@ -35,9 +36,7 @@ public class FreeCaseBtnController extends ElecCaseBtnController {
 			prev.setDisable(true);
 			next.setDisable(true);
 		}
-		if (elecCaseState != null) {
-			elecCaseState.setMode(mode);
-		}
+//		elecCaseState.setupCase(elecCaseState.getElecCase(), mode);
 	}
 
 	@Override

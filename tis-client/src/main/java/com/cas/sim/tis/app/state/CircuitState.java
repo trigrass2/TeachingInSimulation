@@ -52,9 +52,9 @@ import com.cas.sim.tis.app.listener.ElecCompBaseClickListener;
 import com.cas.sim.tis.app.listener.ElecCompClickListener;
 import com.cas.sim.tis.app.listener.TerminalListener;
 import com.cas.sim.tis.app.listener.WireListener;
-import com.cas.sim.tis.app.state.ElecCaseState.CaseMode;
 import com.cas.sim.tis.app.state.broken.BrokenCaseState;
 import com.cas.sim.tis.app.state.typical.TrainState;
+import com.cas.sim.tis.consts.CaseMode;
 import com.cas.sim.tis.consts.Radius;
 import com.cas.sim.tis.consts.WireColor;
 import com.cas.sim.tis.entity.ElecComp;
@@ -627,7 +627,7 @@ public class CircuitState extends BaseState implements ICircuitEffect {
 		if (archive == null) {
 			return;
 		}
-		((TerminalListener)terminalLitener).setLinkEnable(mode.isHoldEnable());
+		((TerminalListener) terminalLitener).setLinkEnable(mode.isHoldEnable());
 		((ElecCompClickListener) elecCompRightClickListener).setRightClickDisable(mode.isHideCircuit());
 		((WireListener) wireListener).setRightClickDisable(mode.isHideCircuit());
 		readEleccomps(archive.getCompList());
@@ -818,6 +818,7 @@ public class CircuitState extends BaseState implements ICircuitEffect {
 
 	@Override
 	public void cleanup() {
+
 		for (ElecCompDef elecCompDef : compList) {
 			detachElecComp(elecCompDef);
 		}

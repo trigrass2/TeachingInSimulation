@@ -5,10 +5,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
-import com.cas.sim.tis.app.state.ElecCaseState.CaseMode;
 import com.cas.sim.tis.app.state.broken.BrokenCaseState;
 import com.cas.sim.tis.app.state.free.FreeCaseState;
 import com.cas.sim.tis.app.state.typical.TypicalCaseState;
+import com.cas.sim.tis.consts.CaseMode;
 import com.cas.sim.tis.consts.MenuEnum;
 import com.cas.sim.tis.consts.RoleConst;
 import com.cas.sim.tis.consts.Session;
@@ -29,10 +29,10 @@ import com.cas.sim.tis.view.control.imp.free.FreeCaseBtnController;
 import com.cas.sim.tis.view.control.imp.free.FreeCaseMenu;
 import com.cas.sim.tis.view.control.imp.jme.Recongnize3D;
 import com.cas.sim.tis.view.control.imp.jme.RecongnizeMenu;
-import com.cas.sim.tis.view.control.imp.jme.TypicalCase3D;
-import com.cas.sim.tis.view.control.imp.jme.TypicalCaseBtnController;
-import com.cas.sim.tis.view.control.imp.jme.TypicalCaseMenu;
 import com.cas.sim.tis.view.control.imp.setting.SettingDialog;
+import com.cas.sim.tis.view.control.imp.typical.TypicalCase3D;
+import com.cas.sim.tis.view.control.imp.typical.TypicalCaseBtnController;
+import com.cas.sim.tis.view.control.imp.typical.TypicalCaseMenu;
 import com.cas.sim.tis.view.controller.PageController.PageLevel;
 
 import de.felixroske.jfxsupport.AbstractJavaFxApplicationSupport;

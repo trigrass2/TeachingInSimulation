@@ -3,8 +3,8 @@ package com.cas.sim.tis.view.control.imp.free;
 import java.util.Optional;
 
 import com.cas.sim.tis.action.ArchiveCaseAction;
-import com.cas.sim.tis.app.state.ElecCaseState.CaseMode;
 import com.cas.sim.tis.consts.ArchiveType;
+import com.cas.sim.tis.consts.CaseMode;
 import com.cas.sim.tis.entity.ArchiveCase;
 import com.cas.sim.tis.util.AlertUtil;
 import com.cas.sim.tis.util.MsgUtil;
@@ -65,10 +65,13 @@ public class FreeCaseMenu extends ElecCaseMenu {
 
 	@Override
 	protected void saveCase() {
+		ArchiveCase freeCase = ((FreeCase3D) elecCase3D).getArchiveCase();
+		if(freeCase == null) {
+			return;
+		}
 //		显示等待界面
 		SpringUtil.getBean(PageController.class).showLoading();
 		try {
-			ArchiveCase freeCase = ((FreeCase3D) elecCase3D).getArchiveCase();
 //			如果该案例没有ID，则表明是新增的案例，此时需要用户提供一个案例名称
 			if (freeCase.getId() == null) {
 //				创建一个输入对话框，让用户填写案例名称
@@ -98,6 +101,6 @@ public class FreeCaseMenu extends ElecCaseMenu {
 
 	@Override
 	public void onMenuAttached(PageController pageController) {
-		pageController.setModuleName("menu.item.repair");
+		pageController.setModuleName("menu.item.free");
 	}
 }

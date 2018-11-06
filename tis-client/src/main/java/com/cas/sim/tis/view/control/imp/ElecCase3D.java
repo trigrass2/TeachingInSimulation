@@ -58,7 +58,7 @@ public abstract class ElecCase3D<T> implements IDistory, IContent {
 	protected AnchorPane pane;
 
 	protected ElecCaseState<T> state;
-	protected ElecCaseBtnController btnController;
+	protected ElecCaseBtnController<T> btnController;
 
 	protected ContextMenu wireMenu = new ContextMenu();
 	protected ContextMenu compMenu = new ContextMenu();
@@ -74,9 +74,12 @@ public abstract class ElecCase3D<T> implements IDistory, IContent {
 
 	protected PageController pageController;
 
-	public ElecCase3D(ElecCaseState<T> state, ElecCaseBtnController btnController) {
+	public ElecCase3D(ElecCaseState<T> state, ElecCaseBtnController<T> btnController) {
 		this.state = state;
 		this.btnController = btnController;
+		btnController.setElecCase3D(this);
+		state.setUi(this);
+		btnController.setElecCaseState(state);
 
 //		创建一个Canvas层，用于显示JME
 		canvas = new Canvas();
@@ -94,7 +97,6 @@ public abstract class ElecCase3D<T> implements IDistory, IContent {
 //		创建一个JME应用程序，并且和Canvas集成
 		jmeApp = new JmeApplication();
 
-		state.setUi(this);
 		jmeApp.getStateManager().attach(state);
 		JmeToJFXIntegrator.startAndBind(jmeApp, canvas, Thread::new);
 
@@ -104,7 +106,6 @@ public abstract class ElecCase3D<T> implements IDistory, IContent {
 		try {
 			loader.setController(btnController);
 			btns = loader.load(ElecCase3D.class.getResourceAsStream("/view/jme/ElecCase.fxml"));
-			btnController.setState(state);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -121,18 +122,15 @@ public abstract class ElecCase3D<T> implements IDistory, IContent {
 		pane.setPickOnBounds(false);
 		pane.setMouseTransparent(true);
 
-		
 //		FIXME 加入万用表
 		multiMeterState = new MultimeterState(pane);
 		multiMeterState.setEnabled(false);
 		jmeApp.getStateManager().attach(multiMeterState);
-		
+
 //		3、弹出菜单
 		createWirePopupMenu();
 
 		createCompPopupMenu();
-
-		btnController.setElecCase3D(this);
 	}
 
 	@Override
@@ -289,7 +287,7 @@ public abstract class ElecCase3D<T> implements IDistory, IContent {
 	public void setMultimeterVisible(boolean visible) {
 		multiMeterState.setEnabled(visible);
 	}
-	
+
 	/**
 	 * 显示元器件弹出菜单
 	 * @param compDef 当前要操作的元器件对象

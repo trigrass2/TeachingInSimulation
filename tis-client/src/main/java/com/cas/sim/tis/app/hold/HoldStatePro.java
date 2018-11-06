@@ -1,11 +1,14 @@
 package com.cas.sim.tis.app.hold;
 
+import com.cas.sim.tis.util.AlertUtil;
+import com.cas.sim.tis.view.control.imp.dialog.Tip.TipType;
 import com.jme3.input.InputManager;
 import com.jme3.input.MouseInput;
 import com.jme3.input.controls.AnalogListener;
 import com.jme3.input.controls.MouseAxisTrigger;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
+import com.jme3x.jfx.util.JFXPlatform;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -166,6 +169,10 @@ public enum HoldStatePro {
 	}
 
 	private HoldHandler getHoldHandler() {
+		if (holdingSpatial == null) {
+			JFXPlatform.runInFXThread(() -> AlertUtil.showTip(TipType.INFO, "并没有拿取任何东西"));
+			throw new NullPointerException("并没有拿取任何东西");
+		}
 		HoldHandler handler = holdingSpatial.getUserData(UDK_HANDLER);
 		if (handler == null) {
 			throw new NullPointerException("模型没有注册");

@@ -1,5 +1,6 @@
 package com.cas.sim.tis.action;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -24,6 +25,8 @@ public class ElecCompAction extends BaseAction {
 
 	@Resource
 	private ElecCompService service;
+
+	private Map<Integer, String> cache = new HashMap<>();
 
 	/**
 	 * 获得元器件列表
@@ -67,7 +70,7 @@ public class ElecCompAction extends BaseAction {
 		ResponseEntity resp = service.findElecCompByModel(req);
 		return JSON.parseObject(resp.data, ElecComp.class);
 	}
-	
+
 	/**
 	 * 根据元器件配置文件地址获得配置信息
 	 * @param cfgPath 配置文件地址
@@ -83,11 +86,15 @@ public class ElecCompAction extends BaseAction {
 	 * @return 元器件对象
 	 */
 	public ElecComp findElecCompById(Integer id) {
-		RequestEntity req = new RequestEntityBuilder()//
-				.set("id", id)//
-				.build();
-		ResponseEntity resp = service.findElecCompById(req);
-		return JSON.parseObject(resp.data, ElecComp.class);
+		String data = cache.get(id);
+		if (data == null) {
+			RequestEntity req = new RequestEntityBuilder()//
+					.set("id", id)//
+					.build();
+			ResponseEntity resp = service.findElecCompById(req);
+			cache.put(id, data = resp.data);
+		}
+		return JSON.parseObject(data, ElecComp.class);
 	}
 
 }

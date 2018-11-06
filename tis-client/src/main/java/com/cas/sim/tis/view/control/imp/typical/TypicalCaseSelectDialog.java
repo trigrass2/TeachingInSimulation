@@ -1,4 +1,4 @@
-package com.cas.sim.tis.view.control.imp.jme;
+package com.cas.sim.tis.view.control.imp.typical;
 
 import java.util.Date;
 import java.util.List;

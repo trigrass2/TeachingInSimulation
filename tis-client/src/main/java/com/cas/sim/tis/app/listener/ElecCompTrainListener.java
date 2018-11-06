@@ -9,7 +9,7 @@ import com.cas.sim.tis.flow.Step;
 import com.cas.sim.tis.util.AlertUtil;
 import com.cas.sim.tis.util.MsgUtil;
 import com.cas.sim.tis.view.control.imp.dialog.Tip.TipType;
-import com.cas.sim.tis.view.control.imp.jme.TypicalCase3D;
+import com.cas.sim.tis.view.control.imp.typical.TypicalCase3D;
 
 import javafx.application.Platform;
 import lombok.extern.slf4j.Slf4j;

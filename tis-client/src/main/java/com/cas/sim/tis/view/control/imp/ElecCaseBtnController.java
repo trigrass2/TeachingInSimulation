@@ -11,14 +11,14 @@ import org.controlsfx.control.PopOver.ArrowLocation;
 
 import com.cas.sim.tis.app.state.CircuitState;
 import com.cas.sim.tis.app.state.ElecCaseState;
-import com.cas.sim.tis.app.state.ElecCaseState.CaseMode;
+import com.cas.sim.tis.consts.CaseMode;
 import com.cas.sim.tis.consts.Radius;
 import com.cas.sim.tis.consts.WireColor;
 import com.cas.sim.tis.util.AlertUtil;
 import com.cas.sim.tis.util.MsgUtil;
 import com.cas.sim.tis.view.control.IDistory;
-import com.cas.sim.tis.view.control.imp.jme.TypicalCaseBtnController;
 import com.cas.sim.tis.view.control.imp.jme.WireRadius;
+import com.cas.sim.tis.view.control.imp.typical.TypicalCaseBtnController;
 import com.cas.sim.tis.view.controller.DrawingController;
 
 import de.felixroske.jfxsupport.GUIState;
@@ -49,12 +49,11 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import lombok.Setter;
 
-public abstract class ElecCaseBtnController implements Initializable, IDistory {
+public abstract class ElecCaseBtnController<T> implements Initializable, IDistory {
 	@FXML
 	protected VBox pane;
-//	@FXML
-//	protected Title title;
 	@FXML
 	protected StackPane content;
 	@FXML
@@ -90,8 +89,8 @@ public abstract class ElecCaseBtnController implements Initializable, IDistory {
 	@FXML
 	protected Button submit;
 
-	protected ElecCase3D<?> elecCase3D;
-	protected ElecCaseState<?> elecCaseState;
+	protected @Setter ElecCase3D<T> elecCase3D;
+	protected @Setter ElecCaseState<T> elecCaseState;
 
 	private PopOver wirePicker;
 
@@ -341,15 +340,6 @@ public abstract class ElecCaseBtnController implements Initializable, IDistory {
 		wirePicker.show(wire, point.getX(), point.getY());
 	}
 
-//	public void setTitle(String title) {
-//		this.title.setTitle(title);
-//		this.title.setVisible(true);
-//	}
-
-	public void setState(ElecCaseState<?> elecCaseState) {
-		this.elecCaseState = elecCaseState;
-	}
-
 	@Override
 	public void distroy() {
 		clean();
@@ -376,9 +366,5 @@ public abstract class ElecCaseBtnController implements Initializable, IDistory {
 
 	public void setMode(CaseMode mode) {
 		modes.getSelectionModel().select(mode);
-	}
-
-	public void setElecCase3D(ElecCase3D<?> elecCase3D) {
-		this.elecCase3D = elecCase3D;
 	}
 }

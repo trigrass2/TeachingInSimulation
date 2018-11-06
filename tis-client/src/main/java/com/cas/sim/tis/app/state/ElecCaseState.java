@@ -1,13 +1,16 @@
 package com.cas.sim.tis.app.state;
 
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
+
 import com.cas.sim.tis.app.event.MouseEvent;
 import com.cas.sim.tis.app.event.MouseEventAdapter;
 import com.cas.sim.tis.app.hold.ElecCompHoldHandler;
 import com.cas.sim.tis.app.hold.HoldStatePro;
 import com.cas.sim.tis.app.state.SceneCameraState.Mode;
 import com.cas.sim.tis.app.state.SceneCameraState.View;
+import com.cas.sim.tis.consts.CaseMode;
 import com.cas.sim.tis.entity.ElecComp;
-import com.cas.sim.tis.util.MsgUtil;
 import com.cas.sim.tis.util.SpringUtil;
 import com.cas.sim.tis.view.control.imp.ElecCase3D;
 import com.cas.sim.tis.view.controller.PageController;
@@ -21,53 +24,29 @@ import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3x.jfx.util.JFXPlatform;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public abstract class ElecCaseState<T>extends BaseState {
 //	每次打开新的案例，都会创建一个新的节点，存放与案例相关的模型
 	private static final String CASE_ROOT_NODE = "CASE_ROOT_NODE";
 
-	protected Node root;
-	protected @Getter Spatial compPlane;
-
+	private @Getter Node root;
 	private PointLight pointLight;
 
+	protected @Getter Spatial compPlane;
 	protected @Getter SceneCameraState cameraState;
-
 	protected @Getter @Setter ElecCase3D<T> ui;
-//	protected HoldState holdState;
-	protected @Getter HoldStatePro holdState;
 	protected @Getter CircuitState circuitState;
-
+	protected @Getter T elecCase;
 	protected @Getter CaseMode mode;
 
-	private MultimeterState multimeterState;
-
-	@Getter
-	@AllArgsConstructor
-	public enum CaseMode {
-		VIEW_MODE(MsgUtil.getMessage("elec.case.mode.view"), true, false), // 查看模式（控制一步步显示元器件，导线）
-		TYPICAL_TRAIN_MODE(MsgUtil.getMessage("elec.case.mode.train"), true, true), // 练习模式（教师、学生根据案例自由摆放元器件导线）
-		BROKEN_TRAIN_MODE(MsgUtil.getMessage("elec.case.mode.train"), false, false), // 练习模式（教师、学生根据案例检测故障）
-		BROKEN_EXAM_MODE(MsgUtil.getMessage("elec.case.mode.exam"), false, false), // 考核模式（学生根据案例检测故障）
-		EDIT_MODE(MsgUtil.getMessage("elec.case.mode.edit"), false, true);// 编辑模式（教师编辑案例）
-
-		private String name;
-		private boolean hideCircuit;// 是否在初始化时隐藏电路
-		private boolean holdEnable;// 模式下是否允许拿去元器件
-
-		@Override
-		public String toString() {
-			return name;
-		}
-	}
+	private Queue<Runnable> onChangedListener = new ConcurrentLinkedQueue<>();
 
 	@Override
 	protected void initializeLocal() {
-		holdState = HoldStatePro.ins;
-
 		arrangementScene();
 
 		bindEvents();
@@ -86,10 +65,8 @@ public abstract class ElecCaseState<T>extends BaseState {
 			}
 		}, "toggleView");
 
-		
 		HoldStatePro.ins.setRoot(root);
 		HoldStatePro.ins.registerWithInput(inputManager);
-//		stateManager.attach(holdState);
 
 		// 结束加载界面
 		JFXPlatform.runInFXThread(() -> SpringUtil.getBean(PageController.class).hideLoading());
@@ -99,13 +76,14 @@ public abstract class ElecCaseState<T>extends BaseState {
 	public void update(float tpf) {
 		pointLight.setPosition(cam.getLocation());
 
-		if (holdState != null) {
-//			手中无物品，相机才能缩放
-			cameraState.setZoomEnable(holdState.isIdle());
-		}
+//		手中无物品，相机才能缩放
+		cameraState.setZoomEnable(HoldStatePro.ins.isIdle());
 
-//		XXX test
-//		stateManager.getState(MultimeterState.class).setEnabled(true);
+		Runnable l;
+		if ((l = onChangedListener.poll()) != null) {
+			log.info("存档或模式发生变化..");
+			l.run();
+		}
 
 		super.update(tpf);
 	}
@@ -117,10 +95,8 @@ public abstract class ElecCaseState<T>extends BaseState {
 		// 移除操作模式State
 		stateManager.detach(cameraState);
 		stateManager.detach(circuitState);
-		stateManager.detach(multimeterState);
-//		stateManager.detach(holdState);
 
-		holdState.unregisterInput();
+		HoldStatePro.ins.unregisterInput();
 
 		super.cleanup();
 	}
@@ -156,15 +132,12 @@ public abstract class ElecCaseState<T>extends BaseState {
 		addListener(compPlane, new MouseEventAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				holdState.putDown();
-//				if (mode.isHoldEnable()) {
-//					holdState.putDown(circuitState);
-//				}
+				HoldStatePro.ins.putDown();
 			}
 
 			@Override
 			public void mouseRightClicked(MouseEvent e) {
-				holdState.discard();
+				HoldStatePro.ins.discard();
 			}
 		});
 	}
@@ -180,12 +153,12 @@ public abstract class ElecCaseState<T>extends BaseState {
 			elecComp.setSpatial(spatial);
 
 //			拿之前先检查一下手中是否有东西，如果有，则先丢弃
-			if (!holdState.isIdle()) {
-				holdState.discard();
+			if (!HoldStatePro.ins.isIdle()) {
+				HoldStatePro.ins.discard();
 			}
 
 //			最后就能光明正大地拿元器件了
-			holdState.pickUp(spatial, new ElecCompHoldHandler(this, elecComp));
+			HoldStatePro.ins.pickUp(spatial, new ElecCompHoldHandler(this, elecComp));
 		}
 	}
 
@@ -193,7 +166,7 @@ public abstract class ElecCaseState<T>extends BaseState {
 		if (CaseMode.VIEW_MODE == mode || circuitState == null) {
 			return;
 		}
-		holdState.putDownOn(def);
+		HoldStatePro.ins.putDownOn(def);
 	}
 
 	public boolean isClean() {
@@ -204,17 +177,22 @@ public abstract class ElecCaseState<T>extends BaseState {
 		}
 	}
 
-	public abstract void setMode(CaseMode mode);
-
 	public abstract void save();
 
 	public abstract void newCase();
 
-	public abstract void setupCase(T elecCase, CaseMode mode);
+	public final void setupCase(T elecCase, CaseMode mode) {
+		if (this.elecCase == elecCase && this.mode == mode) {
+//			既然存档和模式都没变化，大家就当无事发生过 :)
+			return;
+		}
+		this.elecCase = elecCase;
+		this.mode = mode;
+		onChangedListener.add(() -> setupCase0());
+	}
 
-	public abstract T getElecCase();
+	protected abstract void setupCase0();
 
 	public void setMultimeterVisible(boolean visible) {
-		
 	}
 }

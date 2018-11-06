@@ -12,8 +12,8 @@ import com.cas.circuit.component.Wire;
 import com.cas.circuit.vo.Pair;
 import com.cas.sim.tis.app.state.CircuitState;
 import com.cas.sim.tis.app.state.ElecCaseState;
-import com.cas.sim.tis.app.state.ElecCaseState.CaseMode;
 import com.cas.sim.tis.app.state.broken.BrokenCaseState;
+import com.cas.sim.tis.consts.CaseMode;
 import com.cas.sim.tis.entity.BrokenCase;
 import com.cas.sim.tis.util.AlertUtil;
 import com.cas.sim.tis.util.MsgUtil;
@@ -41,7 +41,7 @@ public class BrokenCase3D extends ElecCase3D<BrokenCase> {
 
 	private boolean finish;
 
-	public BrokenCase3D(ElecCaseState<BrokenCase> state, ElecCaseBtnController btnController) {
+	public BrokenCase3D(ElecCaseState<BrokenCase> state, ElecCaseBtnController<BrokenCase> btnController) {
 		super(state, btnController);
 	}
 
