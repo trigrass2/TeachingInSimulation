@@ -2,8 +2,8 @@ package com.cas.sim.tis.util;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -27,7 +27,9 @@ public class ModelConverter {
 		AssetManager mgr = new DesktopAssetManager(true);
 		mgr.registerLocator(DIR, FileLocator.class);
 
-		List<File> files = readDir();//
+//		List<File> files = readDir();//
+		List<File> files = new ArrayList<>();
+//		files.add(new File("E:\\JME_SDKPROJ_HOME\\ESimulation3D\\assets\\Model\\NBE7\\NBE7-static.j3o"));
 		files.forEach(f -> save(f, mgr.loadModel(f.getAbsolutePath().replace(DIR, ""))));
 	}
 

@@ -158,7 +158,7 @@ public class ClassList extends HBox implements IContent {
 			table.setItems(null);
 			table.build();
 		} else {
-			pagination.setPageCount((int) pageInfo.getPages());
+			pagination.setPageCount(pageInfo.getPages());
 			JSONArray array = new JSONArray();
 			array.addAll(pageInfo.getList());
 			table.setItems(array);

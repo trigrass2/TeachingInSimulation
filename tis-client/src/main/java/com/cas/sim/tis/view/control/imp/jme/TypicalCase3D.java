@@ -7,10 +7,8 @@ import com.cas.sim.tis.app.state.ElecCaseState.CaseMode;
 import com.cas.sim.tis.app.state.typical.TypicalCaseState;
 import com.cas.sim.tis.entity.ArchiveCase;
 import com.cas.sim.tis.flow.Step;
-import com.cas.sim.tis.view.control.IContent;
 import com.cas.sim.tis.view.control.imp.ElecCase3D;
 import com.cas.sim.tis.view.control.imp.ElecCaseBtnController;
-import com.cas.sim.tis.view.controller.PageController;
 
 public class TypicalCase3D extends ElecCase3D<ArchiveCase>{
 

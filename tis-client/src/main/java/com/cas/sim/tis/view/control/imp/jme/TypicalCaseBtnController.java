@@ -53,6 +53,7 @@ public class TypicalCaseBtnController extends ElecCaseBtnController {
 		});
 	}
 
+	@Override
 	protected void switchCaseMode(CaseMode mode) {
 		TypicalCase3D typicalCase3D = (TypicalCase3D) elecCase3D;
 		SpringUtil.getBean(PageController.class).showLoading();

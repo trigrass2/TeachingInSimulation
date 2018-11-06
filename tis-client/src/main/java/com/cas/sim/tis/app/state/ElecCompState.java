@@ -7,6 +7,7 @@ import java.util.Map.Entry;
 
 import javax.annotation.Nonnull;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
 import com.cas.circuit.component.ControlIO;
@@ -128,7 +129,7 @@ public class ElecCompState extends BaseState {
 //		获取相应元器件
 		ElecCompDef elecCompDef = SpringUtil.getBean(ElecCompAction.class).parse(elecComp.getCfgPath());
 		// 模型绑定认知名称
-		Map<String, String> recongnizeMap = JSONObject.parseObject(elecCompDef.getParam(ElecCompDef.PARAM_KEY_NAME), new TypeReference<Map<String, String>>() {});
+		Map<String, String> recongnizeMap = JSON.parseObject(elecCompDef.getParam(ElecCompDef.PARAM_KEY_NAME), new TypeReference<Map<String, String>>() {});
 		if (recongnizeMap == null) {
 			return;
 		}

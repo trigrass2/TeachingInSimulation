@@ -235,7 +235,7 @@ public class Column<T> {
 		}
 	};
 
-	private final ObjectProperty<Callback<Column<T>, Cell<T>>> cellFactory = new SimpleObjectProperty<Callback<Column<T>, Cell<T>>>(this, "cellFactory", (Callback<Column<T>, Cell<T>>) ((Callback) DEFAULT_CELL_FACTORY));
+	private final ObjectProperty<Callback<Column<T>, Cell<T>>> cellFactory = new SimpleObjectProperty<Callback<Column<T>, Cell<T>>>(this, "cellFactory", ((Callback) DEFAULT_CELL_FACTORY));
 
 	public final void setCellFactory(Callback<Column<T>, Cell<T>> value) {
 		cellFactory.set(value);

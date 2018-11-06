@@ -29,6 +29,7 @@ import com.cas.sim.tis.vo.ExamLibraryPublish;
 import com.cas.sim.tis.vo.ExamPreparationPublish;
 import com.jme3.network.Client;
 
+import de.felixroske.jfxsupport.AbstractJavaFxApplicationSupport;
 import javafx.application.Platform;
 
 public class ExamMessageHandler implements ClientHandler<ExamMessage> {
@@ -63,7 +64,7 @@ public class ExamMessageHandler implements ClientHandler<ExamMessage> {
 		if (ExamMessage.MESSAGE_TYPE_START == messageType) {
 			ExamLibraryPublish publish = SpringUtil.getBean(LibraryPublishAction.class).findPublishById(m.getPid());
 			Platform.runLater(() -> {
-				Application.showView(ExamView.class);
+				AbstractJavaFxApplicationSupport.showView(ExamView.class);
 
 				ExamController controller = SpringUtil.getBean(ExamController.class);
 				controller.initialize(publish);
@@ -85,7 +86,7 @@ public class ExamMessageHandler implements ClientHandler<ExamMessage> {
 			List<Question> questions = SpringUtil.getBean(QuestionAction.class).findQuestionsByQuestionIds(publish.getLibrary().getQuestionIds());
 
 			Platform.runLater(() -> {
-				Application.showView(PreparationExamView.class);
+				AbstractJavaFxApplicationSupport.showView(PreparationExamView.class);
 
 				PreparationExamController controller = SpringUtil.getBean(PreparationExamController.class);
 				controller.initialize(publish, questions);
@@ -106,7 +107,7 @@ public class ExamMessageHandler implements ClientHandler<ExamMessage> {
 			ExamBrokenPublish publish = SpringUtil.getBean(BrokenPublishAction.class).findPublishById(m.getPid());
 			// TODO 加载维修案例考核界面
 			Platform.runLater(() -> {
-				Application.showView(PageView.class);
+				AbstractJavaFxApplicationSupport.showView(PageView.class);
 				PageController controller = SpringUtil.getBean(PageController.class);
 				BrokenCase3D content = new BrokenCase3D(new BrokenCaseState(), new BrokenCaseBtnController(CaseMode.BROKEN_EXAM_MODE));
 

@@ -35,6 +35,7 @@ import com.cas.sim.tis.view.control.imp.exam.SubjectiveOption;
 import com.cas.sim.tis.vo.ExamPreparationPublish;
 import com.cas.util.MathUtil;
 
+import de.felixroske.jfxsupport.AbstractJavaFxApplicationSupport;
 import de.felixroske.jfxsupport.FXMLController;
 import javafx.beans.value.ChangeListener;
 import javafx.event.ActionEvent;
@@ -265,7 +266,7 @@ public class PreparationExamController {
 	@FXML
 	private void back() {
 		// 考试结束返回首页
-		Application.showView(HomeView.class);
+		AbstractJavaFxApplicationSupport.showView(HomeView.class);
 	}
 
 	/**

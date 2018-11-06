@@ -15,6 +15,7 @@ import javafx.scene.control.Control;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 
 public class SearchBox extends HBox {
@@ -29,7 +30,7 @@ public class SearchBox extends HBox {
 		setId("SearchBox");
 		setMinSize(220, 40);
 		setPrefSize(220, 40);
-		setMaxSize(Control.USE_PREF_SIZE, Control.USE_PREF_SIZE);
+		setMaxSize(Region.USE_PREF_SIZE, Region.USE_PREF_SIZE);
 		setAlignment(Pos.CENTER_LEFT);
 		setPadding(new Insets(5));
 		setStyle("-fx-border-color:#d4d4d4;");

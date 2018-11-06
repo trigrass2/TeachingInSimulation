@@ -15,7 +15,6 @@ import com.cas.sim.tis.consts.Session;
 import com.cas.sim.tis.util.MsgUtil;
 import com.cas.sim.tis.util.SpringUtil;
 import com.cas.sim.tis.view.control.IContent;
-import com.cas.sim.tis.view.control.imp.Title;
 import com.cas.sim.tis.view.control.imp.pagination.PaginationBar;
 import com.cas.sim.tis.view.control.imp.question.StudentQuestionPaper;
 import com.cas.sim.tis.view.control.imp.table.BtnCell;
@@ -160,7 +159,7 @@ public class PublishListForStudent extends HBox implements IContent {
 			table.setItems(null);
 			table.build();
 		} else {
-			pagination.setPageCount((int) pageInfo.getPages());
+			pagination.setPageCount(pageInfo.getPages());
 			JSONArray array = new JSONArray();
 			array.addAll(pageInfo.getList());
 			table.setItems(array);

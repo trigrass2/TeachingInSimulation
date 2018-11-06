@@ -10,7 +10,6 @@ import com.cas.sim.tis.util.SpringUtil;
 import com.cas.sim.tis.view.control.IContent;
 import com.cas.sim.tis.view.control.imp.ElecCase3D;
 import com.cas.sim.tis.view.controller.PageController;
-import com.jme3.math.ColorRGBA;
 import com.jme3.scene.Spatial;
 
 import javafx.application.Platform;

@@ -30,7 +30,9 @@ import com.cas.sim.tis.view.control.imp.exam.JudgmentOption;
 import com.cas.sim.tis.view.control.imp.exam.SubjectiveOption;
 import com.cas.sim.tis.vo.ExamLibraryPublish;
 
+import de.felixroske.jfxsupport.AbstractJavaFxApplicationSupport;
 import de.felixroske.jfxsupport.FXMLController;
+import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.beans.value.ChangeListener;
@@ -159,7 +161,7 @@ public class ExamController {
 
 		// 启动计时器
 		timeline = new Timeline();
-		timeline.setCycleCount(Timeline.INDEFINITE);
+		timeline.setCycleCount(Animation.INDEFINITE);
 		timeline.getKeyFrames().add(new KeyFrame(Duration.seconds(1), (ActionEvent event1) -> {
 			cost++;
 			this.minute.setText(String.valueOf(cost / 60));
@@ -269,7 +271,7 @@ public class ExamController {
 	private void back() {
 		timeline.stop();
 		// 考试结束返回首页
-		Application.showView(HomeView.class);
+		AbstractJavaFxApplicationSupport.showView(HomeView.class);
 	}
 
 	/**

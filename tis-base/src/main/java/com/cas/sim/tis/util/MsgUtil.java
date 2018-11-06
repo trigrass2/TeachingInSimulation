@@ -18,6 +18,7 @@ public class MsgUtil implements MessageSourceAware {
 		return messageSource.getMessage(key, args, Locale.getDefault());
 	}
 
+	@Override
 	public void setMessageSource(MessageSource messageSource) {
 		setMessageSource0(messageSource);
 	}

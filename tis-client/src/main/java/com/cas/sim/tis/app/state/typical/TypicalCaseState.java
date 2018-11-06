@@ -21,6 +21,7 @@ public class TypicalCaseState extends ElecCaseState<ArchiveCase> {
 
 	private ArchiveCase archiveCase;
 
+	@Override
 	public void setMode(CaseMode mode) {
 		// 1、清理垃圾
 		if (circuitState != null) {
@@ -54,6 +55,7 @@ public class TypicalCaseState extends ElecCaseState<ArchiveCase> {
 		this.mode = mode;
 	}
 
+	@Override
 	public void save() {
 		if (circuitState == null) {
 			return;
@@ -63,6 +65,7 @@ public class TypicalCaseState extends ElecCaseState<ArchiveCase> {
 		SpringUtil.getBean(ArchiveCaseAction.class).save(archiveCase, archive, ArchiveType.TYPICAL);
 	}
 
+	@Override
 	public void newCase() {
 		ArchiveCase archiveCase = new ArchiveCase();
 		archiveCase.setName("新建案例 *");
@@ -71,6 +74,7 @@ public class TypicalCaseState extends ElecCaseState<ArchiveCase> {
 	}
 
 //	打开一个案例（管理员、教师、学生）
+	@Override
 	public void setupCase(ArchiveCase archiveCase, CaseMode mode) {
 		this.archiveCase = archiveCase;
 		setMode(mode);

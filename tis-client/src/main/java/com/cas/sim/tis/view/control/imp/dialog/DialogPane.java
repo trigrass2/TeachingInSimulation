@@ -30,6 +30,7 @@ public class DialogPane<R>extends VBox {
 	private double yOffset;
 
 	private BooleanProperty closeable = new SimpleBooleanProperty(true) {
+		@Override
 		public void set(boolean newValue) {
 			close.setVisible(newValue);
 		};

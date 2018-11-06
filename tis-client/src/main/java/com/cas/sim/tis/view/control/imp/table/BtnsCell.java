@@ -141,6 +141,7 @@ public class BtnsCell<T>extends Cell<T> {
 		return hovering;
 	}
 
+	@Override
 	public void setRow(Row row) {
 		this.row = row;
 	}

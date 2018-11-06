@@ -131,6 +131,7 @@ public abstract class AbstractMeter implements Meter, IResultListener {
 		return value;
 	}
 
+	@Override
 	public double getRealValue() {
 		return 0;
 	}

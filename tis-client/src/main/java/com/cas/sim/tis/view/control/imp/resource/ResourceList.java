@@ -29,7 +29,6 @@ import com.cas.sim.tis.util.SpringUtil;
 import com.cas.sim.tis.view.control.IContent;
 import com.cas.sim.tis.view.control.imp.ResourceViewer;
 import com.cas.sim.tis.view.control.imp.SearchBox;
-import com.cas.sim.tis.view.control.imp.Title;
 import com.cas.sim.tis.view.control.imp.pagination.PaginationBar;
 import com.cas.sim.tis.view.control.imp.table.BtnCell;
 import com.cas.sim.tis.view.control.imp.table.Cell;
@@ -340,7 +339,7 @@ public class ResourceList extends HBox implements IContent {
 			table.setItems(null);
 			table.build();
 		} else {
-			pagination.setPageCount((int) page.getPages());
+			pagination.setPageCount(page.getPages());
 			JSONArray array = new JSONArray();
 			array.addAll(page.getList());
 			table.setItems(array);

@@ -42,6 +42,7 @@ import com.cas.sim.tis.vo.ExamLibraryPublish;
 import com.cas.util.FileUtil;
 import com.cas.util.Util;
 
+import de.felixroske.jfxsupport.AbstractJavaFxApplicationSupport;
 import de.felixroske.jfxsupport.GUIState;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -314,7 +315,7 @@ public class PreviewQuestionPaper extends HBox implements IContent {
 		int id = SpringUtil.getBean(LibraryPublishAction.class).practiceLibraryByStudent(rid);
 		ExamLibraryPublish publish = SpringUtil.getBean(LibraryPublishAction.class).findPublishById(id);
 
-		Application.showView(ExamView.class);
+		AbstractJavaFxApplicationSupport.showView(ExamView.class);
 
 		ExamController controller = SpringUtil.getBean(ExamController.class);
 		controller.initialize(publish);

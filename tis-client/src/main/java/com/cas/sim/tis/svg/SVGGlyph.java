@@ -20,6 +20,7 @@ import javafx.css.CssMetaData;
 import javafx.css.SimpleStyleableDoubleProperty;
 import javafx.css.Styleable;
 import javafx.css.StyleableDoubleProperty;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
@@ -45,6 +46,7 @@ public class SVGGlyph extends Pane {
 
 	private int glyphId;
 	private StringProperty name = new SimpleStringProperty() {
+		@Override
 		public void set(String newValue) {
 			super.set(newValue);
 			if (newValue != null) {
@@ -179,9 +181,9 @@ public class SVGGlyph extends Pane {
 	 * @param height
 	 */
 	public void setSize(double width, double height) {
-		this.setMinSize(StackPane.USE_PREF_SIZE, StackPane.USE_PREF_SIZE);
+		this.setMinSize(Region.USE_PREF_SIZE, Region.USE_PREF_SIZE);
 		this.setPrefSize(width, height);
-		this.setMaxSize(StackPane.USE_PREF_SIZE, StackPane.USE_PREF_SIZE);
+		this.setMaxSize(Region.USE_PREF_SIZE, Region.USE_PREF_SIZE);
 	}
 
 	/**
@@ -256,7 +258,7 @@ public class SVGGlyph extends Pane {
 		private static final List<CssMetaData<? extends Styleable, ?>> CHILD_STYLEABLES;
 
 		static {
-			final List<CssMetaData<? extends Styleable, ?>> styleables = new ArrayList<>(Parent.getClassCssMetaData());
+			final List<CssMetaData<? extends Styleable, ?>> styleables = new ArrayList<>(Node.getClassCssMetaData());
 			Collections.addAll(styleables, SIZE);
 			CHILD_STYLEABLES = Collections.unmodifiableList(styleables);
 		}
@@ -268,7 +270,7 @@ public class SVGGlyph extends Pane {
 	@Override
 	public List<CssMetaData<? extends Styleable, ?>> getCssMetaData() {
 		if (STYLEABLES == null) {
-			final List<CssMetaData<? extends Styleable, ?>> styleables = new ArrayList<>(Pane.getClassCssMetaData());
+			final List<CssMetaData<? extends Styleable, ?>> styleables = new ArrayList<>(Region.getClassCssMetaData());
 			styleables.addAll(getClassCssMetaData());
 			STYLEABLES = Collections.unmodifiableList(styleables);
 		}

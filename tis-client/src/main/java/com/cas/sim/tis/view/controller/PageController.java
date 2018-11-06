@@ -12,6 +12,7 @@ import com.cas.sim.tis.view.control.IDistory;
 import com.cas.sim.tis.view.control.ILeftContent;
 import com.cas.sim.tis.view.control.imp.Decoration;
 
+import de.felixroske.jfxsupport.AbstractJavaFxApplicationSupport;
 import de.felixroske.jfxsupport.FXMLController;
 import de.felixroske.jfxsupport.GUIState;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -31,6 +32,7 @@ public class PageController implements Initializable {
 	private boolean visible = true;
 
 	private SimpleBooleanProperty loading = new SimpleBooleanProperty(false) {
+		@Override
 		public void set(boolean newValue) {
 			if (!newValue) {
 				if (endHideLoading != null) {
@@ -154,7 +156,7 @@ public class PageController implements Initializable {
 			clear();
 			setBackEnable(true);
 			setLeftMenuEnable(true);
-			Application.showView(HomeView.class);
+			AbstractJavaFxApplicationSupport.showView(HomeView.class);
 		}
 	}
 

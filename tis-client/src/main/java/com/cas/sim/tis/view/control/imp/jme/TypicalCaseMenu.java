@@ -28,6 +28,7 @@ public class TypicalCaseMenu extends ElecCaseMenu implements ILeftContent {
 	}
 
 	// open打开案例选择面板
+	@Override
 	protected void showCaseDialog() {
 		Dialog<Integer> dialog = new Dialog<>();
 		int role = Session.get(Session.KEY_LOGIN_ROLE, RoleConst.STUDENT);
@@ -45,6 +46,7 @@ public class TypicalCaseMenu extends ElecCaseMenu implements ILeftContent {
 		});
 	}
 
+	@Override
 	protected void newCase() {
 		SpringUtil.getBean(PageController.class).showLoading();
 		// 0、判断当前是否有接线存在
@@ -65,6 +67,7 @@ public class TypicalCaseMenu extends ElecCaseMenu implements ILeftContent {
 		}
 	}
 
+	@Override
 	protected void saveCase() {
 //		显示等待界面
 		SpringUtil.getBean(PageController.class).showLoading();

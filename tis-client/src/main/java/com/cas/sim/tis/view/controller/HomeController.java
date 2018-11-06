@@ -36,6 +36,7 @@ import com.cas.sim.tis.view.control.imp.jme.TypicalCaseMenu;
 import com.cas.sim.tis.view.control.imp.setting.SettingDialog;
 import com.cas.sim.tis.view.controller.PageController.PageLevel;
 
+import de.felixroske.jfxsupport.AbstractJavaFxApplicationSupport;
 import de.felixroske.jfxsupport.FXMLController;
 import de.felixroske.jfxsupport.GUIState;
 import javafx.fxml.FXML;
@@ -124,7 +125,7 @@ public class HomeController implements Initializable {
 	 */
 	public void recongize() {
 		// 跳转到认知页面
-		Application.showView(PageView.class);
+		AbstractJavaFxApplicationSupport.showView(PageView.class);
 
 		PageController controller = SpringUtil.getBean(PageController.class);
 		Recongnize3D content = new Recongnize3D();
@@ -140,7 +141,7 @@ public class HomeController implements Initializable {
 	 */
 	public void typicalCase() {
 		// 跳转到典型案例页面
-		Application.showView(PageView.class);
+		AbstractJavaFxApplicationSupport.showView(PageView.class);
 
 		PageController controller = SpringUtil.getBean(PageController.class);
 		TypicalCase3D content = null;
@@ -165,7 +166,7 @@ public class HomeController implements Initializable {
 	 */
 	public void exersize() {
 		// 跳转到自由接线页面
-		Application.showView(PageView.class);
+		AbstractJavaFxApplicationSupport.showView(PageView.class);
 		
 		PageController controller = SpringUtil.getBean(PageController.class);
 		FreeCase3D content = new FreeCase3D(new FreeCaseState(), new FreeCaseBtnController(CaseMode.EDIT_MODE));
@@ -182,7 +183,7 @@ public class HomeController implements Initializable {
 	 */
 	public void repair() {
 		// 跳转到维修案例页面
-		Application.showView(PageView.class);
+		AbstractJavaFxApplicationSupport.showView(PageView.class);
 
 		PageController controller = SpringUtil.getBean(PageController.class);
 		BrokenCase3D content = null;

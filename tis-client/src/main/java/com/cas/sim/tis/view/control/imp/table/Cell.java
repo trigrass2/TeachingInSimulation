@@ -265,7 +265,7 @@ public class Cell<T>extends Label {
 		setVisible(newCol.isVisible());
 
 		setPrimary(newCol.isPrimary());
-		setTableColumn((Column<T>) newCol);
+		setTableColumn(newCol);
 	}
 
 	private final WeakChangeListener<Boolean> weakColumnVisibleListener = new WeakChangeListener<>((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {

@@ -214,7 +214,7 @@ public class MultimeterState extends BaseState {
 //		camera.setLocation(new Vector3f(0f, 10f, 28));
 //		camera.lookAtDirection(Vector3f.UNIT_Z.negate().add(0, -FastMath.DEG_TO_RAD * 20, 0), Vector3f.UNIT_Y);
 
-		camera.setFrustumPerspective(45, (float) camera.getWidth() * .4f / camera.getHeight(), 10f, 100f);
+		camera.setFrustumPerspective(45, camera.getWidth() * .4f / camera.getHeight(), 10f, 100f);
 		camera.setParallelProjection(false);
 
 		view = renderManager.createMainView("Bottom Right", camera);

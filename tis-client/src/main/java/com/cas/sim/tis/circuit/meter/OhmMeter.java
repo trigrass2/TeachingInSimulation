@@ -1,7 +1,5 @@
 package com.cas.sim.tis.circuit.meter;
 
-import java.util.function.Consumer;
-
 import com.cas.circuit.component.Terminal;
 import com.cas.circuit.component.Wire;
 import com.cas.circuit.element.ResistorElm;

@@ -62,6 +62,7 @@ public class BtnCell<T>extends Cell<T> {
 		hoveringPropertyImpl().addListener(hoverListener);
 	}
 
+	@Override
 	public void destory() {
 		super.destory();
 		this.btn.removeEventHandler(ActionEvent.ACTION, this.btn.getOnAction());
@@ -90,6 +91,7 @@ public class BtnCell<T>extends Cell<T> {
 		return hovering;
 	}
 
+	@Override
 	public void setRow(Row row) {
 		this.row = row;
 	}

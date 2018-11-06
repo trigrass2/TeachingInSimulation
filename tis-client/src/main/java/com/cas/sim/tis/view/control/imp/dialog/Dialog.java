@@ -5,6 +5,7 @@ import java.util.Optional;
 import com.sun.javafx.tk.Toolkit;
 
 import de.felixroske.jfxsupport.GUIState;
+import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.beans.binding.Bindings;
@@ -90,7 +91,7 @@ public class Dialog<R> {
 				timeline.stop();
 			}
 		}));
-		timeline.setCycleCount(Timeline.INDEFINITE);
+		timeline.setCycleCount(Animation.INDEFINITE);
 
 		stage.setOnShowing(windowEvent -> {
 			Parent parant = stage.getScene().getRoot();
@@ -211,6 +212,7 @@ public class Dialog<R> {
 
 	// --- result
 	private final ObjectProperty<R> resultProperty = new SimpleObjectProperty<R>() {
+		@Override
 		protected void invalidated() {
 			close();
 		}

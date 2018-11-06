@@ -13,6 +13,7 @@ import com.cas.util.FileUtil;
 import com.sun.jna.Memory;
 import com.sun.jna.NativeLibrary;
 
+import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
@@ -148,7 +149,7 @@ public class VLCPlayer extends VBox implements IDistory {
 		this.getChildren().add(pane);
 
 		timeline = new Timeline();
-		timeline.setCycleCount(Timeline.INDEFINITE);
+		timeline.setCycleCount(Animation.INDEFINITE);
 		double duration = 1000.0 / FPS;
 		timeline.getKeyFrames().add(new KeyFrame(Duration.millis(duration), nextFrameHandler));
 

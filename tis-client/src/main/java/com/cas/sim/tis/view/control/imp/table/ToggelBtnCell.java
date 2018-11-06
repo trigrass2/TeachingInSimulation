@@ -82,11 +82,13 @@ public class ToggelBtnCell<T>extends Cell<T> {
 		this.btn.selectedProperty().addListener(listener);
 	}
 
+	@Override
 	public void destory() {
 		super.destory();
 		this.btn.selectedProperty().removeListener(listener);
 	}
 
+	@Override
 	public void setRow(Row row) {
 		this.row = row;
 	}

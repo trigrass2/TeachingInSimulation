@@ -253,6 +253,7 @@ public class Table extends VBox {
 	 * 表格数据之间的行间距
 	 */
 	private ObjectProperty<Double> rowsSpacing = new SimpleObjectProperty<Double>(10d) {
+		@Override
 		public void set(Double newValue) {
 			Table.this.content.setSpacing(newValue);
 		};

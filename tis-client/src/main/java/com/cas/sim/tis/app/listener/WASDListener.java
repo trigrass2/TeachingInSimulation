@@ -198,6 +198,7 @@ public class WASDListener implements AnalogListener, ActionListener {
 		cam.setLocation(loc.add(vect.x, 0, vect.z));
 	}
 
+	@Override
 	public void onAnalog(String name, float value, float tpf) {
 		if (!enabled) return;
 		if (name.equals(WASD_FORWARD)) {

@@ -16,6 +16,7 @@ import com.cas.sim.tis.view.control.imp.preparation.PreparationMenu;
 import com.cas.sim.tis.view.control.imp.resource.ResourceMenu;
 import com.cas.sim.tis.view.controller.PageController;
 
+import de.felixroske.jfxsupport.AbstractJavaFxApplicationSupport;
 import javafx.event.EventHandler;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
@@ -29,7 +30,7 @@ public enum MenuEnum implements EventHandler<MouseEvent> {
 			}
 			
 			// 跳转到资源库页面
-			Application.showView(PageView.class);
+			AbstractJavaFxApplicationSupport.showView(PageView.class);
 			PageController controller = SpringUtil.getBean(PageController.class);
 			ResourceMenu menu = new ResourceMenu();
 			controller.loadLeftMenu(menu);
@@ -42,7 +43,7 @@ public enum MenuEnum implements EventHandler<MouseEvent> {
 			if(event.getButton() != MouseButton.PRIMARY) {
 				return;
 			}
-			Application.showView(PageView.class);
+			AbstractJavaFxApplicationSupport.showView(PageView.class);
 			PageController controller = SpringUtil.getBean(PageController.class);
 			LibraryMenu menu = new LibraryMenu();
 			controller.loadLeftMenu(menu);
@@ -65,7 +66,7 @@ public enum MenuEnum implements EventHandler<MouseEvent> {
 				if (subject == null) {
 					return;
 				}
-				Application.showView(PageView.class);
+				AbstractJavaFxApplicationSupport.showView(PageView.class);
 				PageController controller = SpringUtil.getBean(PageController.class);
 				PreparationMenu menu = new PreparationMenu(subject);
 				controller.loadLeftMenu(menu);
@@ -89,7 +90,7 @@ public enum MenuEnum implements EventHandler<MouseEvent> {
 				if (subject == null) {
 					return;
 				}
-				Application.showView(PageView.class);
+				AbstractJavaFxApplicationSupport.showView(PageView.class);
 				PageController controller = SpringUtil.getBean(PageController.class);
 				PreparationMenu menu = new PreparationMenu(subject);
 				controller.loadLeftMenu(menu);
@@ -104,7 +105,7 @@ public enum MenuEnum implements EventHandler<MouseEvent> {
 			if(event.getButton() != MouseButton.PRIMARY) {
 				return;
 			}
-			Application.showView(PageView.class);
+			AbstractJavaFxApplicationSupport.showView(PageView.class);
 			PageController controller = SpringUtil.getBean(PageController.class);
 			InformationMenu menu = new InformationMenu();
 			controller.loadLeftMenu(menu);

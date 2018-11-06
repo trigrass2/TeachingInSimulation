@@ -5,6 +5,7 @@ import com.cas.sim.tis.view.HomeView;
 import com.cas.sim.tis.view.control.imp.Decoration;
 import com.cas.sim.tis.view.control.imp.broken.BrokenCase3D;
 
+import de.felixroske.jfxsupport.AbstractJavaFxApplicationSupport;
 import de.felixroske.jfxsupport.FXMLController;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -34,7 +35,7 @@ public class BrokenExamController {
 	@FXML
 	private void back() {
 		// 考试结束返回首页
-		Application.showView(HomeView.class);
+		AbstractJavaFxApplicationSupport.showView(HomeView.class);
 	}
 
 	public void refresh() {
