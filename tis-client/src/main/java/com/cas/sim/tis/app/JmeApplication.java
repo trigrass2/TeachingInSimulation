@@ -52,7 +52,7 @@ public class JmeApplication extends JmeToJFXApplication {
 ////		注册资源路径
 //		assetManager.registerLocator(assetPath, UrlLocator.class);
 //		assetManager.registerLocator("G:\\Workspace\\TeachingInSimulation\\TeachingInSimulation\\tis-client\\assets", FileLocator.class);
-		assetManager.registerLocator("E:\\JME_SDKPROJ_HOME\\ESimulation3D\\assets", FileLocator.class);
+		assetManager.registerLocator("assets", FileLocator.class);
 
 		cam.setFrustumPerspective(45, (float) cam.getWidth() / cam.getHeight(), 0.01f, 1000f);
 ////		创建天空盒
