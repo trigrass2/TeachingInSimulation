@@ -9,9 +9,9 @@ import java.util.ResourceBundle;
 import org.controlsfx.control.PopOver;
 import org.controlsfx.control.PopOver.ArrowLocation;
 
+import com.cas.sim.tis.app.state.CircuitState;
 import com.cas.sim.tis.app.state.ElecCaseState;
 import com.cas.sim.tis.app.state.ElecCaseState.CaseMode;
-import com.cas.sim.tis.app.state.typical.CircuitState;
 import com.cas.sim.tis.consts.Radius;
 import com.cas.sim.tis.consts.WireColor;
 import com.cas.sim.tis.util.AlertUtil;

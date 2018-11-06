@@ -1,4 +1,4 @@
-package com.cas.sim.tis.app.state.typical;
+package com.cas.sim.tis.app.state;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -52,10 +52,9 @@ import com.cas.sim.tis.app.listener.ElecCompBaseClickListener;
 import com.cas.sim.tis.app.listener.ElecCompClickListener;
 import com.cas.sim.tis.app.listener.TerminalListener;
 import com.cas.sim.tis.app.listener.WireListener;
-import com.cas.sim.tis.app.state.BaseState;
-import com.cas.sim.tis.app.state.ElecCaseState;
 import com.cas.sim.tis.app.state.ElecCaseState.CaseMode;
 import com.cas.sim.tis.app.state.broken.BrokenCaseState;
+import com.cas.sim.tis.app.state.typical.TrainState;
 import com.cas.sim.tis.consts.Radius;
 import com.cas.sim.tis.consts.WireColor;
 import com.cas.sim.tis.entity.ElecComp;

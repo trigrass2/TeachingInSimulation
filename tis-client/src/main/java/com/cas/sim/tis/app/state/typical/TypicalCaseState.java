@@ -5,6 +5,7 @@ import java.util.Optional;
 import com.cas.circuit.vo.Archive;
 import com.cas.sim.tis.action.ArchiveAction;
 import com.cas.sim.tis.action.ArchiveCaseAction;
+import com.cas.sim.tis.app.state.CircuitState;
 import com.cas.sim.tis.app.state.ElecCaseState;
 import com.cas.sim.tis.consts.ArchiveType;
 import com.cas.sim.tis.entity.ArchiveCase;

@@ -6,7 +6,6 @@ import com.cas.sim.tis.app.hold.ElecCompHoldHandler;
 import com.cas.sim.tis.app.hold.HoldStatePro;
 import com.cas.sim.tis.app.state.SceneCameraState.Mode;
 import com.cas.sim.tis.app.state.SceneCameraState.View;
-import com.cas.sim.tis.app.state.typical.CircuitState;
 import com.cas.sim.tis.entity.ElecComp;
 import com.cas.sim.tis.util.MsgUtil;
 import com.cas.sim.tis.util.SpringUtil;

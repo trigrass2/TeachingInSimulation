@@ -4,7 +4,7 @@ import com.cas.circuit.component.Terminal;
 import com.cas.sim.tis.app.event.MouseEvent;
 import com.cas.sim.tis.app.event.MouseEventAdapter;
 import com.cas.sim.tis.app.hold.HoldStatePro;
-import com.cas.sim.tis.app.state.typical.CircuitState;
+import com.cas.sim.tis.app.state.CircuitState;
 import com.jme3.scene.Spatial;
 
 public class TerminalListener extends MouseEventAdapter {
