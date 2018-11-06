@@ -2,7 +2,6 @@ package com.cas.sim.tis.consts;
 
 import java.util.List;
 
-import com.cas.sim.tis.Application;
 import com.cas.sim.tis.action.CatalogAction;
 import com.cas.sim.tis.entity.Catalog;
 import com.cas.sim.tis.util.MsgUtil;

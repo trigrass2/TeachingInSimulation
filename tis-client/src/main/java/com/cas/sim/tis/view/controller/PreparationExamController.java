@@ -8,7 +8,6 @@ import java.util.Map;
 import org.springframework.util.StringUtils;
 
 import com.alibaba.fastjson.JSON;
-import com.cas.sim.tis.Application;
 import com.cas.sim.tis.action.GoalAction;
 import com.cas.sim.tis.action.LibraryRecordAction;
 import com.cas.sim.tis.consts.AnswerState;

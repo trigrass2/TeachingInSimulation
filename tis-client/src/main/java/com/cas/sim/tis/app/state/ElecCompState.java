@@ -8,7 +8,6 @@ import java.util.Map.Entry;
 import javax.annotation.Nonnull;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
 import com.cas.circuit.component.ControlIO;
 import com.cas.circuit.component.ElecCompDef;

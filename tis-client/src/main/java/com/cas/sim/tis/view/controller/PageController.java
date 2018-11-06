@@ -4,7 +4,6 @@ import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.function.Consumer;
 
-import com.cas.sim.tis.Application;
 import com.cas.sim.tis.anno.FxThread;
 import com.cas.sim.tis.view.HomeView;
 import com.cas.sim.tis.view.control.IContent;

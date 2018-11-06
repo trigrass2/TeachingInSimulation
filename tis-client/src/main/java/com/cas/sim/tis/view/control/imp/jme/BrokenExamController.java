@@ -1,6 +1,5 @@
 package com.cas.sim.tis.view.control.imp.jme;
 
-import com.cas.sim.tis.Application;
 import com.cas.sim.tis.view.HomeView;
 import com.cas.sim.tis.view.control.imp.Decoration;
 import com.cas.sim.tis.view.control.imp.broken.BrokenCase3D;
